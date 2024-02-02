@@ -1,10 +1,26 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="银行承兑管理编号" prop="bankManagementNumber">
+      <el-form-item label="管理编号" prop="bankManagementNumber">
         <el-input
           v-model="queryParams.bankManagementNumber"
-          placeholder="请输入银行承兑管理编号"
+          placeholder="请输入管理编号"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="出票人" prop="drawer">
+        <el-input
+          v-model="queryParams.drawer"
+          placeholder="请输入出票人"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="收票人" prop="bankPayee">
+        <el-input
+          v-model="queryParams.bankPayee"
+          placeholder="请输入收票人"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -25,12 +41,12 @@
           placeholder="请选择出票日期">
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="汇票到期日" prop="bankDueDate">
+      <el-form-item label="到期日" prop="bankDueDate">
         <el-date-picker clearable
           v-model="queryParams.bankDueDate"
           type="date"
           value-format="yyyy-MM-dd"
-          placeholder="请选择汇票到期日">
+          placeholder="请选择到期日">
         </el-date-picker>
       </el-form-item>
       <el-form-item label="项目名称" prop="bankEntryName">
@@ -96,7 +112,7 @@
     <el-table v-loading="loading" :data="bankList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="银行承兑id主键" align="center" prop="bankId" />
-      <el-table-column label="银行承兑管理编号" align="center" prop="bankManagementNumber" />
+      <el-table-column label="管理编号" align="center" prop="bankManagementNumber" />
       <el-table-column label="出票人" align="center" prop="drawer" />
       <el-table-column label="收票人" align="center" prop="bankPayee" />
       <el-table-column label="金融机构" align="center" prop="bankFinancialInstitution" />
@@ -106,7 +122,7 @@
           <span>{{ parseTime(scope.row.bankDraftDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="汇票到期日" align="center" prop="bankDueDate" width="180">
+      <el-table-column label="到期日" align="center" prop="bankDueDate" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.bankDueDate, '{y}-{m}-{d}') }}</span>
         </template>
@@ -114,7 +130,7 @@
       <el-table-column label="到期提醒" align="center" prop="bankRemark" />
       <el-table-column label="协议编号" align="center" prop="acceptAgreementId" />
       <el-table-column label="项目名称" align="center" prop="bankEntryName" />
-      <el-table-column label="" align="center" prop="bankNotes" />
+      <el-table-column label="备注" align="center" prop="bankNotes" />
       <el-table-column label="创建时间" align="center" prop="bankCreateTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.bankCreateTime, '{y}-{m}-{d}') }}</span>
@@ -158,8 +174,14 @@
     <!-- 添加或修改银行承兑汇票对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="银行承兑管理编号" prop="bankManagementNumber">
-          <el-input v-model="form.bankManagementNumber" placeholder="请输入银行承兑管理编号" />
+        <el-form-item label="管理编号" prop="bankManagementNumber">
+          <el-input v-model="form.bankManagementNumber" placeholder="请输入管理编号" />
+        </el-form-item>
+        <el-form-item label="出票人" prop="drawer">
+          <el-input v-model="form.drawer" placeholder="请输入出票人" />
+        </el-form-item>
+        <el-form-item label="收票人" prop="bankPayee">
+          <el-input v-model="form.bankPayee" placeholder="请输入收票人" />
         </el-form-item>
         <el-form-item label="金融机构" prop="bankFinancialInstitution">
           <el-input v-model="form.bankFinancialInstitution" placeholder="请输入金融机构" />
@@ -175,12 +197,12 @@
             placeholder="请选择出票日期">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="汇票到期日" prop="bankDueDate">
+        <el-form-item label="到期日" prop="bankDueDate">
           <el-date-picker clearable
             v-model="form.bankDueDate"
             type="date"
             value-format="yyyy-MM-dd"
-            placeholder="请选择汇票到期日">
+            placeholder="请选择到期日">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="协议编号" prop="acceptAgreementId">
@@ -189,7 +211,7 @@
         <el-form-item label="项目名称" prop="bankEntryName">
           <el-input v-model="form.bankEntryName" placeholder="请输入项目名称" />
         </el-form-item>
-        <el-form-item label="" prop="bankNotes">
+        <el-form-item label="备注" prop="bankNotes">
           <el-input v-model="form.bankNotes" type="textarea" placeholder="请输入内容" />
         </el-form-item>
         <el-form-item label="创建时间" prop="bankCreateTime">
@@ -266,25 +288,31 @@ export default {
       // 表单校验
       rules: {
         bankManagementNumber: [
-          { required: true, message: "银行承兑管理编号不能为空", trigger: "blur" }
+          { required: true, message: "管理编号不能为空", trigger: "blur" }
         ],
         drawer: [
-          { required: true, message: "出票人不能为空", trigger: "change" }
+          { required: true, message: "出票人不能为空", trigger: "blur" }
         ],
         bankPayee: [
-          { required: true, message: "收票人不能为空", trigger: "change" }
+          { required: true, message: "收票人不能为空", trigger: "blur" }
         ],
         bankFinancialInstitution: [
           { required: true, message: "金融机构不能为空", trigger: "blur" }
+        ],
+        invoiceAmount: [
+          { required: true, message: "出票金额不能为空", trigger: "blur" }
         ],
         bankDraftDate: [
           { required: true, message: "出票日期不能为空", trigger: "blur" }
         ],
         bankDueDate: [
-          { required: true, message: "汇票到期日不能为空", trigger: "blur" }
+          { required: true, message: "到期日不能为空", trigger: "blur" }
         ],
         bankRemark: [
           { required: true, message: "到期提醒不能为空", trigger: "change" }
+        ],
+        acceptAgreementId: [
+          { required: true, message: "协议编号不能为空", trigger: "blur" }
         ],
         bankEntryName: [
           { required: true, message: "项目名称不能为空", trigger: "blur" }
