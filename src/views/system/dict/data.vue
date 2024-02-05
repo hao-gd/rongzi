@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="字典名称" prop="dictType">
+      <el-form-item label="信息名称" prop="dictType">
         <el-select v-model="queryParams.dictType">
           <el-option
             v-for="item in typeOptions"
@@ -11,10 +11,10 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="字典标签" prop="dictLabel">
+      <el-form-item label="信息标签" prop="dictLabel">
         <el-input
           v-model="queryParams.dictLabel"
-          placeholder="请输入字典标签"
+          placeholder="请输入信息标签"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -92,15 +92,15 @@
 
     <el-table v-loading="loading" :data="dataList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="字典编码" align="center" prop="dictCode" />
-      <el-table-column label="字典标签" align="center" prop="dictLabel">
+      <el-table-column label="信息编码" align="center" prop="dictCode" />
+      <el-table-column label="数据名称" align="center" prop="dictLabel">
         <template slot-scope="scope">
           <span v-if="scope.row.listClass == '' || scope.row.listClass == 'default'">{{scope.row.dictLabel}}</span>
           <el-tag v-else :type="scope.row.listClass == 'primary' ? '' : scope.row.listClass">{{scope.row.dictLabel}}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="字典键值" align="center" prop="dictValue" />
-      <el-table-column label="字典排序" align="center" prop="dictSort" />
+      <el-table-column label="数据键值" align="center" prop="dictValue" />
+      <el-table-column label="字典排序" align="center" prop="dictSort" v-if="roles.includes('admin')" />
       <el-table-column label="状态" align="center" prop="status">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.status"/>
@@ -143,22 +143,22 @@
     <!-- 添加或修改参数配置对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="字典类型">
-          <el-input v-model="form.dictType" :disabled="true" />
+        <el-form-item label="信息名称">
+          <el-input v-model="form.dictName" :disabled="true" />
         </el-form-item>
         <el-form-item label="数据标签" prop="dictLabel">
           <el-input v-model="form.dictLabel" placeholder="请输入数据标签" />
         </el-form-item>
-        <el-form-item label="数据键值" prop="dictValue">
+        <!-- <el-form-item label="数据键值" prop="dictValue">
           <el-input v-model="form.dictValue" placeholder="请输入数据键值" />
-        </el-form-item>
-        <el-form-item label="样式属性" prop="cssClass">
+        </el-form-item> -->
+        <!-- <el-form-item label="样式属性" prop="cssClass">
           <el-input v-model="form.cssClass" placeholder="请输入样式属性" />
-        </el-form-item>
-        <el-form-item label="显示排序" prop="dictSort">
+        </el-form-item> -->
+        <!-- <el-form-item label="显示排序" prop="dictSort">
           <el-input-number v-model="form.dictSort" controls-position="right" :min="0" />
-        </el-form-item>
-        <el-form-item label="回显样式" prop="listClass">
+        </el-form-item> -->
+        <!-- <el-form-item label="回显样式" prop="listClass">
           <el-select v-model="form.listClass">
             <el-option
               v-for="item in listClassOptions"
@@ -167,7 +167,7 @@
               :value="item.value"
             ></el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="状态" prop="status">
           <el-radio-group v-model="form.status">
             <el-radio
@@ -192,6 +192,8 @@
 <script>
 import { listData, getData, delData, addData, updateData } from "@/api/system/dict/data";
 import { optionselect as getDictOptionselect, getType } from "@/api/system/dict/type";
+import { mapGetters } from 'vuex';
+import { SnowflakeIdGenerator } from '@/utils/index'
 
 export default {
   name: "Data",
@@ -271,7 +273,11 @@ export default {
       }
     };
   },
+  computed: {
+    ...mapGetters(['roles']),
+  },
   created() {
+    console.log(111);
     const dictId = this.$route.params && this.$route.params.dictId;
     this.getType(dictId);
     this.getTypeList();
@@ -280,6 +286,7 @@ export default {
     /** 查询字典类型详细 */
     getType(dictId) {
       getType(dictId).then(response => {
+        this.queryParams.dictName = response.data.dictName;
         this.queryParams.dictType = response.data.dictType;
         this.defaultDictType = response.data.dictType;
         this.getList();
@@ -341,6 +348,8 @@ export default {
       this.open = true;
       this.title = "添加字典数据";
       this.form.dictType = this.queryParams.dictType;
+      this.form.dictName = this.queryParams.dictName;
+      console.log(this.queryParams);
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
@@ -356,12 +365,17 @@ export default {
         this.form = response.data;
         this.open = true;
         this.title = "修改字典数据";
+        this.form.dictName = this.queryParams.dictName;
       });
     },
     /** 提交按钮 */
     submitForm: function() {
       this.$refs["form"].validate(valid => {
         if (valid) {
+          const generator = new SnowflakeIdGenerator();
+          this.form.dictValue = this.form.dictValue !== undefined
+            ? this.form.dictValue
+            : generator.nextId()
           if (this.form.dictCode != undefined) {
             updateData(this.form).then(response => {
               this.$store.dispatch('dict/removeDict', this.queryParams.dictType);

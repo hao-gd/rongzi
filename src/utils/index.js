@@ -388,3 +388,44 @@ export function isNumberStr(str) {
   return /^[+-]?(0|([1-9]\d*))(\.\d+)?$/g.test(str)
 }
  
+export class SnowflakeIdGenerator {
+  constructor() {
+    this.sequence = 0;
+    this.lastTimestamp = -1;
+  }
+
+  nextId() {
+    let timestamp = Date.now();
+
+    if (timestamp === this.lastTimestamp) {
+      // 同一毫秒内，序列号自增
+      this.sequence = (this.sequence + 1) & 4095; // 4095为序列号掩码，确保序列号在0-4095之间
+      if (this.sequence === 0) {
+        // 序列号溢出，等待下一毫秒
+        timestamp = this.tilNextMillis(this.lastTimestamp);
+      }
+    } else {
+      // 新的毫秒，重置序列号
+      this.sequence = 0;
+    }
+
+    this.lastTimestamp = timestamp;
+
+    // 时间戳左移，放到41位
+    // 由于JavaScript中的数字是以双精度浮点数形式存储的，能够安全使用的整数范围是53位，所以这里只能使用41位时间戳
+    const timestampLeftShift = BigInt(timestamp - 1288834974657) << 22n;
+    // 序列号部分
+    const sequence = BigInt(this.sequence);
+
+    // 拼接生成最终的ID，并转换为数字
+    return Number(timestampLeftShift | sequence);
+  }
+
+  tilNextMillis(lastTimestamp) {
+    let timestamp = Date.now();
+    while (timestamp <= lastTimestamp) {
+      timestamp = Date.now();
+    }
+    return timestamp;
+  }
+}
