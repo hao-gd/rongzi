@@ -4,7 +4,7 @@
 @import './element-ui.scss';
 @import './sidebar.scss';
 @import './btn.scss';
-
+@import "./base";
 body {
   height: 100%;
   -moz-osx-font-smoothing: grayscale;
@@ -121,7 +121,9 @@ aside {
 
 //main-container全局样式
 .app-container {
-  padding: 20px;
+  padding: 10px;
+  box-sizing: border-box;
+  background: #FFFFFF !important;
 }
 
 .components-container {
@@ -179,4 +181,14 @@ aside {
     vertical-align: middle;
     margin-bottom: 10px;
   }
+}
+
+
+.form-item-buttons {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.icon-color {
+  color: #4E5969 !important;
 }

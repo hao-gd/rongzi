@@ -1,0 +1,20 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 4434374 */
+  src: url('iconfont.woff2?t=1707315620515') format('woff2'),
+       url('iconfont.woff?t=1707315620515') format('woff'),
+       url('iconfont.ttf?t=1707315620515') format('truetype'),
+       url('iconfont.svg?t=1707315620515#iconfont') format('svg');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 13px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-ruliriqixiao:before {
+  content: "\e934";
+}
+

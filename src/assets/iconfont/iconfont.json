@@ -1,0 +1,16 @@
+{
+  "id": "4434374",
+  "name": "rongzi",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "融资管理x'm",
+  "glyphs": [
+    {
+      "icon_id": "5298550",
+      "name": "入离日期小",
+      "font_class": "ruliriqixiao",
+      "unicode": "e934",
+      "unicode_decimal": 59700
+    }
+  ]
+}
