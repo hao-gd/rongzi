@@ -10,9 +10,9 @@ export function listBank(query) {
 }
 
 // 查询银行承兑汇票详细
-export function getBank(bankId) {
+export function getBank(id) {
   return request({
-    url: '/bankaccept/bank/' + bankId,
+    url: '/bankaccept/bank/' + id,
     method: 'get'
   })
 }
@@ -36,9 +36,9 @@ export function updateBank(data) {
 }
 
 // 删除银行承兑汇票
-export function delBank(bankId) {
+export function delBank(id) {
   return request({
-    url: '/bankaccept/bank/' + bankId,
+    url: '/bankaccept/bank/' + id,
     method: 'delete'
   })
 }
