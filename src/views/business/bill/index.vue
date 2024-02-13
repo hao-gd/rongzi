@@ -1,10 +1,10 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="银行承兑管理编号" prop="managementId">
+      <el-form-item label="商业承兑管理编号" prop="managementId">
         <el-input
           v-model="queryParams.managementId"
-          placeholder="请输入银行承兑管理编号"
+          placeholder="请输入商业承兑管理编号"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -17,30 +17,20 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="出票人" prop="drawer">
-        <el-select v-model="queryParams.drawer" placeholder="请选择出票人" clearable>
+      <el-form-item label="付款人" prop="payer">
+        <el-select v-model="queryParams.payer" placeholder="请选择付款人" clearable>
           <el-option
-            v-for="dict in dict.type.sys_drawer"
+            v-for="dict in dict.type.sys_1757235323403763700"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="收票人" prop="payee">
-        <el-select v-model="queryParams.payee" placeholder="请选择收票人" clearable>
+      <el-form-item label="收款人" prop="payee">
+        <el-select v-model="queryParams.payee" placeholder="请选择收款人" clearable>
           <el-option
-            v-for="dict in dict.type.sys_1754491769220759600"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="金融机构" prop="financialInstitution">
-        <el-select v-model="queryParams.financialInstitution" placeholder="请选择金融机构" clearable>
-          <el-option
-            v-for="dict in dict.type.sys_acceptor"
+            v-for="dict in dict.type.sys_1757235466651828200"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
@@ -84,21 +74,23 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="协议编号" prop="acceptAgreementId">
+      <el-form-item label="合同号码" prop="contractNumber">
         <el-input
-          v-model="queryParams.acceptAgreementId"
-          placeholder="请输入协议编号"
+          v-model="queryParams.contractNumber"
+          placeholder="请输入合同号码"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="项目名称" prop="entryName">
-        <el-input
-          v-model="queryParams.entryName"
-          placeholder="请输入项目名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
+      <el-form-item label="金融机构" prop="financialInstitution">
+        <el-select v-model="queryParams.financialInstitution" placeholder="请选择金融机构" clearable>
+          <el-option
+            v-for="dict in dict.type.sys_acceptor"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -114,7 +106,7 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['bankaccept:bank:add']"
+          v-hasPermi="['business:bill:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -125,7 +117,7 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['bankaccept:bank:edit']"
+          v-hasPermi="['business:bill:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -136,7 +128,7 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['bankaccept:bank:remove']"
+          v-hasPermi="['business:bill:remove']"
         >删除</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -146,30 +138,25 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['bankaccept:bank:export']"
+          v-hasPermi="['business:bill:export']"
         >导出</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="bankList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="billList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="银行承兑管理编号" align="center" prop="managementId" />
+      <el-table-column label="商业承兑管理编号" align="center" prop="managementId" />
       <el-table-column label="数据唯一编号" align="center" prop="scrUuid" />
       <el-table-column label="审核id" align="center" prop="auditId" />
-      <el-table-column label="出票人" align="center" prop="drawer">
+      <el-table-column label="付款人" align="center" prop="payer">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_drawer" :value="scope.row.drawer"/>
+          <dict-tag :options="dict.type.sys_1757235323403763700" :value="scope.row.payer"/>
         </template>
       </el-table-column>
-      <el-table-column label="收票人" align="center" prop="payee">
+      <el-table-column label="收款人" align="center" prop="payee">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_1754491769220759600" :value="scope.row.payee"/>
-        </template>
-      </el-table-column>
-      <el-table-column label="金融机构" align="center" prop="financialInstitution">
-        <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_acceptor" :value="scope.row.financialInstitution"/>
+          <dict-tag :options="dict.type.sys_1757235466651828200" :value="scope.row.payee"/>
         </template>
       </el-table-column>
       <el-table-column label="出票金额" align="center" prop="invoiceAmount" />
@@ -188,8 +175,12 @@
           <dict-tag :options="dict.type.sys_maturity" :value="scope.row.remark"/>
         </template>
       </el-table-column>
-      <el-table-column label="协议编号" align="center" prop="acceptAgreementId" />
-      <el-table-column label="项目名称" align="center" prop="entryName" />
+      <el-table-column label="合同号码" align="center" prop="contractNumber" />
+      <el-table-column label="金融机构" align="center" prop="financialInstitution">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.sys_acceptor" :value="scope.row.financialInstitution"/>
+        </template>
+      </el-table-column>
       <el-table-column label="备注" align="center" prop="comment" />
       <el-table-column label="ID" align="center" prop="id" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -199,14 +190,14 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['bankaccept:bank:edit']"
+            v-hasPermi="['business:bill:edit']"
           >修改</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['bankaccept:bank:remove']"
+            v-hasPermi="['business:bill:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -220,11 +211,11 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改银行承兑汇票对话框 -->
+    <!-- 添加或修改商业承兑汇票对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="银行承兑管理编号" prop="managementId">
-          <el-input v-model="form.managementId" placeholder="请输入银行承兑管理编号" />
+        <el-form-item label="商业承兑管理编号" prop="managementId">
+          <el-input v-model="form.managementId" placeholder="请输入商业承兑管理编号" />
         </el-form-item>
         <el-form-item label="数据唯一编号" prop="scrUuid">
           <file-upload v-model="form.scrUuid"/>
@@ -232,30 +223,20 @@
         <el-form-item label="审核id" prop="auditId">
           <el-input v-model="form.auditId" placeholder="请输入审核id" />
         </el-form-item>
-        <el-form-item label="出票人" prop="drawer">
-          <el-select v-model="form.drawer" placeholder="请选择出票人">
+        <el-form-item label="付款人" prop="payer">
+          <el-select v-model="form.payer" placeholder="请选择付款人">
             <el-option
-              v-for="dict in dict.type.sys_drawer"
+              v-for="dict in dict.type.sys_1757235323403763700"
               :key="dict.value"
               :label="dict.label"
               :value="dict.value"
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="收票人" prop="payee">
-          <el-select v-model="form.payee" placeholder="请选择收票人">
+        <el-form-item label="收款人" prop="payee">
+          <el-select v-model="form.payee" placeholder="请选择收款人">
             <el-option
-              v-for="dict in dict.type.sys_1754491769220759600"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="金融机构" prop="financialInstitution">
-          <el-select v-model="form.financialInstitution" placeholder="请选择金融机构">
-            <el-option
-              v-for="dict in dict.type.sys_acceptor"
+              v-for="dict in dict.type.sys_1757235466651828200"
               :key="dict.value"
               :label="dict.label"
               :value="dict.value"
@@ -291,11 +272,18 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="协议编号" prop="acceptAgreementId">
-          <el-input v-model="form.acceptAgreementId" placeholder="请输入协议编号" />
+        <el-form-item label="合同号码" prop="contractNumber">
+          <el-input v-model="form.contractNumber" placeholder="请输入合同号码" />
         </el-form-item>
-        <el-form-item label="项目名称" prop="entryName">
-          <el-input v-model="form.entryName" placeholder="请输入项目名称" />
+        <el-form-item label="金融机构" prop="financialInstitution">
+          <el-select v-model="form.financialInstitution" placeholder="请选择金融机构">
+            <el-option
+              v-for="dict in dict.type.sys_acceptor"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="备注" prop="comment">
           <el-input v-model="form.comment" type="textarea" placeholder="请输入内容" />
@@ -338,11 +326,11 @@
 </template>
 
 <script>
-import { listBank, getBank, delBank, addBank, updateBank } from "@/api/bankaccept/bank";
+import { listBill, getBill, delBill, addBill, updateBill } from "@/api/business/bill";
 
 export default {
-  name: "Bank",
-  dicts: ['sys_1754491769220759600', 'sys_drawer', 'sys_acceptor'],
+  name: "Bill",
+  dicts: ['sys_1757235323403763700', 'sys_1757235466651828200', 'sys_acceptor'],
   data() {
     return {
       // 遮罩层
@@ -359,8 +347,8 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // 银行承兑汇票表格数据
-      bankList: [],
+      // 商业承兑汇票表格数据
+      billList: [],
       // 附件表表格数据
       rzsrc2List: [],
       // 弹出层标题
@@ -376,15 +364,14 @@ export default {
         managementId: null,
         scrUuid: null,
         auditId: null,
-        drawer: null,
+        payer: null,
         payee: null,
-        financialInstitution: null,
         invoiceAmount: null,
         draftDate: null,
         dueDate: null,
         remark: null,
-        acceptAgreementId: null,
-        entryName: null,
+        contractNumber: null,
+        financialInstitution: null,
         comment: null,
       },
       // 表单参数
@@ -392,7 +379,7 @@ export default {
       // 表单校验
       rules: {
         managementId: [
-          { required: true, message: "银行承兑管理编号不能为空", trigger: "blur" }
+          { required: true, message: "商业承兑管理编号不能为空", trigger: "blur" }
         ],
         scrUuid: [
           { required: true, message: "数据唯一编号不能为空", trigger: "blur" }
@@ -400,14 +387,11 @@ export default {
         auditId: [
           { required: true, message: "审核id不能为空", trigger: "blur" }
         ],
-        drawer: [
-          { required: true, message: "出票人不能为空", trigger: "change" }
+        payer: [
+          { required: true, message: "付款人不能为空", trigger: "change" }
         ],
         payee: [
-          { required: true, message: "收票人不能为空", trigger: "change" }
-        ],
-        financialInstitution: [
-          { required: true, message: "金融机构不能为空", trigger: "change" }
+          { required: true, message: "收款人不能为空", trigger: "change" }
         ],
         invoiceAmount: [
           { required: true, message: "出票金额不能为空", trigger: "blur" }
@@ -418,14 +402,11 @@ export default {
         dueDate: [
           { required: true, message: "到期日不能为空", trigger: "blur" }
         ],
-        remark: [
-          { required: true, message: "到期提醒不能为空", trigger: "change" }
+        contractNumber: [
+          { required: true, message: "合同号码不能为空", trigger: "blur" }
         ],
-        acceptAgreementId: [
-          { required: true, message: "协议编号不能为空", trigger: "blur" }
-        ],
-        entryName: [
-          { required: true, message: "项目名称不能为空", trigger: "blur" }
+        financialInstitution: [
+          { required: true, message: "金融机构不能为空", trigger: "change" }
         ],
       }
     };
@@ -434,7 +415,7 @@ export default {
     this.getList();
   },
   methods: {
-    /** 查询银行承兑汇票列表 */
+    /** 查询商业承兑汇票列表 */
     getList() {
       this.loading = true;
       this.queryParams.params = {};
@@ -442,8 +423,8 @@ export default {
         this.queryParams.params["beginDraftDate"] = this.daterangeDraftDate[0];
         this.queryParams.params["endDraftDate"] = this.daterangeDraftDate[1];
       }
-      listBank(this.queryParams).then(response => {
-        this.bankList = response.rows;
+      listBill(this.queryParams).then(response => {
+        this.billList = response.rows;
         this.total = response.total;
         this.loading = false;
       });
@@ -459,15 +440,14 @@ export default {
         managementId: null,
         scrUuid: null,
         auditId: null,
-        drawer: null,
+        payer: null,
         payee: null,
-        financialInstitution: null,
         invoiceAmount: null,
         draftDate: null,
         dueDate: null,
         remark: null,
-        acceptAgreementId: null,
-        entryName: null,
+        contractNumber: null,
+        financialInstitution: null,
         comment: null,
         createTime: null,
         createBy: null,
@@ -499,17 +479,17 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加银行承兑汇票";
+      this.title = "添加商业承兑汇票";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
       const id = row.id || this.ids
-      getBank(id).then(response => {
+      getBill(id).then(response => {
         this.form = response.data;
         this.rzsrc2List = response.data.rzsrc2List;
         this.open = true;
-        this.title = "修改银行承兑汇票";
+        this.title = "修改商业承兑汇票";
       });
     },
     /** 提交按钮 */
@@ -518,13 +498,13 @@ export default {
         if (valid) {
           this.form.rzsrc2List = this.rzsrc2List;
           if (this.form.id != null) {
-            updateBank(this.form).then(response => {
+            updateBill(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            addBank(this.form).then(response => {
+            addBill(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
               this.getList();
@@ -536,8 +516,8 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$modal.confirm('是否确认删除银行承兑汇票编号为"' + ids + '"的数据项？').then(function() {
-        return delBank(ids);
+      this.$modal.confirm('是否确认删除商业承兑汇票编号为"' + ids + '"的数据项？').then(function() {
+        return delBill(ids);
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("删除成功");
@@ -573,9 +553,9 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('bankaccept/bank/export', {
+      this.download('business/bill/export', {
         ...this.queryParams
-      }, `bank_${new Date().getTime()}.xlsx`)
+      }, `bill_${new Date().getTime()}.xlsx`)
     }
   }
 };

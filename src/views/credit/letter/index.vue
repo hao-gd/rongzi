@@ -1,10 +1,10 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="银行承兑管理编号" prop="managementId">
+      <el-form-item label="管理编号" prop="managementId">
         <el-input
           v-model="queryParams.managementId"
-          placeholder="请输入银行承兑管理编号"
+          placeholder="请输入管理编号"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -17,20 +17,68 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="出票人" prop="drawer">
-        <el-select v-model="queryParams.drawer" placeholder="请选择出票人" clearable>
+      <el-form-item label="信用证号码" prop="creditNumber">
+        <el-input
+          v-model="queryParams.creditNumber"
+          placeholder="请输入信用证号码"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="开证金额" prop="issuingAmount">
+        <el-input
+          v-model="queryParams.issuingAmount"
+          placeholder="请输入开证金额"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="开证日期">
+        <el-date-picker
+          v-model="daterangeIssuingDate"
+          style="width: 240px"
+          value-format="yyyy-MM-dd"
+          type="daterange"
+          range-separator="-"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        ></el-date-picker>
+      </el-form-item>
+      <el-form-item label="有效日期">
+        <el-date-picker
+          v-model="daterangeEffectiveDate"
+          style="width: 240px"
+          value-format="yyyy-MM-dd"
+          type="daterange"
+          range-separator="-"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        ></el-date-picker>
+      </el-form-item>
+      <el-form-item label="到期提醒" prop="remark">
+        <el-select v-model="queryParams.remark" placeholder="请选择到期提醒" clearable>
           <el-option
-            v-for="dict in dict.type.sys_drawer"
+            v-for="dict in dict.type.sys_maturity"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="收票人" prop="payee">
-        <el-select v-model="queryParams.payee" placeholder="请选择收票人" clearable>
+      <el-form-item label="开证申请人" prop="applicant">
+        <el-select v-model="queryParams.applicant" placeholder="请选择开证申请人" clearable>
           <el-option
-            v-for="dict in dict.type.sys_1754491769220759600"
+            v-for="dict in dict.type.sys_1757265915323351000"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="收益人" prop="beneficiary">
+        <el-select v-model="queryParams.beneficiary" placeholder="请选择收益人" clearable>
+          <el-option
+            v-for="dict in dict.type.sys_1757265828501258200"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
@@ -47,59 +95,6 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="出票金额" prop="invoiceAmount">
-        <el-input
-          v-model="queryParams.invoiceAmount"
-          placeholder="请输入出票金额"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="出票日期">
-        <el-date-picker
-          v-model="daterangeDraftDate"
-          style="width: 240px"
-          value-format="yyyy-MM-dd"
-          type="daterange"
-          range-separator="-"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        ></el-date-picker>
-      </el-form-item>
-      <el-form-item label="到期日" prop="dueDate">
-        <el-date-picker clearable
-          v-model="queryParams.dueDate"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择到期日">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="到期提醒" prop="remark">
-        <el-select v-model="queryParams.remark" placeholder="请选择到期提醒" clearable>
-          <el-option
-            v-for="dict in dict.type.sys_maturity"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="协议编号" prop="acceptAgreementId">
-        <el-input
-          v-model="queryParams.acceptAgreementId"
-          placeholder="请输入协议编号"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="项目名称" prop="entryName">
-        <el-input
-          v-model="queryParams.entryName"
-          placeholder="请输入项目名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -114,7 +109,7 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['bankaccept:bank:add']"
+          v-hasPermi="['credit:letter:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -125,7 +120,7 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['bankaccept:bank:edit']"
+          v-hasPermi="['credit:letter:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -136,7 +131,7 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['bankaccept:bank:remove']"
+          v-hasPermi="['credit:letter:remove']"
         >删除</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -146,41 +141,27 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['bankaccept:bank:export']"
+          v-hasPermi="['credit:letter:export']"
         >导出</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="bankList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="letterList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="银行承兑管理编号" align="center" prop="managementId" />
+      <el-table-column label="管理编号" align="center" prop="managementId" />
       <el-table-column label="数据唯一编号" align="center" prop="scrUuid" />
       <el-table-column label="审核id" align="center" prop="auditId" />
-      <el-table-column label="出票人" align="center" prop="drawer">
+      <el-table-column label="信用证号码" align="center" prop="creditNumber" />
+      <el-table-column label="开证金额" align="center" prop="issuingAmount" />
+      <el-table-column label="开证日期" align="center" prop="issuingDate" width="180">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_drawer" :value="scope.row.drawer"/>
+          <span>{{ parseTime(scope.row.issuingDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="收票人" align="center" prop="payee">
+      <el-table-column label="有效日期" align="center" prop="effectiveDate" width="180">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_1754491769220759600" :value="scope.row.payee"/>
-        </template>
-      </el-table-column>
-      <el-table-column label="金融机构" align="center" prop="financialInstitution">
-        <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_acceptor" :value="scope.row.financialInstitution"/>
-        </template>
-      </el-table-column>
-      <el-table-column label="出票金额" align="center" prop="invoiceAmount" />
-      <el-table-column label="出票日期" align="center" prop="draftDate" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.draftDate, '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="到期日" align="center" prop="dueDate" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.dueDate, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.effectiveDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="到期提醒" align="center" prop="remark">
@@ -188,8 +169,21 @@
           <dict-tag :options="dict.type.sys_maturity" :value="scope.row.remark"/>
         </template>
       </el-table-column>
-      <el-table-column label="协议编号" align="center" prop="acceptAgreementId" />
-      <el-table-column label="项目名称" align="center" prop="entryName" />
+      <el-table-column label="开证申请人" align="center" prop="applicant">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.sys_1757265915323351000" :value="scope.row.applicant"/>
+        </template>
+      </el-table-column>
+      <el-table-column label="收益人" align="center" prop="beneficiary">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.sys_1757265828501258200" :value="scope.row.beneficiary"/>
+        </template>
+      </el-table-column>
+      <el-table-column label="金融机构" align="center" prop="financialInstitution">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.sys_acceptor" :value="scope.row.financialInstitution"/>
+        </template>
+      </el-table-column>
       <el-table-column label="备注" align="center" prop="comment" />
       <el-table-column label="ID" align="center" prop="id" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -199,14 +193,14 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['bankaccept:bank:edit']"
+            v-hasPermi="['credit:letter:edit']"
           >修改</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['bankaccept:bank:remove']"
+            v-hasPermi="['credit:letter:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -220,11 +214,11 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改银行承兑汇票对话框 -->
+    <!-- 添加或修改信用证对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="银行承兑管理编号" prop="managementId">
-          <el-input v-model="form.managementId" placeholder="请输入银行承兑管理编号" />
+        <el-form-item label="管理编号" prop="managementId">
+          <el-input v-model="form.managementId" placeholder="请输入管理编号" />
         </el-form-item>
         <el-form-item label="数据唯一编号" prop="scrUuid">
           <file-upload v-model="form.scrUuid"/>
@@ -232,20 +226,52 @@
         <el-form-item label="审核id" prop="auditId">
           <el-input v-model="form.auditId" placeholder="请输入审核id" />
         </el-form-item>
-        <el-form-item label="出票人" prop="drawer">
-          <el-select v-model="form.drawer" placeholder="请选择出票人">
+        <el-form-item label="信用证号码" prop="creditNumber">
+          <el-input v-model="form.creditNumber" placeholder="请输入信用证号码" />
+        </el-form-item>
+        <el-form-item label="开证金额" prop="issuingAmount">
+          <el-input v-model="form.issuingAmount" placeholder="请输入开证金额" />
+        </el-form-item>
+        <el-form-item label="开证日期" prop="issuingDate">
+          <el-date-picker clearable
+            v-model="form.issuingDate"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="请选择开证日期">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="有效日期" prop="effectiveDate">
+          <el-date-picker clearable
+            v-model="form.effectiveDate"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="请选择有效日期">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="到期提醒" prop="remark">
+          <el-select v-model="form.remark" placeholder="请选择到期提醒">
             <el-option
-              v-for="dict in dict.type.sys_drawer"
+              v-for="dict in dict.type.sys_maturity"
               :key="dict.value"
               :label="dict.label"
               :value="dict.value"
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="收票人" prop="payee">
-          <el-select v-model="form.payee" placeholder="请选择收票人">
+        <el-form-item label="开证申请人" prop="applicant">
+          <el-select v-model="form.applicant" placeholder="请选择开证申请人">
             <el-option
-              v-for="dict in dict.type.sys_1754491769220759600"
+              v-for="dict in dict.type.sys_1757265915323351000"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="收益人" prop="beneficiary">
+          <el-select v-model="form.beneficiary" placeholder="请选择收益人">
+            <el-option
+              v-for="dict in dict.type.sys_1757265828501258200"
               :key="dict.value"
               :label="dict.label"
               :value="dict.value"
@@ -261,41 +287,6 @@
               :value="dict.value"
             ></el-option>
           </el-select>
-        </el-form-item>
-        <el-form-item label="出票金额" prop="invoiceAmount">
-          <el-input v-model="form.invoiceAmount" placeholder="请输入出票金额" />
-        </el-form-item>
-        <el-form-item label="出票日期" prop="draftDate">
-          <el-date-picker clearable
-            v-model="form.draftDate"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="请选择出票日期">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="到期日" prop="dueDate">
-          <el-date-picker clearable
-            v-model="form.dueDate"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="请选择到期日">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="到期提醒" prop="remark">
-          <el-select v-model="form.remark" placeholder="请选择到期提醒">
-            <el-option
-              v-for="dict in dict.type.sys_maturity"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="协议编号" prop="acceptAgreementId">
-          <el-input v-model="form.acceptAgreementId" placeholder="请输入协议编号" />
-        </el-form-item>
-        <el-form-item label="项目名称" prop="entryName">
-          <el-input v-model="form.entryName" placeholder="请输入项目名称" />
         </el-form-item>
         <el-form-item label="备注" prop="comment">
           <el-input v-model="form.comment" type="textarea" placeholder="请输入内容" />
@@ -338,11 +329,11 @@
 </template>
 
 <script>
-import { listBank, getBank, delBank, addBank, updateBank } from "@/api/bankaccept/bank";
+import { listLetter, getLetter, delLetter, addLetter, updateLetter } from "@/api/credit/letter";
 
 export default {
-  name: "Bank",
-  dicts: ['sys_1754491769220759600', 'sys_drawer', 'sys_acceptor'],
+  name: "Letter",
+  dicts: ['sys_1757265915323351000', 'sys_1757265828501258200', 'sys_acceptor'],
   data() {
     return {
       // 遮罩层
@@ -359,8 +350,8 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // 银行承兑汇票表格数据
-      bankList: [],
+      // 信用证表格数据
+      letterList: [],
       // 附件表表格数据
       rzsrc2List: [],
       // 弹出层标题
@@ -368,7 +359,9 @@ export default {
       // 是否显示弹出层
       open: false,
       // 创建人时间范围
-      daterangeDraftDate: [],
+      daterangeIssuingDate: [],
+      // 创建人时间范围
+      daterangeEffectiveDate: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -376,15 +369,14 @@ export default {
         managementId: null,
         scrUuid: null,
         auditId: null,
-        drawer: null,
-        payee: null,
-        financialInstitution: null,
-        invoiceAmount: null,
-        draftDate: null,
-        dueDate: null,
+        creditNumber: null,
+        issuingAmount: null,
+        issuingDate: null,
+        effectiveDate: null,
         remark: null,
-        acceptAgreementId: null,
-        entryName: null,
+        applicant: null,
+        beneficiary: null,
+        financialInstitution: null,
         comment: null,
       },
       // 表单参数
@@ -392,7 +384,7 @@ export default {
       // 表单校验
       rules: {
         managementId: [
-          { required: true, message: "银行承兑管理编号不能为空", trigger: "blur" }
+          { required: true, message: "管理编号不能为空", trigger: "blur" }
         ],
         scrUuid: [
           { required: true, message: "数据唯一编号不能为空", trigger: "blur" }
@@ -400,32 +392,26 @@ export default {
         auditId: [
           { required: true, message: "审核id不能为空", trigger: "blur" }
         ],
-        drawer: [
-          { required: true, message: "出票人不能为空", trigger: "change" }
+        creditNumber: [
+          { required: true, message: "信用证号码不能为空", trigger: "blur" }
         ],
-        payee: [
-          { required: true, message: "收票人不能为空", trigger: "change" }
+        issuingAmount: [
+          { required: true, message: "开证金额不能为空", trigger: "blur" }
+        ],
+        issuingDate: [
+          { required: true, message: "开证日期不能为空", trigger: "blur" }
+        ],
+        effectiveDate: [
+          { required: true, message: "有效日期不能为空", trigger: "blur" }
+        ],
+        applicant: [
+          { required: true, message: "开证申请人不能为空", trigger: "change" }
+        ],
+        beneficiary: [
+          { required: true, message: "收益人不能为空", trigger: "change" }
         ],
         financialInstitution: [
           { required: true, message: "金融机构不能为空", trigger: "change" }
-        ],
-        invoiceAmount: [
-          { required: true, message: "出票金额不能为空", trigger: "blur" }
-        ],
-        draftDate: [
-          { required: true, message: "出票日期不能为空", trigger: "blur" }
-        ],
-        dueDate: [
-          { required: true, message: "到期日不能为空", trigger: "blur" }
-        ],
-        remark: [
-          { required: true, message: "到期提醒不能为空", trigger: "change" }
-        ],
-        acceptAgreementId: [
-          { required: true, message: "协议编号不能为空", trigger: "blur" }
-        ],
-        entryName: [
-          { required: true, message: "项目名称不能为空", trigger: "blur" }
         ],
       }
     };
@@ -434,16 +420,20 @@ export default {
     this.getList();
   },
   methods: {
-    /** 查询银行承兑汇票列表 */
+    /** 查询信用证列表 */
     getList() {
       this.loading = true;
       this.queryParams.params = {};
-      if (null != this.daterangeDraftDate && '' != this.daterangeDraftDate) {
-        this.queryParams.params["beginDraftDate"] = this.daterangeDraftDate[0];
-        this.queryParams.params["endDraftDate"] = this.daterangeDraftDate[1];
+      if (null != this.daterangeIssuingDate && '' != this.daterangeIssuingDate) {
+        this.queryParams.params["beginIssuingDate"] = this.daterangeIssuingDate[0];
+        this.queryParams.params["endIssuingDate"] = this.daterangeIssuingDate[1];
       }
-      listBank(this.queryParams).then(response => {
-        this.bankList = response.rows;
+      if (null != this.daterangeEffectiveDate && '' != this.daterangeEffectiveDate) {
+        this.queryParams.params["beginEffectiveDate"] = this.daterangeEffectiveDate[0];
+        this.queryParams.params["endEffectiveDate"] = this.daterangeEffectiveDate[1];
+      }
+      listLetter(this.queryParams).then(response => {
+        this.letterList = response.rows;
         this.total = response.total;
         this.loading = false;
       });
@@ -459,15 +449,14 @@ export default {
         managementId: null,
         scrUuid: null,
         auditId: null,
-        drawer: null,
-        payee: null,
-        financialInstitution: null,
-        invoiceAmount: null,
-        draftDate: null,
-        dueDate: null,
+        creditNumber: null,
+        issuingAmount: null,
+        issuingDate: null,
+        effectiveDate: null,
         remark: null,
-        acceptAgreementId: null,
-        entryName: null,
+        applicant: null,
+        beneficiary: null,
+        financialInstitution: null,
         comment: null,
         createTime: null,
         createBy: null,
@@ -485,7 +474,8 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.daterangeDraftDate = [];
+      this.daterangeIssuingDate = [];
+      this.daterangeEffectiveDate = [];
       this.resetForm("queryForm");
       this.handleQuery();
     },
@@ -499,17 +489,17 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加银行承兑汇票";
+      this.title = "添加信用证";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
       const id = row.id || this.ids
-      getBank(id).then(response => {
+      getLetter(id).then(response => {
         this.form = response.data;
         this.rzsrc2List = response.data.rzsrc2List;
         this.open = true;
-        this.title = "修改银行承兑汇票";
+        this.title = "修改信用证";
       });
     },
     /** 提交按钮 */
@@ -518,13 +508,13 @@ export default {
         if (valid) {
           this.form.rzsrc2List = this.rzsrc2List;
           if (this.form.id != null) {
-            updateBank(this.form).then(response => {
+            updateLetter(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            addBank(this.form).then(response => {
+            addLetter(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
               this.getList();
@@ -536,8 +526,8 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$modal.confirm('是否确认删除银行承兑汇票编号为"' + ids + '"的数据项？').then(function() {
-        return delBank(ids);
+      this.$modal.confirm('是否确认删除信用证编号为"' + ids + '"的数据项？').then(function() {
+        return delLetter(ids);
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("删除成功");
@@ -573,9 +563,9 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('bankaccept/bank/export', {
+      this.download('credit/letter/export', {
         ...this.queryParams
-      }, `bank_${new Date().getTime()}.xlsx`)
+      }, `letter_${new Date().getTime()}.xlsx`)
     }
   }
 };

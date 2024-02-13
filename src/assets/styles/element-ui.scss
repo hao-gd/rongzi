@@ -114,7 +114,10 @@
 }
 
 .el-date-editor.el-input, .el-date-editor.el-input__inner {
-  width: 100%;
+  width: 100% !important;
+}
+.el-date-editor {
+  width: 100% !important;
 }
 
 .el-select {
@@ -153,4 +156,24 @@
 }
 .el-select .el-input__icon {
   color: #4E5969 !important; /* 设置小箭头的颜色 */
+}
+
+.el-input__inner[type="textarea"],
+.el-textarea__inner {
+  border: none !important; /* 取消边框 */
+  background-color: #F7F8FA !important; /* 设置背景色 */
+  box-shadow: none !important; /* 取消阴影 */
+}
+
+/* 针对鼠标悬停和聚焦状态的样式 */
+.el-input__inner[type="textarea"]:hover,
+.el-textarea__inner:hover,
+.el-input__inner[type="textarea"]:focus,
+.el-textarea__inner:focus {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.el-form--label-top .el-form-item__label {
+  padding-bottom: 0px !important;
 }
