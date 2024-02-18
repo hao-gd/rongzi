@@ -66,7 +66,12 @@ export default {
     isShowTip: {
       type: Boolean,
       default: true
-    }
+    },
+    // 当前项目的管理编号
+    managementId: {
+      type: String,
+      default: ""
+    },
   },
   data() {
     return {
@@ -113,6 +118,13 @@ export default {
   methods: {
     // 上传前校检格式和大小
     handleBeforeUpload(file) {
+
+      // 校验当前项目是否填写管理编号
+      if (!this.managementId) {
+        this.$modal.msgError("当前项目管理编号不能为空");
+        return false;
+      }
+
       // 校检文件类型
       if (this.fileType) {
         const fileName = file.name.split('.');

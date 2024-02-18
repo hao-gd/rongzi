@@ -223,11 +223,8 @@
     <!-- 添加或修改银行承兑汇票对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="银行承兑管理编号" prop="managementId">
+        <el-form-item label="管理编号" prop="managementId">
           <el-input v-model="form.managementId" placeholder="请输入银行承兑管理编号" />
-        </el-form-item>
-        <el-form-item label="数据唯一编号" prop="scrUuid">
-          <file-upload v-model="form.scrUuid"/>
         </el-form-item>
         <el-form-item label="审核id" prop="auditId">
           <el-input v-model="form.auditId" placeholder="请输入审核id" />
@@ -281,7 +278,7 @@
             placeholder="请选择到期日">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="到期提醒" prop="remark">
+        <!-- <el-form-item label="到期提醒" prop="remark">
           <el-select v-model="form.remark" placeholder="请选择到期提醒">
             <el-option
               v-for="dict in dict.type.sys_maturity"
@@ -290,7 +287,7 @@
               :value="dict.value"
             ></el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="协议编号" prop="acceptAgreementId">
           <el-input v-model="form.acceptAgreementId" placeholder="请输入协议编号" />
         </el-form-item>
@@ -300,7 +297,10 @@
         <el-form-item label="备注" prop="comment">
           <el-input v-model="form.comment" type="textarea" placeholder="请输入内容" />
         </el-form-item>
-        <el-divider content-position="center">附件表信息</el-divider>
+        <el-form-item label="附件" prop="scrUuid">
+          <file-upload v-model="form.scrUuid" :managementId="form.managementId" @input="upload_completed"/>
+        </el-form-item>
+        <!-- <el-divider content-position="center">附件表信息</el-divider>
         <el-row :gutter="10" class="mb8">
           <el-col :span="1.5">
             <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAddrzsrc2">添加</el-button>
@@ -308,7 +308,7 @@
           <el-col :span="1.5">
             <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDeleterzsrc2">删除</el-button>
           </el-col>
-        </el-row>
+        </el-row> -->
         <el-table :data="rzsrc2List" :row-class-name="rowrzsrc2Index" @selection-change="handlerzsrc2SelectionChange" ref="rzsrc2">
           <el-table-column type="selection" width="50" align="center" />
           <el-table-column label="序号" align="center" prop="index" width="50"/>
@@ -339,7 +339,7 @@
 
 <script>
 import { listBank, getBank, delBank, addBank, updateBank } from "@/api/bankaccept/bank";
-
+import { SnowflakeIdGenerator } from '@/utils/index'
 export default {
   name: "Bank",
   dicts: ['sys_1754491769220759600', 'sys_drawer', 'sys_acceptor'],
@@ -387,6 +387,7 @@ export default {
         entryName: null,
         comment: null,
       },
+      scrUuid: null,
       // 表单参数
       form: {},
       // 表单校验
@@ -506,25 +507,35 @@ export default {
       this.reset();
       const id = row.id || this.ids
       getBank(id).then(response => {
+        this.scrUuid = response.data.scrUuid;
         this.form = response.data;
+        this.form.scrUuid = response.data.rzsrc2List.map(i => i.url)
         this.rzsrc2List = response.data.rzsrc2List;
         this.open = true;
         this.title = "修改银行承兑汇票";
+        console.log(this.form);
       });
     },
     /** 提交按钮 */
     submitForm() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          this.form.rzsrc2List = this.rzsrc2List;
+          const data = JSON.parse(JSON.stringify(this.form))
           if (this.form.id != null) {
-            updateBank(this.form).then(response => {
+            data.scrUuid = Number(this.scrUuid);
+            console.log(JSON.stringify(data));
+            // return false;
+            updateBank(data).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            addBank(this.form).then(response => {
+            // 生成一个 uuid
+            const generator = new SnowflakeIdGenerator();
+            data.scrUuid = generator.nextId();
+            data.rzsrc2List = this.rzsrc2List;
+            addBank(data).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
               this.getList();
@@ -552,7 +563,7 @@ export default {
       let obj = {};
       obj.url = "";
       obj.projectManagementId = "";
-      obj.type = "";
+      obj.type = "rz_bank_accept_bill";
       this.rzsrc2List.push(obj);
     },
     /** 附件表删除按钮操作 */
@@ -576,6 +587,24 @@ export default {
       this.download('bankaccept/bank/export', {
         ...this.queryParams
       }, `bank_${new Date().getTime()}.xlsx`)
+    },
+    /* 上传完成的回调 */
+    upload_completed(url_string) {
+      console.log(url_string);
+      const url_list = url_string.split(',')
+      url_list.forEach(url_i => {
+        let obj = {
+          url: url_i,
+          projectManagementId: this.form.managementId,
+          type: "rz_bank_accept_bill"
+        };
+
+        // 检查this.rzsrc2List中是否已经存在具有相同url的对象
+        if (!this.rzsrc2List.some(item => item.url === obj.url)) {
+          this.rzsrc2List.push(obj);
+        }
+      });
+
     }
   }
 };
