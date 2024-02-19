@@ -118,7 +118,7 @@ export default {
   methods: {
     // 上传前校检格式和大小
     handleBeforeUpload(file) {
-
+      console.log(this.managementId);
       // 校验当前项目是否填写管理编号
       if (!this.managementId) {
         this.$modal.msgError("当前项目管理编号不能为空");
