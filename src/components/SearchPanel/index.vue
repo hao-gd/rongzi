@@ -1,7 +1,7 @@
 <template>
     <div class="search-panel">
-        <div class="search-title">
-            <svg-icon :icon-class="HeaderIcon"></svg-icon>
+        <div class="search-title mb20">
+            <svg-icon :icon-class="HeaderIcon" class-name="search-icon"></svg-icon>
             <span>{{ title }}</span>
         </div>
         <slot name="content"></slot>
@@ -33,5 +33,9 @@ export default {
     margin-left: 8px;
     font-size: 20px;
     font-weight: 600;
+}
+.search-icon {
+    font-size: 18px;
+    vertical-align: middle;
 }
 </style>

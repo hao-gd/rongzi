@@ -1,6 +1,6 @@
 <template>
-  <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
+  <div class="container">
+    <!-- <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="审核id" prop="auditId">
         <el-input
           v-model="queryParams.auditId"
@@ -47,9 +47,9 @@
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
-    </el-form>
+    </el-form> -->
 
-    <el-row :gutter="10" class="mb8">
+    <!-- <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
           type="primary"
@@ -93,48 +93,48 @@
         >导出</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
-    </el-row>
+    </el-row> -->
 
-    <el-table v-loading="loading" :data="listList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="主键id" align="center" prop="id" />
-      <el-table-column label="审核id" align="center" prop="auditId" />
-      <el-table-column label="数据唯一编号" align="center" prop="scrUuid" />
-      <el-table-column label="创建人" align="center" prop="createBy" />
-      <el-table-column label="数据json文件" align="center" prop="dataJson" />
-      <el-table-column label="父级表名" align="center" prop="tableName" />
-      <el-table-column label="审核状态：待审批、审批不通过、审批通过、已撤回" align="center" prop="auditState">
-        <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_1759514730105405400" :value="scope.row.auditState"/>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-            v-hasPermi="['rzauditlist:list:edit']"
-          >修改</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-            v-hasPermi="['rzauditlist:list:remove']"
-          >删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
+    <div class="list-content flex">
+      <div class="list-table">
+        <p class="f16 mb20" style="color: #1D2129;">提交的申请</p>
+        <el-table v-loading="loading" :data="listList" @selection-change="handleSelectionChange"
+          :header-cell-style="header_cell_style">
+          <el-table-column type="selection" width="55" align="center" />
+          <el-table-column label="序号" type="index" width="55" align="center" />
+          <el-table-column label="提交的事项" align="center" prop="tableName">
+            <template slot-scope="scope">
+              {{ precautions_obj[scope.row.tableName] }}
+            </template>
+          </el-table-column>
+          <el-table-column label="提交时间" align="center" prop="createTime" />
+          <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
+          <!-- <el-table-column label="审核id" align="center" prop="auditId" /> -->
+          <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
+          <!-- <el-table-column label="创建人" align="center" prop="createBy" /> -->
+          <!-- <el-table-column label="数据json文件" align="center" prop="dataJson" /> -->
+          <!-- <el-table-column label="父级表名" align="center" prop="tableName" /> -->
+          <el-table-column label="审批进度" align="center" prop="auditState">
+            <template slot-scope="scope">
+              <svg-icon :icon-class="scope.row.auditState"></svg-icon> <dict-tag style="display: inline-block;"
+                :options="dict.type.sys_1759514730105405400" :value="scope.row.auditState" />
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+            <template slot-scope="scope">
+              <el-button size="mini" type="text" @click="handleUpdate(scope.row)"
+                v-hasPermi="['rzauditlist:list:edit']">撤回</el-button>
+              <!-- <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"
+                v-hasPermi="['rzauditlist:list:remove']">删除</el-button> -->
+            </template>
+          </el-table-column>
+        </el-table>
+
+        <pagination v-show="total > 0" :total="total" :page.sync="queryParams.pageNum" :limit.sync="queryParams.pageSize"
+          @pagination="getList" />
+      </div>
+      <!-- <div class="list-message"></div> -->
+    </div>
 
     <!-- 添加或修改审核项目对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
@@ -153,12 +153,8 @@
         </el-form-item>
         <el-form-item label="审核状态：待审批、审批不通过、审批通过、已撤回" prop="auditState">
           <el-select v-model="form.auditState" placeholder="请选择审核状态：待审批、审批不通过、审批通过、已撤回">
-            <el-option
-              v-for="dict in dict.type.sys_1759514730105405400"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
-            ></el-option>
+            <el-option v-for="dict in dict.type.sys_1759514730105405400" :key="dict.value" :label="dict.label"
+              :value="dict.value"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -172,6 +168,7 @@
 
 <script>
 import { listList, getList, delList, addList, updateList } from "@/api/rzauditlist/list";
+import { mapGetters } from 'vuex';
 
 export default {
   name: "List",
@@ -223,8 +220,31 @@ export default {
         auditState: [
           { required: true, message: "审核状态：待审批、审批不通过、审批通过、已撤回不能为空", trigger: "change" }
         ]
+      },
+      header_cell_style: {
+        backgroundColor: '#f2f4f5',
+        color: '#000000',
+        fontSize: '14px',
+        fontWeight: 'bold',
+      },
+      //       auditStateColor: {
+      //     "1759514891045044200": "blue",
+      //     "1759514942710481000": "red",
+      //     "1759515025552179200": "green",
+      //     "1759515068883533800": "gray"
+      // },
+      precautions_obj: {
+        'rz_back_accept_bill': '银行承兑汇票申请',
+        'rz_business_accept_bill': '商业承兑汇票申请',
+        'rz_credit_letter': '信用证申请',
+        'rz_reverse_factoring': '反向保理申请'
       }
     };
+  },
+  computed: {
+    ...mapGetters([
+      'name', 'avatar'
+    ])
   },
   created() {
     this.getList();
@@ -232,6 +252,7 @@ export default {
   methods: {
     /** 查询审核项目列表 */
     getList() {
+      this.queryParams.createBy = this.name;
       this.loading = true;
       listList(this.queryParams).then(response => {
         this.listList = response.rows;
@@ -271,7 +292,7 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.id)
-      this.single = selection.length!==1
+      this.single = selection.length !== 1
       this.multiple = !selection.length
     },
     /** 新增按钮操作 */
@@ -281,13 +302,22 @@ export default {
       this.title = "添加审核项目";
     },
     /** 修改按钮操作 */
-    handleUpdate(row) {
+    async handleUpdate(row) {
       this.reset();
       const id = row.id || this.ids
-      getList(id).then(response => {
-        this.form = response.data;
-        this.open = true;
-        this.title = "修改审核项目";
+      // getList(id).then(response => {
+      //   this.form = response.data;
+      //   // this.open = true;
+      //   // this.title = "修改审核项目";
+      // });
+      const response = await getList(id);
+      this.form = response.data;
+      console.log(this.form);
+      this.form.auditState = "1759515068883533800";
+      updateList(this.form).then(response => {
+        this.$modal.msgSuccess("修改成功");
+        this.open = false;
+        this.getList();
       });
     },
     /** 提交按钮 */
@@ -313,12 +343,12 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$modal.confirm('是否确认删除审核项目编号为"' + ids + '"的数据项？').then(function() {
+      this.$modal.confirm('是否确认删除审核项目编号为"' + ids + '"的数据项？').then(function () {
         return delList(ids);
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("删除成功");
-      }).catch(() => {});
+      }).catch(() => { });
     },
     /** 导出按钮操作 */
     handleExport() {
@@ -329,3 +359,32 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.container {
+  padding: 10px;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.list-content {
+  background: #f5f9fa;
+  display: flex;
+}
+
+.list-table {
+  background: #ffffff;
+  // flex: 0.7;
+  flex: 1;
+  margin-right: 20px;
+  border-radius: 4px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.list-message {
+  flex: 0.3;
+  background: #ffffff;
+  border-radius: 4px;
+}
+</style>

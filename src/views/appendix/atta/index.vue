@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
+    <!-- <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="url地址" prop="url">
         <el-input
           v-model="queryParams.url"
@@ -37,88 +37,114 @@
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
-    </el-form>
+    </el-form> -->
 
-    <el-row :gutter="10" class="mb8">
+
+    <search-panel HeaderIcon="FundingSharing" title="融资分享区">
+      <el-form slot="content" :model="queryParams" ref="queryForm" size="small" label-position="left" v-show="showSearch" label-width="120px">
+        <!-- 第一行：包含三个表单项 -->
+        <el-row :gutter="20">
+          <el-col :span="8">
+            <el-form-item label="管理编号" prop="projectManagementId">
+              <el-input v-model="queryParams.projectManagementId" placeholder="请输入各个项目管理编号" clearable
+                @keyup.enter.native="handleQuery"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="关键字" prop="url">
+              <el-input v-model="queryParams.url" placeholder="请输入关键字" clearable
+                @keyup.enter.native="handleQuery"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="种类" prop="type">
+              <!-- <el-input v-model="queryParams.type" placeholder="请输入种类筛选：下拉" clearable
+              @keyup.enter.native="handleQuery"></el-input> -->
+              <el-select v-model="queryParams.type" clearable placeholder="请选择">
+                <el-option v-for="item in tooGens" :key="item.tableName" :label="item.tableComment"
+                  :value="item.tableName">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <!-- 第二行：包含搜索和重置按钮，这里使用了一个 el-col 来包裹按钮，您也可以根据需要调整按钮的布局 -->
+        <el-row :gutter="20">
+          <el-col :span="24">
+            <div style="display: flex; justify-content: end;">
+              <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+              <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+            </div>
+          </el-col>
+        </el-row>
+      </el-form>
+    </search-panel>
+
+    <el-divider class="mt20 mb20"></el-divider>
+
+    <el-row :gutter="10" class="mb8" type="flex" justify="end">
       <el-col :span="1.5">
-        <el-button
-          type="primary"
-          plain
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-          v-hasPermi="['appendix:atta:add']"
-        >新增</el-button>
+        <el-button type="primary" plain icon="el-icon-refresh-right" size="mini" @click="getList"
+          v-hasPermi="['appendix:atta:add']">刷新</el-button>
+      </el-col>
+      <!-- <el-col :span="1.5">
+        <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
+          v-hasPermi="['appendix:atta:add']">新增</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button
-          type="success"
-          plain
-          icon="el-icon-edit"
-          size="mini"
-          :disabled="single"
-          @click="handleUpdate"
-          v-hasPermi="['appendix:atta:edit']"
-        >修改</el-button>
+        <el-button type="success" plain icon="el-icon-edit" size="mini" :disabled="single" @click="handleUpdate"
+          v-hasPermi="['appendix:atta:edit']">修改</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button
-          type="danger"
-          plain
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-          v-hasPermi="['appendix:atta:remove']"
-        >删除</el-button>
+        <el-button type="danger" plain icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete"
+          v-hasPermi="['appendix:atta:remove']">删除</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button
-          type="warning"
-          plain
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-          v-hasPermi="['appendix:atta:export']"
-        >导出</el-button>
+        <el-button type="warning" plain icon="el-icon-download" size="mini" @click="handleExport"
+          v-hasPermi="['appendix:atta:export']">导出</el-button>
       </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar> -->
     </el-row>
 
-    <el-table v-loading="loading" :data="attaList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="资源id主键" align="center" prop="id" />
-      <el-table-column label="url地址" align="center" prop="url" />
-      <el-table-column label="数据唯一编号" align="center" prop="scrUuid" />
-      <el-table-column label="各个项目管理编号" align="center" prop="projectManagementId" />
-      <el-table-column label="种类筛选：下拉" align="center" prop="type" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+    <el-table v-loading="loading" :data="attaList" @selection-change="handleSelectionChange"
+      :header-cell-style="header_cell_style">
+      <el-table-column fixed="left" type="selection" width="55" align="center" />
+      <!-- <el-table-column label="资源id主键" align="center" prop="id" /> -->
+      <!-- <el-table-column label="url地址" align="center" prop="url" /> -->
+      <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
+      <el-table-column label="管理编号" align="center" prop="projectManagementId" />
+      <el-table-column label="上传人" align="center" prop="createBy" />
+      <el-table-column label="上传时间" align="center" prop="createTime" />
+      <el-table-column label="种类" align="center" prop="type">
         <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-            v-hasPermi="['appendix:atta:edit']"
-          >修改</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-            v-hasPermi="['appendix:atta:remove']"
-          >删除</el-button>
+          {{ getType(scope.row.type) }}
+        </template>
+      </el-table-column>
+      <el-table-column label="文件名" align="center" prop="url">
+        <template slot-scope="scope">
+          {{ extractAndCleanFileName(scope.row.url) }}
+        </template>
+      </el-table-column>
+      <el-table-column fixed="right" label="操作" align="center" class-name="small-padding fixed-width">
+        <template slot-scope="scope">
+          <!-- <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)"
+            v-hasPermi="['appendix:atta:edit']">修改</el-button>
+          <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"
+            v-hasPermi="['appendix:atta:remove']">删除</el-button> -->
+
+          <!-- <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"
+            v-hasPermi="['appendix:atta:remove']">下载</el-button> -->
+
+          <el-link :href="`${baseUrl}${scope.row.url}`" :underline="false" target="_blank">
+            <span class="el-icon-document"> 下载 </span>
+          </el-link>
         </template>
       </el-table-column>
     </el-table>
-    
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
+
+    <pagination v-show="total > 0" :total="total" :page.sync="queryParams.pageNum" :limit.sync="queryParams.pageSize"
+      @pagination="getList" />
 
     <!-- 添加或修改附件表对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
@@ -146,11 +172,22 @@
 
 <script>
 import { listAtta, getAtta, delAtta, addAtta, updateAtta } from "@/api/appendix/atta";
-
+import { listTable, previewTable, delTable, genCode, synchDb } from "@/api/tool/gen";
+import SearchPanel from '@/components/SearchPanel/index.vue'
 export default {
   name: "Atta",
+  components: {
+    SearchPanel
+  },
   data() {
     return {
+      header_cell_style: {
+        backgroundColor: '#f2f4f5',
+        color: '#000000',
+        fontSize: '14px',
+        fontWeight: 'bold',
+      },
+      baseUrl: process.env.VUE_APP_BASE_API,
       // 遮罩层
       loading: true,
       // 选中数组
@@ -182,13 +219,29 @@ export default {
       form: {},
       // 表单校验
       rules: {
-      }
+      },
+      tooGens: []
     };
   },
   created() {
     this.getList();
+    this.getToolGenList();
   },
   methods: {
+    /** 查询表集合 */
+    getToolGenList() {
+      this.loading = true;
+      const search = {
+        pageNum: 1,
+        pageSize: 10000,
+      }
+      listTable(this.addDateRange(search)).then(response => {
+        this.tooGens = response.rows;
+        // this.total = response.total;
+        this.loading = false;
+      }
+      );
+    },
     /** 查询附件表列表 */
     getList() {
       this.loading = true;
@@ -197,6 +250,34 @@ export default {
         this.total = response.total;
         this.loading = false;
       });
+    },
+
+    // 获取种类
+    getType(type) {
+      const data = this.tooGens.find(i => i.tableName === type)
+      if (data) {
+        return data.tableComment;
+      } else {
+        return type;
+      }
+    },
+
+    // 分割文件的名称
+    extractAndCleanFileName(path) {
+      // 使用split方法按'/'分割路径
+      const parts = path.split('/');
+      // 使用pop方法获取数组的最后一个元素，即文件名
+      let fileName = parts.pop();
+      // 使用正则表达式去除文件名末尾的日期时间标记和可能的序列号
+      // 此正则表达式匹配以下模式：
+      // - 一串数字开始（可能的日期时间标记），后接_
+      // - 可能的另一串数字（可能的另一个日期时间标记），后接_
+      // - 可能的字母和数字的组合（可能的序列号），后接.
+      // - 文件扩展名（任意字符）
+      fileName = fileName.replace(/(_\d+)*(_[A-Za-z0-9]+)?\.[^.]+$/, '');
+      // 假设你想保留原始的文件扩展名，你可以在这里添加它回来
+      // 例如：fileName += '.xls'; // 如果你知道原始的扩展名是.xls
+      return fileName;
     },
     // 取消按钮
     cancel() {
@@ -229,7 +310,7 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.id)
-      this.single = selection.length!==1
+      this.single = selection.length !== 1
       this.multiple = !selection.length
     },
     /** 新增按钮操作 */
@@ -271,12 +352,12 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$modal.confirm('是否确认删除附件表编号为"' + ids + '"的数据项？').then(function() {
+      this.$modal.confirm('是否确认删除附件表编号为"' + ids + '"的数据项？').then(function () {
         return delAtta(ids);
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("删除成功");
-      }).catch(() => {});
+      }).catch(() => { });
     },
     /** 导出按钮操作 */
     handleExport() {

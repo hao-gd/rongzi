@@ -217,9 +217,6 @@
         <el-form-item label="商业承兑管理编号" prop="managementId">
           <el-input v-model="form.managementId" placeholder="请输入商业承兑管理编号" />
         </el-form-item>
-        <el-form-item label="数据唯一编号" prop="scrUuid">
-          <file-upload v-model="form.scrUuid"/>
-        </el-form-item>
         <el-form-item label="审核id" prop="auditId">
           <el-input v-model="form.auditId" placeholder="请输入审核id" />
         </el-form-item>
@@ -262,7 +259,7 @@
             placeholder="请选择到期日">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="到期提醒" prop="remark">
+        <!-- <el-form-item label="到期提醒" prop="remark">
           <el-select v-model="form.remark" placeholder="请选择到期提醒">
             <el-option
               v-for="dict in dict.type.sys_maturity"
@@ -271,7 +268,7 @@
               :value="dict.value"
             ></el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="合同号码" prop="contractNumber">
           <el-input v-model="form.contractNumber" placeholder="请输入合同号码" />
         </el-form-item>
@@ -288,7 +285,10 @@
         <el-form-item label="备注" prop="comment">
           <el-input v-model="form.comment" type="textarea" placeholder="请输入内容" />
         </el-form-item>
-        <el-divider content-position="center">附件表信息</el-divider>
+        <el-form-item label="附件" prop="scrUuid">
+          <file-upload v-model="form.scrUuid" :managementId="form.managementId" @input="upload_completed"/>
+        </el-form-item>
+        <!-- <el-divider content-position="center">附件表信息</el-divider>
         <el-row :gutter="10" class="mb8">
           <el-col :span="1.5">
             <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAddrzsrc2">添加</el-button>
@@ -315,7 +315,7 @@
               <el-input v-model="scope.row.type" placeholder="请输入种类筛选：下拉" />
             </template>
           </el-table-column>
-        </el-table>
+        </el-table> -->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -327,6 +327,9 @@
 
 <script>
 import { listBill, getBill, delBill, addBill, updateBill } from "@/api/business/bill";
+import { listList, getList, delList, addList, updateList } from "@/api/rzauditlist/list";
+import { mapGetters } from 'vuex';
+import { SnowflakeIdGenerator } from '@/utils/index'
 
 export default {
   name: "Bill",
@@ -374,6 +377,9 @@ export default {
         financialInstitution: null,
         comment: null,
       },
+      /* str 需要添加的 */
+      scrUuid: null,
+      /* end */
       // 表单参数
       form: {},
       // 表单校验
@@ -410,6 +416,11 @@ export default {
         ],
       }
     };
+  },
+  computed: {
+    ...mapGetters([
+      'name', 'avatar'
+    ])
   },
   created() {
     this.getList();
@@ -486,6 +497,13 @@ export default {
       this.reset();
       const id = row.id || this.ids
       getBill(id).then(response => {
+
+        /* str 需要赋值粘贴到的 */
+        this.scrUuid = response.data.scrUuid;
+        this.form = response.data;
+        this.form.scrUuid = response.data.rzsrc2List.map(i => i.url)
+        /* end */
+        
         this.form = response.data;
         this.rzsrc2List = response.data.rzsrc2List;
         this.open = true;
@@ -496,19 +514,46 @@ export default {
     submitForm() {
       this.$refs["form"].validate(valid => {
         if (valid) {
+          const data = JSON.parse(JSON.stringify(this.form))
+
           this.form.rzsrc2List = this.rzsrc2List;
           if (this.form.id != null) {
-            updateBill(this.form).then(response => {
+            data.scrUuid = Number(this.scrUuid);
+            console.log(JSON.stringify(data));
+            updateBill(data).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            addBill(this.form).then(response => {
+            // addBill(this.form).then(response => {
+            //   this.$modal.msgSuccess("新增成功");
+            //   this.open = false;
+            //   this.getList();
+            // });
+            const generator = new SnowflakeIdGenerator();
+            data.scrUuid = generator.nextId();
+            data.rzsrc2List = this.rzsrc2List;
+
+            data.createBy = this.name;
+
+            const rzaudit_data = {
+                  "id": null,
+                  "auditId": String(generator.nextId()).substring(0, 6),
+                  "scrUuid": data.scrUuid,
+                  "createBy": this.name,
+                  "createTime": null,
+                  "dataJson": JSON.stringify(data),
+                  "tableName": "rz_business_accept_bill",
+                  "auditState": "1759514891045044200"
+              }
+
+
+            addList(rzaudit_data).then(res => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
-              this.getList();
-            });
+
+            })
           }
         }
       });
@@ -556,6 +601,24 @@ export default {
       this.download('business/bill/export', {
         ...this.queryParams
       }, `bill_${new Date().getTime()}.xlsx`)
+    },
+    /* 上传完成的回调 */
+    upload_completed(url_string) {
+      console.log(url_string);
+      const url_list = url_string.split(',')
+      url_list.forEach(url_i => {
+        let obj = {
+          url: url_i,
+          projectManagementId: this.form.managementId,
+          type: "rz_business_accept_bill"
+        };
+
+        // 检查this.rzsrc2List中是否已经存在具有相同url的对象
+        if (!this.rzsrc2List.some(item => item.url === obj.url)) {
+          this.rzsrc2List.push(obj);
+        }
+      });
+
     }
   }
 };
