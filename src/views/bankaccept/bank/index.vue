@@ -82,87 +82,87 @@
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form> -->
+    <search-panel HeaderIcon="bank" title="银行承兑汇票">
 
+      <el-form slot="content" :model="queryParams" ref="queryForm" size="small" v-show="showSearch" label-width="100px">
+        <!-- 第一组表单项 -->
+        <el-row :gutter="20">
+          <el-col :span="8">
+            <el-form-item label="管理编号" prop="managementId">
+              <el-input v-model="queryParams.managementId" placeholder="请输入管理编号" clearable
+                @keyup.enter.native="handleQuery"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="出票人" prop="drawer">
+              <el-select v-model="queryParams.drawer" placeholder="请选择出票人" clearable>
+                <el-option v-for="dict in dict.type.sys_drawer" :key="dict.value" :label="dict.label"
+                  :value="dict.value"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="收票人" prop="payee">
+              <el-select v-model="queryParams.payee" placeholder="请选择收票人" clearable>
+                <el-option v-for="dict in dict.type.sys_1754491769220759600" :key="dict.value" :label="dict.label"
+                  :value="dict.value"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
 
-    <el-form :model="queryParams" ref="queryForm" size="small" v-show="showSearch" label-width="100px">
-      <!-- 第一组表单项 -->
-      <el-row :gutter="20">
-        <el-col :span="8">
-          <el-form-item label="管理编号" prop="managementId">
-            <el-input v-model="queryParams.managementId" placeholder="请输入管理编号" clearable
-              @keyup.enter.native="handleQuery"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="出票人" prop="drawer">
-            <el-select v-model="queryParams.drawer" placeholder="请选择出票人" clearable>
-              <el-option v-for="dict in dict.type.sys_drawer" :key="dict.value" :label="dict.label"
-                :value="dict.value"></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="收票人" prop="payee">
-            <el-select v-model="queryParams.payee" placeholder="请选择收票人" clearable>
-              <el-option v-for="dict in dict.type.sys_1754491769220759600" :key="dict.value" :label="dict.label"
-                :value="dict.value"></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
+        <!-- 第二组表单项 -->
+        <el-row :gutter="20">
+          <el-col :span="8">
+            <el-form-item label="承兑人" prop="financialInstitution">
+              <el-select v-model="queryParams.financialInstitution" placeholder="请选择承兑人（金融机构）" clearable>
+                <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
+                  :value="dict.value"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="出票日期">
+              <el-date-picker v-model="daterangeDraftDate" style="width: 100%" value-format="yyyy-MM-dd" type="daterange"
+                range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="汇票到期日" prop="dueDate">
+              <el-date-picker clearable v-model="queryParams.dueDate" type="date" value-format="yyyy-MM-dd"
+                placeholder="请选择汇票到期日"></el-date-picker>
+            </el-form-item>
+          </el-col>
+        </el-row>
 
-      <!-- 第二组表单项 -->
-      <el-row :gutter="20">
-        <el-col :span="8">
-          <el-form-item label="承兑人" prop="financialInstitution">
-            <el-select v-model="queryParams.financialInstitution" placeholder="请选择承兑人（金融机构）" clearable>
-              <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
-                :value="dict.value"></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="出票日期">
-            <el-date-picker v-model="daterangeDraftDate" style="width: 100%" value-format="yyyy-MM-dd" type="daterange"
-              range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="汇票到期日" prop="dueDate">
-            <el-date-picker clearable v-model="queryParams.dueDate" type="date" value-format="yyyy-MM-dd"
-              placeholder="请选择汇票到期日"></el-date-picker>
-          </el-form-item>
-        </el-col>
-      </el-row>
+        <!-- 第三组表单项 -->
+        <el-row :gutter="20">
+          <el-col :span="8">
+            <el-form-item label="项目名称" prop="entryName">
+              <el-input v-model="queryParams.entryName" placeholder="请输入项目名称" clearable
+                @keyup.enter.native="handleQuery"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="到期提醒" prop="remark">
+              <el-select v-model="queryParams.remark" placeholder="请选择到期提醒" clearable>
+                <el-option v-for="dict in dict.type.sys_maturity" :key="dict.value" :label="dict.label"
+                  :value="dict.value"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item class="flex" style="display: flex; justify-content: flex-end;">
+              <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+              <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+            </el-form-item>
+            <!-- 如果这一行只有两个表单项，您可以选择添加一个空的 el-col 作为占位，或者不添加，让这两个表单项各占一半宽度 -->
+            <!-- 搜索和重置按钮可以单独占据一行 -->
+          </el-col>
+        </el-row>
 
-      <!-- 第三组表单项 -->
-      <el-row :gutter="20">
-        <el-col :span="8">
-          <el-form-item label="项目名称" prop="entryName">
-            <el-input v-model="queryParams.entryName" placeholder="请输入项目名称" clearable
-              @keyup.enter.native="handleQuery"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="到期提醒" prop="remark">
-            <el-select v-model="queryParams.remark" placeholder="请选择到期提醒" clearable>
-              <el-option v-for="dict in dict.type.sys_maturity" :key="dict.value" :label="dict.label"
-                :value="dict.value"></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item class="flex" style="display: flex; justify-content: flex-end;">
-            <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-            <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-          </el-form-item>
-          <!-- 如果这一行只有两个表单项，您可以选择添加一个空的 el-col 作为占位，或者不添加，让这两个表单项各占一半宽度 -->
-          <!-- 搜索和重置按钮可以单独占据一行 -->
-        </el-col>
-      </el-row>
-
-      <!-- 搜索和重置按钮 -->
-      <!-- <el-row :gutter="20">
+        <!-- 搜索和重置按钮 -->
+        <!-- <el-row :gutter="20">
         <el-col :span="24">
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -170,12 +170,13 @@
           </el-form-item>
         </el-col>
       </el-row> -->
-    </el-form>
+      </el-form>
+    </search-panel>
     <el-divider class="mt20 mb20"></el-divider>
     <el-row type="flex" :gutter="10" class="mb8" justify="end">
       <el-col :span="1.5">
         <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
-          v-hasPermi="['bankaccept:bank:add']">新增</el-button>
+          v-hasPermi="['bankaccept:bank:add']">新 建</el-button>
       </el-col>
       <!-- <el-col :span="1.5">
         <el-button type="success" plain icon="el-icon-edit" size="mini" :disabled="single" @click="handleUpdate"
@@ -183,7 +184,7 @@
       </el-col> -->
       <el-col :span="1.5">
         <el-button type="danger" plain icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete"
-          v-hasPermi="['bankaccept:bank:remove']">删除</el-button>
+          v-hasPermi="['bankaccept:bank:remove']">删 除</el-button>
       </el-col>
       <!-- <el-col :span="1.5">
         <el-button type="warning" plain icon="el-icon-download" size="mini" @click="handleExport"
@@ -457,11 +458,14 @@ import { listList, getList, delList, addList, updateList } from "@/api/rzauditli
 import { mapGetters } from 'vuex';
 import moment from 'moment'
 import CreateSuccess from '@/components/createSuccess/index.vue'
+import SearchPanel from '@/components/SearchPanel/index.vue'
+
 export default {
   name: "Bank",
   dicts: ['sys_1754491769220759600', 'sys_drawer', 'sys_acceptor'],
   components: {
-    CreateSuccess
+    CreateSuccess,
+    SearchPanel
   },
   data() {
     return {
@@ -569,6 +573,8 @@ export default {
   },
   created() {
     this.getList();
+    this.created_successfully = false;
+    this.isEditable = true;
   },
   mounted() {
     console.log(this.name, this.avatar);
@@ -653,10 +659,14 @@ export default {
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
+      this.isEditable = false;
       this.reset();
       const id = row.id || this.ids
       getBank(id).then(response => {
         /* str 需要赋值粘贴到的 */
+        response.data.rzsrc2List.forEach(i => {
+          i.id = null;
+        })
         this.scrUuid = response.data.scrUuid;
         this.form = response.data;
         this.form.scrUuid = response.data.rzsrc2List.map(i => i.url)
@@ -789,9 +799,4 @@ export default {
   }
 };
 </script>
-<style lang="scss" scoped>
-.appendix {
-  box-sizing: border-box;
-  background: #f7f8fa;
-}
-</style>
+<style lang="scss" scoped></style>
