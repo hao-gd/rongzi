@@ -1,7 +1,9 @@
 <template>
   <div class="upload-file">
     <el-upload
+      :disabled="disabled"
       multiple
+      list-type="picture-card"
       :action="uploadFileUrl"
       :before-upload="handleBeforeUpload"
       :file-list="fileList"
@@ -14,8 +16,9 @@
       class="upload-file-uploader"
       ref="fileUpload"
     >
+    <i class="el-icon-plus"></i>
       <!-- 上传按钮 -->
-      <el-button size="mini" type="primary">选取文件</el-button>
+      <!-- <el-button size="mini" type="primary">选取文件</el-button> -->
       <!-- 上传提示 -->
       <div class="el-upload__tip" slot="tip" v-if="showTip">
         请上传
@@ -72,6 +75,10 @@ export default {
       type: String,
       default: ""
     },
+    disabled: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {

@@ -193,7 +193,7 @@
     </el-row>
 
     <el-table v-loading="loading" :data="bankList" @selection-change="handleSelectionChange"
-    :header-cell-style="header_cell_style">
+      :header-cell-style="header_cell_style">
       <el-table-column fixed="left" type="selection" width="55" align="center" />
       <el-table-column label="管理编号" align="center" prop="managementId" />
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
@@ -224,7 +224,7 @@
           <span>{{ parseTime(scope.row.dueDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="汇票到期提醒" width="180"  align="center" prop="remark">
+      <el-table-column label="汇票到期提醒" width="180" align="center" prop="remark">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_maturity" :value="scope.row.remark" />
         </template>
@@ -247,8 +247,8 @@
       @pagination="getList" />
 
     <!-- 添加或修改银行承兑汇票对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+    <el-dialog :title="title" :visible.sync="open" width="60%" append-to-body>
+      <!-- <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="管理编号" prop="managementId">
           <el-input v-model="form.managementId" placeholder="请输入银行承兑管理编号" />
         </el-form-item>
@@ -284,7 +284,7 @@
           <el-date-picker clearable v-model="form.dueDate" type="date" value-format="yyyy-MM-dd" placeholder="请选择到期日">
           </el-date-picker>
         </el-form-item>
-        <!-- <el-form-item label="到期提醒" prop="remark">
+        <el-form-item label="到期提醒" prop="remark">
           <el-select v-model="form.remark" placeholder="请选择到期提醒">
             <el-option
               v-for="dict in dict.type.sys_maturity"
@@ -293,7 +293,7 @@
               :value="dict.value"
             ></el-option>
           </el-select>
-        </el-form-item> -->
+        </el-form-item>
         <el-form-item label="协议编号" prop="acceptAgreementId">
           <el-input v-model="form.acceptAgreementId" placeholder="请输入协议编号" />
         </el-form-item>
@@ -306,7 +306,7 @@
         <el-form-item label="附件" prop="scrUuid">
           <file-upload v-model="form.scrUuid" :managementId="form.managementId" @input="upload_completed" />
         </el-form-item>
-        <!-- <el-divider content-position="center">附件表信息</el-divider>
+        <el-divider content-position="center">附件表信息</el-divider>
         <el-row :gutter="10" class="mb8">
           <el-col :span="1.5">
             <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAddrzsrc2">添加</el-button>
@@ -314,8 +314,8 @@
           <el-col :span="1.5">
             <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDeleterzsrc2">删除</el-button>
           </el-col>
-        </el-row> -->
-        <!-- <el-table :data="rzsrc2List" :row-class-name="rowrzsrc2Index" @selection-change="handlerzsrc2SelectionChange" ref="rzsrc2">
+        </el-row>
+        <el-table :data="rzsrc2List" :row-class-name="rowrzsrc2Index" @selection-change="handlerzsrc2SelectionChange" ref="rzsrc2">
           <el-table-column type="selection" width="50" align="center" />
           <el-table-column label="序号" align="center" prop="index" width="50"/>
           <el-table-column label="url地址" prop="url" width="150">
@@ -333,12 +333,119 @@
               <el-input v-model="scope.row.type" placeholder="请输入种类筛选：下拉" />
             </template>
           </el-table-column>
-        </el-table> -->
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
+        </el-table>
+      </el-form> -->
+      <el-divider class="no_mt mb20"></el-divider>
+
+      <div v-if="created_successfully == false">
+        <div v-if="title === '修改银行承兑汇票'" class="modeify-btn" style="display: flex; justify-content: end;">
+          <el-button type="primary" @click="toggleEdit">编 辑</el-button>
+          <el-button @click="cancel">删 除</el-button>
+        </div>
+
+        <el-form ref="form" :model="form" :rules="rules" label-width="80px" label-position="top">
+          <el-row :gutter="20">
+            <el-col :span="8">
+              <el-form-item label="管理编号" prop="managementId">
+                <el-input :readonly="!isEditable" v-model="form.managementId" placeholder="请输入银行承兑管理编号" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="出票人" prop="drawer">
+                <el-select :disabled="!isEditable" v-model="form.drawer" placeholder="请选择出票人">
+                  <el-option v-for="dict in dict.type.sys_drawer" :key="dict.value" :label="dict.label"
+                    :value="dict.value"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="收票人" prop="payee">
+                <el-select :disabled="!isEditable" v-model="form.payee" placeholder="请选择收票人">
+                  <el-option v-for="dict in dict.type.sys_1754491769220759600" :key="dict.value" :label="dict.label"
+                    :value="dict.value"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <el-row :gutter="20">
+
+            <el-col :span="8">
+              <el-form-item label="金融机构" prop="financialInstitution">
+                <el-select :disabled="!isEditable" v-model="form.financialInstitution" placeholder="请选择金融机构">
+                  <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
+                    :value="dict.value"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="出票金额" prop="invoiceAmount">
+                <el-input :readonly="!isEditable" v-model="form.invoiceAmount" placeholder="请输入出票金额" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="出票日期" prop="draftDate">
+                <el-date-picker :disabled="!isEditable" clearable v-model="form.draftDate" type="date"
+                  value-format="yyyy-MM-dd" placeholder="请选择出票日期">
+                </el-date-picker>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <el-row :gutter="20">
+
+            <el-col :span="8">
+              <el-form-item label="到期日" prop="dueDate">
+                <el-date-picker :disabled="!isEditable" clearable v-model="form.dueDate" type="date"
+                  value-format="yyyy-MM-dd" placeholder="请选择到期日">
+                </el-date-picker>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="协议编号" prop="acceptAgreementId">
+                <el-input :readonly="!isEditable" v-model="form.acceptAgreementId" placeholder="请输入协议编号" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="项目名称" prop="entryName">
+                <el-input :readonly="!isEditable" v-model="form.entryName" placeholder="请输入项目名称" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+
+          <el-row>
+            <el-col :span="24">
+              <el-form-item label="备注" prop="comment">
+                <el-input :readonly="!isEditable" v-model="form.comment" maxlength="200" type="textarea" :rows="4"
+                  placeholder="请输入备注信息，最多不超过200字" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <el-row>
+            <el-col :span="24">
+              <el-form-item label="附件" prop="scrUuid">
+                <div class="p20 appendix">
+                  <file-upload :disabled="!isEditable" v-model="form.scrUuid" :managementId="form.managementId"
+                    @input="upload_completed" :fileSize="10000" :limit="1000" :isShowTip="false" />
+                </div>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
+
+        <div slot="footer" class="dialog-footer" style="display: flex; justify-content: center;">
+          <el-button type="primary" @click="submitForm">保 存</el-button>
+          <el-button @click="cancel">重 置</el-button>
+        </div>
       </div>
+
+
+      <div v-else class="flex">
+        <CreateSuccess @close-dialog="data => open = data" @create-again="create_again"></CreateSuccess>
+      </div>
+
     </el-dialog>
   </div>
 </template>
@@ -349,12 +456,17 @@ import { SnowflakeIdGenerator } from '@/utils/index'
 import { listList, getList, delList, addList, updateList } from "@/api/rzauditlist/list";
 import { mapGetters } from 'vuex';
 import moment from 'moment'
-
+import CreateSuccess from '@/components/createSuccess/index.vue'
 export default {
   name: "Bank",
   dicts: ['sys_1754491769220759600', 'sys_drawer', 'sys_acceptor'],
+  components: {
+    CreateSuccess
+  },
   data() {
     return {
+      created_successfully: true,
+      isEditable: false,
       header_cell_style: {
         backgroundColor: '#f2f4f5',
         color: '#000000',
@@ -447,7 +559,7 @@ export default {
         entryName: [
           { required: true, message: "项目名称不能为空", trigger: "blur" }
         ],
-      }
+      },
     };
   },
   computed: {
@@ -462,6 +574,14 @@ export default {
     console.log(this.name, this.avatar);
   },
   methods: {
+    /* 再次创建 */
+    create_again() {
+      this.reset();
+      this.created_successfully = false;
+    },
+    toggleEdit() {
+      this.isEditable = !this.isEditable;
+    },
     /** 查询银行承兑汇票列表 */
     getList() {
       this.loading = true;
@@ -527,7 +647,9 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加银行承兑汇票";
+      this.created_successfully = false;
+      this.isEditable = true;
+      this.title = "新建银行承兑汇票";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
@@ -590,8 +712,9 @@ export default {
 
 
             addList(rzaudit_data).then(res => {
-              this.$modal.msgSuccess("新增成功");
-              this.open = false;
+              this.created_successfully = true;
+              // this.$modal.msgSuccess("新增成功");
+              // this.open = false;
 
             })
           }
@@ -666,3 +789,9 @@ export default {
   }
 };
 </script>
+<style lang="scss" scoped>
+.appendix {
+  box-sizing: border-box;
+  background: #f7f8fa;
+}
+</style>
