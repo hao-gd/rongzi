@@ -490,7 +490,7 @@ export default {
               "createBy": this.name,
               "createTime": null,
               "dataJson": JSON.stringify(data),
-              "tableName": "rz_back_accept_bill",
+              "tableName": "rz_after_loan",
               "auditState": "1759514891045044200"
             }
 

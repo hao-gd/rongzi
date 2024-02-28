@@ -49,70 +49,70 @@
       </el-form-item>
     </el-form> -->
 
-
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="false" v-show="showSearch" label-width="100px">
-      <el-row :gutter="20">
-        <el-col :span="8">
-          <el-form-item label="管理编号" prop="managementId">
-            <el-input v-model="queryParams.managementId" placeholder="请输入管理编号" clearable
-              @keyup.enter.native="handleQuery" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="信用证号码" prop="creditNumber">
-            <el-input v-model="queryParams.creditNumber" placeholder="请输入信用证号码" clearable
-              @keyup.enter.native="handleQuery" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="开证日期">
-            <el-date-picker v-model="daterangeIssuingDate" style="width: 100%" value-format="yyyy-MM-dd" type="daterange"
-              range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="20">
-        <el-col :span="8">
-          <el-form-item label="有效日期">
-            <el-date-picker v-model="daterangeEffectiveDate" style="width: 100%" value-format="yyyy-MM-dd"
-              type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="开证申请人" prop="applicant">
-            <el-select v-model="queryParams.applicant" placeholder="请选择开证申请人" clearable>
-              <el-option v-for="dict in dict.type.sys_1757265915323351000" :key="dict.value" :label="dict.label"
-                :value="dict.value" />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="收益人" prop="beneficiary">
-            <el-select v-model="queryParams.beneficiary" placeholder="请选择收益人" clearable>
-              <el-option v-for="dict in dict.type.sys_1757265828501258200" :key="dict.value" :label="dict.label"
-                :value="dict.value" />
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="20">
-        <el-col :span="8">
-          <el-form-item label="金融机构" prop="financialInstitution">
-            <el-select v-model="queryParams.financialInstitution" placeholder="请选择金融机构" clearable>
-              <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
-                :value="dict.value" />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="16">
-          <el-form-item style="display: flex; justify-content: flex-end;">
-            <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">查 询</el-button>
-            <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重 置</el-button>
-          </el-form-item>
-        </el-col>
-      </el-row>
-    </el-form>
-
+    <search-panel HeaderIcon="credit" title="信用证">
+      <el-form label-position="left" :model="queryParams" ref="queryForm" size="small" :inline="false" v-show="showSearch" label-width="100px">
+        <el-row :gutter="20">
+          <el-col :span="8">
+            <el-form-item label="管理编号" prop="managementId">
+              <el-input v-model="queryParams.managementId" placeholder="请输入管理编号" clearable
+                @keyup.enter.native="handleQuery" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="信用证号码" prop="creditNumber">
+              <el-input v-model="queryParams.creditNumber" placeholder="请输入信用证号码" clearable
+                @keyup.enter.native="handleQuery" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="开证日期">
+              <el-date-picker v-model="daterangeIssuingDate" style="width: 100%" value-format="yyyy-MM-dd"
+                type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="8">
+            <el-form-item label="有效日期">
+              <el-date-picker v-model="daterangeEffectiveDate" style="width: 100%" value-format="yyyy-MM-dd"
+                type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="开证申请人" prop="applicant">
+              <el-select v-model="queryParams.applicant" placeholder="请选择开证申请人" clearable>
+                <el-option v-for="dict in dict.type.sys_1757265915323351000" :key="dict.value" :label="dict.label"
+                  :value="dict.value" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="收益人" prop="beneficiary">
+              <el-select v-model="queryParams.beneficiary" placeholder="请选择收益人" clearable>
+                <el-option v-for="dict in dict.type.sys_1757265828501258200" :key="dict.value" :label="dict.label"
+                  :value="dict.value" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="8">
+            <el-form-item label="金融机构" prop="financialInstitution">
+              <el-select v-model="queryParams.financialInstitution" placeholder="请选择金融机构" clearable>
+                <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
+                  :value="dict.value" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="16">
+            <el-form-item style="display: flex; justify-content: flex-end;">
+              <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">查 询</el-button>
+              <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重 置</el-button>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+    </search-panel>
 
     <el-divider class="mt20 mb20"></el-divider>
     <el-row type="flex" :gutter="10" class="mb8" justify="end">
@@ -305,14 +305,14 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="开证日期" prop="issuingDate">
-                <el-date-picker :disabled="!isEditable" clearable v-model="form.issuingDate" type="date" value-format="yyyy-MM-dd"
-                  placeholder="请选择开证日期"></el-date-picker>
+                <el-date-picker :disabled="!isEditable" clearable v-model="form.issuingDate" type="date"
+                  value-format="yyyy-MM-dd" placeholder="请选择开证日期"></el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="有效日期" prop="effectiveDate">
-                <el-date-picker :disabled="!isEditable" clearable v-model="form.effectiveDate" type="date" value-format="yyyy-MM-dd"
-                  placeholder="请选择有效日期"></el-date-picker>
+                <el-date-picker :disabled="!isEditable" clearable v-model="form.effectiveDate" type="date"
+                  value-format="yyyy-MM-dd" placeholder="请选择有效日期"></el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -384,11 +384,14 @@ import { mapGetters } from 'vuex';
 import { SnowflakeIdGenerator } from '@/utils/index'
 import moment from 'moment'
 import CreateSuccess from '@/components/createSuccess/index.vue'
+import SearchPanel from '@/components/SearchPanel/index.vue'
+
 export default {
   name: "Letter",
   dicts: ['sys_1757265915323351000', 'sys_1757265828501258200', 'sys_acceptor'],
   components: {
-    CreateSuccess
+    CreateSuccess,
+    SearchPanel
   },
   data() {
     return {

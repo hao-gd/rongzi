@@ -55,8 +55,8 @@
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form> -->
-
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="false" v-show="showSearch" label-width="100px">
+    <search-panel HeaderIcon="reverse" title="反向保理">
+    <el-form label-position="left" :model="queryParams" ref="queryForm" size="small" :inline="false" v-show="showSearch" label-width="100px">
       <el-row :gutter="20">
         <el-col :span="8">
           <el-form-item label="管理编号" prop="managementId">
@@ -123,6 +123,7 @@
         </el-col>
       </el-row>
     </el-form>
+  </search-panel>
 
 
     <el-divider class="mt20 mb20"></el-divider>
@@ -408,11 +409,14 @@ import { SnowflakeIdGenerator } from '@/utils/index';
 
 import moment from 'moment'
 import CreateSuccess from '@/components/createSuccess/index.vue'
+import SearchPanel from '@/components/SearchPanel/index.vue'
+
 export default {
   name: "Factoring",
   dicts: ['sys_acceptor', 'sys_1757288852172570600', 'sys_1757271666666242000'],
   components: {
-    CreateSuccess
+    CreateSuccess,
+    SearchPanel
   },
   data() {
     return {

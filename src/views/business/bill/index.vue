@@ -98,70 +98,72 @@
       </el-form-item>
     </el-form> -->
 
+    <search-panel HeaderIcon="business" title="商业承兑汇票">
+      <el-form  :model="queryParams" ref="queryForm" label-position="left" size="small" :inline="false" v-show="showSearch"
+        label-width="100px">
+        <el-row :gutter="20">
+          <el-col :span="8">
+            <el-form-item label="管理编号" prop="managementId">
+              <el-input v-model="queryParams.managementId" placeholder="请输入管理编号" clearable
+                @keyup.enter.native="handleQuery" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="付款人" prop="payer">
+              <el-select v-model="queryParams.payer" placeholder="请选择付款人" clearable>
+                <el-option v-for="dict in dict.type.sys_1757235323403763700" :key="dict.value" :label="dict.label"
+                  :value="dict.value" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="收款人" prop="payee">
+              <el-select v-model="queryParams.payee" placeholder="请选择收款人" clearable>
+                <el-option v-for="dict in dict.type.sys_1757235466651828200" :key="dict.value" :label="dict.label"
+                  :value="dict.value" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="8">
+            <el-form-item label="出票日期">
+              <el-date-picker v-model="daterangeDraftDate" style="width: 100%" value-format="yyyy-MM-dd" type="daterange"
+                range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="汇票到期日" prop="dueDate">
+              <el-date-picker clearable v-model="queryParams.dueDate" type="date" value-format="yyyy-MM-dd"
+                placeholder="请选择汇票到期日" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="交易合同号码" prop="contractNumber">
+              <el-input v-model="queryParams.contractNumber" placeholder="请输入合同号码" clearable
+                @keyup.enter.native="handleQuery" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="8">
+            <el-form-item label="金融机构" prop="financialInstitution">
+              <el-select v-model="queryParams.financialInstitution" placeholder="请选择金融机构" clearable>
+                <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
+                  :value="dict.value" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="16">
+            <el-form-item style="display: flex; justify-content: flex-end;">
+              <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">查 询</el-button>
+              <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重 置</el-button>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+    </search-panel>
 
-    <el-form :model="queryParams" ref="queryForm" label-position="left" size="small" :inline="false" v-show="showSearch"
-      label-width="100px">
-      <el-row :gutter="20">
-        <el-col :span="8">
-          <el-form-item label="管理编号" prop="managementId">
-            <el-input v-model="queryParams.managementId" placeholder="请输入管理编号" clearable
-              @keyup.enter.native="handleQuery" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="付款人" prop="payer">
-            <el-select v-model="queryParams.payer" placeholder="请选择付款人" clearable>
-              <el-option v-for="dict in dict.type.sys_1757235323403763700" :key="dict.value" :label="dict.label"
-                :value="dict.value" />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="收款人" prop="payee">
-            <el-select v-model="queryParams.payee" placeholder="请选择收款人" clearable>
-              <el-option v-for="dict in dict.type.sys_1757235466651828200" :key="dict.value" :label="dict.label"
-                :value="dict.value" />
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="20">
-        <el-col :span="8">
-          <el-form-item label="出票日期">
-            <el-date-picker v-model="daterangeDraftDate" style="width: 100%" value-format="yyyy-MM-dd" type="daterange"
-              range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="汇票到期日" prop="dueDate">
-            <el-date-picker clearable v-model="queryParams.dueDate" type="date" value-format="yyyy-MM-dd"
-              placeholder="请选择汇票到期日" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="交易合同号码" prop="contractNumber">
-            <el-input v-model="queryParams.contractNumber" placeholder="请输入合同号码" clearable
-              @keyup.enter.native="handleQuery" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="20">
-        <el-col :span="8">
-          <el-form-item label="金融机构" prop="financialInstitution">
-            <el-select v-model="queryParams.financialInstitution" placeholder="请选择金融机构" clearable>
-              <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
-                :value="dict.value" />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="16">
-          <el-form-item style="display: flex; justify-content: flex-end;">
-            <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">查 询</el-button>
-            <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重 置</el-button>
-          </el-form-item>
-        </el-col>
-      </el-row>
-    </el-form>
     <el-divider class="mt20 mb20"></el-divider>
     <el-row :gutter="10" class="mb8" type="flex" justify="end">
       <el-col :span="1.5">
@@ -225,8 +227,8 @@
       <!-- <el-table-column label="ID" align="center" prop="id" /> -->
       <el-table-column fixed="right" label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button size="mini" type="text" @click="handleUpdate(scope.row)"
-            v-hasPermi="['business:bill:edit']">查 看</el-button>
+          <el-button size="mini" type="text" @click="handleUpdate(scope.row)" v-hasPermi="['business:bill:edit']">查
+            看</el-button>
           <!-- <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)"
             v-hasPermi="['business:bill:edit']">修改</el-button>
           <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"
@@ -367,14 +369,14 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="出票日期" prop="draftDate">
-                <el-date-picker :disabled="!isEditable" clearable v-model="form.draftDate" type="date" value-format="yyyy-MM-dd"
-                  placeholder="请选择出票日期"></el-date-picker>
+                <el-date-picker :disabled="!isEditable" clearable v-model="form.draftDate" type="date"
+                  value-format="yyyy-MM-dd" placeholder="请选择出票日期"></el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="汇票到期日" prop="dueDate">
-                <el-date-picker :disabled="!isEditable" clearable v-model="form.dueDate" type="date" value-format="yyyy-MM-dd"
-                  placeholder="请选择到期日"></el-date-picker>
+                <el-date-picker :disabled="!isEditable" clearable v-model="form.dueDate" type="date"
+                  value-format="yyyy-MM-dd" placeholder="请选择到期日"></el-date-picker>
               </el-form-item>
             </el-col>
           </el-row>
@@ -433,11 +435,14 @@ import { mapGetters } from 'vuex';
 import { SnowflakeIdGenerator } from '@/utils/index'
 import moment from 'moment'
 import CreateSuccess from '@/components/createSuccess/index.vue'
+import SearchPanel from '@/components/SearchPanel/index.vue'
+
 export default {
   name: "Bill",
   dicts: ['sys_1757235323403763700', 'sys_1757235466651828200', 'sys_acceptor'],
   components: {
-    CreateSuccess
+    CreateSuccess,
+    SearchPanel
   },
   data() {
     return {
@@ -619,7 +624,7 @@ export default {
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
-    this.isEditable = false;
+      this.isEditable = false;
       this.reset();
       const id = row.id || this.ids
       getBill(id).then(response => {

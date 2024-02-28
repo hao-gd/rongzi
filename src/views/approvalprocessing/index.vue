@@ -125,10 +125,11 @@
                     <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
                         <template slot-scope="scope">
                             <el-button size="mini" type="text" @click="pass(scope.row)"
-                                v-hasPermi="['rzauditlist:list:edit']">同意</el-button>
+                                v-hasPermi="['rzauditlist:list:edit']">同 意</el-button>
 
-                            <el-button size="mini" type="text" @click="no_pass(scope.row)"
-                                v-hasPermi="['rzauditlist:list:edit']">拒绝</el-button>
+
+
+                            <el-link class="ml10" :underline="false" type="danger" @click="no_pass(scope.row)">拒 绝</el-link>
 
                             <!-- <el-button size="mini" type="text" @click="pass(scope.row)"
                                 v-hasPermi="['rzauditlist:list:edit']">审批通过</el-button> -->
@@ -178,10 +179,14 @@
 <script>
 import { listList, getList, delList, addList, updateList } from "@/api/rzauditlist/list";
 import { mapGetters } from 'vuex';
+import { precautions_obj } from '@/config/approvalProcess.js'
+
 import { addBank } from "@/api/bankaccept/bank";
 import { addBill } from "@/api/business/bill";
 import { addLetter } from "@/api/credit/letter";
 import { addFactoring } from "@/api/reverse/factoring";
+import { addProject } from "@/api/financingproject/project";
+import { addRepayment } from "@/api/rzrepayment/repayment";
 
 
 export default {
@@ -241,23 +246,14 @@ export default {
                 fontSize: '14px',
                 fontWeight: 'bold',
             },
-            //       auditStateColor: {
-            //     "1759514891045044200": "blue",
-            //     "1759514942710481000": "red",
-            //     "1759515025552179200": "green",
-            //     "1759515068883533800": "gray"
-            // },
-            precautions_obj: {
-                'rz_back_accept_bill': '银行承兑汇票申请',
-                'rz_business_accept_bill': '商业承兑汇票申请',
-                'rz_credit_letter': '信用证申请',
-                'rz_reverse_factoring': '反向保理申请'
-            },
+            precautions_obj: precautions_obj,
             precautions_obj_fun: {
                 'rz_back_accept_bill': addBank,
                 'rz_business_accept_bill': addBill,
                 'rz_credit_letter': addLetter,
-                'rz_reverse_factoring': addFactoring
+                'rz_reverse_factoring': addFactoring,
+                'rz_financing_project': addProject,
+                'rz_repayment': addRepayment
             }
         };
     },

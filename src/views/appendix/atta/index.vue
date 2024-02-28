@@ -41,7 +41,7 @@
 
 
     <search-panel HeaderIcon="FundingSharing" title="融资分享区">
-      <el-form slot="content" :model="queryParams" ref="queryForm" size="small" label-position="left" v-show="showSearch" label-width="120px">
+      <el-form :model="queryParams" ref="queryForm" size="small" label-position="left" v-show="showSearch" label-width="120px">
         <!-- 第一行：包含三个表单项 -->
         <el-row :gutter="20">
           <el-col :span="8">

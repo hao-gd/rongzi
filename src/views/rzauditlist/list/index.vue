@@ -122,8 +122,8 @@
           </el-table-column>
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
             <template slot-scope="scope">
-              <el-button size="mini" type="text" @click="handleUpdate(scope.row)"
-                v-hasPermi="['rzauditlist:list:edit']">撤回</el-button>
+              <el-button size="mini" type="text" @click="handleUpdate(scope.row)" v-hasPermi="['rzauditlist:list:edit']">撤
+                回</el-button>
               <!-- <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"
                 v-hasPermi="['rzauditlist:list:remove']">删除</el-button> -->
             </template>
@@ -169,7 +169,7 @@
 <script>
 import { listList, getList, delList, addList, updateList } from "@/api/rzauditlist/list";
 import { mapGetters } from 'vuex';
-
+import { precautions_obj } from '@/config/approvalProcess.js'
 export default {
   name: "List",
   dicts: ['sys_1759514730105405400'],
@@ -233,12 +233,7 @@ export default {
       //     "1759515025552179200": "green",
       //     "1759515068883533800": "gray"
       // },
-      precautions_obj: {
-        'rz_back_accept_bill': '银行承兑汇票申请',
-        'rz_business_accept_bill': '商业承兑汇票申请',
-        'rz_credit_letter': '信用证申请',
-        'rz_reverse_factoring': '反向保理申请'
-      }
+      precautions_obj: precautions_obj
     };
   },
   computed: {

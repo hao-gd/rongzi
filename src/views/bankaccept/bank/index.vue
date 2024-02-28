@@ -84,7 +84,7 @@
     </el-form> -->
     <search-panel HeaderIcon="bank" title="银行承兑汇票">
 
-      <el-form slot="content" :model="queryParams" ref="queryForm" size="small" v-show="showSearch" label-width="100px">
+      <el-form :model="queryParams" ref="queryForm" size="small" v-show="showSearch" label-width="100px">
         <!-- 第一组表单项 -->
         <el-row :gutter="20">
           <el-col :span="8">
@@ -153,7 +153,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item class="flex" style="display: flex; justify-content: flex-end;">
-              <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+              <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">查 询</el-button>
               <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
             </el-form-item>
             <!-- 如果这一行只有两个表单项，您可以选择添加一个空的 el-col 作为占位，或者不添加，让这两个表单项各占一半宽度 -->
@@ -716,7 +716,7 @@ export default {
               "createBy": this.name,
               "createTime": null,
               "dataJson": JSON.stringify(data),
-              "tableName": "rz_back_accept_bill",
+              "tableName": "rz_bank_accept_bill",
               "auditState": "1759514891045044200"
             }
 

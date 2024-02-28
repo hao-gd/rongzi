@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <fragment>
     <template v-for="(item, index) in options">
       <template v-if="values.includes(item.value)">
         <span
@@ -24,7 +24,7 @@
     <template v-if="unmatch && showValue">
       {{ unmatchArray | handleArray }}
     </template>
-  </div>
+  </fragment>
 </template>
 
 <script>

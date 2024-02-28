@@ -4,7 +4,7 @@
             <svg-icon :icon-class="HeaderIcon" class-name="search-icon"></svg-icon>
             <span>{{ title }}</span>
         </div>
-        <slot name="content"></slot>
+        <slot></slot>
     </div>
 </template>
 
@@ -36,6 +36,6 @@ export default {
 }
 .search-icon {
     font-size: 18px;
-    vertical-align: middle;
+    // vertical-align: middle;
 }
 </style>
