@@ -493,14 +493,6 @@
 
           <el-row :gutter="20">
             <el-col :span="8">
-              <!-- <el-form-item label="金额单位" prop="loanState">
-                <el-select :disabled="!isEditable" v-model="form.loanState" placeholder="请选择金额单位">
-                  <el-option v-for="dict in dict.type.sys_1759509599150407700" :key="dict.value" :label="dict.label"
-                    :value="dict.value"></el-option>
-                </el-select>
-              </el-form-item> -->
-            </el-col>
-            <el-col :span="8">
               <el-form-item label="已还金额（万元）" prop="repaidAmount">
                 <el-input :readonly="!isEditable" v-model="form.repaidAmount" placeholder="请输入已还金额" />
               </el-form-item>
@@ -510,9 +502,6 @@
                 <el-input :readonly="!isEditable" v-model="form.remainingAmount" placeholder="请输入待还金额" />
               </el-form-item>
             </el-col>
-          </el-row>
-
-          <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="贷款状态" prop="loanState">
                 <el-select :disabled="!isEditable" v-model="form.loanState" placeholder="请选择贷款状态">
@@ -522,6 +511,7 @@
               </el-form-item>
             </el-col>
           </el-row>
+
 
           <el-row :gutter="20">
             <el-col :span="24">
