@@ -187,6 +187,8 @@ import { addLetter } from "@/api/credit/letter";
 import { addFactoring } from "@/api/reverse/factoring";
 import { addProject } from "@/api/financingproject/project";
 import { addRepayment } from "@/api/rzrepayment/repayment";
+import { addBonds } from "@/api/government/bonds";
+import { addSpecial } from "@/api/rzspecialloans/special";
 
 
 export default {
@@ -253,7 +255,9 @@ export default {
                 'rz_credit_letter': addLetter,
                 'rz_reverse_factoring': addFactoring,
                 'rz_financing_project': addProject,
-                'rz_repayment': addRepayment
+                'rz_repayment': addRepayment,
+                'rz_government_special_bonds': addBonds,
+                'rz_special_loans': addSpecial
             }
         };
     },
@@ -306,16 +310,15 @@ export default {
                 return;
             } else {
                 this.form.auditState = "1759515025552179200";
-                updateList(this.form).then(response => {
-                    this.$modal.msgSuccess("修改成功");
-                    this.getList();
-                    const ad_data = JSON.parse(this.form.dataJson);
-                    addfun(ad_data).then(response => {
-                        // this.$modal.msgSuccess("修改成功");
-                        // this.open = false;
-                        // this.getList();
+                const ad_data = JSON.parse(this.form.dataJson);
+                addfun(ad_data).then(response => {
+                    // this.$modal.msgSuccess("修改成功");
+                    // this.open = false;
+                    // this.getList();
+                    updateList(this.form).then(response => {
+                        this.$modal.msgSuccess("修改成功");
+                        this.getList();
                     });
-
                 });
             }
         },
