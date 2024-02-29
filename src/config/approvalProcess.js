@@ -7,5 +7,6 @@ export const precautions_obj = {
     'rz_repayment': '还款计划申请',
     'rz_government_special_bonds': '政府专项债申请',
     'rz_special_loans': '专项借款申请',
-    'rz_internal_borrowing': '内部借款申请'
+    'rz_internal_borrowing': '内部借款申请',
+    'rz_after_loan': '贷后管理申请'
 }

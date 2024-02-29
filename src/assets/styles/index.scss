@@ -197,3 +197,22 @@ aside {
   box-sizing: border-box;
   background: #f7f8fa;
 }
+
+/* 到期提醒时间颜色 */
+// 定义颜色和对应的天数标识
+$colors: (
+  "day0": #909399,
+  "day7": #FF0000,
+  "day15": #FF6A00,
+  "day30": #FFB300,
+  "dayG30": #67C23A
+);
+
+// 使用@each循环遍历$colors map
+@each $day, $color in $colors {
+  .#{$day} {
+    background: rgba($color, .1) !important;
+    color: $color !important;
+    border: 1px solid $color !important;
+  }
+}

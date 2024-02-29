@@ -84,7 +84,8 @@
     </el-form> -->
     <search-panel HeaderIcon="bank" title="银行承兑汇票">
 
-      <el-form :model="queryParams" ref="queryForm" size="small" v-show="showSearch" label-width="100px">
+      <el-form label-position="left" :model="queryParams" ref="queryForm" size="small" v-show="showSearch"
+        label-width="100px">
         <!-- 第一组表单项 -->
         <el-row :gutter="20">
           <el-col :span="8">
@@ -146,7 +147,7 @@
           <el-col :span="8">
             <el-form-item label="到期提醒" prop="remark">
               <el-select v-model="queryParams.remark" placeholder="请选择到期提醒" clearable>
-                <el-option v-for="dict in dict.type.sys_maturity" :key="dict.value" :label="dict.label"
+                <el-option v-for="dict in reminderConfig" :key="dict.value" :label="dict.label"
                   :value="dict.value"></el-option>
               </el-select>
             </el-form-item>
@@ -227,7 +228,10 @@
       </el-table-column>
       <el-table-column label="汇票到期提醒" width="180" align="center" prop="remark">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_maturity" :value="scope.row.remark" />
+          <el-tag effect="plain" :hit="true" :class="checkDueReminderWithConfig(scope.row.dueDate).color">
+            {{ checkDueReminderWithConfig(scope.row.dueDate).message }}
+          </el-tag>
+          <!-- <dict-tag :options="reminderConfig" :value="checkDueReminderWithConfig(scope.row.draftDate, scope.row.dueDate)" /> -->
         </template>
       </el-table-column>
       <el-table-column label="承兑协议编号" width="180" align="center" prop="acceptAgreementId" />
@@ -444,7 +448,7 @@
 
 
       <div v-else class="flex">
-        <CreateSuccess @close-dialog="data => open = data" @create-again="create_again"></CreateSuccess>
+        <CreateSuccess @close-dialog="closeDialog" @create-again="create_again"></CreateSuccess>
       </div>
 
     </el-dialog>
@@ -459,6 +463,8 @@ import { mapGetters } from 'vuex';
 import moment from 'moment'
 import CreateSuccess from '@/components/createSuccess/index.vue'
 import SearchPanel from '@/components/SearchPanel/index.vue'
+import { checkDueReminderWithConfig } from '@/utils/expirationreminder';
+import { reminderConfig } from '@/config/expirationreminder'
 
 export default {
   name: "Bank",
@@ -469,6 +475,8 @@ export default {
   },
   data() {
     return {
+      reminderConfig: reminderConfig.slice(1),
+      checkDueReminderWithConfig: checkDueReminderWithConfig,
       created_successfully: true,
       isEditable: false,
       header_cell_style: {
@@ -580,6 +588,11 @@ export default {
     console.log(this.name, this.avatar);
   },
   methods: {
+    /* 创建成功关闭弹窗 */
+    closeDialog() {
+      this.open = false;
+      this.created_successfully = false;
+    },
     /* 再次创建 */
     create_again() {
       this.reset();

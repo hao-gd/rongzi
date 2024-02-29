@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <!-- <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="管理编号" prop="managementId">
+      <el-form-item label="贷后项目管理编号" prop="managementId">
         <el-input v-model="queryParams.managementId" placeholder="请输入贷后项目管理编号" clearable
           @keyup.enter.native="handleQuery" />
       </el-form-item>
@@ -28,6 +28,18 @@
             :value="dict.value" />
         </el-select>
       </el-form-item>
+      <el-form-item label="量化目标" prop="quantitativeGoals">
+        <el-input v-model="queryParams.quantitativeGoals" placeholder="请输入量化目标" clearable
+          @keyup.enter.native="handleQuery" />
+      </el-form-item>
+      <el-form-item label="当前实现" prop="currentImplementation">
+        <el-input v-model="queryParams.currentImplementation" placeholder="请输入当前实现" clearable
+          @keyup.enter.native="handleQuery" />
+      </el-form-item>
+      <el-form-item label="剩余数量" prop="remainingQuantity">
+        <el-input v-model="queryParams.remainingQuantity" placeholder="请输入剩余数量" clearable
+          @keyup.enter.native="handleQuery" />
+      </el-form-item>
       <el-form-item label="uuid" prop="uuid">
         <el-input v-model="queryParams.uuid" placeholder="请输入uuid" clearable @keyup.enter.native="handleQuery" />
       </el-form-item>
@@ -36,56 +48,62 @@
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form> -->
+    <search-panel HeaderIcon="Post-loan" title="贷后管理">
+      <el-form :model="queryParams" label-position="left" ref="queryForm" size="small" :inline="false" v-show="showSearch" label-width="100px">
+        <el-row :gutter="20">
+          <el-col :span="8">
+            <el-form-item label="管理编号" prop="managementId">
+              <el-input v-model="queryParams.managementId" placeholder="请输入管理编号" clearable
+                @keyup.enter.native="handleQuery" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="金融机构" prop="financialInstitution">
+              <el-select v-model="queryParams.financialInstitution" placeholder="请选择金融机构" clearable>
+                <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
+                  :value="dict.value" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="借款单位" prop="borrowingUnit">
+              <el-select v-model="queryParams.borrowingUnit" placeholder="请选择借款单位" clearable>
+                <el-option v-for="dict in dict.type.sys_1759464239669444600" :key="dict.value" :label="dict.label"
+                  :value="dict.value" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="8">
+            <el-form-item label="借款期限" prop="loanTerm">
+              <el-input v-model="queryParams.loanTerm" placeholder="请输入借款期限" clearable
+                @keyup.enter.native="handleQuery" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="贷后状态跟踪" prop="afterLoanState">
+              <el-select v-model="queryParams.afterLoanState" placeholder="请选择贷后状态跟踪：未完结、已完结" clearable>
+                <el-option v-for="dict in dict.type.sys_1759464706814247000" :key="dict.value" :label="dict.label"
+                  :value="dict.value" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <!-- Placeholder for alignment, no form item here -->
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="24">
+            <el-form-item class="flex" style="display: flex; justify-content: flex-end;">
+              <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">查 看</el-button>
+              <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重 置</el-button>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
 
-    <el-form label-position="left" :model="queryParams" ref="queryForm" size="small" :inline="false" v-show="showSearch" label-width="100px">
-      <el-row :gutter="20">
-        <el-col :span="8">
-          <el-form-item label="管理编号" prop="managementId">
-            <el-input v-model="queryParams.managementId" placeholder="请输入贷后项目管理编号" clearable
-              @keyup.enter.native="handleQuery" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="金融机构" prop="financialInstitution">
-            <el-select v-model="queryParams.financialInstitution" placeholder="请选择金融机构" clearable>
-              <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
-                :value="dict.value" />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="借款单位" prop="borrowingUnit">
-            <el-select v-model="queryParams.borrowingUnit" placeholder="请选择借款单位" clearable>
-              <el-option v-for="dict in dict.type.sys_1759464239669444600" :key="dict.value" :label="dict.label"
-                :value="dict.value" />
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="20">
-        <el-col :span="8">
-          <el-form-item label="借款期限" prop="loanTerm">
-            <el-input v-model="queryParams.loanTerm" placeholder="请输入借款期限" clearable @keyup.enter.native="handleQuery" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="贷后状态跟踪" prop="afterLoanState">
-            <el-select v-model="queryParams.afterLoanState" placeholder="请选择贷后状态跟踪：未完结、已完结" clearable>
-              <el-option v-for="dict in dict.type.sys_1759464706814247000" :key="dict.value" :label="dict.label"
-                :value="dict.value" />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item class="flex" style="display: flex; justify-content: flex-end;">
-            <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">查 询</el-button>
-            <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-          </el-form-item>
-        </el-col>
-      </el-row>
-    </el-form>
-
-
+    </search-panel>
     <el-divider class="mt20 mb20"></el-divider>
     <el-row type="flex" :gutter="10" class="mb8" justify="end">
       <el-col :span="1.5">
@@ -108,7 +126,7 @@
     </el-row>
 
     <el-table v-loading="loading" :data="loanList" @selection-change="handleSelectionChange"
-    :header-cell-style="header_cell_style">
+      :header-cell-style="header_cell_style">
       <el-table-column fixed="left" type="selection" width="55" align="center" />
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
       <el-table-column label="管理编号" align="center" prop="managementId" />
@@ -124,25 +142,23 @@
           <dict-tag :options="dict.type.sys_1759464239669444600" :value="scope.row.borrowingUnit" />
         </template>
       </el-table-column>
-
-      <el-table-column label="量化目标" align="center" prop="loanAmount" />
-      <el-table-column label="当前实现" align="center" prop="loanAmount" />
-      <el-table-column label="剩余实现" align="center" prop="loanAmount" />
-
-
+      <el-table-column label="量化目标" align="center" prop="quantitativeGoals" />
+      <el-table-column label="当前实现" align="center" prop="currentImplementation" />
+      <el-table-column label="剩余实现" align="center" prop="remainingQuantity" />
       <el-table-column label="借款期限" align="center" prop="loanTerm" />
       <el-table-column label="贷后状态跟踪" align="center" prop="afterLoanState">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1759464706814247000" :value="scope.row.afterLoanState" />
         </template>
       </el-table-column>
+      
       <!-- <el-table-column label="进度说明" align="center" prop="progressDescription" /> -->
       <el-table-column label="备注" align="center" prop="comment" />
       <!-- <el-table-column label="uuid" align="center" prop="uuid" /> -->
-      <el-table-column fixed="right" label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="操作" fixed="right" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button size="mini" type="text" @click="handleUpdate(scope.row)"
-            v-hasPermi="['rzafterloan:loan:edit']">查 看</el-button>
+          <el-button size="mini" type="text" @click="handleUpdate(scope.row)" v-hasPermi="['rzafterloan:loan:edit']">查
+            看</el-button>
           <!-- <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)"
             v-hasPermi="['rzafterloan:loan:edit']">修改</el-button>
           <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"
@@ -156,12 +172,14 @@
 
     <!-- 添加或修改贷后管理对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="60%" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="贷后项目管理编号" prop="managementId">
-          <el-input v-model="form.managementId" placeholder="请输入贷后项目管理编号" />
+
+      <el-divider class="no_mt mb20"></el-divider>
+      <!-- <el-form ref="form" label-position="top" :model="form" :rules="rules" label-width="80px">
+        <el-form-item label="管理编号" prop="managementId">
+          <el-input v-model="form.managementId" placeholder="请输入管理编号" />
         </el-form-item>
-        <el-form-item label="附件" prop="scrUuid">
-          <file-upload v-model="form.scrUuid" :managementId="form.managementId" @input="upload_completed" />
+        <el-form-item label="数据唯一编号" prop="scrUuid">
+          <file-upload v-model="form.scrUuid" />
         </el-form-item>
         <el-form-item label="金融机构" prop="financialInstitution">
           <el-select v-model="form.financialInstitution" placeholder="请选择金融机构">
@@ -186,6 +204,15 @@
             <el-option v-for="dict in dict.type.sys_1759464706814247000" :key="dict.value" :label="dict.label"
               :value="dict.value"></el-option>
           </el-select>
+        </el-form-item>
+        <el-form-item label="量化目标" prop="quantitativeGoals">
+          <el-input v-model="form.quantitativeGoals" placeholder="请输入量化目标" />
+        </el-form-item>
+        <el-form-item label="当前实现" prop="currentImplementation">
+          <el-input v-model="form.currentImplementation" placeholder="请输入当前实现" />
+        </el-form-item>
+        <el-form-item label="剩余数量" prop="remainingQuantity">
+          <el-input v-model="form.remainingQuantity" placeholder="请输入剩余数量" />
         </el-form-item>
         <el-form-item label="进度说明" prop="progressDescription">
           <el-input v-model="form.progressDescription" type="textarea" placeholder="请输入内容" />
@@ -225,28 +252,125 @@
             </template>
           </el-table-column>
         </el-table>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
+      </el-form> -->
+
+      <div v-if="created_successfully == false">
+        <div v-if="title === '修改贷后管理'" class="modeify-btn" style="display: flex; justify-content: end;">
+          <el-button type="primary" @click="toggleEdit">编 辑</el-button>
+          <el-button @click="cancel">删 除</el-button>
+        </div>
+
+        <el-form ref="form" label-position="top" :model="form" :rules="rules" label-width="80px">
+          <!-- 第一行 -->
+          <el-row :gutter="20">
+            <el-col :span="8">
+              <el-form-item label="管理编号" prop="managementId">
+                <el-input :readonly="!isEditable" v-model="form.managementId" placeholder="请输入管理编号" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="金融机构" prop="financialInstitution">
+                <el-select :disabled="!isEditable" v-model="form.financialInstitution" placeholder="请选择金融机构">
+                  <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
+                    :value="dict.value"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="借款金额（万元）" prop="loanAmount">
+                <el-input :readonly="!isEditable" v-model="form.loanAmount" placeholder="请输入借款金额" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <!-- 第二行 -->
+          <el-row :gutter="20">
+            <el-col :span="8">
+              <el-form-item label="借款单位" prop="borrowingUnit">
+                <el-select :disabled="!isEditable" v-model="form.borrowingUnit" placeholder="请选择借款单位">
+                  <el-option v-for="dict in dict.type.sys_1759464239669444600" :key="dict.value" :label="dict.label"
+                    :value="dict.value"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="借款期限" prop="loanTerm">
+                <el-input :readonly="!isEditable" v-model="form.loanTerm" placeholder="请输入借款期限" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="贷后状态跟踪" prop="afterLoanState">
+                <el-select :disabled="!isEditable" v-model="form.afterLoanState" placeholder="请选择贷后状态跟踪">
+                  <el-option v-for="dict in dict.type.sys_1759464706814247000" :key="dict.value" :label="dict.label"
+                    :value="dict.value"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <!-- 第三行 -->
+          <el-row :gutter="20">
+            <el-col :span="8">
+              <el-form-item label="量化目标（数量）" prop="quantitativeGoals">
+                <el-input :readonly="!isEditable" v-model="form.quantitativeGoals" placeholder="请输入量化目标" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="当前实现（数量）" prop="currentImplementation">
+                <el-input :readonly="!isEditable" v-model="form.currentImplementation" placeholder="请输入当前实现" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="剩余数量（数量）" prop="remainingQuantity">
+                <el-input :readonly="!isEditable" v-model="form.remainingQuantity" placeholder="请输入剩余数量" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <!-- 备注 -->
+          <el-form-item label="进度说明" prop="progressDescription">
+            <el-input :readonly="!isEditable" v-model="form.progressDescription" type="textarea" placeholder="请输入内容" />
+          </el-form-item>
+          <!-- 附件 -->
+          <el-form-item label="备注" prop="comment">
+            <el-input :readonly="!isEditable" v-model="form.comment" maxlength="200" type="textarea" :rows="4"
+                  placeholder="请输入备注信息，最多不超过200字" />
+          </el-form-item>
+          <el-form-item label="附件" prop="scrUuid">
+            <div class="p20 appendix">
+              <file-upload :disabled="!isEditable" v-model="form.scrUuid" :managementId="form.managementId"
+                @input="upload_completed" :fileSize="10000" :limit="1000" :isShowTip="false" />
+            </div>
+          </el-form-item>
+        </el-form>
+
+        <div slot="footer" class="dialog-footer" style="display: flex; justify-content: center;">
+          <el-button type="primary" @click="submitForm">保 存</el-button>
+          <el-button @click="cancel">重 置</el-button>
+        </div>
       </div>
+
+
+      <div v-else class="flex">
+        <CreateSuccess @close-dialog="closeDialog" @create-again="create_again"></CreateSuccess>
+      </div>
+
     </el-dialog>
   </div>
 </template>
 
 <script>
 import { listLoan, getLoan, delLoan, addLoan, updateLoan } from "@/api/rzafterloan/loan";
-import { SnowflakeIdGenerator } from '@/utils/index'
 
+import { SnowflakeIdGenerator } from '@/utils/index'
 import { listList, getList, delList, addList, updateList } from "@/api/rzauditlist/list";
 import { mapGetters } from 'vuex';
 import moment from 'moment'
 import CreateSuccess from '@/components/createSuccess/index.vue'
+import SearchPanel from '@/components/SearchPanel/index.vue'
 export default {
   name: "Loan",
   dicts: ['sys_1759464239669444600', 'sys_acceptor', 'sys_1759464706814247000'],
   components: {
-    CreateSuccess
+    CreateSuccess,
+    SearchPanel
   },
   data() {
     return {
@@ -291,11 +415,16 @@ export default {
         borrowingUnit: null,
         loanTerm: null,
         afterLoanState: null,
+        quantitativeGoals: null,
+        currentImplementation: null,
+        remainingQuantity: null,
         progressDescription: null,
         comment: null,
         uuid: null
       },
+      /* str 需要添加的 */
       scrUuid: null,
+      /* end */
       // 表单参数
       form: {},
       // 表单校验
@@ -321,6 +450,15 @@ export default {
         afterLoanState: [
           { required: true, message: "贷后状态跟踪：未完结、已完结不能为空", trigger: "change" }
         ],
+        quantitativeGoals: [
+          { required: true, message: "量化目标不能为空", trigger: "blur" }
+        ],
+        currentImplementation: [
+          { required: true, message: "当前实现不能为空", trigger: "blur" }
+        ],
+        remainingQuantity: [
+          { required: true, message: "剩余数量不能为空", trigger: "blur" }
+        ],
         progressDescription: [
           { required: true, message: "进度说明不能为空", trigger: "blur" }
         ],
@@ -334,11 +472,16 @@ export default {
   },
   created() {
     this.getList();
-
+    
     this.created_successfully = false;
     this.isEditable = true;
   },
   methods: {
+    /* 创建成功关闭弹窗 */
+    closeDialog() {
+      this.open = false;
+      this.created_successfully = false;
+    },
     /* 再次创建 */
     create_again() {
       this.reset();
@@ -372,6 +515,9 @@ export default {
         borrowingUnit: null,
         loanTerm: null,
         afterLoanState: null,
+        quantitativeGoals: null,
+        currentImplementation: null,
+        remainingQuantity: null,
         progressDescription: null,
         comment: null,
         createTime: null,
@@ -421,34 +567,12 @@ export default {
         this.form = response.data;
         this.form.scrUuid = response.data.rzsrc2List.map(i => i.url)
         /* end */
-
         this.rzsrc2List = response.data.rzsrc2List;
-        this.open = true;
         this.open = true;
         this.title = "修改贷后管理";
       });
     },
     /** 提交按钮 */
-    // submitForm() {
-    //   this.$refs["form"].validate(valid => {
-    //     if (valid) {
-    //       this.form.rzsrc2List = this.rzsrc2List;
-    //       if (this.form.id != null) {
-    //         updateLoan(this.form).then(response => {
-    //           this.$modal.msgSuccess("修改成功");
-    //           this.open = false;
-    //           this.getList();
-    //         });
-    //       } else {
-    //         addLoan(this.form).then(response => {
-    //           this.$modal.msgSuccess("新增成功");
-    //           this.open = false;
-    //           this.getList();
-    //         });
-    //       }
-    //     }
-    //   });
-    // },
     submitForm() {
       this.$refs["form"].validate(valid => {
         if (valid) {
@@ -456,19 +580,13 @@ export default {
           this.form.rzsrc2List = this.rzsrc2List;
           if (this.form.id != null) {
             data.scrUuid = Number(this.scrUuid);
-            console.log(JSON.stringify(data));
-            // return false;
             updateLoan(data).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            // // 生成一个 uuid
-            // const generator = new SnowflakeIdGenerator();
-            // data.scrUuid = generator.nextId();
-            // data.rzsrc2List = this.rzsrc2List;
-            // addLoan(data).then(response => {
+            // addLoan(this.form).then(response => {
             //   this.$modal.msgSuccess("新增成功");
             //   this.open = false;
             //   this.getList();
@@ -481,7 +599,6 @@ export default {
             data.rzsrc2List = this.rzsrc2List;
 
             data.createBy = this.name;
-
 
             const rzaudit_data = {
               "id": null,

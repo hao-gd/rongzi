@@ -395,7 +395,7 @@
 
 
       <div v-else class="flex">
-        <CreateSuccess @close-dialog="data => open = data" @create-again="create_again"></CreateSuccess>
+        <CreateSuccess @close-dialog="closeDialog" @create-again="create_again"></CreateSuccess>
       </div>
     </el-dialog>
   </div>
@@ -523,6 +523,11 @@ export default {
     this.isEditable = true;
   },
   methods: {
+    /* 创建成功关闭弹窗 */
+    closeDialog() {
+      this.open = false;
+      this.created_successfully = false;
+    },
     /* 再次创建 */
     create_again() {
       this.reset();
