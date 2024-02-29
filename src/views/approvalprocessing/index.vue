@@ -189,6 +189,7 @@ import { addProject } from "@/api/financingproject/project";
 import { addRepayment } from "@/api/rzrepayment/repayment";
 import { addBonds } from "@/api/government/bonds";
 import { addSpecial } from "@/api/rzspecialloans/special";
+import { addBorrowing } from "@/api/rzinternalborrowing/borrowing";
 
 
 export default {
@@ -257,7 +258,8 @@ export default {
                 'rz_financing_project': addProject,
                 'rz_repayment': addRepayment,
                 'rz_government_special_bonds': addBonds,
-                'rz_special_loans': addSpecial
+                'rz_special_loans': addSpecial,
+                'rz_internal_borrowing': addBorrowing
             }
         };
     },
