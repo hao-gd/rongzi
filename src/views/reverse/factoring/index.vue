@@ -174,7 +174,11 @@
           <dict-tag :options="dict.type.sys_acceptor" :value="scope.row.financialInstitution" />
         </template>
       </el-table-column>
-      <el-table-column label="放贷金额（万元）" align="center" prop="loanAmount" width="180" />
+      <el-table-column label="放贷金额（万元）" align="center" prop="loanAmount" width="180">
+        <template slot-scope="scope">
+          <span>{{ formatNumberAsRMB(scope.row.loanAmount) }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="开始日期" align="center" prop="startDate" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.startDate, '{y}-{m}-{d}') }}</span>
@@ -216,98 +220,10 @@
     <el-dialog :title="title" :visible.sync="open" width="60%" append-to-body>
       <el-divider class="no_mt mb20"></el-divider>
 
-
-      <!-- <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="反向保理管理编号" prop="managementId">
-          <el-input v-model="form.managementId" placeholder="请输入反向保理管理编号" />
-        </el-form-item>
-        <el-form-item label="审核id" prop="auditId">
-          <el-input v-model="form.auditId" placeholder="请输入审核id" />
-        </el-form-item>
-        <el-form-item label="债权人" prop="creditor">
-          <el-select v-model="form.creditor" placeholder="请选择债权人">
-            <el-option v-for="dict in dict.type.sys_1757271666666242000" :key="dict.value" :label="dict.label"
-              :value="dict.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="保理商" prop="factor">
-          <el-select v-model="form.factor" placeholder="请选择保理商">
-            <el-option v-for="dict in dict.type.sys_1757288852172570600" :key="dict.value" :label="dict.label"
-              :value="dict.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="金融机构" prop="financialInstitution">
-          <el-select v-model="form.financialInstitution" placeholder="请选择金融机构">
-            <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
-              :value="dict.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="放贷金额" prop="loanAmount">
-          <el-input v-model="form.loanAmount" placeholder="请输入放贷金额" />
-        </el-form-item>
-        <el-form-item label="开始日期" prop="startDate">
-          <el-date-picker clearable v-model="form.startDate" type="date" value-format="yyyy-MM-dd" placeholder="请选择开始日期">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="结束日期" prop="deadline">
-          <el-date-picker clearable v-model="form.deadline" type="date" value-format="yyyy-MM-dd" placeholder="请选择结束日期">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="项目名称" prop="entryName">
-          <el-input v-model="form.entryName" placeholder="请输入项目名称" />
-        </el-form-item>
-        <el-form-item label="到期提醒" prop="remark">
-          <el-select v-model="form.remark" placeholder="请选择到期提醒">
-            <el-option v-for="dict in dict.type.sys_maturity" :key="dict.value" :label="dict.label"
-              :value="dict.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="回款账户" prop="collectionAccount">
-          <el-input v-model="form.collectionAccount" placeholder="请输入回款账户" />
-        </el-form-item>
-        <el-form-item label="备注" prop="comment">
-          <el-input v-model="form.comment" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
-        <el-form-item label="附件" prop="scrUuid">
-          <file-upload v-model="form.scrUuid" :managementId="form.managementId" @input="upload_completed" />
-        </el-form-item>
-        <el-divider content-position="center">附件表信息</el-divider>
-        <el-row :gutter="10" class="mb8">
-          <el-col :span="1.5">
-            <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAddrzsrc2">添加</el-button>
-          </el-col>
-          <el-col :span="1.5">
-            <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDeleterzsrc2">删除</el-button>
-          </el-col>
-        </el-row>
-        <el-table :data="rzsrc2List" :row-class-name="rowrzsrc2Index" @selection-change="handlerzsrc2SelectionChange"
-          ref="rzsrc2">
-          <el-table-column type="selection" width="50" align="center" />
-          <el-table-column label="序号" align="center" prop="index" width="50" />
-          <el-table-column label="url地址" prop="url" width="150">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.url" placeholder="请输入url地址" />
-            </template>
-          </el-table-column>
-          <el-table-column label="各个项目管理编号" prop="projectManagementId" width="150">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.projectManagementId" placeholder="请输入各个项目管理编号" />
-            </template>
-          </el-table-column>
-          <el-table-column label="种类筛选：下拉" prop="type" width="150">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.type" placeholder="请输入种类筛选：下拉" />
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-form> -->
-
-
-
       <div v-if="created_successfully == false">
         <div v-if="title === '修改反向保理'" class="modeify-btn" style="display: flex; justify-content: end;">
           <el-button type="primary" @click="toggleEdit">编 辑</el-button>
-          <el-button @click="cancel">删 除</el-button>
+          <el-button @click="handleDelete(form)">删 除</el-button>
         </div>
         <el-form ref="form" :model="form" :rules="rules" label-width="100px" label-position="top">
           <el-row :gutter="20">
@@ -376,7 +292,7 @@
           <el-row :gutter="20">
             <el-col :span="24">
               <el-form-item label="备注" prop="comment">
-                <el-input :readonly="!isEditable" v-model="form.comment" maxlength="200" type="textarea" :rows="4"
+                <el-input :readonly="!isEditable" v-model="form.comment" show-word-limit maxlength="200" type="textarea" :rows="4"
                   placeholder="请输入备注信息，最多不超过200字" />
               </el-form-item>
             </el-col>
@@ -528,6 +444,14 @@ export default {
       }
     };
   },
+  watch: {
+    open(n, o) {
+      if (n == false) {
+        this.created_successfully = false;
+        this.isEditable = true;
+      }
+    }
+  },
   computed: {
     ...mapGetters([
       'name', 'avatar'
@@ -574,6 +498,7 @@ export default {
     // 取消按钮
     cancel() {
       this.open = false;
+      this.created_successfully = false;
       this.reset();
     },
     // 表单重置
@@ -653,44 +578,44 @@ export default {
           const data = JSON.parse(JSON.stringify(this.form))
 
           this.form.rzsrc2List = this.rzsrc2List;
+          let rzaudit_data = null;
           if (this.form.id != null) {
             data.scrUuid = Number(this.scrUuid);
-            updateFactoring(data).then(response => {
-              this.$modal.msgSuccess("修改成功");
-              this.open = false;
-              this.getList();
-            });
-          } else {
-            // addFactoring(this.form).then(response => {
-            //   this.$modal.msgSuccess("新增成功");
-            //   this.open = false;
-            //   this.getList();
-            // });
-            const generator = new SnowflakeIdGenerator();
-            data.scrUuid = generator.nextId();
-            data.rzsrc2List = this.rzsrc2List;
-
-            data.createBy = this.name;
-
-            const rzaudit_data = {
-              "id": null,
-              "auditId": String(generator.nextId()).substring(0, 6),
+            rzaudit_data = {
+              "auditId": data.id,
               "scrUuid": data.scrUuid,
               "createBy": this.name,
               "createTime": null,
               "dataJson": JSON.stringify(data),
               "tableName": "rz_reverse_factoring",
-              "auditState": "1759514891045044200"
+              "auditState": "1759514891045044200",
+              "uuid": data.uuid
             }
+          } else {
+            const generator = new SnowflakeIdGenerator();
+            data.scrUuid = generator.nextId();
+            data.rzsrc2List = this.rzsrc2List;
 
-
-            addList(rzaudit_data).then(res => {
-              this.created_successfully = true;
-              // this.$modal.msgSuccess("新增成功");
-              // this.open = false;
-
-            })
+            data.createBy = this.name;
+            // start
+            const uuid = String(generator.nextId())
+            data.uuid = uuid;
+            // end
+            rzaudit_data = {
+              "id": null,
+              "auditId": null,
+              "scrUuid": data.scrUuid,
+              "createBy": this.name,
+              "createTime": null,
+              "dataJson": JSON.stringify(data),
+              "tableName": "rz_reverse_factoring",
+              "auditState": "1759514891045044200",
+              "uuid": uuid
+            }
           }
+          addList(rzaudit_data).then(res => {
+            this.created_successfully = true;
+          })
         }
       });
     },
@@ -700,6 +625,7 @@ export default {
       this.$modal.confirm('是否确认删除反向保理编号为"' + ids + '"的数据项？').then(function () {
         return delFactoring(ids);
       }).then(() => {
+        this.cancel();
         this.getList();
         this.$modal.msgSuccess("删除成功");
       }).catch(() => { });
@@ -713,7 +639,7 @@ export default {
       let obj = {};
       obj.url = "";
       obj.projectManagementId = "";
-      obj.type = "";
+      obj.type = "rz_reverse_factoring";
       this.rzsrc2List.push(obj);
     },
     /** 附件表删除按钮操作 */

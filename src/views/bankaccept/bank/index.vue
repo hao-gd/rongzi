@@ -1,87 +1,6 @@
 <template>
   <div class="app-container">
-    <!-- <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="管理编号" prop="managementId">
-        <el-input
-          v-model="queryParams.managementId"
-          placeholder="请输入管理编号"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="出票人" prop="drawer">
-        <el-select v-model="queryParams.drawer" placeholder="请选择出票人" clearable>
-          <el-option
-            v-for="dict in dict.type.sys_drawer"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="收票人" prop="payee">
-        <el-select v-model="queryParams.payee" placeholder="请选择收票人" clearable>
-          <el-option
-            v-for="dict in dict.type.sys_1754491769220759600"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="承兑人" prop="financialInstitution">
-        <el-select v-model="queryParams.financialInstitution" placeholder="请选择承兑人（金融机构）" clearable>
-          <el-option
-            v-for="dict in dict.type.sys_acceptor"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="出票日期">
-        <el-date-picker
-          v-model="daterangeDraftDate"
-          style="width: 240px"
-          value-format="yyyy-MM-dd"
-          type="daterange"
-          range-separator="-"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        ></el-date-picker>
-      </el-form-item>
-      <el-form-item label="汇票到期日" prop="dueDate">
-        <el-date-picker clearable
-          v-model="queryParams.dueDate"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择汇票到期日">
-        </el-date-picker>
-      </el-form-item>
-      
-      <el-form-item label="项目名称" prop="entryName">
-        <el-input
-          v-model="queryParams.entryName"
-          placeholder="请输入项目名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="到期提醒" prop="remark">
-        <el-select v-model="queryParams.remark" placeholder="请选择到期提醒" clearable>
-          <el-option
-            v-for="dict in dict.type.sys_maturity"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form> -->
+
     <search-panel HeaderIcon="bank" title="银行承兑汇票">
 
       <el-form label-position="left" :model="queryParams" ref="queryForm" size="small" v-show="showSearch"
@@ -161,20 +80,10 @@
               <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">查 询</el-button>
               <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
             </el-form-item>
-            <!-- 如果这一行只有两个表单项，您可以选择添加一个空的 el-col 作为占位，或者不添加，让这两个表单项各占一半宽度 -->
-            <!-- 搜索和重置按钮可以单独占据一行 -->
           </el-col>
         </el-row>
 
-        <!-- 搜索和重置按钮 -->
-        <!-- <el-row :gutter="20">
-        <el-col :span="24">
-          <el-form-item>
-            <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-            <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-          </el-form-item>
-        </el-col>
-      </el-row> -->
+     
       </el-form>
     </search-panel>
     <el-divider class="mt20 mb20"></el-divider>
@@ -219,7 +128,11 @@
           <dict-tag :options="dict.type.sys_acceptor" :value="scope.row.financialInstitution" />
         </template>
       </el-table-column>
-      <el-table-column label="出票金额(万元)" width="180" align="center" prop="invoiceAmount" />
+      <el-table-column label="出票金额(万元)" width="180" align="center" prop="invoiceAmount">
+        <template slot-scope="scope">
+          <span>{{ formatNumberAsRMB(scope.row.invoiceAmount) }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="出票日期" align="center" prop="draftDate" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.draftDate, '{y}-{m}-{d}') }}</span>
@@ -244,8 +157,8 @@
       <!-- <el-table-column label="ID" align="center" prop="id" /> -->
       <el-table-column fixed="right" label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)"
-            v-hasPermi="['bankaccept:bank:edit']">查看</el-button>
+          <el-button size="mini" type="text" @click="handleUpdate(scope.row)"
+            v-hasPermi="['bankaccept:bank:edit']">查 看</el-button>
           <!-- <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"
             v-hasPermi="['bankaccept:bank:remove']">删除</el-button> -->
         </template>
@@ -257,99 +170,13 @@
 
     <!-- 添加或修改银行承兑汇票对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="60%" append-to-body>
-      <!-- <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="管理编号" prop="managementId">
-          <el-input v-model="form.managementId" placeholder="请输入银行承兑管理编号" />
-        </el-form-item>
-        <el-form-item label="审核id" prop="auditId">
-          <el-input v-model="form.auditId" placeholder="请输入审核id" />
-        </el-form-item>
-        <el-form-item label="出票人" prop="drawer">
-          <el-select v-model="form.drawer" placeholder="请选择出票人">
-            <el-option v-for="dict in dict.type.sys_drawer" :key="dict.value" :label="dict.label"
-              :value="dict.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="收票人" prop="payee">
-          <el-select v-model="form.payee" placeholder="请选择收票人">
-            <el-option v-for="dict in dict.type.sys_1754491769220759600" :key="dict.value" :label="dict.label"
-              :value="dict.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="金融机构" prop="financialInstitution">
-          <el-select v-model="form.financialInstitution" placeholder="请选择金融机构">
-            <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
-              :value="dict.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="出票金额" prop="invoiceAmount">
-          <el-input v-model="form.invoiceAmount" placeholder="请输入出票金额" />
-        </el-form-item>
-        <el-form-item label="出票日期" prop="draftDate">
-          <el-date-picker clearable v-model="form.draftDate" type="date" value-format="yyyy-MM-dd" placeholder="请选择出票日期">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="到期日" prop="dueDate">
-          <el-date-picker clearable v-model="form.dueDate" type="date" value-format="yyyy-MM-dd" placeholder="请选择到期日">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="到期提醒" prop="remark">
-          <el-select v-model="form.remark" placeholder="请选择到期提醒">
-            <el-option
-              v-for="dict in dict.type.sys_maturity"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="协议编号" prop="acceptAgreementId">
-          <el-input v-model="form.acceptAgreementId" placeholder="请输入协议编号" />
-        </el-form-item>
-        <el-form-item label="项目名称" prop="entryName">
-          <el-input v-model="form.entryName" placeholder="请输入项目名称" />
-        </el-form-item>
-        <el-form-item label="备注" prop="comment">
-          <el-input v-model="form.comment" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
-        <el-form-item label="附件" prop="scrUuid">
-          <file-upload v-model="form.scrUuid" :managementId="form.managementId" @input="upload_completed" />
-        </el-form-item>
-        <el-divider content-position="center">附件表信息</el-divider>
-        <el-row :gutter="10" class="mb8">
-          <el-col :span="1.5">
-            <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAddrzsrc2">添加</el-button>
-          </el-col>
-          <el-col :span="1.5">
-            <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDeleterzsrc2">删除</el-button>
-          </el-col>
-        </el-row>
-        <el-table :data="rzsrc2List" :row-class-name="rowrzsrc2Index" @selection-change="handlerzsrc2SelectionChange" ref="rzsrc2">
-          <el-table-column type="selection" width="50" align="center" />
-          <el-table-column label="序号" align="center" prop="index" width="50"/>
-          <el-table-column label="url地址" prop="url" width="150">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.url" placeholder="请输入url地址" />
-            </template>
-          </el-table-column>
-          <el-table-column label="各个项目管理编号" prop="projectManagementId" width="150">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.projectManagementId" placeholder="请输入各个项目管理编号" />
-            </template>
-          </el-table-column>
-          <el-table-column label="种类筛选：下拉" prop="type" width="150">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.type" placeholder="请输入种类筛选：下拉" />
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-form> -->
+      
       <el-divider class="no_mt mb20"></el-divider>
 
       <div v-if="created_successfully == false">
         <div v-if="title === '修改银行承兑汇票'" class="modeify-btn" style="display: flex; justify-content: end;">
           <el-button type="primary" @click="toggleEdit">编 辑</el-button>
-          <el-button @click="cancel">删 除</el-button>
+          <el-button @click="handleDelete(form)">删 除</el-button>
         </div>
 
         <el-form ref="form" :model="form" :rules="rules" label-width="80px" label-position="top">
@@ -388,7 +215,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="出票金额" prop="invoiceAmount">
+              <el-form-item label="出票金额（万元）" prop="invoiceAmount">
                 <el-input :readonly="!isEditable" v-model="form.invoiceAmount" placeholder="请输入出票金额" />
               </el-form-item>
             </el-col>
@@ -426,7 +253,7 @@
           <el-row>
             <el-col :span="24">
               <el-form-item label="备注" prop="comment">
-                <el-input :readonly="!isEditable" v-model="form.comment" maxlength="200" type="textarea" :rows="4"
+                <el-input :readonly="!isEditable" v-model="form.comment" show-word-limit maxlength="200" type="textarea" :rows="4"
                   placeholder="请输入备注信息，最多不超过200字" />
               </el-form-item>
             </el-col>
@@ -582,6 +409,14 @@ export default {
       },
     };
   },
+  watch: {
+    open(n, o) {
+      if (n == false) {
+        this.created_successfully = false;
+        this.isEditable = true;
+      }
+    }
+  },
   computed: {
     ...mapGetters([
       'name', 'avatar'
@@ -650,6 +485,7 @@ export default {
     // 取消按钮
     cancel() {
       this.open = false;
+      this.created_successfully = false;
       this.reset();
     },
     // 表单重置
@@ -732,49 +568,45 @@ export default {
         if (valid) {
           const data = JSON.parse(JSON.stringify(this.form))
           this.form.rzsrc2List = this.rzsrc2List;
-
+          let rzaudit_data = null;
           if (this.form.id != null) {
             data.scrUuid = Number(this.scrUuid);
-            console.log(JSON.stringify(data));
-            // return false;
-            updateBank(data).then(response => {
-              this.$modal.msgSuccess("修改成功");
-              this.open = false;
-              this.getList();
-            });
-          } else {
-            // 生成一个 uuid
-            const generator = new SnowflakeIdGenerator();
-            data.scrUuid = generator.nextId();
-            data.rzsrc2List = this.rzsrc2List;
-
-            data.createBy = this.name;
-            // addBank(data).then(response => {
-            //   this.$modal.msgSuccess("新增成功");
-            //   this.open = false;
-            //   this.getList();
-            // });
-
-
-            const rzaudit_data = {
-              "id": null,
-              "auditId": String(generator.nextId()).substring(0, 6),
+            rzaudit_data = {
+              "auditId": data.id,
               "scrUuid": data.scrUuid,
               "createBy": this.name,
               "createTime": null,
               "dataJson": JSON.stringify(data),
               "tableName": "rz_bank_accept_bill",
-              "auditState": "1759514891045044200"
+              "auditState": "1759514891045044200",
+              "uuid": data.uuid
             }
+          } else {
+            // 生成一个 uuid
+            const generator = new SnowflakeIdGenerator();
 
-
-            addList(rzaudit_data).then(res => {
-              this.created_successfully = true;
-              // this.$modal.msgSuccess("新增成功");
-              // this.open = false;
-
-            })
+            // start
+            const uuid = String(generator.nextId())
+            data.uuid = uuid;
+            // end
+            data.scrUuid = generator.nextId();
+            data.rzsrc2List = this.rzsrc2List;
+            data.createBy = this.name;
+            rzaudit_data = {
+              "id": null,
+              "auditId": null,
+              "scrUuid": data.scrUuid,
+              "createBy": this.name,
+              "createTime": null,
+              "dataJson": JSON.stringify(data),
+              "tableName": "rz_bank_accept_bill",
+              "auditState": "1759514891045044200",
+              "uuid": uuid
+            }
           }
+          addList(rzaudit_data).then(res => {
+            this.created_successfully = true;
+          })
         }
       });
       /* end */
@@ -785,6 +617,8 @@ export default {
       this.$modal.confirm('是否确认删除银行承兑汇票编号为"' + ids + '"的数据项？').then(function () {
         return delBank(ids);
       }).then(() => {
+        this.cancel();
+        
         this.getList();
         this.$modal.msgSuccess("删除成功");
       }).catch(() => { });

@@ -117,20 +117,22 @@
                     <!-- <el-table-column label="父级表名" align="center" prop="tableName" /> -->
                     <el-table-column label="审批进度" align="center" prop="auditState">
                         <template slot-scope="scope">
-                            <svg-icon :icon-class="scope.row.auditState"></svg-icon> <dict-tag
-                                style="display: inline-block;" :options="dict.type.sys_1759514730105405400"
+                            <svg-icon class="mr5" :icon-class="scope.row.auditState"></svg-icon>
+                            <dict-tag style="display: inline-block;" :options="dict.type.sys_1759514730105405400"
                                 :value="scope.row.auditState" />
                         </template>
                     </el-table-column>
                     <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
                         <template slot-scope="scope">
-                            <el-button size="mini" type="text" @click="pass(scope.row)"
-                                v-hasPermi="['rzauditlist:list:edit']">同 意</el-button>
+                            <el-button v-if="scope.row.auditState == '1759514891045044200'" size="mini" type="text"
+                                @click="pass(scope.row)" v-hasPermi="['rzauditlist:list:edit']">同 意</el-button>
+                            <el-link v-if="scope.row.auditState == '1759514891045044200'" class="ml10" :underline="false"
+                                type="danger" @click="no_pass(scope.row)">拒 绝</el-link>
 
 
-
-                            <el-link class="ml10" :underline="false" type="danger" @click="no_pass(scope.row)">拒 绝</el-link>
-
+                            <span v-if="scope.row.auditState !== '1759514891045044200'">
+                                审批完成
+                            </span>
                             <!-- <el-button size="mini" type="text" @click="pass(scope.row)"
                                 v-hasPermi="['rzauditlist:list:edit']">审批通过</el-button> -->
 
@@ -253,7 +255,7 @@ export default {
             },
             precautions_obj: precautions_obj,
             precautions_obj_fun: {
-                'rz_back_accept_bill': addBank,
+                'rz_bank_accept_bill': addBank,
                 'rz_business_accept_bill': addBill,
                 'rz_credit_letter': addLetter,
                 'rz_reverse_factoring': addFactoring,
@@ -265,7 +267,7 @@ export default {
                 'rz_after_loan': addLoan
             },
             update_precautions_obj_fun: {
-                'rz_back_accept_bill': updateBank,
+                'rz_bank_accept_bill': updateBank,
                 'rz_business_accept_bill': updateBill,
                 'rz_credit_letter': updateLetter,
                 'rz_reverse_factoring': updateFactoring,
@@ -318,7 +320,7 @@ export default {
             /* 获取添加的方法 */
             const response = await getList(id);
             this.form = response.data;
-            
+
             const func_ = this.form.auditId != null
                 ? this.update_precautions_obj_fun[this.form.tableName]
                 : this.precautions_obj_fun[this.form.tableName];

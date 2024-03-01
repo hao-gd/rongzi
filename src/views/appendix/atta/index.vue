@@ -73,8 +73,8 @@
         <el-row :gutter="20">
           <el-col :span="24">
             <div style="display: flex; justify-content: end;">
-              <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-              <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+              <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">查 询</el-button>
+              <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重 置</el-button>
             </div>
           </el-col>
         </el-row>
@@ -86,7 +86,7 @@
     <el-row :gutter="10" class="mb8" type="flex" justify="end">
       <el-col :span="1.5">
         <el-button type="primary" plain icon="el-icon-refresh-right" size="mini" @click="getList"
-          v-hasPermi="['appendix:atta:add']">刷新</el-button>
+          v-hasPermi="['appendix:atta:add']">刷 新</el-button>
       </el-col>
       <!-- <el-col :span="1.5">
         <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
@@ -137,7 +137,7 @@
             v-hasPermi="['appendix:atta:remove']">下载</el-button> -->
 
           <el-link :href="`${baseUrl}${scope.row.url}`" :underline="false" target="_blank">
-            <span class="el-icon-document"> 下载 </span>
+            <span class="el-icon-document"> 下 载 </span>
           </el-link>
         </template>
       </el-table-column>

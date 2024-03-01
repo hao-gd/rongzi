@@ -1,53 +1,5 @@
 <template>
   <div class="app-container">
-    <!-- <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="贷后项目管理编号" prop="managementId">
-        <el-input v-model="queryParams.managementId" placeholder="请输入贷后项目管理编号" clearable
-          @keyup.enter.native="handleQuery" />
-      </el-form-item>
-      <el-form-item label="金融机构" prop="financialInstitution">
-        <el-select v-model="queryParams.financialInstitution" placeholder="请选择金融机构" clearable>
-          <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label" :value="dict.value" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="借款金额" prop="loanAmount">
-        <el-input v-model="queryParams.loanAmount" placeholder="请输入借款金额" clearable @keyup.enter.native="handleQuery" />
-      </el-form-item>
-      <el-form-item label="借款单位" prop="borrowingUnit">
-        <el-select v-model="queryParams.borrowingUnit" placeholder="请选择借款单位" clearable>
-          <el-option v-for="dict in dict.type.sys_1759464239669444600" :key="dict.value" :label="dict.label"
-            :value="dict.value" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="借款期限" prop="loanTerm">
-        <el-input v-model="queryParams.loanTerm" placeholder="请输入借款期限" clearable @keyup.enter.native="handleQuery" />
-      </el-form-item>
-      <el-form-item label="贷后状态跟踪：未完结、已完结" prop="afterLoanState">
-        <el-select v-model="queryParams.afterLoanState" placeholder="请选择贷后状态跟踪：未完结、已完结" clearable>
-          <el-option v-for="dict in dict.type.sys_1759464706814247000" :key="dict.value" :label="dict.label"
-            :value="dict.value" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="量化目标" prop="quantitativeGoals">
-        <el-input v-model="queryParams.quantitativeGoals" placeholder="请输入量化目标" clearable
-          @keyup.enter.native="handleQuery" />
-      </el-form-item>
-      <el-form-item label="当前实现" prop="currentImplementation">
-        <el-input v-model="queryParams.currentImplementation" placeholder="请输入当前实现" clearable
-          @keyup.enter.native="handleQuery" />
-      </el-form-item>
-      <el-form-item label="剩余数量" prop="remainingQuantity">
-        <el-input v-model="queryParams.remainingQuantity" placeholder="请输入剩余数量" clearable
-          @keyup.enter.native="handleQuery" />
-      </el-form-item>
-      <el-form-item label="uuid" prop="uuid">
-        <el-input v-model="queryParams.uuid" placeholder="请输入uuid" clearable @keyup.enter.native="handleQuery" />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form> -->
     <search-panel HeaderIcon="Post-loan" title="贷后管理">
       <el-form :model="queryParams" label-position="left" ref="queryForm" size="small" :inline="false" v-show="showSearch"
         label-width="100px">
@@ -84,7 +36,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="贷后状态跟踪" prop="afterLoanState">
-              <el-select v-model="queryParams.afterLoanState" placeholder="请选择贷后状态跟踪：未完结、已完结" clearable>
+              <el-select v-model="queryParams.afterLoanState" placeholder="请选择贷后状态跟踪" clearable>
                 <el-option v-for="dict in dict.type.sys_1759464706814247000" :key="dict.value" :label="dict.label"
                   :value="dict.value" />
               </el-select>
@@ -137,7 +89,11 @@
           <dict-tag :options="dict.type.sys_acceptor" :value="scope.row.financialInstitution" />
         </template>
       </el-table-column>
-      <el-table-column label="借款金额（万元）" align="center" prop="loanAmount" />
+      <el-table-column label="借款金额（万元）" align="center" prop="loanAmount">
+        <template slot-scope="scope">
+          <span>{{ formatNumberAsRMB(scope.row.loanAmount) }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="借款单位" align="center" prop="borrowingUnit">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1759464239669444600" :value="scope.row.borrowingUnit" />
@@ -177,90 +133,11 @@
     <el-dialog :title="title" :visible.sync="open" width="60%" append-to-body>
 
       <el-divider class="no_mt mb20"></el-divider>
-      <!-- <el-form ref="form" label-position="top" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="管理编号" prop="managementId">
-          <el-input v-model="form.managementId" placeholder="请输入管理编号" />
-        </el-form-item>
-        <el-form-item label="数据唯一编号" prop="scrUuid">
-          <file-upload v-model="form.scrUuid" />
-        </el-form-item>
-        <el-form-item label="金融机构" prop="financialInstitution">
-          <el-select v-model="form.financialInstitution" placeholder="请选择金融机构">
-            <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
-              :value="dict.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="借款金额" prop="loanAmount">
-          <el-input v-model="form.loanAmount" placeholder="请输入借款金额" />
-        </el-form-item>
-        <el-form-item label="借款单位" prop="borrowingUnit">
-          <el-select v-model="form.borrowingUnit" placeholder="请选择借款单位">
-            <el-option v-for="dict in dict.type.sys_1759464239669444600" :key="dict.value" :label="dict.label"
-              :value="dict.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="借款期限" prop="loanTerm">
-          <el-input v-model="form.loanTerm" placeholder="请输入借款期限" />
-        </el-form-item>
-        <el-form-item label="贷后状态跟踪：未完结、已完结" prop="afterLoanState">
-          <el-select v-model="form.afterLoanState" placeholder="请选择贷后状态跟踪：未完结、已完结">
-            <el-option v-for="dict in dict.type.sys_1759464706814247000" :key="dict.value" :label="dict.label"
-              :value="dict.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="量化目标" prop="quantitativeGoals">
-          <el-input v-model="form.quantitativeGoals" placeholder="请输入量化目标" />
-        </el-form-item>
-        <el-form-item label="当前实现" prop="currentImplementation">
-          <el-input v-model="form.currentImplementation" placeholder="请输入当前实现" />
-        </el-form-item>
-        <el-form-item label="剩余数量" prop="remainingQuantity">
-          <el-input v-model="form.remainingQuantity" placeholder="请输入剩余数量" />
-        </el-form-item>
-        <el-form-item label="进度说明" prop="progressDescription">
-          <el-input v-model="form.progressDescription" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
-        <el-form-item label="备注" prop="comment">
-          <el-input v-model="form.comment" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
-        <el-form-item label="uuid" prop="uuid">
-          <el-input v-model="form.uuid" placeholder="请输入uuid" />
-        </el-form-item>
-        <el-divider content-position="center">附件表信息</el-divider>
-        <el-row :gutter="10" class="mb8">
-          <el-col :span="1.5">
-            <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAddrzsrc2">添加</el-button>
-          </el-col>
-          <el-col :span="1.5">
-            <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDeleterzsrc2">删除</el-button>
-          </el-col>
-        </el-row>
-        <el-table :data="rzsrc2List" :row-class-name="rowrzsrc2Index" @selection-change="handlerzsrc2SelectionChange"
-          ref="rzsrc2">
-          <el-table-column type="selection" width="50" align="center" />
-          <el-table-column label="序号" align="center" prop="index" width="50" />
-          <el-table-column label="url地址" prop="url" width="150">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.url" placeholder="请输入url地址" />
-            </template>
-          </el-table-column>
-          <el-table-column label="各个项目管理编号" prop="projectManagementId" width="150">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.projectManagementId" placeholder="请输入各个项目管理编号" />
-            </template>
-          </el-table-column>
-          <el-table-column label="种类筛选：下拉" prop="type" width="150">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.type" placeholder="请输入种类筛选：下拉" />
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-form> -->
 
       <div v-if="created_successfully == false">
         <div v-if="title === '修改贷后管理'" class="modeify-btn" style="display: flex; justify-content: end;">
           <el-button type="primary" @click="toggleEdit">编 辑</el-button>
-          <el-button @click="cancel">删 除</el-button>
+          <el-button @click="handleDelete(form)">删 除</el-button>
         </div>
 
         <el-form ref="form" label-position="top" :model="form" :rules="rules" label-width="80px">
@@ -345,7 +222,7 @@
           </el-form-item>
           <!-- 附件 -->
           <el-form-item label="备注" prop="comment">
-            <el-input :readonly="!isEditable" v-model="form.comment" maxlength="200" type="textarea" :rows="4"
+            <el-input :readonly="!isEditable" v-model="form.comment" show-word-limit maxlength="200" type="textarea" :rows="4"
               placeholder="请输入备注信息，最多不超过200字" />
           </el-form-item>
           <el-form-item label="附件" prop="scrUuid">
@@ -464,7 +341,7 @@ export default {
           { required: true, message: "借款期限不能为空", trigger: "blur" }
         ],
         afterLoanState: [
-          { required: true, message: "贷后状态跟踪：未完结、已完结不能为空", trigger: "change" }
+          { required: true, message: "贷后状态跟踪不能为空", trigger: "change" }
         ],
         quantitativeGoals: [
           { required: true, message: "量化目标不能为空", trigger: "blur" }
@@ -480,6 +357,14 @@ export default {
         ],
       }
     };
+  },
+  watch: {
+    open(n, o) {
+      if (n == false) {
+        this.created_successfully = false;
+        this.isEditable = true;
+      }
+    }
   },
   computed: {
     ...mapGetters([
@@ -527,6 +412,7 @@ export default {
     // 取消按钮
     cancel() {
       this.open = false;
+      this.created_successfully = false;
       this.reset();
     },
     // 表单重置
@@ -606,11 +492,6 @@ export default {
           let rzaudit_data = null;
           if (this.form.id != null) {
             data.scrUuid = Number(this.scrUuid);
-            // updateLoan(data).then(response => {
-            //   this.$modal.msgSuccess("修改成功");
-            //   this.open = false;
-            //   this.getList();
-            // });
             rzaudit_data = {
               "auditId": data.id,
               "scrUuid": data.scrUuid,
@@ -621,15 +502,7 @@ export default {
               "auditState": "1759514891045044200",
               "uuid": data.uuid
             }
-
-
           } else {
-            // addLoan(this.form).then(response => {
-            //   this.$modal.msgSuccess("新增成功");
-            //   this.open = false;
-            //   this.getList();
-            // });
-
             // 生成一个 uuid
             const generator = new SnowflakeIdGenerator();
 
@@ -651,13 +524,9 @@ export default {
               "auditState": "1759514891045044200",
               "uuid": uuid
             }
-            console.log(data);
           }
           addList(rzaudit_data).then(res => {
             this.created_successfully = true;
-            // this.$modal.msgSuccess("新增成功");
-            // this.open = false;
-
           })
         }
       });
@@ -668,6 +537,7 @@ export default {
       this.$modal.confirm('是否确认删除贷后管理编号为"' + ids + '"的数据项？').then(function () {
         return delLoan(ids);
       }).then(() => {
+        this.cancel();
         this.getList();
         this.$modal.msgSuccess("删除成功");
       }).catch(() => { });
@@ -681,7 +551,7 @@ export default {
       let obj = {};
       obj.url = "";
       obj.projectManagementId = "";
-      obj.type = "";
+      obj.type = "rz_after_loan";
       this.rzsrc2List.push(obj);
     },
     /** 附件表删除按钮操作 */

@@ -1,57 +1,8 @@
 <template>
   <div class="app-container">
-    <!-- <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="政府专项债管理编号" prop="managementId">
-        <el-input v-model="queryParams.managementId" placeholder="请输入政府专项债管理编号" clearable
-          @keyup.enter.native="handleQuery" />
-      </el-form-item>
-      <el-form-item label="债券名称" prop="bondName">
-        <el-input v-model="queryParams.bondName" placeholder="请输入债券名称" clearable @keyup.enter.native="handleQuery" />
-      </el-form-item>
-      <el-form-item label="债券发行规模" prop="bondSize">
-        <el-select v-model="queryParams.bondSize" placeholder="请选择债券发行规模" clearable>
-          <el-option v-for="dict in dict.type.sys_1762824645385388000" :key="dict.value" :label="dict.label"
-            :value="dict.value" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="利率" prop="rate">
-        <el-select v-model="queryParams.rate" placeholder="请选择利率" clearable>
-          <el-option v-for="dict in dict.type.sys_1762824761903153200" :key="dict.value" :label="dict.label"
-            :value="dict.value" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="债券发行期限" prop="bondDuration">
-        <el-select v-model="queryParams.bondDuration" placeholder="请选择债券发行期限" clearable>
-          <el-option v-for="dict in dict.type.sys_1762824852571422700" :key="dict.value" :label="dict.label"
-            :value="dict.value" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="偿还方式：先息后本" prop="repaymentMethod">
-        <el-select v-model="queryParams.repaymentMethod" placeholder="请选择偿还方式：先息后本" clearable>
-          <el-option v-for="dict in dict.type.sys_1759533864251818000" :key="dict.value" :label="dict.label"
-            :value="dict.value" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="累计到账金额" prop="accumulatedAmountReceived">
-        <el-input v-model="queryParams.accumulatedAmountReceived" placeholder="请输入累计到账金额" clearable
-          @keyup.enter.native="handleQuery" />
-      </el-form-item>
-      <el-form-item label="发行主体" prop="issuingEntity">
-        <el-select v-model="queryParams.issuingEntity" placeholder="请选择发行主体" clearable>
-          <el-option v-for="dict in dict.type.sys_1762824996528324600" :key="dict.value" :label="dict.label"
-            :value="dict.value" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="uuid" prop="uuid">
-        <el-input v-model="queryParams.uuid" placeholder="请输入uuid" clearable @keyup.enter.native="handleQuery" />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form> -->
     <search-panel HeaderIcon="government" title="政府专项债">
-      <el-form :model="queryParams" ref="queryForm" size="small" label-width="120px" label-position="left" v-show="showSearch">
+      <el-form :model="queryParams" ref="queryForm" size="small" label-width="160px" label-position="left"
+        v-show="showSearch">
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="管理编号" prop="managementId">
@@ -104,7 +55,7 @@
 
         <el-row :gutter="20">
           <el-col :span="8">
-            <el-form-item label="累计到账金额" prop="accumulatedAmountReceived">
+            <el-form-item label="累计到账金额（万元）" prop="accumulatedAmountReceived">
               <el-input v-model="queryParams.accumulatedAmountReceived" placeholder="请输入累计到账金额" clearable
                 @keyup.enter.native="handleQuery" />
             </el-form-item>
@@ -177,7 +128,11 @@
           <dict-tag :options="dict.type.sys_1759533864251818000" :value="scope.row.repaymentMethod" />
         </template>
       </el-table-column>
-      <el-table-column label="累计到账金额（万元）" align="center" prop="accumulatedAmountReceived" width="180" />
+      <el-table-column label="累计到账金额（万元）" align="center" prop="accumulatedAmountReceived" width="180">
+        <template slot-scope="scope">
+          <span>{{ formatNumberAsRMB(scope.row.accumulatedAmountReceived) }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="发行主体" align="center" prop="issuingEntity">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1762824996528324600" :value="scope.row.issuingEntity" />
@@ -208,90 +163,11 @@
     <!-- 添加或修改政府专项债对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="60%" append-to-body>
       <el-divider class="no_mt mb20"></el-divider>
-      <!-- <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="政府专项债管理编号" prop="managementId">
-          <el-input v-model="form.managementId" placeholder="请输入政府专项债管理编号" />
-        </el-form-item>
-        <el-form-item label="数据唯一编号" prop="scrUuid">
-          <file-upload v-model="form.scrUuid" />
-        </el-form-item>
-        <el-form-item label="债券名称" prop="bondName">
-          <el-input v-model="form.bondName" placeholder="请输入债券名称" />
-        </el-form-item>
-        <el-form-item label="债券发行规模" prop="bondSize">
-          <el-select v-model="form.bondSize" placeholder="请选择债券发行规模">
-            <el-option v-for="dict in dict.type.sys_1762824645385388000" :key="dict.value" :label="dict.label"
-              :value="dict.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="利率" prop="rate">
-          <el-select v-model="form.rate" placeholder="请选择利率">
-            <el-option v-for="dict in dict.type.sys_1762824761903153200" :key="dict.value" :label="dict.label"
-              :value="dict.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="债券发行期限" prop="bondDuration">
-          <el-select v-model="form.bondDuration" placeholder="请选择债券发行期限">
-            <el-option v-for="dict in dict.type.sys_1762824852571422700" :key="dict.value" :label="dict.label"
-              :value="dict.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="偿还方式：先息后本" prop="repaymentMethod">
-          <el-select v-model="form.repaymentMethod" placeholder="请选择偿还方式：先息后本">
-            <el-option v-for="dict in dict.type.sys_1759533864251818000" :key="dict.value" :label="dict.label"
-              :value="dict.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="累计到账金额" prop="accumulatedAmountReceived">
-          <el-input v-model="form.accumulatedAmountReceived" placeholder="请输入累计到账金额" />
-        </el-form-item>
-        <el-form-item label="发行主体" prop="issuingEntity">
-          <el-select v-model="form.issuingEntity" placeholder="请选择发行主体">
-            <el-option v-for="dict in dict.type.sys_1762824996528324600" :key="dict.value" :label="dict.label"
-              :value="dict.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="备注" prop="comment">
-          <el-input v-model="form.comment" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
-        <el-form-item label="uuid" prop="uuid">
-          <el-input v-model="form.uuid" placeholder="请输入uuid" />
-        </el-form-item>
-        <el-divider content-position="center">附件表信息</el-divider>
-        <el-row :gutter="10" class="mb8">
-          <el-col :span="1.5">
-            <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAddrzsrc2">添加</el-button>
-          </el-col>
-          <el-col :span="1.5">
-            <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDeleterzsrc2">删除</el-button>
-          </el-col>
-        </el-row>
-        <el-table :data="rzsrc2List" :row-class-name="rowrzsrc2Index" @selection-change="handlerzsrc2SelectionChange"
-          ref="rzsrc2">
-          <el-table-column type="selection" width="50" align="center" />
-          <el-table-column label="序号" align="center" prop="index" width="50" />
-          <el-table-column label="url地址" prop="url" width="150">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.url" placeholder="请输入url地址" />
-            </template>
-          </el-table-column>
-          <el-table-column label="各个项目管理编号" prop="projectManagementId" width="150">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.projectManagementId" placeholder="请输入各个项目管理编号" />
-            </template>
-          </el-table-column>
-          <el-table-column label="种类筛选：下拉" prop="type" width="150">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.type" placeholder="请输入种类筛选：下拉" />
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-form> -->
 
       <div v-if="created_successfully == false">
         <div v-if="title === '修改政府专项债'" class="modeify-btn" style="display: flex; justify-content: end;">
           <el-button type="primary" @click="toggleEdit">编 辑</el-button>
-          <el-button @click="cancel">删 除</el-button>
+          <el-button @click="handleDelete(form)">删 除</el-button>
         </div>
 
         <el-form ref="form" :model="form" :rules="rules" label-width="80px" label-position="top">
@@ -362,7 +238,7 @@
           <el-row :gutter="20">
             <el-col :span="24">
               <el-form-item label="备注" prop="comment">
-                <el-input :readonly="!isEditable" v-model="form.comment" maxlength="200" type="textarea" :rows="4"
+                <el-input :readonly="!isEditable" v-model="form.comment" show-word-limit maxlength="200" type="textarea" :rows="4"
                   placeholder="请输入备注信息，最多不超过200字" />
               </el-form-item>
             </el-col>
@@ -495,6 +371,14 @@ export default {
       }
     };
   },
+  watch: {
+    open(n, o) {
+      if (n == false) {
+        this.created_successfully = false;
+        this.isEditable = true;
+      }
+    }
+  },
   computed: {
     ...mapGetters([
       'name', 'avatar'
@@ -531,6 +415,7 @@ export default {
     // 取消按钮
     cancel() {
       this.open = false;
+      this.created_successfully = false;
       this.reset();
     },
     // 表单重置
@@ -606,21 +491,20 @@ export default {
         if (valid) {
           const data = JSON.parse(JSON.stringify(this.form))
           this.form.rzsrc2List = this.rzsrc2List;
+          let rzaudit_data = null;
           if (this.form.id != null) {
             data.scrUuid = Number(this.scrUuid);
-            updateBonds(data).then(response => {
-              this.$modal.msgSuccess("修改成功");
-              this.open = false;
-              this.getList();
-            });
+            rzaudit_data = {
+              "auditId": data.id,
+              "scrUuid": data.scrUuid,
+              "createBy": this.name,
+              "createTime": null,
+              "dataJson": JSON.stringify(data),
+              "tableName": "rz_government_special_bonds",
+              "auditState": "1759514891045044200",
+              "uuid": data.uuid
+            }
           } else {
-            // addBonds(this.form).then(response => {
-            //   this.$modal.msgSuccess("新增成功");
-            //   this.open = false;
-            //   this.getList();
-            // });
-
-
             // 生成一个 uuid
             const generator = new SnowflakeIdGenerator();
             data.scrUuid = generator.nextId();
@@ -628,8 +512,11 @@ export default {
 
             data.createBy = this.name;
 
-
-            const rzaudit_data = {
+            // start
+            const uuid = String(generator.nextId())
+            data.uuid = uuid;
+            // end
+            rzaudit_data = {
               "id": null,
               "auditId": String(generator.nextId()).substring(0, 6),
               "scrUuid": data.scrUuid,
@@ -637,17 +524,13 @@ export default {
               "createTime": null,
               "dataJson": JSON.stringify(data),
               "tableName": "rz_government_special_bonds",
-              "auditState": "1759514891045044200"
+              "auditState": "1759514891045044200",
+              "uuid": uuid
             }
-
-
-            addList(rzaudit_data).then(res => {
-              this.created_successfully = true;
-              // this.$modal.msgSuccess("新增成功");
-              // this.open = false;
-
-            })
           }
+          addList(rzaudit_data).then(res => {
+            this.created_successfully = true;
+          })
         }
       });
     },
@@ -657,6 +540,7 @@ export default {
       this.$modal.confirm('是否确认删除政府专项债编号为"' + ids + '"的数据项？').then(function () {
         return delBonds(ids);
       }).then(() => {
+        this.cancel();
         this.getList();
         this.$modal.msgSuccess("删除成功");
       }).catch(() => { });
@@ -670,7 +554,7 @@ export default {
       let obj = {};
       obj.url = "";
       obj.projectManagementId = "";
-      obj.type = "";
+      obj.type = "rz_government_special_bonds";
       this.rzsrc2List.push(obj);
     },
     /** 附件表删除按钮操作 */

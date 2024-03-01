@@ -122,8 +122,14 @@
           </el-table-column>
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
             <template slot-scope="scope">
-              <el-button size="mini" type="text" @click="handleUpdate(scope.row)" v-hasPermi="['rzauditlist:list:edit']">撤
+              <el-button v-if="scope.row.auditState == '1759514891045044200'" size="mini" type="text" @click="handleUpdate(scope.row)" v-hasPermi="['rzauditlist:list:edit']">撤
                 回</el-button>
+              <span v-else-if="scope.row.auditState == '1759515068883533800'">
+                  已撤回
+              </span>
+              <span v-else-if="scope.row.auditState !== '1759515068883533800'">
+                审批完成
+              </span>
               <!-- <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"
                 v-hasPermi="['rzauditlist:list:remove']">删除</el-button> -->
             </template>
@@ -227,12 +233,6 @@ export default {
         fontSize: '14px',
         fontWeight: 'bold',
       },
-      //       auditStateColor: {
-      //     "1759514891045044200": "blue",
-      //     "1759514942710481000": "red",
-      //     "1759515025552179200": "green",
-      //     "1759515068883533800": "gray"
-      // },
       precautions_obj: precautions_obj
     };
   },

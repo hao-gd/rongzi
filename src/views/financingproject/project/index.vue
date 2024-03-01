@@ -1,153 +1,8 @@
 <template>
   <div class="app-container">
-    <!-- <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="管理编号" prop="managementId">
-        <el-input
-          v-model="queryParams.managementId"
-          placeholder="请输入管理编号"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="借款单位" prop="borrowingUnit">
-        <el-select v-model="queryParams.borrowingUnit" placeholder="请选择借款单位" clearable>
-          <el-option
-            v-for="dict in dict.type.sys_1759464239669444600"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="金融机构" prop="financialInstitution">
-        <el-select v-model="queryParams.financialInstitution" placeholder="请选择金融机构" clearable>
-          <el-option
-            v-for="dict in dict.type.sys_acceptor"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="融资金额" prop="financingAmount">
-        <el-input
-          v-model="queryParams.financingAmount"
-          placeholder="请输入融资金额"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="融资类型：流贷金额、并购贷、反向保理、商业承兑、银行承兑" prop="financingType">
-        <el-select v-model="queryParams.financingType" placeholder="请选择融资类型：流贷金额、并购贷、反向保理、商业承兑、银行承兑" clearable>
-          <el-option
-            v-for="dict in dict.type.sys_1759508335389835300"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="合同编号" prop="contractId">
-        <el-input
-          v-model="queryParams.contractId"
-          placeholder="请输入合同编号"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="合同签订日期">
-        <el-date-picker
-          v-model="daterangeContractSigningDate"
-          style="width: 240px"
-          value-format="yyyy-MM-dd"
-          type="daterange"
-          range-separator="-"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        ></el-date-picker>
-      </el-form-item>
-      <el-form-item label="借款日期" prop="loanDate">
-        <el-date-picker clearable
-          v-model="queryParams.loanDate"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择借款日期">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="到期日期" prop="dueDate">
-        <el-date-picker clearable
-          v-model="queryParams.dueDate"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择到期日期">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="利率" prop="rate">
-        <el-input
-          v-model="queryParams.rate"
-          placeholder="请输入利率"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="借款期限" prop="loanTerm">
-        <el-input
-          v-model="queryParams.loanTerm"
-          placeholder="请输入借款期限"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="增信措施：固定融资、固定资产" prop="creditEnhancementMeasures">
-        <el-input
-          v-model="queryParams.creditEnhancementMeasures"
-          placeholder="请输入增信措施：固定融资、固定资产"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="已还金额" prop="repaidAmount">
-        <el-input
-          v-model="queryParams.repaidAmount"
-          placeholder="请输入已还金额"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="待还金额" prop="remainingAmount">
-        <el-input
-          v-model="queryParams.remainingAmount"
-          placeholder="请输入待还金额"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="贷款状态：未结清、已结清" prop="loanState">
-        <el-select v-model="queryParams.loanState" placeholder="请选择贷款状态：未结清、已结清" clearable>
-          <el-option
-            v-for="dict in dict.type.sys_1759509599150407700"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="uuid" prop="uuid">
-        <el-input
-          v-model="queryParams.uuid"
-          placeholder="请输入uuid"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form> -->
 
     <search-panel HeaderIcon="financingprojectSvg" title="融资项目">
-      <el-form :model="queryParams" ref="queryForm" size="small" :inline="false" v-show="showSearch" label-width="68px">
+      <el-form label-position="left" :model="queryParams" ref="queryForm" size="small" :inline="false" v-show="showSearch" label-width="130px">
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="管理编号" prop="managementId">
@@ -181,7 +36,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="融资金额" prop="financingAmount">
+            <el-form-item label="融资金额（万元）" prop="financingAmount">
               <el-input v-model="queryParams.financingAmount" placeholder="请输入融资金额" clearable
                 @keyup.enter.native="handleQuery" />
             </el-form-item>
@@ -245,7 +100,11 @@
           <dict-tag :options="dict.type.sys_acceptor" :value="scope.row.financialInstitution" />
         </template>
       </el-table-column>
-      <el-table-column label="融资金额（万元）" align="center" prop="financingAmount" width="180" />
+      <el-table-column label="融资金额（万元）" align="center" prop="financingAmount" width="180">
+        <template slot-scope="scope">
+          <span>{{ formatNumberAsRMB(scope.row.financingAmount) }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="融资类型" align="center" prop="financingType">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1759508335389835300" :value="scope.row.financingType" />
@@ -270,11 +129,22 @@
       <el-table-column label="利率" align="center" prop="rate" />
       <el-table-column label="借款期限" align="center" prop="loanTerm" />
       <el-table-column label="增信措施" align="center" prop="creditEnhancementMeasures" />
-      <el-table-column label="已还金额" align="center" prop="repaidAmount" />
-      <el-table-column label="待还金额" align="center" prop="remainingAmount" />
-      <el-table-column label="贷款状态" align="center" prop="loanState">
+      <el-table-column label="已还金额（万元）" align="center" prop="repaidAmount" width="160">
+         <template slot-scope="scope">
+          <span>{{ formatNumberAsRMB(scope.row.repaidAmount) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="待还金额（万元）" align="center" prop="remainingAmount" width="160">
+         <template slot-scope="scope">
+          <span>{{ formatNumberAsRMB(scope.row.remainingAmount) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="贷款状态" align="center" prop="loanState" width="100">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_1759509599150407700" :value="scope.row.loanState" />
+          <svg-icon class="mr5" :icon-class="scope.row.loanState"></svg-icon>
+          <dict-tag style="display: inline-block;" :options="dict.type.sys_1759509599150407700"
+            :value="scope.row.loanState" />
+          <!-- <dict-tag :options="dict.type.sys_1759509599150407700" :value="scope.row.loanState" /> -->
         </template>
       </el-table-column>
       <el-table-column label="备注" align="center" prop="comment" />
@@ -296,114 +166,13 @@
 
     <!-- 添加或修改融资项目对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="60%" append-to-body>
-      <!-- <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="贷后项目管理编号" prop="managementId">
-          <el-input v-model="form.managementId" placeholder="请输入贷后项目管理编号" />
-        </el-form-item>
-        <el-form-item label="数据唯一编号" prop="scrUuid">
-          <file-upload v-model="form.scrUuid" :managementId="form.managementId" @input="upload_completed" />
-        </el-form-item>
-        <el-form-item label="借款单位" prop="borrowingUnit">
-          <el-select v-model="form.borrowingUnit" placeholder="请选择借款单位">
-            <el-option v-for="dict in dict.type.sys_1759464239669444600" :key="dict.value" :label="dict.label"
-              :value="dict.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="金融机构" prop="financialInstitution">
-          <el-select v-model="form.financialInstitution" placeholder="请选择金融机构">
-            <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
-              :value="dict.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="融资金额" prop="financingAmount">
-          <el-input v-model="form.financingAmount" placeholder="请输入融资金额" />
-        </el-form-item>
-        <el-form-item label="融资类型：流贷金额、并购贷、反向保理、商业承兑、银行承兑" prop="financingType">
-          <el-select v-model="form.financingType" placeholder="请选择融资类型：流贷金额、并购贷、反向保理、商业承兑、银行承兑">
-            <el-option v-for="dict in dict.type.sys_1759508335389835300" :key="dict.value" :label="dict.label"
-              :value="dict.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="合同编号" prop="contractId">
-          <el-input v-model="form.contractId" placeholder="请输入合同编号" />
-        </el-form-item>
-        <el-form-item label="合同签订日期" prop="contractSigningDate">
-          <el-date-picker clearable v-model="form.contractSigningDate" type="date" value-format="yyyy-MM-dd"
-            placeholder="请选择合同签订日期">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="借款日期" prop="loanDate">
-          <el-date-picker clearable v-model="form.loanDate" type="date" value-format="yyyy-MM-dd" placeholder="请选择借款日期">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="到期日期" prop="dueDate">
-          <el-date-picker clearable v-model="form.dueDate" type="date" value-format="yyyy-MM-dd" placeholder="请选择到期日期">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="利率" prop="rate">
-          <el-input v-model="form.rate" placeholder="请输入利率" />
-        </el-form-item>
-        <el-form-item label="借款期限" prop="loanTerm">
-          <el-input v-model="form.loanTerm" placeholder="请输入借款期限" />
-        </el-form-item>
-        <el-form-item label="增信措施：固定融资、固定资产" prop="creditEnhancementMeasures">
-          <el-input v-model="form.creditEnhancementMeasures" placeholder="请输入增信措施：固定融资、固定资产" />
-        </el-form-item>
-        <el-form-item label="已还金额" prop="repaidAmount">
-          <el-input v-model="form.repaidAmount" placeholder="请输入已还金额" />
-        </el-form-item>
-        <el-form-item label="待还金额" prop="remainingAmount">
-          <el-input v-model="form.remainingAmount" placeholder="请输入待还金额" />
-        </el-form-item>
-        <el-form-item label="贷款状态：未结清、已结清" prop="loanState">
-          <el-select v-model="form.loanState" placeholder="请选择贷款状态：未结清、已结清">
-            <el-option v-for="dict in dict.type.sys_1759509599150407700" :key="dict.value" :label="dict.label"
-              :value="dict.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="备注" prop="comment">
-          <el-input v-model="form.comment" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
-        <el-form-item label="uuid" prop="uuid">
-          <el-input v-model="form.uuid" placeholder="请输入uuid" />
-        </el-form-item>
-        <el-divider content-position="center">附件表信息</el-divider>
-        <el-row :gutter="10" class="mb8">
-          <el-col :span="1.5">
-            <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAddrzsrc2">添加</el-button>
-          </el-col>
-          <el-col :span="1.5">
-            <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDeleterzsrc2">删除</el-button>
-          </el-col>
-        </el-row>
-        <el-table :data="rzsrc2List" :row-class-name="rowrzsrc2Index" @selection-change="handlerzsrc2SelectionChange"
-          ref="rzsrc2">
-          <el-table-column type="selection" width="50" align="center" />
-          <el-table-column label="序号" align="center" prop="index" width="50" />
-          <el-table-column label="url地址" prop="url" width="150">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.url" placeholder="请输入url地址" />
-            </template>
-          </el-table-column>
-          <el-table-column label="各个项目管理编号" prop="projectManagementId" width="150">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.projectManagementId" placeholder="请输入各个项目管理编号" />
-            </template>
-          </el-table-column>
-          <el-table-column label="种类筛选：下拉" prop="type" width="150">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.type" placeholder="请输入种类筛选：下拉" />
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-form> -->
 
       <el-divider class="no_mt mb20"></el-divider>
 
       <div v-if="created_successfully == false">
         <div v-if="title === '修改融资项目'" class="modeify-btn" style="display: flex; justify-content: end;">
           <el-button type="primary" @click="toggleEdit">编 辑</el-button>
-          <el-button @click="cancel">删 除</el-button>
+          <el-button @click="handleDelete(form)">删 除</el-button>
         </div>
 
         <el-form ref="form" :model="form" :rules="rules" label-width="80px" label-position="top">
@@ -516,8 +285,8 @@
           <el-row :gutter="20">
             <el-col :span="24">
               <el-form-item label="备注" prop="comment">
-                <el-input :readonly="!isEditable" v-model="form.comment" maxlength="200" type="textarea" :rows="4"
-                  placeholder="请输入备注信息，最多不超过200字" />
+                <el-input :readonly="!isEditable" v-model="form.comment" show-word-limit maxlength="200" type="textarea"
+                  :rows="4" placeholder="请输入备注信息，最多不超过200字" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -677,10 +446,18 @@ export default {
           { required: true, message: "待还金额不能为空", trigger: "blur" }
         ],
         loanState: [
-          { required: true, message: "贷款状态：未结清、已结清不能为空", trigger: "change" }
+          { required: true, message: "贷款状态不能为空", trigger: "change" }
         ],
       }
     };
+  },
+  watch: {
+    open(n, o) {
+      if (n == false) {
+        this.created_successfully = false;
+        this.isEditable = true;
+      }
+    }
   },
   computed: {
     ...mapGetters([
@@ -724,6 +501,7 @@ export default {
     // 取消按钮
     cancel() {
       this.open = false;
+      this.created_successfully = false;
       this.reset();
     },
     // 表单重置
@@ -802,84 +580,49 @@ export default {
     },
     /** 提交按钮 */
     submitForm() {
-      // this.$refs["form"].validate(valid => {
-      //   if (valid) {
-      //     this.form.rzsrc2List = this.rzsrc2List;
-      //     if (this.form.id != null) {
-      //       updateProject(this.form).then(response => {
-      //         this.$modal.msgSuccess("修改成功");
-      //         this.open = false;
-      //         this.getList();
-      //       });
-      //     } else {
-      //       addProject(this.form).then(response => {
-      //         this.$modal.msgSuccess("新增成功");
-      //         this.open = false;
-      //         this.getList();
-      //       });
-      //     }
-      //   }
-      // });
-
-
       this.$refs["form"].validate(valid => {
         if (valid) {
           const data = JSON.parse(JSON.stringify(this.form))
           this.form.rzsrc2List = this.rzsrc2List;
-
+          let rzaudit_data = null;
           if (this.form.id != null) {
             data.scrUuid = Number(this.scrUuid);
-            console.log(JSON.stringify(data));
-            // return false;
-            updateProject(data).then(response => {
-              this.$modal.msgSuccess("修改成功");
-              this.open = false;
-              this.getList();
-            });
+            rzaudit_data = {
+              "auditId": data.id,
+              "scrUuid": data.scrUuid,
+              "createBy": this.name,
+              "createTime": null,
+              "dataJson": JSON.stringify(data),
+              "tableName": "rz_financing_project",
+              "auditState": "1759514891045044200",
+              "uuid": data.uuid
+            }
           } else {
-            // 生成一个 uuid
-            // const generator = new SnowflakeIdGenerator();
-            // data.scrUuid = generator.nextId();
-            // data.rzsrc2List = this.rzsrc2List;
-            // addProject(data).then(response => {
-            //   this.$modal.msgSuccess("新增成功");
-            //   this.open = false;
-            //   this.getList();
-            // });
-
-
             // 生成一个 uuid
             const generator = new SnowflakeIdGenerator();
             data.scrUuid = generator.nextId();
             data.rzsrc2List = this.rzsrc2List;
 
             data.createBy = this.name;
-            // addBank(data).then(response => {
-            //   this.$modal.msgSuccess("新增成功");
-            //   this.open = false;
-            //   this.getList();
-            // });
-
-
-            const rzaudit_data = {
+            // start
+            const uuid = String(generator.nextId())
+            data.uuid = uuid;
+            // end
+            rzaudit_data = {
               "id": null,
-              "auditId": String(generator.nextId()).substring(0, 6),
+              "auditId": null,
               "scrUuid": data.scrUuid,
               "createBy": this.name,
               "createTime": null,
               "dataJson": JSON.stringify(data),
               "tableName": "rz_financing_project",
-              "auditState": "1759514891045044200"
+              "auditState": "1759514891045044200",
+              "uuid": uuid
             }
-
-
-            addList(rzaudit_data).then(res => {
-              this.created_successfully = true;
-              // this.$modal.msgSuccess("新增成功");
-              // this.open = false;
-
-            })
           }
+          addList(rzaudit_data).then(res => {
+            this.created_successfully = true;
+          })
         }
       });
     },
@@ -889,6 +632,7 @@ export default {
       this.$modal.confirm('是否确认删除融资项目编号为"' + ids + '"的数据项？').then(function () {
         return delProject(ids);
       }).then(() => {
+        this.cancel();
         this.getList();
         this.$modal.msgSuccess("删除成功");
       }).catch(() => { });
@@ -902,7 +646,7 @@ export default {
       let obj = {};
       obj.url = "";
       obj.projectManagementId = "";
-      obj.type = "";
+      obj.type = "rz_financing_project";
       this.rzsrc2List.push(obj);
     },
     /** 附件表删除按钮操作 */

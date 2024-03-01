@@ -1,54 +1,5 @@
 <template>
   <div class="app-container">
-    <!-- <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="管理编号" prop="managementId">
-        <el-input v-model="queryParams.managementId" placeholder="请输入管理编号" clearable @keyup.enter.native="handleQuery" />
-      </el-form-item>
-      <el-form-item label="审核id" prop="auditId">
-        <el-input v-model="queryParams.auditId" placeholder="请输入审核id" clearable @keyup.enter.native="handleQuery" />
-      </el-form-item>
-      <el-form-item label="信用证号码" prop="creditNumber">
-        <el-input v-model="queryParams.creditNumber" placeholder="请输入信用证号码" clearable @keyup.enter.native="handleQuery" />
-      </el-form-item>
-      <el-form-item label="开证金额" prop="issuingAmount">
-        <el-input v-model="queryParams.issuingAmount" placeholder="请输入开证金额" clearable @keyup.enter.native="handleQuery" />
-      </el-form-item>
-      <el-form-item label="开证日期">
-        <el-date-picker v-model="daterangeIssuingDate" style="width: 240px" value-format="yyyy-MM-dd" type="daterange"
-          range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
-      </el-form-item>
-      <el-form-item label="有效日期">
-        <el-date-picker v-model="daterangeEffectiveDate" style="width: 240px" value-format="yyyy-MM-dd" type="daterange"
-          range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
-      </el-form-item>
-      <el-form-item label="到期提醒" prop="remark">
-        <el-select v-model="queryParams.remark" placeholder="请选择到期提醒" clearable>
-          <el-option v-for="dict in dict.type.sys_maturity" :key="dict.value" :label="dict.label" :value="dict.value" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="开证申请人" prop="applicant">
-        <el-select v-model="queryParams.applicant" placeholder="请选择开证申请人" clearable>
-          <el-option v-for="dict in dict.type.sys_1757265915323351000" :key="dict.value" :label="dict.label"
-            :value="dict.value" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="收益人" prop="beneficiary">
-        <el-select v-model="queryParams.beneficiary" placeholder="请选择收益人" clearable>
-          <el-option v-for="dict in dict.type.sys_1757265828501258200" :key="dict.value" :label="dict.label"
-            :value="dict.value" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="金融机构" prop="financialInstitution">
-        <el-select v-model="queryParams.financialInstitution" placeholder="请选择金融机构" clearable>
-          <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label" :value="dict.value" />
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form> -->
-
     <search-panel HeaderIcon="credit" title="信用证">
       <el-form label-position="left" :model="queryParams" ref="queryForm" size="small" :inline="false" v-show="showSearch" label-width="100px">
         <el-row :gutter="20">
@@ -142,7 +93,11 @@
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
       <!-- <el-table-column label="审核id" align="center" prop="auditId" /> -->
       <el-table-column label="信用证号码" align="center" prop="creditNumber" />
-      <el-table-column label="开证金额" align="center" prop="issuingAmount" />
+      <el-table-column label="开证金额" align="center" prop="issuingAmount">
+        <template slot-scope="scope">
+          <span>{{ formatNumberAsRMB(scope.row.issuingAmount) }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="开证日期" align="center" prop="issuingDate" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.issuingDate, '{y}-{m}-{d}') }}</span>
@@ -195,96 +150,13 @@
 
     <!-- 添加或修改信用证对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="60%" append-to-body>
-      <!-- <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="管理编号" prop="managementId">
-          <el-input v-model="form.managementId" placeholder="请输入管理编号" />
-        </el-form-item>
-        <el-form-item label="审核id" prop="auditId">
-          <el-input v-model="form.auditId" placeholder="请输入审核id" />
-        </el-form-item>
-        <el-form-item label="信用证号码" prop="creditNumber">
-          <el-input v-model="form.creditNumber" placeholder="请输入信用证号码" />
-        </el-form-item>
-        <el-form-item label="开证金额" prop="issuingAmount">
-          <el-input v-model="form.issuingAmount" placeholder="请输入开证金额" />
-        </el-form-item>
-        <el-form-item label="开证日期" prop="issuingDate">
-          <el-date-picker clearable v-model="form.issuingDate" type="date" value-format="yyyy-MM-dd"
-            placeholder="请选择开证日期">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="有效日期" prop="effectiveDate">
-          <el-date-picker clearable v-model="form.effectiveDate" type="date" value-format="yyyy-MM-dd"
-            placeholder="请选择有效日期">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="到期提醒" prop="remark">
-          <el-select v-model="form.remark" placeholder="请选择到期提醒">
-            <el-option v-for="dict in dict.type.sys_maturity" :key="dict.value" :label="dict.label"
-              :value="dict.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="开证申请人" prop="applicant">
-          <el-select v-model="form.applicant" placeholder="请选择开证申请人">
-            <el-option v-for="dict in dict.type.sys_1757265915323351000" :key="dict.value" :label="dict.label"
-              :value="dict.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="收益人" prop="beneficiary">
-          <el-select v-model="form.beneficiary" placeholder="请选择收益人">
-            <el-option v-for="dict in dict.type.sys_1757265828501258200" :key="dict.value" :label="dict.label"
-              :value="dict.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="金融机构" prop="financialInstitution">
-          <el-select v-model="form.financialInstitution" placeholder="请选择金融机构">
-            <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
-              :value="dict.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="备注" prop="comment">
-          <el-input v-model="form.comment" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
-        <el-form-item label="附件" prop="scrUuid">
-          <file-upload v-model="form.scrUuid" :managementId="form.managementId" @input="upload_completed" />
-        </el-form-item>
-        <el-divider content-position="center">附件表信息</el-divider>
-        <el-row :gutter="10" class="mb8">
-          <el-col :span="1.5">
-            <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAddrzsrc2">添加</el-button>
-          </el-col>
-          <el-col :span="1.5">
-            <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDeleterzsrc2">删除</el-button>
-          </el-col>
-        </el-row>
-        <el-table :data="rzsrc2List" :row-class-name="rowrzsrc2Index" @selection-change="handlerzsrc2SelectionChange"
-          ref="rzsrc2">
-          <el-table-column type="selection" width="50" align="center" />
-          <el-table-column label="序号" align="center" prop="index" width="50" />
-          <el-table-column label="url地址" prop="url" width="150">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.url" placeholder="请输入url地址" />
-            </template>
-          </el-table-column>
-          <el-table-column label="各个项目管理编号" prop="projectManagementId" width="150">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.projectManagementId" placeholder="请输入各个项目管理编号" />
-            </template>
-          </el-table-column>
-          <el-table-column label="种类筛选：下拉" prop="type" width="150">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.type" placeholder="请输入种类筛选：下拉" />
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-form> -->
       <el-divider class="no_mt mb20"></el-divider>
 
 
       <div v-if="created_successfully == false">
         <div v-if="title === '修改信用证'" class="modeify-btn" style="display: flex; justify-content: end;">
           <el-button type="primary" @click="toggleEdit">编 辑</el-button>
-          <el-button @click="cancel">删 除</el-button>
+          <el-button @click="handleDelete(form)">删 除</el-button>
         </div>
 
         <el-form ref="form" :model="form" :rules="rules" label-width="100px" label-position="top">
@@ -349,7 +221,7 @@
           <el-row :gutter="20">
             <el-col :span="24">
               <el-form-item label="备注" prop="comment">
-                <el-input :readonly="!isEditable" v-model="form.comment" maxlength="200" type="textarea" :rows="4"
+                <el-input :readonly="!isEditable" v-model="form.comment" show-word-limit maxlength="200" type="textarea" :rows="4"
                   placeholder="请输入备注信息，最多不超过200字" />
               </el-form-item>
             </el-col>
@@ -494,6 +366,14 @@ export default {
       }
     };
   },
+  watch: {
+    open(n, o) {
+      if (n == false) {
+        this.created_successfully = false;
+        this.isEditable = true;
+      }
+    }
+  },
   computed: {
     ...mapGetters([
       'name', 'avatar'
@@ -540,6 +420,7 @@ export default {
     // 取消按钮
     cancel() {
       this.open = false;
+      this.created_successfully = false;
       this.reset();
     },
     // 表单重置
@@ -619,19 +500,20 @@ export default {
           const data = JSON.parse(JSON.stringify(this.form))
 
           this.form.rzsrc2List = this.rzsrc2List;
+          let rzaudit_data = null;
           if (this.form.id != null) {
             data.scrUuid = Number(this.scrUuid);
-            updateLetter(data).then(response => {
-              this.$modal.msgSuccess("修改成功");
-              this.open = false;
-              this.getList();
-            });
+            rzaudit_data = {
+              "auditId": data.id,
+              "scrUuid": data.scrUuid,
+              "createBy": this.name,
+              "createTime": null,
+              "dataJson": JSON.stringify(data),
+              "tableName": "rz_credit_letter",
+              "auditState": "1759514891045044200",
+              "uuid": data.uuid
+            }
           } else {
-            // addLetter(this.form).then(response => {
-            //   this.$modal.msgSuccess("新增成功");
-            //   this.open = false;
-            //   this.getList();
-            // });
 
             const generator = new SnowflakeIdGenerator();
             data.scrUuid = generator.nextId();
@@ -639,26 +521,26 @@ export default {
 
             data.createBy = this.name;
 
-            const rzaudit_data = {
+            // start
+            const uuid = String(generator.nextId())
+            data.uuid = uuid;
+            // end
+
+            rzaudit_data = {
               "id": null,
-              "auditId": String(generator.nextId()).substring(0, 6),
+              "auditId": null,
               "scrUuid": data.scrUuid,
               "createBy": this.name,
               "createTime": null,
               "dataJson": JSON.stringify(data),
               "tableName": "rz_credit_letter",
-              "auditState": "1759514891045044200"
+              "auditState": "1759514891045044200",
+              "uuid": uuid
             }
-
-
-            addList(rzaudit_data).then(res => {
-              this.created_successfully = true;
-
-              // this.$modal.msgSuccess("新增成功");
-              // this.open = false;
-
-            })
           }
+          addList(rzaudit_data).then(res => {
+              this.created_successfully = true;
+            })
         }
       });
     },
@@ -668,6 +550,7 @@ export default {
       this.$modal.confirm('是否确认删除信用证编号为"' + ids + '"的数据项？').then(function () {
         return delLetter(ids);
       }).then(() => {
+        thic.cancel();
         this.getList();
         this.$modal.msgSuccess("删除成功");
       }).catch(() => { });
@@ -681,7 +564,7 @@ export default {
       let obj = {};
       obj.url = "";
       obj.projectManagementId = "";
-      obj.type = "";
+      obj.type = "rz_credit_letter";
       this.rzsrc2List.push(obj);
     },
     /** 附件表删除按钮操作 */
