@@ -104,9 +104,11 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="到期日期" prop="dueDate">
-              <el-date-picker clearable v-model="queryParams.dueDate" type="date" value-format="yyyy-MM-dd"
+              <!-- <el-date-picker clearable v-model="queryParams.dueDate" type="date" value-format="yyyy-MM-dd"
                 placeholder="请选择到期日期">
-              </el-date-picker>
+              </el-date-picker> -->
+              <el-date-picker v-model="daterangeDueDate" clearable value-format="yyyy-MM-dd" type="daterange"
+                range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -164,7 +166,7 @@
       :header-cell-style="header_cell_style" show-overflow-tooltip>
       <el-table-column show-overflow-tooltip fixed="left" type="selection" width="55" align="center" />
       <!-- <el-table-column show-overflow-tooltip label="主键id" align="center" prop="id" /> -->
-      <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId"  />
+      <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" />
       <!-- <el-table-column show-overflow-tooltip label="数据唯一编号" align="center" prop="scrUuid" /> -->
       <el-table-column show-overflow-tooltip label="借款单位" align="center" prop="borrowingUnit" width="120">
         <template slot-scope="scope">
@@ -207,26 +209,30 @@
       </el-table-column>
       <el-table-column show-overflow-tooltip label="到期提醒" align="center" prop="remark">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_maturity" :value="scope.row.remark" />
+          <!-- <dict-tag :options="dict.type.sys_maturity" :value="scope.row.remark" /> -->
+          <el-tag effect="plain" :hit="true" :class="checkDueReminderWithConfig(scope.row.dueDate).color">
+            {{ checkDueReminderWithConfig(scope.row.dueDate).message }}
+          </el-tag>
         </template>
       </el-table-column>
       <el-table-column show-overflow-tooltip label="借款期限" align="center" prop="loanTerm" />
-      <el-table-column show-overflow-tooltip label="本金偿还方式" align="center" prop="principalRepaymentMethod">
+      <el-table-column show-overflow-tooltip label="本金偿还方式" align="center" prop="principalRepaymentMethod" width="120">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1759533864251818000" :value="scope.row.principalRepaymentMethod" />
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="利息偿还方式" align="center" prop="interestRepaymentMethod">
+      <el-table-column show-overflow-tooltip label="利息偿还方式" align="center" prop="interestRepaymentMethod" width="120">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1759533864251818000" :value="scope.row.interestRepaymentMethod" />
         </template>
       </el-table-column>
       <el-table-column show-overflow-tooltip label="还款账户" align="center" prop="repaymentAccount" />
       <!-- <el-table-column show-overflow-tooltip label="uuid" align="center" prop="uuid" /> -->
-      <el-table-column show-overflow-tooltip fixed="right" label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column show-overflow-tooltip fixed="right" label="操作" align="center"
+        class-name="small-padding fixed-width">
         <template slot-scope="scope">
 
-          <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)"
+          <el-button size="mini" type="text" @click="handleUpdate(scope.row)"
             v-hasPermi="['rzrepayment:repayment:edit']">查 看</el-button>
 
           <!-- <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)"
@@ -416,15 +422,15 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="借款日期" prop="loanDate">
-                <el-date-picker :disabled="!isEditable" clearable v-model="form.loanDate" type="date" value-format="yyyy-MM-dd"
-                  placeholder="请选择借款日期">
+                <el-date-picker :disabled="!isEditable" clearable v-model="form.loanDate" type="date"
+                  value-format="yyyy-MM-dd" placeholder="请选择借款日期">
                 </el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="到期日期" prop="dueDate">
-                <el-date-picker :disabled="!isEditable" clearable v-model="form.dueDate" type="date" value-format="yyyy-MM-dd"
-                  placeholder="请选择到期日期">
+                <el-date-picker :disabled="!isEditable" clearable v-model="form.dueDate" type="date"
+                  value-format="yyyy-MM-dd" placeholder="请选择到期日期">
                 </el-date-picker>
               </el-form-item>
             </el-col>
@@ -486,6 +492,10 @@ import { mapGetters } from 'vuex';
 import moment from 'moment'
 import CreateSuccess from '@/components/createSuccess/index.vue'
 import SearchPanel from '@/components/SearchPanel/index.vue'
+
+import { checkDueReminderWithConfig } from '@/utils/expirationreminder';
+import { reminderConfig } from '@/config/expirationreminder'
+
 export default {
   name: "Repayment",
   dicts: ['sys_1759464239669444600', 'sys_1759533269293990000', 'sys_1759501814702538800', 'sys_acceptor', 'sys_1759533566884053000', 'sys_1759533864251818000'],
@@ -495,6 +505,8 @@ export default {
   },
   data() {
     return {
+      reminderConfig: reminderConfig.slice(1),
+      checkDueReminderWithConfig: checkDueReminderWithConfig,
       created_successfully: true,
       isEditable: false,
       header_cell_style: {
@@ -521,6 +533,10 @@ export default {
       title: "",
       // 是否显示弹出层
       open: false,
+      // 开始时间范围
+      daterangeLoanDate: [],
+      // 到期时间范围
+      daterangeDueDate: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -639,6 +655,15 @@ export default {
     /** 查询还款计划列表 */
     getList() {
       this.loading = true;
+      this.queryParams.params = {};
+      if (null != this.daterangeLoanDate && '' != this.daterangeLoanDate) {
+        this.queryParams.params["beginLoanDate"] = this.daterangeLoanDate[0];
+        this.queryParams.params["endLoanDate"] = this.daterangeLoanDate[1];
+      }
+      if (null != this.daterangeDueDate && '' != this.daterangeDueDate) {
+        this.queryParams.params["beginDueDate"] = this.daterangeDueDate[0];
+        this.queryParams.params["endDueDate"] = this.daterangeDueDate[1];
+      }
       listRepayment(this.queryParams).then(response => {
         this.repaymentList = response.rows;
         this.total = response.total;
@@ -688,6 +713,8 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
+      this.daterangeLoanDate = [];
+      this.daterangeDueDate = [];
       this.resetForm("queryForm");
       this.handleQuery();
     },

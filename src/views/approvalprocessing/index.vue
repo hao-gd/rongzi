@@ -180,17 +180,18 @@
 import { listList, getList, delList, addList, updateList } from "@/api/rzauditlist/list";
 import { mapGetters } from 'vuex';
 import { precautions_obj } from '@/config/approvalProcess.js'
+import { SnowflakeIdGenerator } from '@/utils/index'
 
-import { addBank } from "@/api/bankaccept/bank";
-import { addBill } from "@/api/business/bill";
-import { addLetter } from "@/api/credit/letter";
-import { addFactoring } from "@/api/reverse/factoring";
-import { addProject } from "@/api/financingproject/project";
-import { addRepayment } from "@/api/rzrepayment/repayment";
-import { addBonds } from "@/api/government/bonds";
-import { addSpecial } from "@/api/rzspecialloans/special";
-import { addBorrowing } from "@/api/rzinternalborrowing/borrowing";
-import { addLoan } from "@/api/rzafterloan/loan";
+import { addBank, updateBank } from "@/api/bankaccept/bank";
+import { addBill, updateBill } from "@/api/business/bill";
+import { addLetter, updateLetter } from "@/api/credit/letter";
+import { addFactoring, updateFactoring } from "@/api/reverse/factoring";
+import { addProject, updateProject } from "@/api/financingproject/project";
+import { addRepayment, updateRepayment } from "@/api/rzrepayment/repayment";
+import { addBonds, updateBonds } from "@/api/government/bonds";
+import { addSpecial, updateSpecial } from "@/api/rzspecialloans/special";
+import { addBorrowing, updateBorrowing } from "@/api/rzinternalborrowing/borrowing";
+import { addLoan, updateLoan } from "@/api/rzafterloan/loan";
 
 
 export default {
@@ -262,6 +263,18 @@ export default {
                 'rz_special_loans': addSpecial,
                 'rz_internal_borrowing': addBorrowing,
                 'rz_after_loan': addLoan
+            },
+            update_precautions_obj_fun: {
+                'rz_back_accept_bill': updateBank,
+                'rz_business_accept_bill': updateBill,
+                'rz_credit_letter': updateLetter,
+                'rz_reverse_factoring': updateFactoring,
+                'rz_financing_project': updateProject,
+                'rz_repayment': updateRepayment,
+                'rz_government_special_bonds': updateBonds,
+                'rz_special_loans': updateSpecial,
+                'rz_internal_borrowing': updateBorrowing,
+                'rz_after_loan': updateLoan,
             }
         };
     },
@@ -305,17 +318,24 @@ export default {
             /* 获取添加的方法 */
             const response = await getList(id);
             this.form = response.data;
+            
+            const func_ = this.form.auditId != null
+                ? this.update_precautions_obj_fun[this.form.tableName]
+                : this.precautions_obj_fun[this.form.tableName];
 
-            const addfun = this.precautions_obj_fun[this.form.tableName];
-            console.log(addfun, this.form);
-
-            if (addfun == undefined) {
+            if (func_ == undefined) {
                 this.$modal.msgError("数据有问题，请联系管理员");
                 return;
             } else {
                 this.form.auditState = "1759515025552179200";
                 const ad_data = JSON.parse(this.form.dataJson);
-                addfun(ad_data).then(response => {
+                const generator = new SnowflakeIdGenerator();
+
+
+                ad_data.uuid = this.form.auditId != null
+                    ? String(generator.nextId())
+                    : ad_data.uuid;
+                func_(ad_data).then(response => {
                     // this.$modal.msgSuccess("修改成功");
                     // this.open = false;
                     // this.getList();

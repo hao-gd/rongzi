@@ -129,9 +129,13 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="汇票到期日" prop="dueDate">
-              <el-date-picker clearable v-model="queryParams.dueDate" type="date" value-format="yyyy-MM-dd"
-                placeholder="请选择汇票到期日"></el-date-picker>
+            <el-form-item label="汇票到期日">
+              <!-- <el-date-picker clearable v-model="daterangeDueDate1" type="date" value-format="yyyy-MM-dd"
+                placeholder="请选择汇票到期日"></el-date-picker> -->
+
+              <el-date-picker clearable v-model="daterangeDueDate1" type="daterange" style="width: 100%"
+                value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+              </el-date-picker>
             </el-form-item>
           </el-col>
         </el-row>
@@ -145,8 +149,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="到期提醒" prop="remark">
-              <el-select v-model="queryParams.remark" placeholder="请选择到期提醒" clearable>
+            <el-form-item label="到期提醒">
+              <el-select v-model="queryParams.remark" clearable placeholder="请选择到期提醒" @change="handleSelect">
                 <el-option v-for="dict in reminderConfig" :key="dict.value" :label="dict.label"
                   :value="dict.value"></el-option>
               </el-select>
@@ -509,6 +513,9 @@ export default {
       open: false,
       // 创建人时间范围
       daterangeDraftDate: [],
+      daterangeDueDate1: [],
+      // 到期提醒
+      daterangeDueDate: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -526,6 +533,7 @@ export default {
         acceptAgreementId: null,
         entryName: null,
         comment: null,
+        createTime: null
       },
       /* str 需要添加的 */
       scrUuid: null,
@@ -588,6 +596,18 @@ export default {
     console.log(this.name, this.avatar);
   },
   methods: {
+    /* 到期提醒选择 */
+    handleSelect(val) {
+      console.log(val);
+      // this.queryParams.remark = null;
+      if (val) {
+        let start = moment().format("YYYY-MM-DD");
+        let end = moment().add(val, 'days').format("YYYY-MM-DD");
+        this.daterangeDueDate = [start, end]
+      } else {
+        this.daterangeDueDate = []
+      }
+    },
     /* 创建成功关闭弹窗 */
     closeDialog() {
       this.open = false;
@@ -609,7 +629,19 @@ export default {
         this.queryParams.params["beginDraftDate"] = this.daterangeDraftDate[0];
         this.queryParams.params["endDraftDate"] = this.daterangeDraftDate[1];
       }
-      listBank(this.queryParams).then(response => {
+      if (null != this.daterangeDueDate && '' != this.daterangeDueDate) {
+        this.queryParams.params["beginDueDate"] = this.daterangeDueDate[0];
+        this.queryParams.params["endDueDate"] = this.daterangeDueDate[1];
+      }
+
+      if (null != this.daterangeDueDate1 && '' != this.daterangeDueDate1) {
+        this.queryParams.params["beginDueDate"] = this.daterangeDueDate1[0];
+        this.queryParams.params["endDueDate"] = this.daterangeDueDate1[1];
+      }
+
+      const searchData = JSON.parse(JSON.stringify(this.queryParams));
+      searchData.remark = null;
+      listBank(searchData).then(response => {
         this.bankList = response.rows;
         this.total = response.total;
         this.loading = false;
@@ -653,6 +685,8 @@ export default {
     /** 重置按钮操作 */
     resetQuery() {
       this.daterangeDraftDate = [];
+      this.daterangeDueDate = [];
+      this.daterangeDueDate1 = [];
       this.resetForm("queryForm");
       this.handleQuery();
     },

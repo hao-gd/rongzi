@@ -56,74 +56,80 @@
       </el-form-item>
     </el-form> -->
     <search-panel HeaderIcon="reverse" title="反向保理">
-    <el-form label-position="left" :model="queryParams" ref="queryForm" size="small" :inline="false" v-show="showSearch" label-width="100px">
-      <el-row :gutter="20">
-        <el-col :span="8">
-          <el-form-item label="管理编号" prop="managementId">
-            <el-input v-model="queryParams.managementId" placeholder="请输入反向保理管理编号" clearable
-              @keyup.enter.native="handleQuery" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="债权人名称" prop="creditor">
-            <el-select v-model="queryParams.creditor" placeholder="请选择债权人（供应商）名称" clearable>
-              <el-option v-for="dict in dict.type.sys_1757271666666242000" :key="dict.value" :label="dict.label"
-                :value="dict.value" />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="保理商" prop="factor">
-            <el-select v-model="queryParams.factor" placeholder="请选择保理商" clearable>
-              <el-option v-for="dict in dict.type.sys_1757288852172570600" :key="dict.value" :label="dict.label"
-                :value="dict.value" />
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="20">
-        <el-col :span="8">
-          <el-form-item label="金融机构" prop="financialInstitution">
-            <el-select v-model="queryParams.financialInstitution" placeholder="请选择金融机构" clearable>
-              <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
-                :value="dict.value" />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="开始日期" prop="startDate">
-            <el-date-picker clearable v-model="queryParams.startDate" type="date" value-format="yyyy-MM-dd"
-              placeholder="请选择开始日期"></el-date-picker>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="结束日期" prop="deadline">
-            <el-date-picker clearable v-model="queryParams.deadline" type="date" value-format="yyyy-MM-dd"
-              placeholder="请选择结束日期"></el-date-picker>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="20">
-        <el-col :span="8">
-          <el-form-item label="项目名称" prop="entryName">
-            <el-input v-model="queryParams.entryName" placeholder="请输入项目名称" clearable @keyup.enter.native="handleQuery" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="回款账户" prop="collectionAccount">
-            <el-input v-model="queryParams.collectionAccount" placeholder="请输入回款账户" clearable
-              @keyup.enter.native="handleQuery" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item class="flex" style="display: flex; justify-content: flex-end;">
-            <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-            <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-          </el-form-item>
-        </el-col>
-      </el-row>
-    </el-form>
-  </search-panel>
+      <el-form label-position="left" :model="queryParams" ref="queryForm" size="small" :inline="false" v-show="showSearch"
+        label-width="100px">
+        <el-row :gutter="20">
+          <el-col :span="8">
+            <el-form-item label="管理编号" prop="managementId">
+              <el-input v-model="queryParams.managementId" placeholder="请输入反向保理管理编号" clearable
+                @keyup.enter.native="handleQuery" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="债权人名称" prop="creditor">
+              <el-select v-model="queryParams.creditor" placeholder="请选择债权人（供应商）名称" clearable>
+                <el-option v-for="dict in dict.type.sys_1757271666666242000" :key="dict.value" :label="dict.label"
+                  :value="dict.value" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="保理商" prop="factor">
+              <el-select v-model="queryParams.factor" placeholder="请选择保理商" clearable>
+                <el-option v-for="dict in dict.type.sys_1757288852172570600" :key="dict.value" :label="dict.label"
+                  :value="dict.value" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="8">
+            <el-form-item label="金融机构" prop="financialInstitution">
+              <el-select v-model="queryParams.financialInstitution" placeholder="请选择金融机构" clearable>
+                <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
+                  :value="dict.value" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="开始日期" prop="startDate">
+              <!-- <el-date-picker clearable v-model="queryParams.startDate" type="date" value-format="yyyy-MM-dd"
+              placeholder="请选择开始日期"></el-date-picker> -->
+              <el-date-picker clearable v-model="daterangeStartDate" value-format="yyyy-MM-dd" type="daterange"
+                range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="结束日期" prop="deadline">
+              <!-- <el-date-picker clearable v-model="queryParams.deadline" type="date" value-format="yyyy-MM-dd"
+                placeholder="请选择结束日期"></el-date-picker> -->
+              <el-date-picker clearable v-model="daterangeDeadline" value-format="yyyy-MM-dd" type="daterange"
+                range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="8">
+            <el-form-item label="项目名称" prop="entryName">
+              <el-input v-model="queryParams.entryName" placeholder="请输入项目名称" clearable
+                @keyup.enter.native="handleQuery" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="回款账户" prop="collectionAccount">
+              <el-input v-model="queryParams.collectionAccount" placeholder="请输入回款账户" clearable
+                @keyup.enter.native="handleQuery" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item class="flex" style="display: flex; justify-content: flex-end;">
+              <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+              <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+    </search-panel>
 
 
     <el-divider class="mt20 mb20"></el-divider>
@@ -168,7 +174,7 @@
           <dict-tag :options="dict.type.sys_acceptor" :value="scope.row.financialInstitution" />
         </template>
       </el-table-column>
-      <el-table-column label="放贷金额（万元）" align="center" prop="loanAmount" width="180"/>
+      <el-table-column label="放贷金额（万元）" align="center" prop="loanAmount" width="180" />
       <el-table-column label="开始日期" align="center" prop="startDate" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.startDate, '{y}-{m}-{d}') }}</span>
@@ -182,7 +188,10 @@
       <el-table-column label="项目名称" align="center" prop="entryName" />
       <el-table-column label="到期提醒" align="center" prop="remark">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_maturity" :value="scope.row.remark" />
+          <el-tag effect="plain" :hit="true" :class="checkDueReminderWithConfig(scope.row.deadline).color">
+            {{ checkDueReminderWithConfig(scope.row.deadline).message }}
+          </el-tag>
+          <!-- <dict-tag :options="dict.type.sys_maturity" :value="scope.row.remark" /> -->
         </template>
       </el-table-column>
       <el-table-column label="回款账户" align="center" prop="collectionAccount" />
@@ -347,14 +356,14 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="开始日期" prop="startDate">
-                <el-date-picker :disabled="!isEditable" clearable v-model="form.startDate" type="date" value-format="yyyy-MM-dd"
-                  placeholder="请选择开始日期"></el-date-picker>
+                <el-date-picker :disabled="!isEditable" clearable v-model="form.startDate" type="date"
+                  value-format="yyyy-MM-dd" placeholder="请选择开始日期"></el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="结束日期" prop="deadline">
-                <el-date-picker :disabled="!isEditable" clearable v-model="form.deadline" type="date" value-format="yyyy-MM-dd"
-                  placeholder="请选择结束日期"></el-date-picker>
+                <el-date-picker :disabled="!isEditable" clearable v-model="form.deadline" type="date"
+                  value-format="yyyy-MM-dd" placeholder="请选择结束日期"></el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -411,6 +420,8 @@ import moment from 'moment'
 import CreateSuccess from '@/components/createSuccess/index.vue'
 import SearchPanel from '@/components/SearchPanel/index.vue'
 
+import { checkDueReminderWithConfig } from '@/utils/expirationreminder';
+import { reminderConfig } from '@/config/expirationreminder'
 export default {
   name: "Factoring",
   dicts: ['sys_acceptor', 'sys_1757288852172570600', 'sys_1757271666666242000'],
@@ -420,6 +431,8 @@ export default {
   },
   data() {
     return {
+      reminderConfig: reminderConfig.slice(1),
+      checkDueReminderWithConfig: checkDueReminderWithConfig,
       created_successfully: true,
       isEditable: false,
       header_cell_style: {
@@ -450,6 +463,10 @@ export default {
       title: "",
       // 是否显示弹出层
       open: false,
+      // 开始时间范围
+      daterangeStartDate: [],
+      // 结束时间范围
+      daterangeDeadline: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -539,6 +556,15 @@ export default {
     /** 查询反向保理列表 */
     getList() {
       this.loading = true;
+      this.queryParams.params = {};
+      if (null != this.daterangeStartDate && '' != this.daterangeStartDate) {
+        this.queryParams.params["beginStartDate"] = this.daterangeStartDate[0];
+        this.queryParams.params["endStartDate"] = this.daterangeStartDate[1];
+      }
+      if (null != this.daterangeDeadline && '' != this.daterangeDeadline) {
+        this.queryParams.params["beginDeadline"] = this.daterangeDeadline[0];
+        this.queryParams.params["endDeadline"] = this.daterangeDeadline[1];
+      }
       listFactoring(this.queryParams).then(response => {
         this.factoringList = response.rows;
         this.total = response.total;
@@ -582,6 +608,8 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
+      this.daterangeStartDate = [];
+      this.daterangeDeadline = [];
       this.resetForm("queryForm");
       this.handleQuery();
     },

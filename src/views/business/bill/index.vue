@@ -99,7 +99,7 @@
     </el-form> -->
 
     <search-panel HeaderIcon="business" title="商业承兑汇票">
-      <el-form  :model="queryParams" ref="queryForm" label-position="left" size="small" :inline="false" v-show="showSearch"
+      <el-form :model="queryParams" ref="queryForm" label-position="left" size="small" :inline="false" v-show="showSearch"
         label-width="100px">
         <el-row :gutter="20">
           <el-col :span="8">
@@ -134,8 +134,10 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="汇票到期日" prop="dueDate">
-              <el-date-picker clearable v-model="queryParams.dueDate" type="date" value-format="yyyy-MM-dd"
-                placeholder="请选择汇票到期日" />
+              <!-- <el-date-picker clearable v-model="queryParams.dueDate" type="date" value-format="yyyy-MM-dd"
+                placeholder="请选择汇票到期日" /> -->
+              <el-date-picker clearable v-model="daterangeDueDate1" style="width: 240px" value-format="yyyy-MM-dd" type="daterange"
+                range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -214,7 +216,10 @@
       </el-table-column>
       <el-table-column label="到期提醒" align="center" prop="remark">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_maturity" :value="scope.row.remark" />
+          <!-- <dict-tag :options="dict.type.sys_maturity" :value="scope.row.remark" /> -->
+          <el-tag effect="plain" :hit="true" :class="checkDueReminderWithConfig(scope.row.dueDate).color">
+            {{ checkDueReminderWithConfig(scope.row.dueDate).message }}
+          </el-tag>
         </template>
       </el-table-column>
       <el-table-column label="交易合同号码" align="center" prop="contractNumber" />
@@ -437,6 +442,8 @@ import moment from 'moment'
 import CreateSuccess from '@/components/createSuccess/index.vue'
 import SearchPanel from '@/components/SearchPanel/index.vue'
 
+import { checkDueReminderWithConfig } from '@/utils/expirationreminder';
+import { reminderConfig } from '@/config/expirationreminder'
 export default {
   name: "Bill",
   dicts: ['sys_1757235323403763700', 'sys_1757235466651828200', 'sys_acceptor'],
@@ -446,6 +453,8 @@ export default {
   },
   data() {
     return {
+      reminderConfig: reminderConfig.slice(1),
+      checkDueReminderWithConfig: checkDueReminderWithConfig,
       created_successfully: true,
       isEditable: false,
       header_cell_style: {
@@ -478,6 +487,8 @@ export default {
       open: false,
       // 创建人时间范围
       daterangeDraftDate: [],
+      daterangeDueDate1: [],
+      daterangeDueDate: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -546,6 +557,18 @@ export default {
     this.isEditable = true;
   },
   methods: {
+    /* 到期提醒选择 */
+    handleSelect(val) {
+      console.log(val);
+      // this.queryParams.remark = null;
+      if (val) {
+        let start = moment().format("YYYY-MM-DD");
+        let end = moment().add(val, 'days').format("YYYY-MM-DD");
+        this.daterangeDueDate = [start, end]
+      } else {
+        this.daterangeDueDate = []
+      }
+    },
     /* 创建成功关闭弹窗 */
     closeDialog() {
       this.open = false;
@@ -566,6 +589,15 @@ export default {
       if (null != this.daterangeDraftDate && '' != this.daterangeDraftDate) {
         this.queryParams.params["beginDraftDate"] = this.daterangeDraftDate[0];
         this.queryParams.params["endDraftDate"] = this.daterangeDraftDate[1];
+      }
+      if (null != this.daterangeDueDate && '' != this.daterangeDueDate) {
+        this.queryParams.params["beginDueDate"] = this.daterangeDueDate[0];
+        this.queryParams.params["endDueDate"] = this.daterangeDueDate[1];
+      }
+
+      if (null != this.daterangeDueDate1 && '' != this.daterangeDueDate1) {
+        this.queryParams.params["beginDueDate"] = this.daterangeDueDate1[0];
+        this.queryParams.params["endDueDate"] = this.daterangeDueDate1[1];
       }
       listBill(this.queryParams).then(response => {
         this.billList = response.rows;
@@ -610,6 +642,8 @@ export default {
     /** 重置按钮操作 */
     resetQuery() {
       this.daterangeDraftDate = [];
+      this.daterangeDueDate = [];
+      this.daterangeDueDate1 = [];
       this.resetForm("queryForm");
       this.handleQuery();
     },

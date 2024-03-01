@@ -155,7 +155,10 @@
       </el-table-column>
       <el-table-column label="到期提醒" align="center" prop="remark">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_maturity" :value="scope.row.remark" />
+          <!-- <dict-tag :options="dict.type.sys_maturity" :value="scope.row.remark" /> -->
+          <el-tag effect="plain" :hit="true" :class="checkDueReminderWithConfig(scope.row.effectiveDate).color">
+            {{ checkDueReminderWithConfig(scope.row.effectiveDate).message }}
+          </el-tag>
         </template>
       </el-table-column>
       <el-table-column label="开证申请人" align="center" prop="applicant">
@@ -386,6 +389,9 @@ import moment from 'moment'
 import CreateSuccess from '@/components/createSuccess/index.vue'
 import SearchPanel from '@/components/SearchPanel/index.vue'
 
+import { checkDueReminderWithConfig } from '@/utils/expirationreminder';
+import { reminderConfig } from '@/config/expirationreminder'
+
 export default {
   name: "Letter",
   dicts: ['sys_1757265915323351000', 'sys_1757265828501258200', 'sys_acceptor'],
@@ -395,6 +401,8 @@ export default {
   },
   data() {
     return {
+      reminderConfig: reminderConfig.slice(1),
+      checkDueReminderWithConfig: checkDueReminderWithConfig,
       created_successfully: true,
       isEditable: false,
       header_cell_style: {

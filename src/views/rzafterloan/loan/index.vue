@@ -49,7 +49,8 @@
       </el-form-item>
     </el-form> -->
     <search-panel HeaderIcon="Post-loan" title="贷后管理">
-      <el-form :model="queryParams" label-position="left" ref="queryForm" size="small" :inline="false" v-show="showSearch" label-width="100px">
+      <el-form :model="queryParams" label-position="left" ref="queryForm" size="small" :inline="false" v-show="showSearch"
+        label-width="100px">
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="管理编号" prop="managementId">
@@ -148,10 +149,12 @@
       <el-table-column label="借款期限" align="center" prop="loanTerm" />
       <el-table-column label="贷后状态跟踪" align="center" prop="afterLoanState">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_1759464706814247000" :value="scope.row.afterLoanState" />
+          <!-- <dict-tag :options="dict.type.sys_1759464706814247000" :value="scope.row.afterLoanState" /> -->
+          <svg-icon :icon-class="scope.row.afterLoanState"></svg-icon> <dict-tag style="display: inline-block;"
+            :options="dict.type.sys_1759464706814247000" :value="scope.row.afterLoanState" />
         </template>
       </el-table-column>
-      
+
       <!-- <el-table-column label="进度说明" align="center" prop="progressDescription" /> -->
       <el-table-column label="备注" align="center" prop="comment" />
       <!-- <el-table-column label="uuid" align="center" prop="uuid" /> -->
@@ -293,8 +296,18 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="借款期限" prop="loanTerm">
-                <el-input :readonly="!isEditable" v-model="form.loanTerm" placeholder="请输入借款期限" />
+              <el-form-item label="借款期限（月）" prop="loanTerm">
+                <el-input :readonly="!isEditable" v-model.number.trim="form.loanTerm" type="number" placeholder="请输入借款期限" />
+
+
+                <!-- <el-input :readonly="!isEditable" placeholder="请输入借款期限" v-model.number.trim="form.loanTerm" type="number"
+                  class="input-with-select">
+                  <el-select class="w150" :disabled="!isEditable" v-model="termType" slot="prepend" placeholder="选择期限类型">
+                    <el-option label="年" value="年"></el-option>
+                    <el-option label="月" value="月"></el-option>
+                  </el-select>
+                </el-input> -->
+
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -310,17 +323,19 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="量化目标（数量）" prop="quantitativeGoals">
-                <el-input :readonly="!isEditable" v-model="form.quantitativeGoals" placeholder="请输入量化目标" />
+                <el-input :readonly="!isEditable" type="number" v-model.number.trim="form.quantitativeGoals"
+                  placeholder="请输入量化目标" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="当前实现（数量）" prop="currentImplementation">
-                <el-input :readonly="!isEditable" v-model="form.currentImplementation" placeholder="请输入当前实现" />
+                <el-input :readonly="!isEditable" type="number" v-model.number.trim="form.currentImplementation"
+                  placeholder="请输入当前实现" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="剩余数量（数量）" prop="remainingQuantity">
-                <el-input :readonly="!isEditable" v-model="form.remainingQuantity" placeholder="请输入剩余数量" />
+                <el-input :readonly="true" :disabled="true" :value="remainingQuantity" placeholder="请输入剩余数量" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -331,7 +346,7 @@
           <!-- 附件 -->
           <el-form-item label="备注" prop="comment">
             <el-input :readonly="!isEditable" v-model="form.comment" maxlength="200" type="textarea" :rows="4"
-                  placeholder="请输入备注信息，最多不超过200字" />
+              placeholder="请输入备注信息，最多不超过200字" />
           </el-form-item>
           <el-form-item label="附件" prop="scrUuid">
             <div class="p20 appendix">
@@ -374,6 +389,7 @@ export default {
   },
   data() {
     return {
+      termType: '年',
       created_successfully: true,
       isEditable: false,
       header_cell_style: {
@@ -468,11 +484,20 @@ export default {
   computed: {
     ...mapGetters([
       'name', 'avatar'
-    ])
+    ]),
+    remainingQuantity() {
+      // 确保值为数值类型，避免NaN
+      const quantitativeGoals = Number(this.form.quantitativeGoals) || 0;
+      const currentImplementation = Number(this.form.currentImplementation) || 0;
+
+      const residue = quantitativeGoals - currentImplementation;
+      this.form.remainingQuantity = residue;
+      return residue;
+    }
   },
   created() {
     this.getList();
-    
+
     this.created_successfully = false;
     this.isEditable = true;
   },
@@ -578,13 +603,26 @@ export default {
         if (valid) {
           const data = JSON.parse(JSON.stringify(this.form))
           this.form.rzsrc2List = this.rzsrc2List;
+          let rzaudit_data = null;
           if (this.form.id != null) {
             data.scrUuid = Number(this.scrUuid);
-            updateLoan(data).then(response => {
-              this.$modal.msgSuccess("修改成功");
-              this.open = false;
-              this.getList();
-            });
+            // updateLoan(data).then(response => {
+            //   this.$modal.msgSuccess("修改成功");
+            //   this.open = false;
+            //   this.getList();
+            // });
+            rzaudit_data = {
+              "auditId": data.id,
+              "scrUuid": data.scrUuid,
+              "createBy": this.name,
+              "createTime": null,
+              "dataJson": JSON.stringify(data),
+              "tableName": "rz_after_loan",
+              "auditState": "1759514891045044200",
+              "uuid": data.uuid
+            }
+
+
           } else {
             // addLoan(this.form).then(response => {
             //   this.$modal.msgSuccess("新增成功");
@@ -592,33 +630,35 @@ export default {
             //   this.getList();
             // });
 
-
             // 生成一个 uuid
             const generator = new SnowflakeIdGenerator();
+
+            const uuid = String(generator.nextId())
             data.scrUuid = generator.nextId();
             data.rzsrc2List = this.rzsrc2List;
-
+            // data.loanTerm = data.loanTerm + this.termType;
             data.createBy = this.name;
+            data.uuid = uuid;
 
-            const rzaudit_data = {
+            rzaudit_data = {
               "id": null,
-              "auditId": String(generator.nextId()).substring(0, 6),
+              "auditId": null,
               "scrUuid": data.scrUuid,
               "createBy": this.name,
               "createTime": null,
               "dataJson": JSON.stringify(data),
               "tableName": "rz_after_loan",
-              "auditState": "1759514891045044200"
+              "auditState": "1759514891045044200",
+              "uuid": uuid
             }
-
-
-            addList(rzaudit_data).then(res => {
-              this.created_successfully = true;
-              // this.$modal.msgSuccess("新增成功");
-              // this.open = false;
-
-            })
+            console.log(data);
           }
+          addList(rzaudit_data).then(res => {
+            this.created_successfully = true;
+            // this.$modal.msgSuccess("新增成功");
+            // this.open = false;
+
+          })
         }
       });
     },
