@@ -4,9 +4,14 @@
         <p class="title" v-if="isTitle">{{ title }}</p>
         <p class="message" v-if="isMessage">{{ message }}</p>
 
-        <div class="flex fjc">
+        <div class="flex fjc" v-if="isEdit==false">
             <el-button @click="view_form">查看表单</el-button>
             <el-button type="primary" @click="create_again">再次创建</el-button>
+        </div>
+
+        <div class="flex fjc" v-else>
+            <el-button type="primary" @click="confirm">确 定</el-button>
+            <el-button @click="cancel">取 消</el-button>
         </div>
     </div>
 </template>
@@ -32,6 +37,10 @@ export default {
         isSuccess: {
             type: Boolean,
             default: true
+        },
+        isEdit: {
+            type: Boolean,
+            default: false
         }
     },
     data() {
@@ -50,6 +59,14 @@ export default {
         // 再次创建
         create_again() {
             this.$emit('create-again')
+        },
+        /* 确认创建 */
+        confirm() {
+            this.$emit('confirm')
+        },
+        /* 取消 */
+        cancel() {
+            this.$emit('cancel')
         }
     }
 }

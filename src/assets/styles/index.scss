@@ -216,3 +216,22 @@ $colors: (
     border: 1px solid $color !important;
   }
 }
+
+
+// 通过自定义属性 管理 设置 el-divider 的样式
+div[data-role="el-divider"] {
+  margin-top: 0px !important;
+}
+// 设置element-ui 确定和取消的位置
+.btn-custom-cancel {
+  margin-left: 10px !important;
+}
+.custom-msgbox .el-message-box__btns {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: center;
+}
+
+.el-textarea .el-input__count {
+  background: transparent !important;
+}

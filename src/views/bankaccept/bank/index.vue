@@ -83,7 +83,7 @@
           </el-col>
         </el-row>
 
-     
+
       </el-form>
     </search-panel>
     <el-divider class="mt20 mb20"></el-divider>
@@ -157,8 +157,8 @@
       <!-- <el-table-column label="ID" align="center" prop="id" /> -->
       <el-table-column fixed="right" label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button size="mini" type="text" @click="handleUpdate(scope.row)"
-            v-hasPermi="['bankaccept:bank:edit']">查 看</el-button>
+          <el-button size="mini" type="text" @click="handleUpdate(scope.row)" v-hasPermi="['bankaccept:bank:edit']">查
+            看</el-button>
           <!-- <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"
             v-hasPermi="['bankaccept:bank:remove']">删除</el-button> -->
         </template>
@@ -170,9 +170,8 @@
 
     <!-- 添加或修改银行承兑汇票对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="60%" append-to-body>
-      
-      <el-divider class="no_mt mb20"></el-divider>
 
+      <el-divider class="no_mt mb20"></el-divider>
       <div v-if="created_successfully == false">
         <div v-if="title === '修改银行承兑汇票'" class="modeify-btn" style="display: flex; justify-content: end;">
           <el-button type="primary" @click="toggleEdit">编 辑</el-button>
@@ -253,8 +252,8 @@
           <el-row>
             <el-col :span="24">
               <el-form-item label="备注" prop="comment">
-                <el-input :readonly="!isEditable" v-model="form.comment" show-word-limit maxlength="200" type="textarea" :rows="4"
-                  placeholder="请输入备注信息，最多不超过200字" />
+                <el-input :readonly="!isEditable" v-model="form.comment" show-word-limit maxlength="200" type="textarea"
+                  :rows="4" placeholder="请输入备注信息，最多不超过200字" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -279,7 +278,8 @@
 
 
       <div v-else class="flex">
-        <CreateSuccess @close-dialog="closeDialog" @create-again="create_again"></CreateSuccess>
+        <CreateSuccess @close-dialog="closeDialog" @create-again="create_again" :isSuccess="isSuccess" :isTitle="isTitle"
+          :isMessage="isMessage" :title="ctitle" :isEdit="isEdit" @confirm="submitForm" @cancel="cancel"></CreateSuccess>
       </div>
 
     </el-dialog>
@@ -306,9 +306,15 @@ export default {
   },
   data() {
     return {
+      aaa: false,
+      isSuccess: true,
+      isTitle: true,
+      isMessage: true,
+      ctitle: '',
+      isEdit: false,
       reminderConfig: reminderConfig.slice(1),
       checkDueReminderWithConfig: checkDueReminderWithConfig,
-      created_successfully: true,
+      created_successfully: false,
       isEditable: false,
       header_cell_style: {
         backgroundColor: '#f2f4f5',
@@ -563,9 +569,11 @@ export default {
     },
     /** 提交按钮 */
     submitForm() {
+      console.log(this.created_successfully, this.isEditable);
       /* str 需要赋值粘贴到的 需要修改请求的接口 */
       this.$refs["form"].validate(valid => {
         if (valid) {
+          console.log(valid);
           const data = JSON.parse(JSON.stringify(this.form))
           this.form.rzsrc2List = this.rzsrc2List;
           let rzaudit_data = null;
@@ -580,6 +588,15 @@ export default {
               "tableName": "rz_bank_accept_bill",
               "auditState": "1759514891045044200",
               "uuid": data.uuid
+            }
+            if (this.title === '修改银行承兑汇票' && this.created_successfully === false && this.isEditable === true) {
+              this.created_successfully = true;
+              this.isSuccess = false;
+              this.isTitle = true;
+              this.isMessage = false;
+              this.ctitle = '确定修改隐藏承兑汇票信息吗？';
+              this.isEdit = true;
+              return;
             }
           } else {
             // 生成一个 uuid
@@ -605,7 +622,19 @@ export default {
             }
           }
           addList(rzaudit_data).then(res => {
-            this.created_successfully = true;
+            if (this.title === '修改银行承兑汇票' && this.created_successfully === true && this.isEditable === true) {
+              this.created_successfully = true;
+              this.isSuccess = true;
+              this.isTitle = true;
+              this.isMessage = true;
+              this.ctitle = '修改提交成功';
+              this.isEdit = false;
+            } else {
+              this.created_successfully = true;
+              this.ctitle = '提交成功';
+              this.isMessage = false;
+              this.isEdit = false;
+            }
           })
         }
       });
@@ -614,14 +643,53 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$modal.confirm('是否确认删除银行承兑汇票编号为"' + ids + '"的数据项？').then(function () {
-        return delBank(ids);
-      }).then(() => {
+      // this.$modal.confirm('是否确认删除银行承兑汇票编号为"' + ids + '"的数据项？').then(function () {
+      //   return delBank(ids);
+      // }).then(() => {
+      //   this.cancel();
+
+      //   this.getList();
+      //   this.$modal.msgSuccess("删除成功");
+      // }).catch(() => { });
+      const h = this.$createElement;
+      this.$msgbox({
+        title: '提示',
+        message: h('div', null, [
+          h('el-divider', {
+            class: {
+              "no_mt": true,
+              "mb20": true
+            },
+            attrs: { "data-role": 'el-divider' }
+          }, ''),
+          h('p', {
+            class: 'tc w mb20',
+            style: {
+              'font-size': '24px',
+              'color': '#000000',
+              'font-weight': 'bold'
+            }
+          }, '确定删除选中的银行承兑汇票吗？'),
+        ]),
+        showCancelButton: true,
+        cancelButtonText: '取消',
+        confirmButtonText: '确定',
+        cancelButtonClass: "btn-custom-cancel",
+        customClass: 'custom-msgbox',
+        beforeClose: (action, instance, done) => {
+          if (action === 'confirm') {
+            delBank(ids).then(res => {
+              done();
+            });
+          } else {
+            done();
+          }
+        }
+      }).then(action => {
         this.cancel();
-        
         this.getList();
         this.$modal.msgSuccess("删除成功");
-      }).catch(() => { });
+      });
     },
     /** 附件表序号 */
     rowrzsrc2Index({ row, rowIndex }) {

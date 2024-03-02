@@ -534,13 +534,53 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$modal.confirm('是否确认删除贷后管理编号为"' + ids + '"的数据项？').then(function () {
-        return delLoan(ids);
-      }).then(() => {
-        this.cancel();
-        this.getList();
-        this.$modal.msgSuccess("删除成功");
-      }).catch(() => { });
+      // this.$modal.confirm('是否确认删除贷后管理编号为"' + ids + '"的数据项？').then(function () {
+      //   return delLoan(ids);
+      // }).then(() => {
+      //   this.cancel();
+      //   this.getList();
+      //   this.$modal.msgSuccess("删除成功");
+      // }).catch(() => { });
+
+      const h = this.$createElement;
+      this.$msgbox({
+          title: '提示',
+          message: h('div', null, [
+            h('el-divider', {
+              class: {
+                "no_mt": true,
+                "mb20": true
+              },
+              attrs: {"data-role": 'el-divider'}
+            }, ''),
+            h('p', {
+              class: 'tc w mb20',
+              style: {
+                'font-size': '24px',
+                'color': '#000000',
+                'font-weight': 'bold'
+              }
+            }, '确定删除选中的贷后管理吗？'),
+          ]),
+          showCancelButton: true,
+          cancelButtonText: '取消',
+          confirmButtonText: '确定',
+          cancelButtonClass: "btn-custom-cancel",
+          customClass: 'custom-msgbox',
+          beforeClose: (action, instance, done) => {
+            if (action === 'confirm') {
+              delLoan(ids).then(res => {
+                done();
+              });
+            } else {
+              done();
+            }
+          }
+        }).then(action => {
+          this.cancel();
+          this.getList();
+          this.$modal.msgSuccess("删除成功");
+        });
     },
     /** 附件表序号 */
     rowrzsrc2Index({ row, rowIndex }) {
