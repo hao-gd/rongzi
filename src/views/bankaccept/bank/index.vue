@@ -279,7 +279,8 @@
 
       <div v-else class="flex">
         <CreateSuccess @close-dialog="closeDialog" @create-again="create_again" :isSuccess="isSuccess" :isTitle="isTitle"
-          :isMessage="isMessage" :title="ctitle" :isEdit="isEdit" @confirm="submitForm" @cancel="cancel"></CreateSuccess>
+          :isMessage="isMessage" :title="ctitle" :isEdit="isEdit" @confirm="handleaddList" @cancel="cancel">
+        </CreateSuccess>
       </div>
 
     </el-dialog>
@@ -306,12 +307,13 @@ export default {
   },
   data() {
     return {
-      aaa: false,
       isSuccess: true,
       isTitle: true,
       isMessage: true,
       ctitle: '',
       isEdit: false,
+      rzaudit_data: null,
+
       reminderConfig: reminderConfig.slice(1),
       checkDueReminderWithConfig: checkDueReminderWithConfig,
       created_successfully: false,
@@ -576,10 +578,10 @@ export default {
           console.log(valid);
           const data = JSON.parse(JSON.stringify(this.form))
           this.form.rzsrc2List = this.rzsrc2List;
-          let rzaudit_data = null;
+          this.rzaudit_data = null;
           if (this.form.id != null) {
             data.scrUuid = Number(this.scrUuid);
-            rzaudit_data = {
+            this.rzaudit_data = {
               "auditId": data.id,
               "scrUuid": data.scrUuid,
               "createBy": this.name,
@@ -594,7 +596,7 @@ export default {
               this.isSuccess = false;
               this.isTitle = true;
               this.isMessage = false;
-              this.ctitle = '确定修改隐藏承兑汇票信息吗？';
+              this.ctitle = '确定修改银行承兑汇票信息吗？';
               this.isEdit = true;
               return;
             }
@@ -609,7 +611,7 @@ export default {
             data.scrUuid = generator.nextId();
             data.rzsrc2List = this.rzsrc2List;
             data.createBy = this.name;
-            rzaudit_data = {
+            this.rzaudit_data = {
               "id": null,
               "auditId": null,
               "scrUuid": data.scrUuid,
@@ -621,24 +623,26 @@ export default {
               "uuid": uuid
             }
           }
-          addList(rzaudit_data).then(res => {
-            if (this.title === '修改银行承兑汇票' && this.created_successfully === true && this.isEditable === true) {
-              this.created_successfully = true;
-              this.isSuccess = true;
-              this.isTitle = true;
-              this.isMessage = true;
-              this.ctitle = '修改提交成功';
-              this.isEdit = false;
-            } else {
-              this.created_successfully = true;
-              this.ctitle = '提交成功';
-              this.isMessage = false;
-              this.isEdit = false;
-            }
-          })
+          this.handleaddList();
         }
       });
       /* end */
+    },
+    handleaddList() {
+      addList(this.rzaudit_data).then(res => {
+        this.created_successfully = true;
+        if (this.title === '修改银行承兑汇票' && this.isEditable) {
+          this.isSuccess = true;
+          this.isTitle = true;
+          this.isMessage = true;
+          this.ctitle = this.isEdit ? '修改提交成功' : '提交成功';
+          this.isEdit = false;
+        } else {
+          this.ctitle = '提交成功';
+          this.isMessage = true;
+          this.isEdit = false;
+        }
+      })
     },
     /** 删除按钮操作 */
     handleDelete(row) {
