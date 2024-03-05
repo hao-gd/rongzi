@@ -263,7 +263,9 @@
         </div>
       </div>
       <div v-else class="flex">
-        <CreateSuccess @close-dialog="closeDialog" @create-again="create_again"></CreateSuccess>
+        <CreateSuccess @close-dialog="closeDialog" @create-again="create_again" :isSuccess="isSuccess" :isTitle="isTitle"
+          :isMessage="isMessage" :title="ctitle" :isEdit="isEdit" @confirm="handleaddList" @cancel="cancel">
+        </CreateSuccess>
       </div>
     </el-dialog>
   </div>
@@ -287,6 +289,14 @@ export default {
   },
   data() {
     return {
+
+      isSuccess: true,
+      isTitle: true,
+      isMessage: true,
+      ctitle: '',
+      isEdit: false,
+      rzaudit_data: null,
+
       created_successfully: true,
       isEditable: false,
       header_cell_style: {
@@ -491,10 +501,10 @@ export default {
         if (valid) {
           const data = JSON.parse(JSON.stringify(this.form))
           this.form.rzsrc2List = this.rzsrc2List;
-          let rzaudit_data = null;
+          this.rzaudit_data = null;
           if (this.form.id != null) {
             data.scrUuid = Number(this.scrUuid);
-            rzaudit_data = {
+            this.rzaudit_data = {
               "auditId": data.id,
               "scrUuid": data.scrUuid,
               "createBy": this.name,
@@ -503,6 +513,15 @@ export default {
               "tableName": "rz_government_special_bonds",
               "auditState": "1759514891045044200",
               "uuid": data.uuid
+            }
+            if (this.title === '修改政府专项债' && this.created_successfully === false && this.isEditable === true) {
+              this.created_successfully = true;
+              this.isSuccess = false;
+              this.isTitle = true;
+              this.isMessage = false;
+              this.ctitle = '确定修改政府专项债信息吗？';
+              this.isEdit = true;
+              return;
             }
           } else {
             // 生成一个 uuid
@@ -516,7 +535,7 @@ export default {
             const uuid = String(generator.nextId())
             data.uuid = uuid;
             // end
-            rzaudit_data = {
+            this.rzaudit_data = {
               "id": null,
               "auditId": String(generator.nextId()).substring(0, 6),
               "scrUuid": data.scrUuid,
@@ -528,11 +547,28 @@ export default {
               "uuid": uuid
             }
           }
-          addList(rzaudit_data).then(res => {
-            this.created_successfully = true;
-          })
+          // addList(rzaudit_data).then(res => {
+          //   this.created_successfully = true;
+          // })
+          this.handleaddList();
         }
       });
+    },
+    handleaddList() {
+      addList(this.rzaudit_data).then(res => {
+        this.created_successfully = true;
+        if (this.title === '修改政府专项债' && this.isEditable) {
+          this.isSuccess = true;
+          this.isTitle = true;
+          this.isMessage = true;
+          this.ctitle = this.isEdit ? '修改提交成功' : '提交成功';
+          this.isEdit = false;
+        } else {
+          this.ctitle = '提交成功';
+          this.isMessage = true;
+          this.isEdit = false;
+        }
+      })
     },
     /** 删除按钮操作 */
     handleDelete(row) {

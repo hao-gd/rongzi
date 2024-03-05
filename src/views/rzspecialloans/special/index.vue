@@ -289,7 +289,9 @@
         </div>
       </div>
       <div v-else>
-        <CreateSuccess @close-dialog="closeDialog" @create-again="create_again"></CreateSuccess>
+        <CreateSuccess @close-dialog="closeDialog" @create-again="create_again" :isSuccess="isSuccess" :isTitle="isTitle"
+          :isMessage="isMessage" :title="ctitle" :isEdit="isEdit" @confirm="handleaddList" @cancel="cancel">
+        </CreateSuccess>
       </div>
     </el-dialog>
   </div>
@@ -313,6 +315,14 @@ export default {
   },
   data() {
     return {
+
+      isSuccess: true,
+      isTitle: true,
+      isMessage: true,
+      ctitle: '',
+      isEdit: false,
+      rzaudit_data: null,
+
       created_successfully: true,
       isEditable: false,
       header_cell_style: {
@@ -551,10 +561,10 @@ export default {
           const data = JSON.parse(JSON.stringify(this.form))
           this.form.rzsrc2List = this.rzsrc2List;
 
-          let rzaudit_data = null;
+          this.rzaudit_data = null;
           if (this.form.id != null) {
             data.scrUuid = Number(this.scrUuid);
-            rzaudit_data = {
+            this.rzaudit_data = {
               "auditId": data.id,
               "scrUuid": data.scrUuid,
               "createBy": this.name,
@@ -563,6 +573,15 @@ export default {
               "tableName": "rz_special_loans",
               "auditState": "1759514891045044200",
               "uuid": data.uuid
+            }
+            if (this.title === '修改专项借款' && this.created_successfully === false && this.isEditable === true) {
+              this.created_successfully = true;
+              this.isSuccess = false;
+              this.isTitle = true;
+              this.isMessage = false;
+              this.ctitle = '确定修改专项借款信息吗？';
+              this.isEdit = true;
+              return;
             }
           } else {
             // 生成一个 uuid
@@ -575,7 +594,7 @@ export default {
             const uuid = String(generator.nextId())
             data.uuid = uuid;
             // end
-            rzaudit_data = {
+            this.rzaudit_data = {
               "id": null,
               "auditId": null,
               "scrUuid": data.scrUuid,
@@ -587,11 +606,25 @@ export default {
               "uuid": uuid
             }
           }
-          addList(rzaudit_data).then(res => {
-            this.created_successfully = true;
-          })
+          this.handleaddList();
         }
       });
+    },
+    handleaddList() {
+      addList(this.rzaudit_data).then(res => {
+        this.created_successfully = true;
+        if (this.title === '修改专项借款' && this.isEditable) {
+          this.isSuccess = true;
+          this.isTitle = true;
+          this.isMessage = true;
+          this.ctitle = this.isEdit ? '修改提交成功' : '提交成功';
+          this.isEdit = false;
+        } else {
+          this.ctitle = '提交成功';
+          this.isMessage = true;
+          this.isEdit = false;
+        }
+      })
     },
     /** 删除按钮操作 */
     handleDelete(row) {

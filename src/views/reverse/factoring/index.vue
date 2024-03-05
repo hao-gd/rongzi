@@ -320,7 +320,9 @@
 
 
       <div v-else class="flex">
-        <CreateSuccess @close-dialog="closeDialog" @create-again="create_again"></CreateSuccess>
+        <CreateSuccess @close-dialog="closeDialog" @create-again="create_again" :isSuccess="isSuccess" :isTitle="isTitle"
+          :isMessage="isMessage" :title="ctitle" :isEdit="isEdit" @confirm="handleaddList" @cancel="cancel">
+        </CreateSuccess>
       </div>
     </el-dialog>
   </div>
@@ -347,6 +349,13 @@ export default {
   },
   data() {
     return {
+      isSuccess: true,
+      isTitle: true,
+      isMessage: true,
+      ctitle: '',
+      isEdit: false,
+      rzaudit_data: null,
+
       reminderConfig: reminderConfig.slice(1),
       checkDueReminderWithConfig: checkDueReminderWithConfig,
       created_successfully: true,
@@ -578,10 +587,10 @@ export default {
           const data = JSON.parse(JSON.stringify(this.form))
 
           this.form.rzsrc2List = this.rzsrc2List;
-          let rzaudit_data = null;
+          this.rzaudit_data = null;
           if (this.form.id != null) {
             data.scrUuid = Number(this.scrUuid);
-            rzaudit_data = {
+            this.rzaudit_data = {
               "auditId": data.id,
               "scrUuid": data.scrUuid,
               "createBy": this.name,
@@ -590,6 +599,15 @@ export default {
               "tableName": "rz_reverse_factoring",
               "auditState": "1759514891045044200",
               "uuid": data.uuid
+            }
+            if (this.title === '修改反向保理' && this.created_successfully === false && this.isEditable === true) {
+              this.created_successfully = true;
+              this.isSuccess = false;
+              this.isTitle = true;
+              this.isMessage = false;
+              this.ctitle = '确定修改反向保理信息吗？';
+              this.isEdit = true;
+              return;
             }
           } else {
             const generator = new SnowflakeIdGenerator();
@@ -601,7 +619,7 @@ export default {
             const uuid = String(generator.nextId())
             data.uuid = uuid;
             // end
-            rzaudit_data = {
+            this.rzaudit_data = {
               "id": null,
               "auditId": null,
               "scrUuid": data.scrUuid,
@@ -613,11 +631,25 @@ export default {
               "uuid": uuid
             }
           }
-          addList(rzaudit_data).then(res => {
-            this.created_successfully = true;
-          })
+          this.handleaddList();
         }
       });
+    },
+    handleaddList() {
+      addList(this.rzaudit_data).then(res => {
+        this.created_successfully = true;
+        if (this.title === '修改反向保理' && this.isEditable) {
+          this.isSuccess = true;
+          this.isTitle = true;
+          this.isMessage = true;
+          this.ctitle = this.isEdit ? '修改提交成功' : '提交成功';
+          this.isEdit = false;
+        } else {
+          this.ctitle = '提交成功';
+          this.isMessage = true;
+          this.isEdit = false;
+        }
+      })
     },
     /** 删除按钮操作 */
     handleDelete(row) {

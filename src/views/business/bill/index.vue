@@ -285,6 +285,7 @@ export default {
       ctitle: '',
       isEdit: false,
       rzaudit_data: null,
+
       reminderConfig: reminderConfig.slice(1),
       checkDueReminderWithConfig: checkDueReminderWithConfig,
       created_successfully: true,
@@ -544,6 +545,15 @@ export default {
               "tableName": "rz_business_accept_bill",
               "auditState": "1759514891045044200",
               "uuid": data.uuid
+            }
+            if (this.title === '修改商业承兑汇票' && this.created_successfully === false && this.isEditable === true) {
+              this.created_successfully = true;
+              this.isSuccess = false;
+              this.isTitle = true;
+              this.isMessage = false;
+              this.ctitle = '确定修改商业承兑汇票信息吗？';
+              this.isEdit = true;
+              return;
             }
           } else {
             const generator = new SnowflakeIdGenerator();
