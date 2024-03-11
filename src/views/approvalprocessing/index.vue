@@ -194,7 +194,8 @@ import { addBonds, updateBonds } from "@/api/government/bonds";
 import { addSpecial, updateSpecial } from "@/api/rzspecialloans/special";
 import { addBorrowing, updateBorrowing } from "@/api/rzinternalborrowing/borrowing";
 import { addLoan, updateLoan } from "@/api/rzafterloan/loan";
-
+import { addGrant, updateGrant } from "@/api/creditmanagement/grant";
+import { addInternal, updateInternal } from "@/api/glinternal/internal";
 
 export default {
     name: "List",
@@ -264,7 +265,10 @@ export default {
                 'rz_government_special_bonds': addBonds,
                 'rz_special_loans': addSpecial,
                 'rz_internal_borrowing': addBorrowing,
-                'rz_after_loan': addLoan
+                'rz_after_loan': addLoan,
+                'rz_credit_management': addGrant,
+                'rz_gl_internal': addInternal,
+                'rz_gl_foreign': '对外担保台账'
             },
             update_precautions_obj_fun: {
                 'rz_bank_accept_bill': updateBank,
@@ -277,6 +281,9 @@ export default {
                 'rz_special_loans': updateSpecial,
                 'rz_internal_borrowing': updateBorrowing,
                 'rz_after_loan': updateLoan,
+                'rz_credit_management': updateGrant,
+                'rz_gl_internal': updateInternal,
+                'rz_gl_foreign': '对外担保台账'
             }
         };
     },
