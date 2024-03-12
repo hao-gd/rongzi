@@ -71,7 +71,7 @@
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form> -->
-    <search-panel HeaderIcon="bank" title="对内担保台账">
+    <search-panel HeaderIcon="inorout" title="对内担保台账">
       <el-form :model="queryParams" ref="queryForm" size="small" label-width="140px" label-position="left">
         <el-row :gutter="20">
           <el-col :span="8">
@@ -744,11 +744,11 @@ export default {
       if (null != this.daterangeStartDate && '' != this.daterangeStartDate) {
         // 直接合并 开始时间和结束时间
         this.queryParams.params["beginStartDate"] = this.daterangeStartDate[0];
-        this.queryParams.params["endStartDate"] = this.daterangeStartDate[0];
+        this.queryParams.params["endStartDate"] = this.daterangeStartDate[1];
 
-        this.queryParams.params["beginDeadline"] = this.daterangeStartDate[1];
+        this.queryParams.params["beginDeadline"] = this.daterangeStartDate[0];
         this.queryParams.params["endDeadline"] = this.daterangeStartDate[1];
-        
+
       }
       if (null != this.daterangeCreateTime && '' != this.daterangeCreateTime) {
         this.queryParams.params["beginCreateTime"] = this.daterangeCreateTime[0];
@@ -1024,7 +1024,6 @@ export default {
           this.rzsrc2List.push(obj);
         }
       });
-
     }
   }
 };
