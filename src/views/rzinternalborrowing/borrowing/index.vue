@@ -18,9 +18,9 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="借款方" prop="borrower">
-              <el-select v-model="queryParams.borrower" placeholder="请选择借款方" clearable>
-                <el-option v-for="dict in dict.type.sys_1759501577938272300" :key="dict.value" :label="dict.label"
+            <el-form-item label="借款人" prop="borrower">
+              <el-select v-model="queryParams.borrower" placeholder="请选择借款人" clearable>
+                <el-option v-for="dict in dict.type.sys_1767154968256577500" :key="dict.value" :label="dict.label"
                   :value="dict.value" />
               </el-select>
             </el-form-item>
@@ -29,9 +29,9 @@
 
         <el-row :gutter="20">
           <el-col :span="8">
-            <el-form-item label="收款方" prop="payee">
-              <el-select v-model="queryParams.payee" placeholder="请选择收款方" clearable>
-                <el-option v-for="dict in dict.type.sys_1759501640206909400" :key="dict.value" :label="dict.label"
+            <el-form-item label="债权人" prop="payee">
+              <el-select v-model="queryParams.payee" placeholder="请选择债权人" clearable>
+                <el-option v-for="dict in dict.type.sys_1757271666666242000" :key="dict.value" :label="dict.label"
                   :value="dict.value" />
               </el-select>
             </el-form-item>
@@ -89,7 +89,7 @@
     <el-row type="flex" :gutter="10" class="mb8" justify="end">
       <el-col :span="1.5">
         <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
-          v-hasPermi="['rzinternalborrowing:borrowing:add']">新增</el-button>
+          v-hasPermi="['rzinternalborrowing:borrowing:add']">新 建</el-button>
       </el-col>
       <!-- <el-col :span="1.5">
         <el-button type="success" plain icon="el-icon-edit" size="mini" :disabled="single" @click="handleUpdate"
@@ -97,7 +97,7 @@
       </el-col> -->
       <el-col :span="1.5">
         <el-button type="danger" plain icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete"
-          v-hasPermi="['rzinternalborrowing:borrowing:remove']">删除</el-button>
+          v-hasPermi="['rzinternalborrowing:borrowing:remove']">删 除</el-button>
       </el-col>
       <!-- <el-col :span="1.5">
         <el-button type="warning" plain icon="el-icon-download" size="mini" @click="handleExport"
@@ -117,14 +117,14 @@
           <span>{{ formatNumberAsRMB(scope.row.loanAmount) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="借款方" align="center" prop="borrower">
+      <el-table-column label="借款人" align="center" prop="borrower">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_1759501577938272300" :value="scope.row.borrower" />
+          <dict-tag :options="dict.type.sys_1767154968256577500" :value="scope.row.borrower" />
         </template>
       </el-table-column>
-      <el-table-column label="收款方" align="center" prop="payee">
+      <el-table-column label="债权人" align="center" prop="payee">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_1759501640206909400" :value="scope.row.payee" />
+          <dict-tag :options="dict.type.sys_1757271666666242000" :value="scope.row.payee" />
         </template>
       </el-table-column>
       <!-- <el-table-column label="借款日期" align="center" prop="borrowDate" width="180">
@@ -139,7 +139,7 @@
       </el-table-column> -->
       <el-table-column label="借款期限" align="center" prop="loanTerm" />
       <el-table-column label="利率" align="center" prop="rate" />
-      <el-table-column label="合同编号" align="center" prop="contractId" />
+      <!-- <el-table-column label="合同编号" align="center" prop="contractId" /> -->
       <el-table-column label="还款方式" align="center" prop="repaymentMethod">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1759501742422098000" :value="scope.row.repaymentMethod" />
@@ -189,9 +189,9 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="借款方" prop="borrower">
-                <el-select :disabled="!isEditable" v-model="form.borrower" placeholder="请选择借款方">
-                  <el-option v-for="dict in dict.type.sys_1759501577938272300" :key="dict.value" :label="dict.label"
+              <el-form-item label="借款人" prop="borrower">
+                <el-select :disabled="!isEditable" v-model="form.borrower" placeholder="请选择借款人">
+                  <el-option v-for="dict in dict.type.sys_1767154968256577500" :key="dict.value" :label="dict.label"
                     :value="dict.value"></el-option>
                 </el-select>
               </el-form-item>
@@ -200,9 +200,9 @@
 
           <el-row :gutter="20">
             <el-col :span="8">
-              <el-form-item label="收款方" prop="payee">
-                <el-select :disabled="!isEditable" v-model="form.payee" placeholder="请选择收款方">
-                  <el-option v-for="dict in dict.type.sys_1759501640206909400" :key="dict.value" :label="dict.label"
+              <el-form-item label="债权人" prop="payee">
+                <el-select :disabled="!isEditable" v-model="form.payee" placeholder="请选择债权人">
+                  <el-option v-for="dict in dict.type.sys_1757271666666242000" :key="dict.value" :label="dict.label"
                     :value="dict.value"></el-option>
                 </el-select>
               </el-form-item>
@@ -310,7 +310,7 @@ import SearchPanel from '@/components/SearchPanel/index.vue'
 
 export default {
   name: "Borrowing",
-  dicts: ['sys_1759501742422098000', 'sys_1759501640206909400', 'sys_1759501577938272300', 'sys_1759501814702538800'],
+  dicts: ['sys_1759501742422098000', 'sys_1757271666666242000', 'sys_1767154968256577500', 'sys_1759501814702538800'],
   components: {
     CreateSuccess,
     SearchPanel
@@ -398,11 +398,11 @@ export default {
           { required: true, message: "借款金额不能为空", trigger: "blur" }
         ],
         borrower: [
-          { required: true, message: "借款方不能为空", trigger: "change" }
+          { required: true, message: "借款人不能为空", trigger: "change" }
         ],
 
         payee: [
-          { required: true, message: "收款方不能为空", trigger: "change" }
+          { required: true, message: "债权人不能为空", trigger: "change" }
         ],
         borrowDate: [
           { required: true, message: "借款日期不能为空", trigger: "blur" }
@@ -472,6 +472,7 @@ export default {
         this.queryParams.params["beginDueDate"] = this.daterangeDueDate[0];
         this.queryParams.params["endDueDate"] = this.daterangeDueDate[1];
       }
+      this.queryParams['orderByColumn'] = 'id'
       listBorrowing(this.queryParams).then(response => {
         this.borrowingList = response.rows;
         this.total = response.total;

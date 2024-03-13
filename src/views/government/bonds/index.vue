@@ -416,6 +416,7 @@ export default {
     /** 查询政府专项债列表 */
     getList() {
       this.loading = true;
+      this.queryParams['orderByColumn'] = 'id'
       listBonds(this.queryParams).then(response => {
         this.bondsList = response.rows;
         this.total = response.total;

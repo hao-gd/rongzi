@@ -420,6 +420,7 @@ export default {
         this.queryParams.params["beginEffectiveDate"] = this.daterangeEffectiveDate[0];
         this.queryParams.params["endEffectiveDate"] = this.daterangeEffectiveDate[1];
       }
+      this.queryParams['orderByColumn'] = 'id'
       listLetter(this.queryParams).then(response => {
         this.letterList = response.rows;
         this.total = response.total;

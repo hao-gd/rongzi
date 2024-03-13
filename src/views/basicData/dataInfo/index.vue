@@ -48,7 +48,7 @@
           size="mini"
           @click="handleAdd"
           v-hasPermi="['basicData:dataInfo:add']"
-        >新增</el-button>
+        >新 建</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button

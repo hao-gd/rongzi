@@ -511,6 +511,7 @@ export default {
         this.queryParams.params["beginDueDate"] = this.daterangeDueDate[0];
         this.queryParams.params["endDueDate"] = this.daterangeDueDate[1];
       }
+      this.queryParams['orderByColumn'] = 'id'
       listRepayment(this.queryParams).then(response => {
         this.repaymentList = response.rows;
         this.total = response.total;

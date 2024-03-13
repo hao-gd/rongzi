@@ -498,6 +498,7 @@ export default {
         this.queryParams.params["beginDeadline"] = this.daterangeDeadline[0];
         this.queryParams.params["endDeadline"] = this.daterangeDeadline[1];
       }
+      this.queryParams['orderByColumn'] = 'id'
       listFactoring(this.queryParams).then(response => {
         this.factoringList = response.rows;
         this.total = response.total;

@@ -40,7 +40,7 @@
           size="mini"
           @click="handleAdd"
           v-hasPermi="['basickey:basickey:add']"
-        >新增</el-button>
+        >新 建</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button

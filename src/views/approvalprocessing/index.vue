@@ -360,6 +360,7 @@ export default {
         getList() {
             // this.queryParams.createBy = this.name;
             this.loading = true;
+            this.queryParams['orderByColumn'] = 'id'
             listList(this.queryParams).then(response => {
                 this.listList = response.rows;
                 this.total = response.total;

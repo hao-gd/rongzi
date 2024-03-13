@@ -200,7 +200,7 @@
     <el-row type="flex" :gutter="10" class="mb8" justify="end">
       <el-col :span="1.5">
         <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
-          v-hasPermi="['creditmanagement:grant:add']">新增</el-button>
+          v-hasPermi="['creditmanagement:grant:add']">新 建</el-button>
       </el-col>
       <!-- <el-col :span="1.5">
         <el-button type="success" plain icon="el-icon-edit" size="mini" :disabled="single" @click="handleUpdate"
@@ -208,7 +208,7 @@
       </el-col> -->
       <el-col :span="1.5">
         <el-button type="danger" plain icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete"
-          v-hasPermi="['creditmanagement:grant:remove']">删除</el-button>
+          v-hasPermi="['creditmanagement:grant:remove']">删 除</el-button>
       </el-col>
       <!-- <el-col :span="1.5">
         <el-button type="warning" plain icon="el-icon-download" size="mini" @click="handleExport"
@@ -293,96 +293,6 @@
     <!-- 添加或修改授信管理对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="60%" append-to-body>
       <el-divider class="no_mt mb20"></el-divider>
-      <!-- <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="授信管理管理编号" prop="managementId">
-          <el-input v-model="form.managementId" placeholder="请输入授信管理管理编号" />
-        </el-form-item>
-        <el-form-item label="数据唯一编号" prop="scrUuid">
-          <div class="p20 appendix">
-            <file-upload v-model="form.scrUuid" :managementId="form.managementId" @input="upload_completed"
-              :fileSize="10000" :limit="1000" :isShowTip="false" />
-          </div>
-        </el-form-item>
-        <el-form-item label="债权人/借款人" prop="creditor">
-          <el-input v-model="form.creditor" placeholder="请输入债权人/借款人" />
-        </el-form-item>
-        <el-form-item label="金融机构" prop="financialInstitution">
-          <el-select v-model="form.financialInstitution" placeholder="请选择金融机构">
-            <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
-              :value="dict.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="授信类型" prop="creditType">
-          <el-select v-model="form.creditType" placeholder="请选择授信类型">
-            <el-option v-for="dict in dict.type.sys_1765001578994991000" :key="dict.value" :label="dict.label"
-              :value="dict.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="授信详情" prop="creditDetail">
-          <el-input v-model="form.creditDetail" placeholder="请输入授信详情" />
-        </el-form-item>
-        <el-form-item label="授信金额" prop="creditAmount">
-          <el-input v-model="form.creditAmount" placeholder="请输入授信金额" />
-        </el-form-item>
-        <el-form-item label="已用授信金额" prop="usedCreditAmount">
-          <el-input v-model="form.usedCreditAmount" placeholder="请输入已用授信金额" />
-        </el-form-item>
-        <el-form-item label="剩余授信金额" prop="remainingCreditAmount">
-          <el-input v-model="form.remainingCreditAmount" placeholder="请输入剩余授信金额" />
-        </el-form-item>
-        <el-form-item label="开始日期" prop="startDate">
-          <el-date-picker clearable v-model="form.startDate" type="date" value-format="yyyy-MM-dd" placeholder="请选择开始日期">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="截止日期" prop="deadline">
-          <el-date-picker clearable v-model="form.deadline" type="date" value-format="yyyy-MM-dd" placeholder="请选择截止日期">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="授信周期" prop="creditCycle">
-          <el-input v-model="form.creditCycle" placeholder="请输入授信周期" />
-        </el-form-item>
-        <el-form-item label="授信状态" prop="creditState">
-          <el-select v-model="form.creditState" placeholder="请选择授信状态">
-            <el-option v-for="dict in dict.type.sys_1765002034026643500" :key="dict.value" :label="dict.label"
-              :value="dict.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="备注" prop="comment">
-          <el-input v-model="form.comment" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
-        <el-form-item label="uuid" prop="uuid">
-          <el-input v-model="form.uuid" placeholder="请输入uuid" />
-        </el-form-item>
-        <el-divider content-position="center">附件表信息</el-divider>
-        <el-row :gutter="10" class="mb8">
-          <el-col :span="1.5">
-            <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAddrzsrc2">添加</el-button>
-          </el-col>
-          <el-col :span="1.5">
-            <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDeleterzsrc2">删除</el-button>
-          </el-col>
-        </el-row>
-        <el-table :data="rzsrc2List" :row-class-name="rowrzsrc2Index" @selection-change="handlerzsrc2SelectionChange"
-          ref="rzsrc2">
-          <el-table-column type="selection" width="50" align="center" />
-          <el-table-column label="序号" align="center" prop="index" width="50" />
-          <el-table-column label="url地址" prop="url" width="150">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.url" placeholder="请输入url地址" />
-            </template>
-          </el-table-column>
-          <el-table-column label="各个项目管理编号" prop="projectManagementId" width="150">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.projectManagementId" placeholder="请输入各个项目管理编号" />
-            </template>
-          </el-table-column>
-          <el-table-column label="种类筛选：下拉" prop="type" width="150">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.type" placeholder="请输入种类筛选：下拉" />
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-form> -->
 
       <div v-if="created_successfully == false">
         <div v-if="title === '修改授信管理'" class="modeify-btn" style="display: flex; justify-content: end;">
@@ -431,7 +341,7 @@
 
             <el-col :span="8">
               <el-form-item label="授信金额（万元）" prop="creditAmount">
-                <el-input :readonly="!isEditable" v-model="form.creditAmount" placeholder="请输入授信金额" />
+                <el-input :readonly="!isEditable" v-model.number.trim="form.creditAmount" placeholder="请输入授信金额" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -439,25 +349,33 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="已用授信金额（万元）" prop="usedCreditAmount">
-                <el-input :readonly="!isEditable" v-model="form.usedCreditAmount" placeholder="请输入已用授信金额" />
+                <el-input :readonly="!isEditable" v-model.number.trim="form.usedCreditAmount" placeholder="请输入已用授信金额" />
               </el-form-item>
             </el-col>
 
             <el-col :span="8">
               <el-form-item label="剩余授信金额（万元）" prop="remainingCreditAmount">
-                <el-input :readonly="!isEditable" v-model="form.remainingCreditAmount" placeholder="请输入剩余授信金额" />
+                <el-input :readonly="true" :disabled="true" v-model.number.trim="remainingCreditAmount" placeholder="请输入剩余授信金额" />
               </el-form-item>
             </el-col>
 
+            <el-col :span="8">
+              <el-form-item label="授信状态" prop="creditState">
+                <el-select :disabled="!isEditable" v-model="form.creditState" placeholder="请选择授信状态">
+                  <el-option v-for="dict in dict.type.sys_1765002034026643500" :key="dict.value" :label="dict.label"
+                    :value="dict.value"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="开始日期" prop="startDate">
                 <el-date-picker :disabled="!isEditable" clearable v-model="form.startDate" type="date" value-format="yyyy-MM-dd"
                   placeholder="请选择开始日期"></el-date-picker>
               </el-form-item>
             </el-col>
-          </el-row>
-
-          <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="截止日期" prop="deadline">
                 <el-date-picker :disabled="!isEditable" clearable v-model="form.deadline" type="date" value-format="yyyy-MM-dd"
@@ -471,14 +389,7 @@
               </el-form-item>
             </el-col>
 
-            <el-col :span="8">
-              <el-form-item label="授信状态" prop="creditState">
-                <el-select :disabled="!isEditable" v-model="form.creditState" placeholder="请选择授信状态">
-                  <el-option v-for="dict in dict.type.sys_1765002034026643500" :key="dict.value" :label="dict.label"
-                    :value="dict.value"></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
+            
           </el-row>
 
           <!-- 备注和附件单独处理，不包含在三列布局中 -->
@@ -662,7 +573,16 @@ export default {
   computed: {
     ...mapGetters([
       'name', 'avatar'
-    ])
+    ]),
+    remainingCreditAmount() {
+      // 确保值为数值类型，避免NaN
+      const creditAmount = Number(this.form.creditAmount) || 0;
+      const usedCreditAmount = Number(this.form.usedCreditAmount) || 0;
+
+      const residue = creditAmount - usedCreditAmount;
+      this.form.remainingCreditAmount = residue;
+      return residue;
+    }
   },
   created() {
     this.getList();
@@ -707,6 +627,7 @@ export default {
         this.queryParams.params["beginDeadline"] = this.daterangeDeadline[0];
         this.queryParams.params["endDeadline"] = this.daterangeDeadline[1];
       }
+      this.queryParams['orderByColumn'] = 'id'
       listGrant(this.queryParams).then(response => {
         this.grantList = response.rows;
         this.total = response.total;

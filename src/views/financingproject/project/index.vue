@@ -17,9 +17,9 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="金融机构" prop="financialInstitution">
-              <el-select v-model="queryParams.financialInstitution" placeholder="请选择金融机构" clearable>
-                <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
+            <el-form-item label="债权人" prop="financialInstitution">
+              <el-select v-model="queryParams.financialInstitution" placeholder="请选择债权人" clearable>
+                <el-option v-for="dict in dict.type.sys_1757271666666242000" :key="dict.value" :label="dict.label"
                   :value="dict.value" />
               </el-select>
             </el-form-item>
@@ -28,9 +28,9 @@
 
         <el-row :gutter="20">
           <el-col :span="8">
-            <el-form-item label="借款单位" prop="borrowingUnit">
-              <el-select v-model="queryParams.borrowingUnit" placeholder="请选择借款单位" clearable>
-                <el-option v-for="dict in dict.type.sys_1759464239669444600" :key="dict.value" :label="dict.label"
+            <el-form-item label="借款人" prop="borrowingUnit">
+              <el-select v-model="queryParams.borrowingUnit" placeholder="请选择借款人" clearable>
+                <el-option v-for="dict in dict.type.sys_1767154968256577500" :key="dict.value" :label="dict.label"
                   :value="dict.value" />
               </el-select>
             </el-form-item>
@@ -90,19 +90,14 @@
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
       <el-table-column label="管理编号" align="center" prop="managementId" />
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
-      <el-table-column label="借款单位" align="center" prop="borrowingUnit">
+      <el-table-column label="借款人" align="center" prop="borrowingUnit">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_1759464239669444600" :value="scope.row.borrowingUnit" />
+          <dict-tag :options="dict.type.sys_1767154968256577500" :value="scope.row.borrowingUnit" />
         </template>
       </el-table-column>
-      <el-table-column label="金融机构" align="center" prop="financialInstitution">
+      <el-table-column label="债权人" align="center" prop="financialInstitution">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_acceptor" :value="scope.row.financialInstitution" />
-        </template>
-      </el-table-column>
-      <el-table-column label="融资金额（万元）" align="center" prop="financingAmount" width="180">
-        <template slot-scope="scope">
-          <span>{{ formatNumberAsRMB(scope.row.financingAmount) }}</span>
+          <dict-tag :options="dict.type.sys_1757271666666242000" :value="scope.row.financialInstitution" />
         </template>
       </el-table-column>
       <el-table-column label="融资类型" align="center" prop="financingType">
@@ -110,36 +105,42 @@
           <dict-tag :options="dict.type.sys_1759508335389835300" :value="scope.row.financingType" />
         </template>
       </el-table-column>
-      <el-table-column label="合同编号" align="center" prop="contractId" />
-      <el-table-column label="合同签订日期" align="center" prop="contractSigningDate" width="180">
+      <el-table-column label="融资金额（万元）" align="center" prop="financingAmount" width="180">
+        <template slot-scope="scope">
+          <span>{{ formatNumberAsRMB(scope.row.financingAmount) }}</span>
+        </template>
+      </el-table-column>
+      <!-- <el-table-column label="资金用途" align="center" prop="contractId" /> -->
+      <el-table-column label="资金用途" align="center" prop="contractId" />
+      <!-- <el-table-column label="合同签订日期" align="center" prop="contractSigningDate" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.contractSigningDate, '{y}-{m}-{d}') }}</span>
         </template>
-      </el-table-column>
-      <el-table-column label="借款日期" align="center" prop="loanDate" width="180">
+      </el-table-column> -->
+      <el-table-column label="放款日" align="center" prop="loanDate" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.loanDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="到期日期" align="center" prop="dueDate" width="180">
+      <el-table-column label="到期日" align="center" prop="dueDate" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.dueDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="利率" align="center" prop="rate" />
+      <el-table-column label="年利率" align="center" prop="rate" />
       <el-table-column label="借款期限" align="center" prop="loanTerm" />
-      <el-table-column label="增信措施" align="center" prop="creditEnhancementMeasures" />
-      <el-table-column label="已还金额（万元）" align="center" prop="repaidAmount" width="160">
+      <!-- <el-table-column label="增信措施" align="center" prop="creditEnhancementMeasures" /> -->
+      <!-- <el-table-column label="已还金额（万元）" align="center" prop="repaidAmount" width="160">
          <template slot-scope="scope">
           <span>{{ formatNumberAsRMB(scope.row.repaidAmount) }}</span>
         </template>
-      </el-table-column>
-      <el-table-column label="待还金额（万元）" align="center" prop="remainingAmount" width="160">
+      </el-table-column> -->
+      <!-- <el-table-column label="待还金额（万元）" align="center" prop="remainingAmount" width="160">
          <template slot-scope="scope">
           <span>{{ formatNumberAsRMB(scope.row.remainingAmount) }}</span>
         </template>
-      </el-table-column>
-      <el-table-column label="贷款状态" align="center" prop="loanState" width="100">
+      </el-table-column> -->
+      <el-table-column label="债务状态" align="center" prop="loanState" width="100">
         <template slot-scope="scope">
           <svg-icon class="mr5" :icon-class="scope.row.loanState"></svg-icon>
           <dict-tag style="display: inline-block;" :options="dict.type.sys_1759509599150407700"
@@ -183,17 +184,17 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="借款单位" prop="borrowingUnit">
-                <el-select :disabled="!isEditable" v-model="form.borrowingUnit" placeholder="请选择借款单位">
-                  <el-option v-for="dict in dict.type.sys_1759464239669444600" :key="dict.value" :label="dict.label"
+              <el-form-item label="借款人" prop="borrowingUnit">
+                <el-select :disabled="!isEditable" v-model="form.borrowingUnit" placeholder="请选择借款人">
+                  <el-option v-for="dict in dict.type.sys_1767154968256577500" :key="dict.value" :label="dict.label"
                     :value="dict.value"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="金融机构" prop="financialInstitution">
-                <el-select :disabled="!isEditable" v-model="form.financialInstitution" placeholder="请选择金融机构">
-                  <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
+              <el-form-item label="债权人" prop="financialInstitution">
+                <el-select :disabled="!isEditable" v-model="form.financialInstitution" placeholder="请选择债权人">
+                  <el-option v-for="dict in dict.type.sys_1757271666666242000" :key="dict.value" :label="dict.label"
                     :value="dict.value"></el-option>
                 </el-select>
               </el-form-item>
@@ -201,11 +202,6 @@
           </el-row>
 
           <el-row :gutter="20">
-            <el-col :span="8">
-              <el-form-item label="融资金额（万元）" prop="financingAmount">
-                <el-input :readonly="!isEditable" v-model="form.financingAmount" placeholder="请输入融资金额" />
-              </el-form-item>
-            </el-col>
             <el-col :span="8">
               <el-form-item label="融资类型" prop="financingType">
                 <el-select :disabled="!isEditable" v-model="form.financingType" placeholder="请选择融资类型">
@@ -215,8 +211,13 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="合同编号" prop="contractId">
-                <el-input :readonly="!isEditable" v-model="form.contractId" placeholder="请输入合同编号" />
+              <el-form-item label="融资金额（万元）" prop="financingAmount">
+                <el-input :readonly="!isEditable" v-model="form.financingAmount" placeholder="请输入融资金额" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="资金用途" prop="contractId">
+                <el-input :readonly="!isEditable" v-model="form.contractId" placeholder="请输入资金用途" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -229,15 +230,15 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="借款日期" prop="loanDate">
+              <el-form-item label="放款日" prop="loanDate">
                 <el-date-picker :disabled="!isEditable" clearable v-model="form.loanDate" type="date"
-                  value-format="yyyy-MM-dd" placeholder="请选择借款日期" />
+                  value-format="yyyy-MM-dd" placeholder="请选择放款日" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="到期日期" prop="dueDate">
+              <el-form-item label="到期日" prop="dueDate">
                 <el-date-picker :disabled="!isEditable" clearable v-model="form.dueDate" type="date"
-                  value-format="yyyy-MM-dd" placeholder="请选择到期日期" />
+                  value-format="yyyy-MM-dd" placeholder="请选择到期日" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -249,8 +250,8 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="利率" prop="rate">
-                <el-input :readonly="!isEditable" v-model="form.rate" placeholder="请输入利率" />
+              <el-form-item label="年利率" prop="rate">
+                <el-input :readonly="!isEditable" v-model="form.rate" placeholder="请输入年利率" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -272,8 +273,8 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="贷款状态" prop="loanState">
-                <el-select :disabled="!isEditable" v-model="form.loanState" placeholder="请选择贷款状态">
+              <el-form-item label="债务状态" prop="loanState">
+                <el-select :disabled="!isEditable" v-model="form.loanState" placeholder="请选择债务状态">
                   <el-option v-for="dict in dict.type.sys_1759509599150407700" :key="dict.value" :label="dict.label"
                     :value="dict.value"></el-option>
                 </el-select>
@@ -332,7 +333,7 @@ import SearchPanel from '@/components/SearchPanel/index.vue'
 
 export default {
   name: "Project",
-  dicts: ['sys_1759464239669444600', 'sys_1759508335389835300', 'sys_1759509599150407700', 'sys_acceptor'],
+  dicts: ['sys_1767154968256577500', 'sys_1759508335389835300', 'sys_1759509599150407700', 'sys_1757271666666242000'],
   components: {
     CreateSuccess,
     SearchPanel
@@ -417,10 +418,10 @@ export default {
           { required: true, message: "数据唯一编号不能为空", trigger: "blur" }
         ],
         borrowingUnit: [
-          { required: true, message: "借款单位不能为空", trigger: "change" }
+          { required: true, message: "借款人不能为空", trigger: "change" }
         ],
         financialInstitution: [
-          { required: true, message: "金融机构不能为空", trigger: "change" }
+          { required: true, message: "债权人不能为空", trigger: "change" }
         ],
         financingAmount: [
           { required: true, message: "融资金额不能为空", trigger: "blur" }
@@ -429,19 +430,19 @@ export default {
           { required: true, message: "融资类型：流贷金额、并购贷、反向保理、商业承兑、银行承兑不能为空", trigger: "change" }
         ],
         contractId: [
-          { required: true, message: "合同编号不能为空", trigger: "blur" }
+          { required: true, message: "资金用途不能为空", trigger: "blur" }
         ],
         contractSigningDate: [
           { required: true, message: "合同签订日期不能为空", trigger: "blur" }
         ],
         loanDate: [
-          { required: true, message: "借款日期不能为空", trigger: "blur" }
+          { required: true, message: "放款日不能为空", trigger: "blur" }
         ],
         dueDate: [
-          { required: true, message: "到期日期不能为空", trigger: "blur" }
+          { required: true, message: "到期日不能为空", trigger: "blur" }
         ],
         rate: [
-          { required: true, message: "利率不能为空", trigger: "blur" }
+          { required: true, message: "年利率不能为空", trigger: "blur" }
         ],
         loanTerm: [
           { required: true, message: "借款期限不能为空", trigger: "blur" }
@@ -456,7 +457,7 @@ export default {
           { required: true, message: "待还金额不能为空", trigger: "blur" }
         ],
         loanState: [
-          { required: true, message: "贷款状态不能为空", trigger: "change" }
+          { required: true, message: "债务状态不能为空", trigger: "change" }
         ],
       }
     };
@@ -498,6 +499,7 @@ export default {
     getList() {
       this.loading = true;
       this.queryParams.params = {};
+      this.queryParams['orderByColumn'] = 'id'
       if (null != this.daterangeContractSigningDate && '' != this.daterangeContractSigningDate) {
         this.queryParams.params["beginContractSigningDate"] = this.daterangeContractSigningDate[0];
         this.queryParams.params["endContractSigningDate"] = this.daterangeContractSigningDate[1];

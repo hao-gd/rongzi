@@ -413,6 +413,7 @@ export default {
     /** 查询贷后管理列表 */
     getList() {
       this.loading = true;
+      this.queryParams['orderByColumn'] = 'id'
       listLoan(this.queryParams).then(response => {
         this.loanList = response.rows;
         this.total = response.total;

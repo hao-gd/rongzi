@@ -440,6 +440,7 @@ export default {
         this.queryParams.params["beginDueDate"] = this.daterangeDueDate1[0];
         this.queryParams.params["endDueDate"] = this.daterangeDueDate1[1];
       }
+      this.queryParams['orderByColumn'] = 'id'
       listBill(this.queryParams).then(response => {
         this.billList = response.rows;
         this.total = response.total;

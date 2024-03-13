@@ -754,6 +754,7 @@ export default {
         this.queryParams.params["beginCreateTime"] = this.daterangeCreateTime[0];
         this.queryParams.params["endCreateTime"] = this.daterangeCreateTime[1];
       }
+      this.queryParams['orderByColumn'] = 'id'
       listInternal(this.queryParams).then(response => {
         this.internalList = response.rows;
         this.total = response.total;

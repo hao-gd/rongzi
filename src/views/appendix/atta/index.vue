@@ -245,6 +245,7 @@ export default {
     /** 查询附件表列表 */
     getList() {
       this.loading = true;
+      this.queryParams['orderByColumn'] = 'id'
       listAtta(this.queryParams).then(response => {
         this.attaList = response.rows;
         this.total = response.total;
