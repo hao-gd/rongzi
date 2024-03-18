@@ -1,5 +1,5 @@
 
-
+import moment from 'moment'
 /**
  * 通用js方法封装处理
  * Copyright (c) 2019 rongzi
@@ -244,4 +244,45 @@ export function formatNumberAsRMB(number) {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
 }).format(number);
+}
+
+
+/* 计算周期 */
+export function creditCycleFN(startDate, deadline) {
+  if (startDate && deadline) {
+    const start = moment(startDate);
+    const end = moment(deadline);
+
+    // 计算月份差异
+    const months = end.diff(start, 'months');
+    start.add(months, 'months'); // 将起始日期增加计算出的月数
+
+    // 计算天数差异，如果相等则算作一天
+    let days = end.diff(start, 'days');
+    if (days === 0) {
+      days = 1;
+    }
+
+    // 根据月份和天数创建相应的显示字符串
+    let creditCycle = '';
+    if (months > 0) {
+      creditCycle += `${months}个月`;
+    }
+    if (days > 0) {
+      creditCycle += `${creditCycle ? ' ' : ''}${days}天`;
+    }
+    return creditCycle;
+  }
+}
+
+/* 期限加上一个单位默认是 '月' */
+export function addPeriods(deadline, period, unit) {
+  if (deadline && period) {
+    const end = moment(deadline);
+    end.add(period, unit);
+    return end.format('YYYY-MM-DD');
+  }
+}
+export function appendUnit(value, unit = '月') {
+  return `${value}${unit}`;
 }

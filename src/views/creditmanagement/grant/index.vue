@@ -69,32 +69,32 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="开始日期">
+      <el-form-item label="起始日">
         <el-date-picker
           v-model="daterangeStartDate"
           style="width: 240px"
           value-format="yyyy-MM-dd"
           type="daterange"
           range-separator="-"
-          start-placeholder="开始日期"
+          start-placeholder="起始日"
           end-placeholder="结束日期"
         ></el-date-picker>
       </el-form-item>
-      <el-form-item label="截止日期">
+      <el-form-item label="到期日">
         <el-date-picker
           v-model="daterangeDeadline"
           style="width: 240px"
           value-format="yyyy-MM-dd"
           type="daterange"
           range-separator="-"
-          start-placeholder="开始日期"
+          start-placeholder="起始日"
           end-placeholder="结束日期"
         ></el-date-picker>
       </el-form-item>
-      <el-form-item label="授信周期" prop="creditCycle">
+      <el-form-item label="授信有效期" prop="creditCycle">
         <el-input
           v-model="queryParams.creditCycle"
-          placeholder="请输入授信周期"
+          placeholder="请输入授信有效期"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -123,7 +123,8 @@
       </el-form-item>
     </el-form> -->
     <search-panel HeaderIcon="Creditmanagement" title="授信管理">
-      <el-form label-position="left" :model="queryParams" ref="queryForm" size="small" :inline="false" v-show="showSearch" label-width="100px">
+      <el-form label-position="left" :model="queryParams" ref="queryForm" size="small" :inline="false" v-show="showSearch"
+        label-width="100px">
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="授信管理编号" prop="managementId">
@@ -157,23 +158,23 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="开始日期">
+            <el-form-item label="起始日">
               <el-date-picker v-model="daterangeStartDate" style="width: 100%" value-format="yyyy-MM-dd" type="daterange"
-                range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
+                range-separator="-" start-placeholder="起始日" end-placeholder="结束日期"></el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="截止日期">
+            <el-form-item label="到期日">
               <el-date-picker v-model="daterangeDeadline" style="width: 100%" value-format="yyyy-MM-dd" type="daterange"
-                range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
+                range-separator="-" start-placeholder="起始日" end-placeholder="结束日期"></el-date-picker>
             </el-form-item>
           </el-col>
         </el-row>
 
         <el-row :gutter="20">
           <el-col :span="8">
-            <el-form-item label="授信周期" prop="creditCycle">
-              <el-input v-model="queryParams.creditCycle" placeholder="请输入授信周期" clearable
+            <el-form-item label="授信有效期" prop="creditCycle">
+              <el-input v-model="queryParams.creditCycle" placeholder="请输入授信有效期" clearable
                 @keyup.enter.native="handleQuery" />
             </el-form-item>
           </el-col>
@@ -250,17 +251,21 @@
           <span>{{ formatNumberAsRMB(scope.row.remainingCreditAmount) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="开始日期" align="center" prop="startDate" width="180">
+      <el-table-column label="起始日" align="center" prop="startDate" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.startDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="截止日期" align="center" prop="deadline" width="180">
+      <el-table-column label="到期日" align="center" prop="deadline" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.deadline, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="授信周期" align="center" prop="creditCycle" />
+      <el-table-column label="授信有效期" align="center" prop="creditCycle">
+        <template slot-scope="scope">
+          <span>{{ creditCycleFN(scope.row.startDate, scope.row.deadline) }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="授信状态" align="center" prop="creditState">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1765002034026643500" :value="scope.row.creditState" />
@@ -355,7 +360,8 @@
 
             <el-col :span="8">
               <el-form-item label="剩余授信金额（万元）" prop="remainingCreditAmount">
-                <el-input :readonly="true" :disabled="true" v-model.number.trim="remainingCreditAmount" placeholder="请输入剩余授信金额" />
+                <el-input :readonly="true" :disabled="true" v-model.number.trim="remainingCreditAmount"
+                  placeholder="请输入剩余授信金额" />
               </el-form-item>
             </el-col>
 
@@ -371,37 +377,37 @@
 
           <el-row :gutter="20">
             <el-col :span="8">
-              <el-form-item label="开始日期" prop="startDate">
-                <el-date-picker :disabled="!isEditable" clearable v-model="form.startDate" type="date" value-format="yyyy-MM-dd"
-                  placeholder="请选择开始日期"></el-date-picker>
+              <el-form-item label="起始日" prop="startDate">
+                <el-date-picker :disabled="!isEditable" clearable v-model="form.startDate" type="date"
+                  value-format="yyyy-MM-dd" placeholder="请选择起始日"></el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="截止日期" prop="deadline">
-                <el-date-picker :disabled="!isEditable" clearable v-model="form.deadline" type="date" value-format="yyyy-MM-dd"
-                  placeholder="请选择截止日期"></el-date-picker>
+              <el-form-item label="到期日" prop="deadline">
+                <el-date-picker :disabled="!isEditable" clearable v-model="form.deadline" type="date"
+                  value-format="yyyy-MM-dd" placeholder="请选择到期日"></el-date-picker>
               </el-form-item>
             </el-col>
 
             <el-col :span="8">
-              <el-form-item label="授信周期" prop="creditCycle">
-                <el-input :readonly="!isEditable" v-model="form.creditCycle" placeholder="请输入授信周期" />
+              <el-form-item label="授信有效期" prop="creditCycle">
+                <el-input :readonly="true" :disabled="true" v-model="creditCycle" placeholder="请输入授信有效期" />
               </el-form-item>
             </el-col>
 
-            
+
           </el-row>
 
           <!-- 备注和附件单独处理，不包含在三列布局中 -->
           <el-form-item label="备注" prop="comment">
             <el-input :readonly="!isEditable" v-model="form.comment" show-word-limit maxlength="200" type="textarea"
-                  :rows="4" placeholder="请输入备注信息，最多不超过200字" />
+              :rows="4" placeholder="请输入备注信息，最多不超过200字" />
           </el-form-item>
 
           <el-form-item label="附件" prop="scrUuid">
             <div class="p20 appendix">
-              <file-upload :disabled="!isEditable" v-model="form.scrUuid" :managementId="form.managementId" @input="upload_completed"
-                :fileSize="10000" :limit="1000" :isShowTip="false" />
+              <file-upload :disabled="!isEditable" v-model="form.scrUuid" :managementId="form.managementId"
+                @input="upload_completed" :fileSize="10000" :limit="1000" :isShowTip="false" />
             </div>
           </el-form-item>
         </el-form>
@@ -539,13 +545,13 @@ export default {
           { required: true, message: "剩余授信金额不能为空", trigger: "blur" }
         ],
         startDate: [
-          { required: true, message: "开始日期不能为空", trigger: "blur" }
+          { required: true, message: "起始日不能为空", trigger: "blur" }
         ],
         deadline: [
-          { required: true, message: "截止日期不能为空", trigger: "blur" }
+          { required: true, message: "到期日不能为空", trigger: "blur" }
         ],
         creditCycle: [
-          { required: true, message: "授信周期不能为空", trigger: "blur" }
+          { required: true, message: "授信有效期不能为空", trigger: "blur" }
         ],
         creditState: [
           { required: true, message: "授信状态不能为空", trigger: "change" }
@@ -582,6 +588,36 @@ export default {
       const residue = creditAmount - usedCreditAmount;
       this.form.remainingCreditAmount = residue;
       return residue;
+    },
+    /* 计算周期，开始时间减去结束时间 */
+    creditCycle() {
+      if (this.form.startDate && this.form.deadline) {
+        const start = moment(this.form.startDate);
+        const end = moment(this.form.deadline);
+
+        // 计算月份差异
+        const months = end.diff(start, 'months');
+        start.add(months, 'months'); // 将起始日期增加计算出的月数
+
+        // 计算天数差异，如果相等则算作一天
+        let days = end.diff(start, 'days');
+        if (days === 0) {
+          days = 1;
+        }
+
+        // 根据月份和天数创建相应的显示字符串
+        let creditCycle = '';
+        if (months > 0) {
+          creditCycle += `${months}个月`;
+        }
+        if (days > 0) {
+          creditCycle += `${creditCycle ? ' ' : ''}${days}天`;
+        }
+
+        console.log(creditCycle);
+        this.form.creditCycle = creditCycle;
+        return creditCycle;
+      }
     }
   },
   created() {
@@ -725,6 +761,9 @@ export default {
             //   this.getList();
             // });
             data.scrUuid = Number(this.scrUuid);
+            // 计算周期，开始时间减去结束时间
+            let creditCycle = moment(data.deadline).diff(moment(data.startDate), 'days');
+            data.creditCycle = creditCycle === 0 ? 1 : creditCycle;
             this.rzaudit_data = {
               "auditId": data.id,
               "scrUuid": data.scrUuid,
@@ -757,6 +796,11 @@ export default {
             const uuid = String(generator.nextId())
             data.uuid = uuid;
             // end
+
+            // 计算周期，开始时间减去结束时间
+            let creditCycle = moment(data.deadline).diff(moment(data.startDate), 'days');
+            data.creditCycle = creditCycle === 0 ? 1 : creditCycle;
+
             data.scrUuid = generator.nextId();
             data.rzsrc2List = this.rzsrc2List;
             data.createBy = this.name;

@@ -140,8 +140,16 @@
           <span>{{ parseTime(scope.row.dueDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column> -->
-      <el-table-column label="借款期限" align="center" prop="loanTerm" />
-      <el-table-column label="利率" align="center" prop="rate" />
+      <el-table-column label="借款期限" align="center" prop="loanTerm">
+        <template slot-scope="scope">
+          <span>{{ appendUnit(scope.row.loanTerm, '月') }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="利率" align="center" prop="rate" >
+        <template slot-scope="scope">
+          <span>{{ appendUnit(scope.row.rate, '%') }}</span>
+        </template>
+      </el-table-column>
       <!-- <el-table-column label="合同编号" align="center" prop="contractId" />
       <el-table-column label="还款方式" align="center" prop="repaymentMethod">
         <template slot-scope="scope">
@@ -185,7 +193,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="借款金额（万元）" prop="loanAmount">
-                <el-input :readonly="!isEditable" v-model="form.loanAmount" placeholder="请输入借款金额" />
+                <el-input :readonly="!isEditable" type="number" v-model.number.trim="form.loanAmount" placeholder="请输入借款金额" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -221,13 +229,13 @@
               </el-form-item>
             </el-col> -->
             <el-col :span="8">
-              <el-form-item label="借款期限" prop="loanTerm">
-                <el-input :readonly="!isEditable" v-model="form.loanTerm" placeholder="请输入借款期限" />
+              <el-form-item label="借款期限（月）" prop="loanTerm">
+                <el-input :readonly="!isEditable" type="number" v-model.number.trim="form.loanTerm" placeholder="请输入借款期限" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="利率" prop="rate">
-                <el-input :readonly="!isEditable" v-model="form.rate" placeholder="请输入利率" />
+                <el-input :readonly="!isEditable" v-model="rate" placeholder="请输入利率" />
               </el-form-item>
             </el-col>
             
@@ -433,7 +441,20 @@ export default {
   computed: {
     ...mapGetters([
       'name', 'avatar'
-    ])
+    ]),
+    rate: {
+      get() {
+        if (this.form.rate) {
+        // 当读取值时，添加百分号
+          return this.form.rate + (this.form.rate ? '%' : '');
+        } else {
+          return this.form.rate;
+        }
+      },
+      set(value) {
+        this.form.rate = value.replace(/%/g, '');
+      }
+    },
   },
   created() {
     this.getList();
@@ -561,6 +582,7 @@ export default {
           this.rzaudit_data = null;
           if (this.form.id != null) {
             data.scrUuid = Number(this.scrUuid);
+            data.rate = data.rate.replace(/%/g, ''); // 替换掉所有的百分号
             this.rzaudit_data = {
               "auditId": data.id,
               "scrUuid": data.scrUuid,
@@ -591,6 +613,7 @@ export default {
             const uuid = String(generator.nextId())
             data.uuid = uuid;
             // end
+            data.rate = data.rate.replace(/%/g, ''); // 替换掉所有的百分号
             this.rzaudit_data = {
               "id": null,
               "auditId": null,

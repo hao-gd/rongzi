@@ -102,7 +102,11 @@
       <el-table-column label="量化目标" align="center" prop="quantitativeGoals" />
       <el-table-column label="当前实现" align="center" prop="currentImplementation" />
       <el-table-column label="剩余实现" align="center" prop="remainingQuantity" />
-      <el-table-column label="借款期限" align="center" prop="loanTerm" />
+      <el-table-column label="借款期限" align="center" prop="loanTerm">
+        <template slot-scope="scope">
+          <span>{{ creditCycleFN(scope.row.startDate, scope.row.deadline) }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="贷后状态跟踪" align="center" prop="afterLoanState">
         <template slot-scope="scope">
           <!-- <dict-tag :options="dict.type.sys_1759464706814247000" :value="scope.row.afterLoanState" /> -->
@@ -172,9 +176,26 @@
                 </el-select>
               </el-form-item>
             </el-col>
+
+            <el-col :span="8">
+              <el-form-item label="起始日" prop="startDate">
+                <el-date-picker :disabled="!isEditable" clearable v-model="form.startDate" type="date"
+                  value-format="yyyy-MM-dd" placeholder="请选择起始日"></el-date-picker>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="到期日" prop="deadline">
+                <el-date-picker :disabled="!isEditable" clearable v-model="form.deadline" type="date"
+                  value-format="yyyy-MM-dd" placeholder="请选择到期日"></el-date-picker>
+              </el-form-item>
+            </el-col>
+            
+          </el-row>
+          <!-- 第三行 -->
+          <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="借款期限（月）" prop="loanTerm">
-                <el-input :readonly="!isEditable" v-model.number.trim="form.loanTerm" type="number" placeholder="请输入借款期限" />
+                <el-input :readonly="true" :disabled="true" v-model="creditCycle" placeholder="请输入借款期限" />
 
 
                 <!-- <el-input :readonly="!isEditable" placeholder="请输入借款期限" v-model.number.trim="form.loanTerm" type="number"
@@ -195,15 +216,14 @@
                 </el-select>
               </el-form-item>
             </el-col>
-          </el-row>
-          <!-- 第三行 -->
-          <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="量化目标（数量）" prop="quantitativeGoals">
                 <el-input :readonly="!isEditable" type="number" v-model.number.trim="form.quantitativeGoals"
                   placeholder="请输入量化目标" />
               </el-form-item>
             </el-col>
+          </el-row>
+          <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="当前实现（数量）" prop="currentImplementation">
                 <el-input :readonly="!isEditable" type="number" v-model.number.trim="form.currentImplementation"
@@ -215,6 +235,7 @@
                 <el-input :readonly="true" :disabled="true" :value="remainingQuantity" placeholder="请输入剩余数量" />
               </el-form-item>
             </el-col>
+            <el-col :span="8"></el-col>
           </el-row>
           <!-- 备注 -->
           <el-form-item label="进度说明" prop="progressDescription">
@@ -323,7 +344,10 @@ export default {
         remainingQuantity: null,
         progressDescription: null,
         comment: null,
-        uuid: null
+        uuid: null,
+        startDate: null,
+        deadline: null,
+        creditCycle: null
       },
       /* str 需要添加的 */
       scrUuid: null,
@@ -365,6 +389,15 @@ export default {
         progressDescription: [
           { required: true, message: "进度说明不能为空", trigger: "blur" }
         ],
+        startDate: [
+          { required: true, message: "起始日不能为空", trigger: "blur" }
+        ],
+        deadline: [
+          { required: true, message: "到期日不能为空", trigger: "blur" }
+        ],
+        creditCycle: [
+          { required: true, message: "授信有效期不能为空", trigger: "blur" }
+        ],
       }
     };
   },
@@ -388,6 +421,36 @@ export default {
       const residue = quantitativeGoals - currentImplementation;
       this.form.remainingQuantity = residue;
       return residue;
+    },
+    /* 计算周期，开始时间减去结束时间 */
+    creditCycle() {
+      if (this.form.startDate && this.form.deadline) {
+        const start = moment(this.form.startDate);
+        const end = moment(this.form.deadline);
+
+        // 计算月份差异
+        const months = end.diff(start, 'months');
+        start.add(months, 'months'); // 将起始日期增加计算出的月数
+
+        // 计算天数差异，如果相等则算作一天
+        let days = end.diff(start, 'days');
+        if (days === 0) {
+          days = 1;
+        }
+
+        // 根据月份和天数创建相应的显示字符串
+        let creditCycle = '';
+        if (months > 0) {
+          creditCycle += `${months}个月`;
+        }
+        if (days > 0) {
+          creditCycle += `${creditCycle ? ' ' : ''}${days}天`;
+        }
+
+        console.log(creditCycle);
+        this.form.loanTerm = creditCycle;
+        return creditCycle;
+      }
     }
   },
   created() {
@@ -446,7 +509,10 @@ export default {
         createBy: null,
         updateTime: null,
         updateBy: null,
-        uuid: null
+        uuid: null,
+        startDate: null,
+        deadline: null,
+        creditCycle: null
       };
       this.rzsrc2List = [];
       this.resetForm("form");
@@ -503,6 +569,9 @@ export default {
           this.rzaudit_data = null;
           if (this.form.id != null) {
             data.scrUuid = Number(this.scrUuid);
+            // 计算周期，开始时间减去结束时间
+            let creditCycle = moment(data.deadline).diff(moment(data.startDate), 'days');
+            data.loanTerm = creditCycle === 0 ? 1 : creditCycle;
             this.rzaudit_data = {
               "auditId": data.id,
               "scrUuid": data.scrUuid,
@@ -532,6 +601,10 @@ export default {
             // data.loanTerm = data.loanTerm + this.termType;
             data.createBy = this.name;
             data.uuid = uuid;
+
+            // 计算周期，开始时间减去结束时间
+            let creditCycle = moment(data.deadline).diff(moment(data.startDate), 'days');
+            data.loanTerm = creditCycle === 0 ? 1 : creditCycle;
 
             this.rzaudit_data = {
               "id": null,
