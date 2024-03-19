@@ -103,37 +103,37 @@
 
     <el-table v-loading="loading" :data="bondsList" @selection-change="handleSelectionChange"
       :header-cell-style="header_cell_style">
-      <el-table-column fixed="left" type="selection" width="55" align="center" />
+      <el-table-column show-overflow-tooltip fixed="left" type="selection" width="55" align="center" />
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
-      <el-table-column label="管理编号" align="center" prop="managementId" />
+      <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" min-width="100"/>
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
-      <el-table-column label="债券名称" align="center" prop="bondName" />
-      <el-table-column label="债券发行规模（万元）" align="center" prop="bondSize" width="180">
+      <el-table-column show-overflow-tooltip label="债券名称" align="center" prop="bondName" min-width="120"/>
+      <el-table-column show-overflow-tooltip label="债券发行规模（万元）" align="center" prop="bondSize" width="180">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1762824645385388000" :value="scope.row.bondSize" />
         </template>
       </el-table-column>
-      <el-table-column label="利率" align="center" prop="rate">
+      <el-table-column show-overflow-tooltip label="利率" align="center" prop="rate" min-width="120">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1762824761903153200" :value="scope.row.rate" />
         </template>
       </el-table-column>
-      <el-table-column label="债券发行期限" align="center" prop="bondDuration">
+      <el-table-column show-overflow-tooltip label="债券发行期限" align="center" prop="bondDuration" min-width="180">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1762824852571422700" :value="scope.row.bondDuration" />
         </template>
       </el-table-column>
-      <el-table-column label="偿还方式" align="center" prop="repaymentMethod">
+      <el-table-column show-overflow-tooltip label="偿还方式" align="center" prop="repaymentMethod" min-width="120">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1759533864251818000" :value="scope.row.repaymentMethod" />
         </template>
       </el-table-column>
-      <el-table-column label="累计到账金额（万元）" align="center" prop="accumulatedAmountReceived" width="180">
+      <el-table-column show-overflow-tooltip label="累计到账金额（万元）" align="center" prop="accumulatedAmountReceived" width="180">
         <template slot-scope="scope">
           <span>{{ formatNumberAsRMB(scope.row.accumulatedAmountReceived) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="发行主体" align="center" prop="issuingEntity">
+      <el-table-column show-overflow-tooltip label="发行主体" align="center" prop="issuingEntity" min-width="150">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1762824996528324600" :value="scope.row.issuingEntity" />
         </template>
@@ -145,7 +145,7 @@
         </template>
       </el-table-column> -->
       <!-- <el-table-column label="uuid" align="center" prop="uuid" /> -->
-      <el-table-column fixed="right" label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column show-overflow-tooltip fixed="right" label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="handleUpdate(scope.row)" v-hasPermi="['government:bonds:edit']">查
             看</el-button>

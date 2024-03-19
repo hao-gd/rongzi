@@ -109,24 +109,24 @@
 
     <el-table v-loading="loading" :data="attaList" @selection-change="handleSelectionChange"
       :header-cell-style="header_cell_style">
-      <el-table-column fixed="left" type="selection" width="55" align="center" />
+      <el-table-column show-overflow-tooltip fixed="left" type="selection" width="55" align="center" />
       <!-- <el-table-column label="资源id主键" align="center" prop="id" /> -->
       <!-- <el-table-column label="url地址" align="center" prop="url" /> -->
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
-      <el-table-column label="管理编号" align="center" prop="projectManagementId" />
-      <el-table-column label="上传人" align="center" prop="createBy" />
-      <el-table-column label="上传时间" align="center" prop="createTime" />
-      <el-table-column label="种类" align="center" prop="type">
+      <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="projectManagementId" />
+      <el-table-column show-overflow-tooltip label="上传人" align="center" prop="createBy" />
+      <el-table-column show-overflow-tooltip label="上传时间" align="center" prop="createTime" />
+      <el-table-column show-overflow-tooltip label="种类" align="center" prop="type">
         <template slot-scope="scope">
           {{ getType(scope.row.type) }}
         </template>
       </el-table-column>
-      <el-table-column label="文件名" align="center" prop="url">
+      <el-table-column show-overflow-tooltip label="文件名" align="center" prop="url" min-width="180">
         <template slot-scope="scope">
           {{ extractAndCleanFileName(scope.row.url) }}
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column show-overflow-tooltip fixed="right" label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <!-- <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)"
             v-hasPermi="['appendix:atta:edit']">修改</el-button>

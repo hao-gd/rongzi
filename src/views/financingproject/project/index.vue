@@ -86,55 +86,55 @@
 
     <el-table v-loading="loading" :data="projectList" @selection-change="handleSelectionChange"
       :header-cell-style="header_cell_style">
-      <el-table-column fixed="left" type="selection" width="55" align="center" />
+      <el-table-column show-overflow-tooltip fixed="left" type="selection" width="55" align="center" />
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
-      <el-table-column label="管理编号" align="center" prop="managementId" />
+      <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" min-width="100"/>
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
-      <el-table-column label="借款人" align="center" prop="borrowingUnit">
+      <el-table-column show-overflow-tooltip label="借款人" align="center" prop="borrowingUnit" min-width="120">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1767154968256577500" :value="scope.row.borrowingUnit" />
         </template>
       </el-table-column>
-      <el-table-column label="债权人" align="center" prop="financialInstitution">
+      <el-table-column show-overflow-tooltip label="债权人" align="center" prop="financialInstitution" min-width="120">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1757271666666242000" :value="scope.row.financialInstitution" />
         </template>
       </el-table-column>
-      <el-table-column label="融资类型" align="center" prop="financingType">
+      <el-table-column show-overflow-tooltip label="融资类型" align="center" prop="financingType" min-width="120">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1759508335389835300" :value="scope.row.financingType" />
         </template>
       </el-table-column>
-      <el-table-column label="融资金额（万元）" align="center" prop="financingAmount" width="180">
+      <el-table-column show-overflow-tooltip label="融资金额（万元）" align="center" prop="financingAmount" width="180">
         <template slot-scope="scope">
           <span>{{ formatNumberAsRMB(scope.row.financingAmount) }}</span>
         </template>
       </el-table-column>
+      <el-table-column show-overflow-tooltip label="期限" align="center" prop="loanTerm" min-width="140">
+        <template slot-scope="scope">
+          <span>{{ creditCycleFN(scope.row.loanDate, scope.row.dueDate) }}</span>
+        </template>
+      </el-table-column>
       <!-- <el-table-column label="资金用途" align="center" prop="contractId" /> -->
-      <el-table-column label="资金用途" align="center" prop="contractId" />
+      <!-- <el-table-column show-overflow-tooltip label="资金用途" align="center" prop="contractId" min-width="120"/> -->
       <!-- <el-table-column label="合同签订日期" align="center" prop="contractSigningDate" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.contractSigningDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column> -->
-      <el-table-column label="放款日" align="center" prop="loanDate" width="180">
+      <el-table-column show-overflow-tooltip label="放款日" align="center" prop="loanDate" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.loanDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="到期日" align="center" prop="dueDate" width="180">
+      <el-table-column show-overflow-tooltip label="到期日" align="center" prop="dueDate" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.dueDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="年利率" align="center" prop="rate">
+      <el-table-column show-overflow-tooltip label="年利率" align="center" prop="rate" min-width="120">
         <template slot-scope="scope">
           <span>{{ appendUnit(scope.row.rate, '%') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="借款期限" align="center" prop="loanTerm" >
-        <template slot-scope="scope">
-          <span>{{ creditCycleFN(scope.row.loanDate, scope.row.dueDate) }}</span>
         </template>
       </el-table-column>
       <!-- <el-table-column label="增信措施" align="center" prop="creditEnhancementMeasures" /> -->
@@ -143,12 +143,12 @@
           <span>{{ formatNumberAsRMB(scope.row.repaidAmount) }}</span>
         </template>
       </el-table-column> -->
-      <!-- <el-table-column label="待还金额（万元）" align="center" prop="remainingAmount" width="160">
+      <el-table-column label="融资余额（万元）" align="center" prop="remainingAmount" width="160">
          <template slot-scope="scope">
           <span>{{ formatNumberAsRMB(scope.row.remainingAmount) }}</span>
         </template>
-      </el-table-column> -->
-      <el-table-column label="债务状态" align="center" prop="loanState" width="100">
+      </el-table-column>
+      <el-table-column show-overflow-tooltip label="债务状态" align="center" prop="loanState" width="120">
         <template slot-scope="scope">
           <svg-icon class="mr5" :icon-class="scope.row.loanState"></svg-icon>
           <dict-tag style="display: inline-block;" :options="dict.type.sys_1759509599150407700"
@@ -156,9 +156,9 @@
           <!-- <dict-tag :options="dict.type.sys_1759509599150407700" :value="scope.row.loanState" /> -->
         </template>
       </el-table-column>
-      <el-table-column label="备注" align="center" prop="comment" />
+      <!-- <el-table-column show-overflow-tooltip label="备注" align="center" prop="comment" min-width="120" /> -->
       <!-- <el-table-column label="uuid" align="center" prop="uuid" /> -->
-      <el-table-column fixed="right" label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column show-overflow-tooltip fixed="right" label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="handleUpdate(scope.row)"
             v-hasPermi="['financingproject:project:edit']">查 看</el-button>
@@ -276,8 +276,8 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="待还金额（万元）" prop="remainingAmount">
-                <el-input ::readonly="true" :disabled="true" v-model.number.trim="remainingCreditAmount" placeholder="请输入待还金额" />
+              <el-form-item label="融资余额（万元）" prop="remainingAmount">
+                <el-input ::readonly="true" :disabled="true" v-model.number.trim="remainingCreditAmount" placeholder="请输入融资余额" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -462,7 +462,7 @@ export default {
           { required: true, message: "已还金额不能为空", trigger: "blur" }
         ],
         remainingAmount: [
-          { required: true, message: "待还金额不能为空", trigger: "blur" }
+          { required: true, message: "融资余额不能为空", trigger: "blur" }
         ],
         loanState: [
           { required: true, message: "债务状态不能为空", trigger: "change" }

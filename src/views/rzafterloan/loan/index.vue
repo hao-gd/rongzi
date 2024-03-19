@@ -80,34 +80,34 @@
 
     <el-table v-loading="loading" :data="loanList" @selection-change="handleSelectionChange"
       :header-cell-style="header_cell_style">
-      <el-table-column fixed="left" type="selection" width="55" align="center" />
+      <el-table-column show-overflow-tooltip fixed="left" type="selection" width="55" align="center" />
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
-      <el-table-column label="管理编号" align="center" prop="managementId" />
+      <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" />
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
-      <el-table-column label="金融机构" align="center" prop="financialInstitution">
+      <el-table-column show-overflow-tooltip label="金融机构" align="center" prop="financialInstitution" min-width="180">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_acceptor" :value="scope.row.financialInstitution" />
         </template>
       </el-table-column>
-      <el-table-column label="借款金额（万元）" align="center" prop="loanAmount">
+      <el-table-column show-overflow-tooltip label="借款金额（万元）" align="center" prop="loanAmount" min-width="180">
         <template slot-scope="scope">
           <span>{{ formatNumberAsRMB(scope.row.loanAmount) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="借款单位" align="center" prop="borrowingUnit">
+      <el-table-column show-overflow-tooltip label="借款单位" align="center" prop="borrowingUnit" min-width="180">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1759464239669444600" :value="scope.row.borrowingUnit" />
         </template>
       </el-table-column>
-      <el-table-column label="量化目标" align="center" prop="quantitativeGoals" />
-      <el-table-column label="当前实现" align="center" prop="currentImplementation" />
-      <el-table-column label="剩余实现" align="center" prop="remainingQuantity" />
-      <el-table-column label="借款期限" align="center" prop="loanTerm">
+      <el-table-column show-overflow-tooltip label="量化目标" align="center" prop="quantitativeGoals" />
+      <el-table-column show-overflow-tooltip label="当前实现" align="center" prop="currentImplementation" />
+      <el-table-column show-overflow-tooltip label="剩余实现" align="center" prop="remainingQuantity" />
+      <el-table-column show-overflow-tooltip label="借款期限" align="center" prop="loanTerm">
         <template slot-scope="scope">
           <span>{{ creditCycleFN(scope.row.startDate, scope.row.deadline) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="贷后状态跟踪" align="center" prop="afterLoanState">
+      <el-table-column show-overflow-tooltip label="贷后状态跟踪" align="center" prop="afterLoanState" min-width="180">
         <template slot-scope="scope">
           <!-- <dict-tag :options="dict.type.sys_1759464706814247000" :value="scope.row.afterLoanState" /> -->
           <svg-icon :icon-class="scope.row.afterLoanState"></svg-icon> <dict-tag style="display: inline-block;"
@@ -116,9 +116,9 @@
       </el-table-column>
 
       <!-- <el-table-column label="进度说明" align="center" prop="progressDescription" /> -->
-      <el-table-column label="备注" align="center" prop="comment" />
+      <el-table-column show-overflow-tooltip label="备注" align="center" prop="comment" />
       <!-- <el-table-column label="uuid" align="center" prop="uuid" /> -->
-      <el-table-column label="操作" fixed="right" align="center" class-name="small-padding fixed-width">
+      <el-table-column show-overflow-tooltip label="操作" fixed="right" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="handleUpdate(scope.row)" v-hasPermi="['rzafterloan:loan:edit']">查
             看</el-button>

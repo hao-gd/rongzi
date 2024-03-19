@@ -100,9 +100,9 @@
         <p class="f16 mb20" style="color: #1D2129;">提交的申请</p>
         <el-table v-loading="loading" :data="listList" @selection-change="handleSelectionChange"
           :header-cell-style="header_cell_style">
-          <el-table-column type="selection" width="55" align="center" />
-          <el-table-column label="序号" type="index" width="55" align="center" />
-          <el-table-column label="提交的事项" align="center" prop="tableName">
+          <el-table-column fixed="left" show-overflow-tooltip type="selection" width="55" align="center" />
+          <el-table-column show-overflow-tooltip label="序号" type="index" width="55" align="center" />
+          <el-table-column show-overflow-tooltip label="提交的事项" align="center" prop="tableName">
             <template slot-scope="scope">
               {{ precautions_obj[scope.row.tableName] }}
             </template>
@@ -114,7 +114,7 @@
           <!-- <el-table-column label="创建人" align="center" prop="createBy" /> -->
           <!-- <el-table-column label="数据json文件" align="center" prop="dataJson" /> -->
           <!-- <el-table-column label="父级表名" align="center" prop="tableName" /> -->
-          <el-table-column label="审批进度" align="center" prop="auditState">
+          <el-table-column fixed="right" show-overflow-tooltip label="审批进度" align="center" prop="auditState">
             <template slot-scope="scope">
               <svg-icon :icon-class="scope.row.auditState"></svg-icon> <dict-tag style="display: inline-block;"
                 :options="dict.type.sys_1759514730105405400" :value="scope.row.auditState" />
