@@ -264,14 +264,14 @@ export function creditCycleFN(startDate, deadline) {
     }
 
     // 根据月份和天数创建相应的显示字符串
-    let creditCycle = '';
-    if (months > 0) {
-      creditCycle += `${months}个月`;
-    }
-    if (days > 0) {
-      creditCycle += `${creditCycle ? ' ' : ''}${days}天`;
-    }
-    return creditCycle;
+    // let creditCycle = '';
+    // if (months > 0) {
+    //   creditCycle += `${months}个月`;
+    // }
+    // if (days > 0) {
+    //   creditCycle += `${creditCycle ? ' ' : ''}${days}天`;
+    // }
+    return days + '天';
   }
 }
 

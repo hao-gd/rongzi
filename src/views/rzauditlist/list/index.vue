@@ -114,13 +114,13 @@
           <!-- <el-table-column label="创建人" align="center" prop="createBy" /> -->
           <!-- <el-table-column label="数据json文件" align="center" prop="dataJson" /> -->
           <!-- <el-table-column label="父级表名" align="center" prop="tableName" /> -->
-          <el-table-column fixed="right" show-overflow-tooltip label="审批进度" align="center" prop="auditState">
+          <el-table-column  show-overflow-tooltip label="审批进度" align="center" prop="auditState">
             <template slot-scope="scope">
               <svg-icon :icon-class="scope.row.auditState"></svg-icon> <dict-tag style="display: inline-block;"
                 :options="dict.type.sys_1759514730105405400" :value="scope.row.auditState" />
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+          <el-table-column fixed="right" label="操作" align="center" class-name="small-padding fixed-width">
             <template slot-scope="scope">
               <el-button v-if="scope.row.auditState == '1759514891045044200'" size="mini" type="text" @click="handleUpdate(scope.row)" v-hasPermi="['rzauditlist:list:edit']">撤
                 回</el-button>

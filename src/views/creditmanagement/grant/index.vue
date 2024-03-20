@@ -263,7 +263,7 @@
       </el-table-column>
       <el-table-column show-overflow-tooltip label="授信有效期" align="center" prop="creditCycle" min-width="100">
         <template slot-scope="scope">
-          <span>{{ creditCycleFN(scope.row.startDate, scope.row.deadline) }}</span>
+          <span>{{ appendUnit(scope.row.creditCycle, '天') }}</span>
         </template>
       </el-table-column>
       <el-table-column show-overflow-tooltip label="授信状态" align="center" prop="creditState">
@@ -391,7 +391,7 @@
 
             <el-col :span="8">
               <el-form-item label="授信有效期" prop="creditCycle">
-                <el-input :readonly="true" :disabled="true" v-model="creditCycle" placeholder="请输入授信有效期" />
+                <el-input :readonly="!isEditable" v-model="creditCycle" placeholder="请输入授信有效期" />
               </el-form-item>
             </el-col>
 
@@ -565,7 +565,8 @@ export default {
         uuid: [
           { required: true, message: "uuid不能为空", trigger: "blur" }
         ]
-      }
+      },
+      isAutoCalculated: false, // 是否自动计算的标志
     };
   },
   watch: {
@@ -573,6 +574,17 @@ export default {
       if (n == false) {
         this.created_successfully = false;
         this.isEditable = true;
+      }
+    },
+    // 观察开始和结束日期的变化，自动重新计算天数
+    'form.startDate': function (newVal, oldVal) {
+      if (newVal !== oldVal) {
+        this.calculateLoanTerm();
+      }
+    },
+    'form.deadline': function (newVal, oldVal) {
+      if (newVal !== oldVal) {
+        this.calculateLoanTerm();
       }
     }
   },
@@ -590,33 +602,22 @@ export default {
       return residue;
     },
     /* 计算周期，开始时间减去结束时间 */
-    creditCycle() {
-      if (this.form.startDate && this.form.deadline) {
-        const start = moment(this.form.startDate);
-        const end = moment(this.form.deadline);
-
-        // 计算月份差异
-        const months = end.diff(start, 'months');
-        start.add(months, 'months'); // 将起始日期增加计算出的月数
-
-        // 计算天数差异，如果相等则算作一天
-        let days = end.diff(start, 'days');
-        if (days === 0) {
-          days = 1;
+    creditCycle: {
+      get() {
+        // 如果是自动计算的，直接返回计算结果加"天"，否则返回当前值
+        if (this.isAutoCalculated) {
+          return `${this.form.creditCycle}天`;
+        } else {
+          return this.form.creditCycle ? `${this.form.creditCycle}天` : '';
         }
-
-        // 根据月份和天数创建相应的显示字符串
-        let creditCycle = '';
-        if (months > 0) {
-          creditCycle += `${months}个月`;
+      },
+      set(value) {
+        this.isAutoCalculated = false; // 用户手动输入，更改标志状态
+        if (typeof value === 'string' && value.includes('天')) {
+          this.form.creditCycle = parseInt(value.replace('天', ''), 10);
+        } else if (!isNaN(value)) {
+          this.form.creditCycle = parseInt(value, 10);
         }
-        if (days > 0) {
-          creditCycle += `${creditCycle ? ' ' : ''}${days}天`;
-        }
-
-        console.log(creditCycle);
-        this.form.creditCycle = creditCycle;
-        return creditCycle;
       }
     }
   },
@@ -626,6 +627,21 @@ export default {
     this.isEditable = true;
   },
   methods: {
+    calculateLoanTerm() {
+      if (this.form.startDate && this.form.deadline) {
+        const start = moment(this.form.startDate);
+        const end = moment(this.form.deadline);
+
+        const months = end.diff(start, 'months');
+        start.add(months, 'months');
+
+        let days = end.diff(start, 'days');
+        days = days === 0 ? 1 : days;
+
+        this.form.creditCycle = days;
+        this.isAutoCalculated = true; // 标记为自动计算
+      }
+    },
     /* 到期提醒选择 */
     handleSelect(val) {
       console.log(val);
@@ -762,8 +778,13 @@ export default {
             // });
             data.scrUuid = Number(this.scrUuid);
             // 计算周期，开始时间减去结束时间
-            let creditCycle = moment(data.deadline).diff(moment(data.startDate), 'days');
-            data.creditCycle = creditCycle === 0 ? 1 : creditCycle;
+            // let creditCycle = moment(data.deadline).diff(moment(data.startDate), 'days');
+            // data.creditCycle = creditCycle === 0 ? 1 : creditCycle;
+
+            let loanTermStr = data.creditCycle.toString();
+            loanTermStr = loanTermStr.replace(/天$/, '');
+
+            data.creditCycle = loanTermStr
             this.rzaudit_data = {
               "auditId": data.id,
               "scrUuid": data.scrUuid,
@@ -798,8 +819,12 @@ export default {
             // end
 
             // 计算周期，开始时间减去结束时间
-            let creditCycle = moment(data.deadline).diff(moment(data.startDate), 'days');
-            data.creditCycle = creditCycle === 0 ? 1 : creditCycle;
+            // let creditCycle = moment(data.deadline).diff(moment(data.startDate), 'days');
+            // data.creditCycle = creditCycle === 0 ? 1 : creditCycle;
+            let loanTermStr = data.creditCycle.toString();
+            loanTermStr = loanTermStr.replace(/天$/, '');
+
+            data.creditCycle = loanTermStr
 
             data.scrUuid = generator.nextId();
             data.rzsrc2List = this.rzsrc2List;

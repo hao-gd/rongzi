@@ -110,7 +110,7 @@
       :header-cell-style="header_cell_style">
       <el-table-column show-overflow-tooltip fixed="left" type="selection" width="55" align="center" />
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
-      <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" min-width="100"/>
+      <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" min-width="100" />
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
       <el-table-column show-overflow-tooltip label="借款金额（万元）" align="center" prop="loanAmount" min-width="180">
         <template slot-scope="scope">
@@ -127,6 +127,11 @@
           <dict-tag :options="dict.type.sys_1757271666666242000" :value="scope.row.payee" />
         </template>
       </el-table-column>
+      <el-table-column show-overflow-tooltip label="转借人" align="center" prop="sublessee" min-width="120">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.sys_1770296780093653000" :value="scope.row.sublessee" />
+        </template>
+      </el-table-column>
       <!-- <el-table-column label="借款日期" align="center" prop="borrowDate" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.borrowDate, '{y}-{m}-{d}') }}</span>
@@ -139,7 +144,7 @@
       </el-table-column> -->
       <el-table-column show-overflow-tooltip label="借款期限" align="center" prop="loanTerm" min-width="120">
         <template slot-scope="scope">
-          <span>{{ creditCycleFN(scope.row.borrowDate, scope.row.dueDate) }}</span>
+          <span>{{ appendUnit(scope.row.loanTerm, '天') }}</span>
         </template>
       </el-table-column>
       <el-table-column show-overflow-tooltip label="利率" align="center" prop="rate" min-width="120">
@@ -215,25 +220,36 @@
                 </el-select>
               </el-form-item>
             </el-col>
+
+            <el-col :span="8">
+              <el-form-item label="转借人" prop="sublessee">
+                <el-select :disabled="!isEditable" v-model="form.sublessee" placeholder="请选择转借人">
+                  <el-option v-for="dict in dict.type.sys_1770296780093653000" :key="dict.value" :label="dict.label"
+                    :value="dict.value"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+
             <el-col :span="8">
               <el-form-item label="借款日期" prop="borrowDate">
                 <el-date-picker :disabled="!isEditable" clearable v-model="form.borrowDate" type="date"
                   value-format="yyyy-MM-dd" placeholder="请选择借款日期"></el-date-picker>
               </el-form-item>
             </el-col>
+           
+          </el-row>
+
+          <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="到期日期" prop="dueDate">
                 <el-date-picker :disabled="!isEditable" clearable v-model="form.dueDate" type="date"
                   value-format="yyyy-MM-dd" placeholder="请选择到期日期"></el-date-picker>
               </el-form-item>
             </el-col>
-          </el-row>
-
-          <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="借款期限" prop="loanTerm">
                 <!-- <el-input :readonly="!isEditable" v-model="form.loanTerm" placeholder="请输入借款期限" /> -->
-                <el-input :readonly="true" :disabled="true" v-model="creditCycle" placeholder="请输入借款期限" />
+                <el-input :readonly="!isEditable" v-model="creditCycle" placeholder="请输入借款期限" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -241,14 +257,15 @@
                 <el-input :readonly="!isEditable" v-model="rate" placeholder="请输入利率" />
               </el-form-item>
             </el-col>
+            
+          </el-row>
+
+          <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="合同编号" prop="contractId">
                 <el-input :readonly="!isEditable" v-model="form.contractId" placeholder="请输入合同编号" />
               </el-form-item>
             </el-col>
-          </el-row>
-
-          <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="还款方式" prop="repaymentMethod">
                 <el-select :disabled="!isEditable" v-model="form.repaymentMethod" placeholder="请选择还款方式">
@@ -265,16 +282,15 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="8">
-              <!-- 留空或用于未来表单项 -->
-            </el-col>
+            <!-- <el-col :span="8">
+            </el-col> -->
           </el-row>
 
           <el-row :gutter="20">
             <el-col :span="24">
               <el-form-item label="备注" prop="comment">
-                <el-input :readonly="!isEditable" v-model="form.comment" show-word-limit maxlength="200" type="textarea" :rows="4"
-                  placeholder="请输入备注信息，最多不超过200字" />
+                <el-input :readonly="!isEditable" v-model="form.comment" show-word-limit maxlength="200" type="textarea"
+                  :rows="4" placeholder="请输入备注信息，最多不超过200字" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -319,7 +335,7 @@ import SearchPanel from '@/components/SearchPanel/index.vue'
 
 export default {
   name: "Borrowing",
-  dicts: ['sys_1759501742422098000', 'sys_1757271666666242000', 'sys_1767154968256577500', 'sys_1759501814702538800'],
+  dicts: ['sys_1759501742422098000', 'sys_1757271666666242000', 'sys_1767154968256577500', 'sys_1759501814702538800', 'sys_1770296780093653000'],
   components: {
     CreateSuccess,
     SearchPanel
@@ -376,7 +392,6 @@ export default {
         scrUuid: null,
         loanAmount: null,
         borrower: null,
-
         payee: null,
         borrowDate: null,
         dueDate: null,
@@ -386,7 +401,8 @@ export default {
         repaymentMethod: null,
         loanUse: null,
         comment: null,
-        uuid: null
+        uuid: null,
+        sublessee: null
       },
 
       /* str 需要添加的 */
@@ -429,12 +445,16 @@ export default {
           { required: true, message: "合同编号不能为空", trigger: "blur" }
         ],
         repaymentMethod: [
-          { required: true, message: "还款方式：先息后本不能为空", trigger: "change" }
+          { required: true, message: "还款方式不能为空", trigger: "change" }
         ],
         loanUse: [
-          { required: true, message: "借款用途：保交楼、城中村改造不能为空", trigger: "change" }
+          { required: true, message: "借款用途不能为空", trigger: "change" }
         ],
-      }
+        sublessee: [
+          { required: true, message: "转借人不能为空", trigger: "change" }
+        ]
+      },
+      isAutoCalculated: false, // 是否自动计算的标志
     };
   },
   watch: {
@@ -444,45 +464,45 @@ export default {
         this.isEditable = true;
       }
     },
+    // 观察开始和结束日期的变化，自动重新计算天数
+    'form.borrowDate': function (newVal, oldVal) {
+      if (newVal !== oldVal) {
+        this.calculateLoanTerm();
+      }
+    },
+    'form.dueDate': function (newVal, oldVal) {
+      if (newVal !== oldVal) {
+        this.calculateLoanTerm();
+      }
+    }
   },
   computed: {
     ...mapGetters([
       'name', 'avatar'
     ]),
     /* 计算周期，开始时间减去结束时间 */
-    creditCycle() {
-      if (this.form.borrowDate && this.form.dueDate) {
-        const start = moment(this.form.borrowDate);
-        const end = moment(this.form.dueDate);
-
-        // 计算月份差异
-        const months = end.diff(start, 'months');
-        start.add(months, 'months'); // 将起始日期增加计算出的月数
-
-        // 计算天数差异，如果相等则算作一天
-        let days = end.diff(start, 'days');
-        if (days === 0) {
-          days = 1;
+    creditCycle: {
+      get() {
+        // 如果是自动计算的，直接返回计算结果加"天"，否则返回当前值
+        if (this.isAutoCalculated) {
+          return `${this.form.loanTerm}天`;
+        } else {
+          return this.form.loanTerm ? `${this.form.loanTerm}天` : '';
         }
-
-        // 根据月份和天数创建相应的显示字符串
-        let creditCycle = '';
-        if (months > 0) {
-          creditCycle += `${months}个月`;
+      },
+      set(value) {
+        this.isAutoCalculated = false; // 用户手动输入，更改标志状态
+        if (typeof value === 'string' && value.includes('天')) {
+          this.form.loanTerm = parseInt(value.replace('天', ''), 10);
+        } else if (!isNaN(value)) {
+          this.form.loanTerm = parseInt(value, 10);
         }
-        if (days > 0) {
-          creditCycle += `${creditCycle ? ' ' : ''}${days}天`;
-        }
-
-        console.log(creditCycle);
-        this.form.loanTerm = creditCycle;
-        return creditCycle;
       }
     },
     rate: {
       get() {
         if (this.form.rate) {
-        // 当读取值时，添加百分号
+          // 当读取值时，添加百分号
           return this.form.rate + (this.form.rate ? '%' : '');
         } else {
           return this.form.rate;
@@ -499,6 +519,21 @@ export default {
     this.isEditable = true;
   },
   methods: {
+    calculateLoanTerm() {
+      if (this.form.borrowDate && this.form.dueDate) {
+        const start = moment(this.form.borrowDate);
+        const end = moment(this.form.dueDate);
+
+        const months = end.diff(start, 'months');
+        start.add(months, 'months');
+
+        let days = end.diff(start, 'days');
+        days = days === 0 ? 1 : days;
+
+        this.form.loanTerm = days;
+        this.isAutoCalculated = true; // 标记为自动计算
+      }
+    },
     /* 创建成功关闭弹窗 */
     closeDialog() {
       this.open = false;
@@ -545,7 +580,6 @@ export default {
         scrUuid: null,
         loanAmount: null,
         borrower: null,
-
         payee: null,
         borrowDate: null,
         dueDate: null,
@@ -559,7 +593,8 @@ export default {
         createBy: null,
         updateTime: null,
         updateBy: null,
-        uuid: null
+        uuid: null,
+        sublessee: null
       };
       this.rzsrc2List = [];
       this.resetForm("form");
@@ -621,8 +656,10 @@ export default {
           if (this.form.id != null) {
             data.scrUuid = Number(this.scrUuid);
             // 计算周期，开始时间减去结束时间
-            let creditCycle = moment(data.dueDate).diff(moment(data.borrowDate), 'days');
-            data.loanTerm = creditCycle === 0 ? 1 : creditCycle;
+            let loanTermStr = data.loanTerm.toString();
+            loanTermStr = loanTermStr.replace(/天$/, '');
+
+            data.loanTerm = loanTermStr
             data.rate = data.rate.replace(/%/g, ''); // 替换掉所有的百分号
             this.rzaudit_data = {
               "auditId": data.id,
@@ -655,8 +692,10 @@ export default {
             data.uuid = uuid;
             // end
             // 计算周期，开始时间减去结束时间
-            let creditCycle = moment(data.dueDate).diff(moment(data.borrowDate), 'days');
-            data.loanTerm = creditCycle === 0 ? 1 : creditCycle;
+            let loanTermStr = data.loanTerm.toString();
+            loanTermStr = loanTermStr.replace(/天$/, '');
+
+            data.loanTerm = loanTermStr
             data.rate = data.rate.replace(/%/g, ''); // 替换掉所有的百分号
             this.rzaudit_data = {
               "id": null,
@@ -703,43 +742,43 @@ export default {
 
       const h = this.$createElement;
       this.$msgbox({
-          title: '提示',
-          message: h('div', null, [
-            h('el-divider', {
-              class: {
-                "no_mt": true,
-                "mb20": true
-              },
-              attrs: {"data-role": 'el-divider'}
-            }, ''),
-            h('p', {
-              class: 'tc w mb20',
-              style: {
-                'font-size': '24px',
-                'color': '#000000',
-                'font-weight': 'bold'
-              }
-            }, '确定删除选中的内部借款吗？'),
-          ]),
-          showCancelButton: true,
-          cancelButtonText: '取消',
-          confirmButtonText: '确定',
-          cancelButtonClass: "btn-custom-cancel",
-          customClass: 'custom-msgbox',
-          beforeClose: (action, instance, done) => {
-            if (action === 'confirm') {
-              delBorrowing(ids).then(res => {
-                done();
-              });
-            } else {
-              done();
+        title: '提示',
+        message: h('div', null, [
+          h('el-divider', {
+            class: {
+              "no_mt": true,
+              "mb20": true
+            },
+            attrs: { "data-role": 'el-divider' }
+          }, ''),
+          h('p', {
+            class: 'tc w mb20',
+            style: {
+              'font-size': '24px',
+              'color': '#000000',
+              'font-weight': 'bold'
             }
+          }, '确定删除选中的内部借款吗？'),
+        ]),
+        showCancelButton: true,
+        cancelButtonText: '取消',
+        confirmButtonText: '确定',
+        cancelButtonClass: "btn-custom-cancel",
+        customClass: 'custom-msgbox',
+        beforeClose: (action, instance, done) => {
+          if (action === 'confirm') {
+            delBorrowing(ids).then(res => {
+              done();
+            });
+          } else {
+            done();
           }
-        }).then(action => {
-          this.cancel();
-          this.getList();
-          this.$modal.msgSuccess("删除成功");
-        });
+        }
+      }).then(action => {
+        this.cancel();
+        this.getList();
+        this.$modal.msgSuccess("删除成功");
+      });
     },
     /** 附件表序号 */
     rowrzsrc2Index({ row, rowIndex }) {
