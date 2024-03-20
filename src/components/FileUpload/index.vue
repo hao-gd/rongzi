@@ -1,22 +1,10 @@
 <template>
   <div class="upload-file">
-    <el-upload
-      :disabled="disabled"
-      multiple
-      list-type="picture-card"
-      :action="uploadFileUrl"
-      :before-upload="handleBeforeUpload"
-      :file-list="fileList"
-      :limit="limit"
-      :on-error="handleUploadError"
-      :on-exceed="handleExceed"
-      :on-success="handleUploadSuccess"
-      :show-file-list="false"
-      :headers="headers"
-      class="upload-file-uploader"
-      ref="fileUpload"
-    >
-    <i class="el-icon-plus"></i>
+    <el-upload :disabled="disabled" multiple list-type="picture-card" :action="uploadFileUrl"
+      :before-upload="handleBeforeUpload" :file-list="fileList" :limit="limit" :on-error="handleUploadError"
+      :on-exceed="handleExceed" :on-success="handleUploadSuccess" :show-file-list="false" :headers="headers"
+      class="upload-file-uploader" ref="fileUpload">
+      <i class="el-icon-plus"></i>
       <!-- 上传按钮 -->
       <!-- <el-button size="mini" type="primary">选取文件</el-button> -->
       <!-- 上传提示 -->
@@ -63,7 +51,15 @@ export default {
     // 文件类型, 例如['png', 'jpg', 'jpeg']
     fileType: {
       type: Array,
-      default: () => ["doc", "xls", "ppt", "txt", "pdf"],
+      default: () => [
+        "doc", "docx", "xls", "xlsx", "ppt", "pptx", "txt", "pdf",
+        "odt", "ods", "odp", "rtf", "csv",
+        "jpg", "jpeg", "png", "gif", "bmp", "tiff", "svg",
+        "mp3", "wav", "aac", "flac", "ogg", "m4a",
+        "mp4", "avi", "mov", "wmv", "flv", "mkv",
+        "zip", "rar", "7z", "gz", "tar"
+      ]
+      ,
     },
     // 是否显示提示
     isShowTip: {
@@ -216,18 +212,21 @@ export default {
 .upload-file-uploader {
   margin-bottom: 5px;
 }
+
 .upload-file-list .el-upload-list__item {
   border: 1px solid #e4e7ed;
   line-height: 2;
   margin-bottom: 10px;
   position: relative;
 }
+
 .upload-file-list .ele-upload-list__item-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
   color: inherit;
 }
+
 .ele-upload-list__item-content-action .el-link {
   margin-right: 10px;
 }
