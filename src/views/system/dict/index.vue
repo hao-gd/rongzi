@@ -23,19 +23,21 @@
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
+
+      <h1 class="tc mt10 mb10" style="color: red;">基本数据在你不确定的情况下，请勿随意删除</h1>
     </el-form>
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
-          v-hasPermi="['system:dict:add']">新增</el-button>
+        <el-button v-hasRole="['admin', 'base_data']" type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
+          v-hasPermi="['system:dict:add']">新增类型</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="success" plain icon="el-icon-edit" size="mini" :disabled="single" @click="handleUpdate"
+        <el-button v-hasRole="['admin', 'base_data']" type="success" plain icon="el-icon-edit" size="mini" :disabled="single" @click="handleUpdate"
           v-hasPermi="['system:dict:edit']">修改</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="danger" plain icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete"
+        <el-button v-hasRole="['admin', 'base_data']" type="danger" plain icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete"
           v-hasPermi="['system:dict:remove']">删除</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -71,18 +73,20 @@
           <span>{{ parseTime(scope.row.createTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column fixed="right" label="操作" align="center" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <!-- <router-link :to="'/system/dict-data/index/' + scope.row.dictId" class="link-type">
             录入数据
           </router-link> -->
 
-          <el-button size="mini" type="text" icon="el-icon-plus" @click="handleAddInfo(scope.row)"
-            v-hasPermi="['system:dict:edit']">添加</el-button>
+          <div  v-hasRole="['admin', 'base_data']" >
+            <el-button  size="mini" type="text" icon="el-icon-plus" @click="handleAddInfo(scope.row)"
+            v-hasPermi="['system:dict:edit']">添加数据</el-button>
           <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)"
             v-hasPermi="['system:dict:edit']">修改</el-button>
-          <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"
+          <el-button  size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"
             v-hasPermi="['system:dict:remove']">删除</el-button>
+          </div>
         </template>
       </el-table-column>
     </el-table>
