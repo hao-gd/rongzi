@@ -42,6 +42,8 @@ import DictData from '@/components/DictData'
 
 import Fragment from 'vue-fragment';
 
+import CountTo from 'vue-count-to';
+
 
 // 全局方法挂载
 Vue.prototype.getDicts = getDicts
@@ -65,6 +67,7 @@ Vue.component('Editor', Editor)
 Vue.component('FileUpload', FileUpload)
 Vue.component('ImageUpload', ImageUpload)
 Vue.component('ImagePreview', ImagePreview)
+Vue.component('CountTo', CountTo)
 
 Vue.use(directive)
 Vue.use(plugins)

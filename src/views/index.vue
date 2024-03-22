@@ -18,7 +18,7 @@
       <search-panel title="融资管理数据" :isIcon="false">
 
 
-        <div slot="search">
+        <!-- <div slot="search">
           <el-form label-position="left" label-width="80px">
             <el-row :gutter="20">
               <el-col :span="12">
@@ -35,7 +35,7 @@
               </el-col>
             </el-row>
           </el-form>
-        </div>
+        </div> -->
 
         <el-row v-for="row in rows" :key="row.id" class="row-panel">
           <el-col v-for="col in row.cols" :key="col.id" :span="col.span" style="background: #fff;" class="card-panel">
@@ -316,14 +316,6 @@ export default {
     background-repeat: no-repeat;
     background-size: 100% 100%;
   }
-}
-
-@font-face {
-  font-family: 'DIN Alternate Bold';
-  src: url('../assets/font/DIN-Alternate-Bold.otf') format('otf');
-  /* Modern Browsers */
-  font-weight: bold;
-  font-style: normal;
 }
 
 .amounts-font {

@@ -231,12 +231,12 @@
           </el-row>
 
           <el-row :gutter="20">
-            <el-col :span="8">
+            <!-- <el-col :span="8">
               <el-form-item label="合同签订日期" prop="contractSigningDate">
                 <el-date-picker :disabled="!isEditable" clearable v-model="form.contractSigningDate" type="date"
                   value-format="yyyy-MM-dd" placeholder="请选择合同签订日期" />
               </el-form-item>
-            </el-col>
+            </el-col> -->
             <el-col :span="8">
               <el-form-item label="放款日" prop="loanDate">
                 <el-date-picker :disabled="!isEditable" clearable v-model="form.loanDate" type="date"
@@ -249,27 +249,25 @@
                   value-format="yyyy-MM-dd" placeholder="请选择到期日" />
               </el-form-item>
             </el-col>
-          </el-row>
-
-          <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="借款期限（月）" prop="loanTerm">
                 <el-input :readonly="!isEditable" v-model="creditCycle" placeholder="请输入借款期限" />
               </el-form-item>
             </el-col>
+          </el-row>
+
+          <el-row :gutter="20">
+            
             <el-col :span="8">
               <el-form-item label="年利率" prop="rate">
                 <el-input :readonly="!isEditable" v-model="rate" placeholder="请输入年利率" />
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <!-- <el-col :span="8">
               <el-form-item label="增信措施" prop="creditEnhancementMeasures">
                 <el-input :readonly="!isEditable" v-model="form.creditEnhancementMeasures" placeholder="请输入增信措施" />
               </el-form-item>
-            </el-col>
-          </el-row>
-
-          <el-row :gutter="20">
+            </el-col> -->
             <el-col :span="8">
               <el-form-item label="已还金额（万元）" prop="repaidAmount">
                 <el-input :readonly="!isEditable" type="number" v-model.number.trim="form.repaidAmount" placeholder="请输入已还金额" />
@@ -280,6 +278,9 @@
                 <el-input ::readonly="true" :disabled="true" v-model.number.trim="remainingCreditAmount" placeholder="请输入融资余额" />
               </el-form-item>
             </el-col>
+          </el-row>
+
+          <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="债务状态" prop="loanState">
                 <el-select :disabled="!isEditable" v-model="form.loanState" placeholder="请选择债务状态">
@@ -508,7 +509,7 @@ export default {
       get() {
         // 如果是自动计算的，直接返回计算结果加"天"，否则返回当前值
         if (this.isAutoCalculated) {
-          return `${this.form.loanTerm}天`;
+          return this.form.loanTerm ? `${this.form.loanTerm}天` : '';
         } else {
           return this.form.loanTerm ? `${this.form.loanTerm}天` : '';
         }
@@ -554,7 +555,7 @@ export default {
         let days = end.diff(start, 'days');
         days = days === 0 ? 1 : days;
 
-        this.form.loanTerm = days;
+        this.form.loanTerm = days + 1;
         this.isAutoCalculated = true; // 标记为自动计算
       }
     },
@@ -607,7 +608,7 @@ export default {
         loanDate: null,
         dueDate: null,
         rate: null,
-        loanTerm: null,
+        loanTerm: '',
         creditEnhancementMeasures: null,
         repaidAmount: null,
         remainingAmount: null,

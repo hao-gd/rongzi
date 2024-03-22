@@ -25,4 +25,11 @@ export default {
 #app .theme-picker {
   display: none;
 }
+@font-face {
+  font-family: 'DIN Alternate Bold';
+  src: url('./assets/font/DIN-Alternate-Bold.otf') format('otf');
+  /* Modern Browsers */
+  font-weight: bold;
+  font-style: normal;
+}
 </style>

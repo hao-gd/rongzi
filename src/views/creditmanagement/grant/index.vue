@@ -606,7 +606,7 @@ export default {
       get() {
         // 如果是自动计算的，直接返回计算结果加"天"，否则返回当前值
         if (this.isAutoCalculated) {
-          return `${this.form.creditCycle}天`;
+          return this.form.creditCycle ? `${this.form.creditCycle}天` : '';
         } else {
           return this.form.creditCycle ? `${this.form.creditCycle}天` : '';
         }
@@ -638,7 +638,7 @@ export default {
         let days = end.diff(start, 'days');
         days = days === 0 ? 1 : days;
 
-        this.form.creditCycle = days;
+        this.form.creditCycle = days + 1;
         this.isAutoCalculated = true; // 标记为自动计算
       }
     },
