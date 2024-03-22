@@ -37,21 +37,65 @@
           </el-form>
         </div> -->
 
+        <div class="tr unit">
+          单位（万元）
+        </div>
+
         <el-row v-for="row in rows" :key="row.id" class="row-panel">
           <el-col v-for="col in row.cols" :key="col.id" :span="col.span" style="background: #fff;" class="card-panel">
-            <div class="card-content" :class="'card-content-bg' + col.id">
-              <div class="card-title"></div>
-              <div class="card-amount amounts-font"></div>
+            <div class="card-content pt30 pl20" :class="'card-content-bg' + col.id">
+              <div>
+                <div class="card-title">已授信金额</div>
+
+                <el-tooltip content="42467000" placement="top" effect="light">
+                  <count-to class="card-amount amounts-font cp" :start-val='0' :end-val='42467000' :duration='1000'
+                    :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                    :useEasing="true"></count-to>
+                </el-tooltip>
+
+              </div>
+
               <div class="card-various-amounts flex">
-                <p class="amounts-font"></p>
-                <p></p>
+                <div class="mb10">
+                  <el-tooltip content="42467000" placement="top" effect="light">
+                    <div slot="content">
+                      <p class="various-amounts-title mb5">项目贷xxxx</p>
+                      <count-to class="various-amounts-amount" :start-val='0' :end-val='42467000' :duration='1000'
+                        :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                        :useEasing="true"></count-to>
+                    </div>
+                    <div>
+                      <p class="various-amounts-title mb5">项目贷xxxx</p>
+                      <count-to class="various-amounts-amount" :start-val='0' :end-val='42467000' :duration='1000'
+                        :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                        :useEasing="true"></count-to>
+                    </div>
+                  </el-tooltip>
+                </div>
+
+                <div>
+                  <el-tooltip content="42467000" placement="top" effect="light">
+                    <div slot="content">
+                      <p class="various-amounts-title mb5">非项目贷xxxx</p>
+                      <count-to class="various-amounts-amount" :start-val='0' :end-val='42467000' :duration='1000'
+                        :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                        :useEasing="true"></count-to>
+                    </div>
+                    <div>
+                      <p class="various-amounts-title mb5">非项目贷xxxx</p>
+                      <count-to class="various-amounts-amount" :start-val='0' :end-val='42467000' :duration='1000'
+                        :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                        :useEasing="true"></count-to>
+                    </div>
+                  </el-tooltip>
+                </div>
               </div>
             </div>
           </el-col>
+          
         </el-row>
       </search-panel>
     </div>
-
     <div class="app-container mt20">
       <search-panel :isIcon="false" title="还款计划（未来12个月）"></search-panel>
 
@@ -63,8 +107,13 @@
 <script>
 import SearchPanel from '@/components/SearchPanel/index.vue'
 import * as echarts from 'echarts';
+import { getCardData } from '@/api/dashboard/index'
+import resize from './dashboard/mixins/resize'
+import { mapGetters, mapState } from "vuex";
+
 export default {
   name: "Index",
+  mixins: [resize],
   components: {
     SearchPanel
   },
@@ -96,7 +145,8 @@ export default {
       month: '',
       option: {
         title: {
-          text: 'Stacked Line'
+          text: 'Stacked Line',
+          show: false
         },
         tooltip: {
           trigger: 'axis'
@@ -199,17 +249,44 @@ export default {
             }
           },
         ]
-      }
+      },
+      myChart: null
     };
   },
+  watch: {
+    sidebar: {
+      handler(n, o) {
+        console.log(n, o);
+        setTimeout(() => {
+          this.myChart.resize();
+        }, 200)
+      },
+      deep: true
+    }
+  },
+  computed: {
+    ...mapGetters(["sidebarRouters", "sidebar"]),
+  },
   mounted() {
+
+    this.getCardData();
+
     this.init();
   },
   methods: {
     init() {
       var chartDom = document.getElementById('main-echart');
-      var myChart = echarts.init(chartDom);
-      myChart.setOption(this.option);
+      this.myChart = echarts.init(chartDom);
+      this.myChart.setOption(this.option);
+    },
+    /* 请求 card 数据 */
+    async getCardData() {
+      try {
+        const res = await getCardData();
+        console.log(res);
+      } catch (error) {
+        this.$modal.msgError('数据获取失败，请重新尝试。');
+      }
     },
     goTarget(href) {
       window.open(href, "_blank");
@@ -219,73 +296,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.home {
-  blockquote {
-    padding: 10px 20px;
-    margin: 0 0 20px;
-    font-size: 17.5px;
-    border-left: 5px solid #eee;
-  }
-
-  hr {
-    margin-top: 20px;
-    margin-bottom: 20px;
-    border: 0;
-    border-top: 1px solid #eee;
-  }
-
-  .col-item {
-    margin-bottom: 20px;
-  }
-
-  ul {
-    padding: 0;
-    margin: 0;
-  }
-
-  font-family: "open sans",
-  "Helvetica Neue",
-  Helvetica,
-  Arial,
-  sans-serif;
-  font-size: 13px;
-  color: #676a6c;
-  overflow-x: hidden;
-
-  ul {
-    list-style-type: none;
-  }
-
-  h4 {
-    margin-top: 0px;
-  }
-
-  h2 {
-    margin-top: 10px;
-    font-size: 26px;
-    font-weight: 100;
-  }
-
-  p {
-    margin-top: 10px;
-
-    b {
-      font-weight: 700;
-    }
-  }
-
-  .update-log {
-    ol {
-      display: block;
-      list-style-type: decimal;
-      margin-block-start: 1em;
-      margin-block-end: 1em;
-      margin-inline-start: 0;
-      margin-inline-end: 0;
-      padding-inline-start: 40px;
-    }
-  }
-}
+@import url('../assets//styles//rzkb.scss');
 
 .row-panel+.row-panel {
   margin-top: 17px;
@@ -307,6 +318,21 @@ export default {
 
 .card-content {
   border-radius: 8px;
+  color: #FFFFFF;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  padding-right: 30px;
+
+  >div:nth-of-type(1) {
+    width: 60%;
+    white-space: nowrap;
+    /* 确保文本在一行内显示 */
+    overflow: hidden;
+    /* 隐藏溢出的文本 */
+    text-overflow: ellipsis;
+    /* 文本溢出时显示省略号 */
+  }
 }
 
 @for $i from 1 through 8 {
@@ -320,5 +346,44 @@ export default {
 
 .amounts-font {
   font-family: 'DIN Alternate Bold', sans-serif;
+}
+
+.unit {
+  font-size: 14px;
+  font-weight: bold;
+  color: #000000;
+  margin-bottom: 13px;
+}
+
+.card-title {
+  font-size: 16px;
+  color: #FFFFFF;
+  line-height: 14px;
+  margin-bottom: 23px;
+}
+
+.card-amount {
+  font-size: 24px;
+  line-height: 20ppx;
+  color: #FFFFFF;
+}
+
+.card-various-amounts {
+  width: 29%;
+  flex-direction: column;
+}
+
+.various-amounts-title,
+.various-amounts-amount {
+  font-size: 12px;
+  line-height: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  /* 确保文本在一行内显示 */
+  overflow: hidden;
+  /* 隐藏溢出的文本 */
+  text-overflow: ellipsis;
+  /* 文本溢出时显示省略号 */
+  display: block;
 }
 </style>

@@ -5,7 +5,7 @@
                 <svg-icon v-if="isIcon" :icon-class="HeaderIcon" class-name="search-icon"></svg-icon>
                 <slot name="title">
                     <!-- 如果没有插槽内容，则显示 prop "title" 的值 -->
-                    <span v-if="!hasTitleSlot">{{ title }}</span>
+                    <span class="title" v-if="!hasTitleSlot">{{ title }}</span>
                 </slot>
             </div>
             <slot name="search"></slot>
@@ -55,7 +55,9 @@ export default {
 
 }
 
-.search-title>span {
+.search-title>span {}
+
+.title {
     font-size: 20px;
     font-weight: 600;
 }
