@@ -105,9 +105,9 @@
       :header-cell-style="header_cell_style">
       <el-table-column show-overflow-tooltip fixed="left" type="selection" width="55" align="center" />
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
-      <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" min-width="100"/>
+      <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" min-width="100" />
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
-      <el-table-column show-overflow-tooltip label="债券名称" align="center" prop="bondName" min-width="120"/>
+      <el-table-column show-overflow-tooltip label="债券名称" align="center" prop="bondName" min-width="120" />
       <el-table-column show-overflow-tooltip label="债券发行规模（万元）" align="center" prop="bondSize" width="180">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1762824645385388000" :value="scope.row.bondSize" />
@@ -128,11 +128,29 @@
           <dict-tag :options="dict.type.sys_1759533864251818000" :value="scope.row.repaymentMethod" />
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="累计到账金额（万元）" align="center" prop="accumulatedAmountReceived" width="180">
+      <el-table-column show-overflow-tooltip width="180" label="专项批复金额（万元）" align="center" prop="approvedAmount">
+        <template slot-scope="scope">
+          <span>{{ formatNumberAsRMB(scope.row.approvedAmount) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column show-overflow-tooltip label="累计到账金额（万元）" align="center" prop="accumulatedAmountReceived"
+        width="180">
         <template slot-scope="scope">
           <span>{{ formatNumberAsRMB(scope.row.accumulatedAmountReceived) }}</span>
         </template>
       </el-table-column>
+
+      <el-table-column show-overflow-tooltip width="180" label="已还金额（万元）" align="center" prop="repaidAmount">
+        <template slot-scope="scope">
+          <span>{{ formatNumberAsRMB(scope.row.repaidAmount) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column show-overflow-tooltip width="180" label="待还金额（万元）" align="center" prop="remainingAmount">
+        <template slot-scope="scope">
+          <span>{{ formatNumberAsRMB(scope.row.remainingAmount) }}</span>
+        </template>
+      </el-table-column>
+
       <el-table-column show-overflow-tooltip label="发行主体" align="center" prop="issuingEntity" min-width="150">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1762824996528324600" :value="scope.row.issuingEntity" />
@@ -145,7 +163,8 @@
         </template>
       </el-table-column> -->
       <!-- <el-table-column label="uuid" align="center" prop="uuid" /> -->
-      <el-table-column show-overflow-tooltip fixed="right" label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column show-overflow-tooltip fixed="right" label="操作" align="center"
+        class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="handleUpdate(scope.row)" v-hasPermi="['government:bonds:edit']">查
             看</el-button>
@@ -221,8 +240,27 @@
 
           <el-row :gutter="20">
             <el-col :span="8">
+              <el-form-item label="专项批复金额（万元）" prop="approvedAmount">
+                <el-input :readonly="!isEditable" v-model="form.approvedAmount" placeholder="请输入专项批复金额" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
               <el-form-item label="累计到账金额（万元）" prop="accumulatedAmountReceived">
                 <el-input :readonly="!isEditable" v-model="form.accumulatedAmountReceived" placeholder="请输入累计到账金额" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="已还金额（万元）" prop="repaidAmount">
+                <el-input :readonly="!isEditable" v-model="form.repaidAmount" placeholder="请输入已还金额" />
+              </el-form-item>
+            </el-col>
+
+          </el-row>
+
+          <el-row :gutter="20">
+            <el-col :span="8">
+              <el-form-item label="待还金额（万元）" prop="remainingAmount">
+                <el-input :readonly="!isEditable" v-model="remainingCreditAmount" placeholder="请输入待还金额" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -238,8 +276,8 @@
           <el-row :gutter="20">
             <el-col :span="24">
               <el-form-item label="备注" prop="comment">
-                <el-input :readonly="!isEditable" v-model="form.comment" show-word-limit maxlength="200" type="textarea" :rows="4"
-                  placeholder="请输入备注信息，最多不超过200字" />
+                <el-input :readonly="!isEditable" v-model="form.comment" show-word-limit maxlength="200" type="textarea"
+                  :rows="4" placeholder="请输入备注信息，最多不超过200字" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -331,17 +369,20 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        managementId: null,
         scrUuid: null,
         bondName: null,
         bondSize: null,
         rate: null,
         bondDuration: null,
         repaymentMethod: null,
+        approvedAmount: null,
         accumulatedAmountReceived: null,
+        repaidAmount: null,
+        remainingAmount: null,
         issuingEntity: null,
         comment: null,
-        uuid: null
+        uuid: null,
+        managementId: null
       },
       /* str 需要添加的 */
       scrUuid: null,
@@ -351,9 +392,6 @@ export default {
       form: {},
       // 表单校验
       rules: {
-        managementId: [
-          { required: true, message: "政府专项债管理编号不能为空", trigger: "blur" }
-        ],
         scrUuid: [
           { required: true, message: "数据唯一编号不能为空", trigger: "blur" }
         ],
@@ -370,14 +408,26 @@ export default {
           { required: true, message: "债券发行期限不能为空", trigger: "change" }
         ],
         repaymentMethod: [
-          { required: true, message: "偿还方式：先息后本不能为空", trigger: "change" }
+          { required: true, message: "偿还方式不能为空", trigger: "change" }
+        ],
+        approvedAmount: [
+          { required: true, message: "专项批复金额不能为空", trigger: "blur" }
         ],
         accumulatedAmountReceived: [
           { required: true, message: "累计到账金额不能为空", trigger: "blur" }
         ],
+        repaidAmount: [
+          { required: true, message: "已还金额不能为空", trigger: "blur" }
+        ],
+        remainingAmount: [
+          { required: true, message: "待还金额不能为空", trigger: "blur" }
+        ],
         issuingEntity: [
           { required: true, message: "发行主体不能为空", trigger: "change" }
         ],
+        managementId: [
+          { required: true, message: "政府专项债管理编号不能为空", trigger: "blur" }
+        ]
       }
     };
   },
@@ -390,6 +440,18 @@ export default {
     }
   },
   computed: {
+    remainingCreditAmount() {
+      // 确保值为数值类型，避免NaN
+      const creditAmount = Number(this.form.approvedAmount) || 0;
+      const usedCreditAmount = Number(this.form.repaidAmount) || 0;
+
+      const residue = creditAmount - usedCreditAmount;
+      this.form.remainingAmount = residue;
+      return residue;
+    },
+    ...mapGetters([
+      'name', 'avatar'
+    ]),
     ...mapGetters([
       'name', 'avatar'
     ])
@@ -433,21 +495,24 @@ export default {
     reset() {
       this.form = {
         id: null,
-        managementId: null,
         scrUuid: null,
         bondName: null,
         bondSize: null,
         rate: null,
         bondDuration: null,
         repaymentMethod: null,
+        approvedAmount: null,
         accumulatedAmountReceived: null,
+        repaidAmount: null,
+        remainingAmount: null,
         issuingEntity: null,
         comment: null,
         createTime: null,
         createBy: null,
         updateTime: null,
         updateBy: null,
-        uuid: null
+        uuid: null,
+        managementId: null
       };
       this.rzsrc2List = [];
       this.resetForm("form");
@@ -585,43 +650,43 @@ export default {
 
       const h = this.$createElement;
       this.$msgbox({
-          title: '提示',
-          message: h('div', null, [
-            h('el-divider', {
-              class: {
-                "no_mt": true,
-                "mb20": true
-              },
-              attrs: {"data-role": 'el-divider'}
-            }, ''),
-            h('p', {
-              class: 'tc w mb20',
-              style: {
-                'font-size': '24px',
-                'color': '#000000',
-                'font-weight': 'bold'
-              }
-            }, '确定删除选中的政府专项债吗？'),
-          ]),
-          showCancelButton: true,
-          cancelButtonText: '取消',
-          confirmButtonText: '确定',
-          cancelButtonClass: "btn-custom-cancel",
-          customClass: 'custom-msgbox',
-          beforeClose: (action, instance, done) => {
-            if (action === 'confirm') {
-              delBonds(ids).then(res => {
-                done();
-              });
-            } else {
-              done();
+        title: '提示',
+        message: h('div', null, [
+          h('el-divider', {
+            class: {
+              "no_mt": true,
+              "mb20": true
+            },
+            attrs: { "data-role": 'el-divider' }
+          }, ''),
+          h('p', {
+            class: 'tc w mb20',
+            style: {
+              'font-size': '24px',
+              'color': '#000000',
+              'font-weight': 'bold'
             }
+          }, '确定删除选中的政府专项债吗？'),
+        ]),
+        showCancelButton: true,
+        cancelButtonText: '取消',
+        confirmButtonText: '确定',
+        cancelButtonClass: "btn-custom-cancel",
+        customClass: 'custom-msgbox',
+        beforeClose: (action, instance, done) => {
+          if (action === 'confirm') {
+            delBonds(ids).then(res => {
+              done();
+            });
+          } else {
+            done();
           }
-        }).then(action => {
-          this.cancel();
-          this.getList();
-          this.$modal.msgSuccess("删除成功");
-        });
+        }
+      }).then(action => {
+        this.cancel();
+        this.getList();
+        this.$modal.msgSuccess("删除成功");
+      });
     },
     /** 附件表序号 */
     rowrzsrc2Index({ row, rowIndex }) {

@@ -61,8 +61,8 @@
               <!-- <el-input v-model="queryParams.type" placeholder="请输入种类筛选：下拉" clearable
               @keyup.enter.native="handleQuery"></el-input> -->
               <el-select filterable v-model="queryParams.type" clearable placeholder="请选择">
-                <el-option v-for="item in tooGens" :key="item.tableName" :label="item.tableComment"
-                  :value="item.tableName">
+                <el-option v-for="item in tooGens" :key="item.value" :label="item.name"
+                  :value="item.value">
                 </el-option>
               </el-select>
             </el-form-item>
@@ -171,7 +171,7 @@
 </template>
 
 <script>
-import { listAtta, getAtta, delAtta, addAtta, updateAtta } from "@/api/appendix/atta";
+import { listAtta, getAtta, delAtta, addAtta, updateAtta, getAttaList } from "@/api/appendix/atta";
 import { listTable, previewTable, delTable, genCode, synchDb } from "@/api/tool/gen";
 import SearchPanel from '@/components/SearchPanel/index.vue'
 export default {
@@ -235,8 +235,8 @@ export default {
         pageNum: 1,
         pageSize: 10000,
       }
-      listTable(this.addDateRange(search)).then(response => {
-        this.tooGens = response.rows;
+      getAttaList().then(response => {
+        this.tooGens = response.data;
         // this.total = response.total;
         this.loading = false;
       }

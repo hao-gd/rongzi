@@ -42,3 +42,11 @@ export function delAtta(id) {
     method: 'delete'
   })
 }
+
+// 所有种类的表
+export function getAttaList() {
+  return request({
+    url: '/tool/gen/tablename',
+    method: 'get'
+  })
+}

@@ -109,7 +109,7 @@
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
       <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" min-width="100" />
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
-      
+
       <el-table-column show-overflow-tooltip label="借款人" align="center" prop="borrower" min-width="120">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1767154968256577500" :value="scope.row.borrower" />
@@ -125,9 +125,20 @@
           <dict-tag :options="dict.type.sys_1767155302261588000" :value="scope.row.loanUse" />
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="借款金额（万元）" align="center" prop="loanAmount" width="180" min-width="180">
+      <el-table-column show-overflow-tooltip label="借款金额（万元）" align="center" prop="loanAmount" width="180"
+        min-width="180">
         <template slot-scope="scope">
           <span>{{ formatNumberAsRMB(scope.row.loanAmount) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column show-overflow-tooltip width="180" label="已还金额（万元）" align="center" prop="repaidAmount">
+        <template slot-scope="scope">
+          <span>{{ formatNumberAsRMB(scope.row.repaidAmount) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column show-overflow-tooltip width="180" label="余额（万元）" align="center" prop="balance">
+        <template slot-scope="scope">
+          <span>{{ formatNumberAsRMB(scope.row.balance) }}</span>
         </template>
       </el-table-column>
       <!-- <el-table-column label="借款日期" align="center" prop="loanDate" width="180">
@@ -156,10 +167,11 @@
           <dict-tag :options="dict.type.sys_1759501742422098000" :value="scope.row.repaymentMethod" />
         </template>
       </el-table-column> -->
-      
+
       <!-- <el-table-column label="备注" align="center" prop="comment" />
       <el-table-column label="uuid" align="center" prop="uuid" /> -->
-      <el-table-column show-overflow-tooltip fixed="right" label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column show-overflow-tooltip fixed="right" label="操作" align="center"
+        class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="handleUpdate(scope.row)"
             v-hasPermi="['rzspecialloans:special:edit']">查 看</el-button>
@@ -193,7 +205,22 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="借款金额（万元）" prop="loanAmount">
-                <el-input :readonly="!isEditable" type="number" v-model.number.trim="form.loanAmount" placeholder="请输入借款金额" />
+                <el-input :readonly="!isEditable" type="number" v-model.number.trim="form.loanAmount"
+                  placeholder="请输入借款金额" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="已还金额（万元）" prop="repaidAmount">
+                <el-input :readonly="!isEditable" v-model="form.repaidAmount" placeholder="请输入已还金额" />
+              </el-form-item>
+            </el-col>
+
+          </el-row>
+
+          <el-row :gutter="20">
+            <el-col :span="8">
+              <el-form-item label="余额（万元）" prop="balance">
+                <el-input :readonly="!isEditable" v-model="remainingCreditAmount" placeholder="请输入余额" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -204,10 +231,6 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            
-          </el-row>
-
-          <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="出借人" prop="payee">
                 <el-select filterable :disabled="!isEditable" v-model="form.payee" placeholder="请选择出借人">
@@ -228,9 +251,14 @@
                   value-format="yyyy-MM-dd" placeholder="请选择到期日期"></el-date-picker>
               </el-form-item>
             </el-col> -->
+
+          </el-row>
+
+          <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="借款期限（月）" prop="loanTerm">
-                <el-input :readonly="!isEditable" type="number" v-model.number.trim="form.loanTerm" placeholder="请输入借款期限" />
+                <el-input :readonly="!isEditable" type="number" v-model.number.trim="form.loanTerm"
+                  placeholder="请输入借款期限" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -238,15 +266,14 @@
                 <el-input :readonly="!isEditable" v-model="rate" placeholder="请输入利率" />
               </el-form-item>
             </el-col>
-            
-          </el-row>
-
-          <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="合同编号" prop="contractId">
                 <el-input :readonly="!isEditable" v-model="form.contractId" placeholder="请输入合同编号" />
               </el-form-item>
             </el-col>
+          </el-row>
+
+          <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="还款方式" prop="repaymentMethod">
                 <el-select filterable :disabled="!isEditable" v-model="form.repaymentMethod" placeholder="请选择还款方式">
@@ -268,8 +295,8 @@
           <el-row :gutter="20">
             <el-col :span="24">
               <el-form-item label="备注" prop="comment">
-                <el-input :readonly="!isEditable" v-model="form.comment" show-word-limit maxlength="200" type="textarea" :rows="4"
-                  placeholder="请输入备注信息，最多不超过200字" />
+                <el-input :readonly="!isEditable" v-model="form.comment" show-word-limit maxlength="200" type="textarea"
+                  :rows="4" placeholder="请输入备注信息，最多不超过200字" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -399,6 +426,12 @@ export default {
         loanAmount: [
           { required: true, message: "借款金额不能为空", trigger: "blur" }
         ],
+        repaidAmount: [
+          { required: true, message: "已还金额不能为空", trigger: "blur" }
+        ],
+        balance: [
+          { required: true, message: "余额不能为空", trigger: "blur" }
+        ],
         borrower: [
           { required: true, message: "借款人不能为空", trigger: "change" }
         ],
@@ -439,13 +472,22 @@ export default {
     }
   },
   computed: {
+    remainingCreditAmount() {
+      // 确保值为数值类型，避免NaN
+      const creditAmount = Number(this.form.loanAmount) || 0;
+      const usedCreditAmount = Number(this.form.repaidAmount) || 0;
+
+      const residue = creditAmount - usedCreditAmount;
+      this.form.balance = residue;
+      return residue;
+    },
     ...mapGetters([
       'name', 'avatar'
     ]),
     rate: {
       get() {
         if (this.form.rate) {
-        // 当读取值时，添加百分号
+          // 当读取值时，添加百分号
           return this.form.rate + (this.form.rate ? '%' : '');
         } else {
           return this.form.rate;
@@ -504,14 +546,12 @@ export default {
     reset() {
       this.form = {
         id: null,
-        managementId: null,
         scrUuid: null,
         loanAmount: null,
+        repaidAmount: null,
+        balance: null,
         borrower: null,
-
         payee: null,
-        loanDate: null,
-        dueDate: null,
         loanTerm: null,
         rate: null,
         contractId: null,
@@ -522,7 +562,10 @@ export default {
         createBy: null,
         updateTime: null,
         updateBy: null,
-        uuid: null
+        uuid: null,
+        managementId: null,
+        loanDate: null,
+        dueDate: null
       };
       this.rzsrc2List = [];
       this.resetForm("form");
@@ -659,43 +702,43 @@ export default {
 
       const h = this.$createElement;
       this.$msgbox({
-          title: '提示',
-          message: h('div', null, [
-            h('el-divider', {
-              class: {
-                "no_mt": true,
-                "mb20": true
-              },
-              attrs: {"data-role": 'el-divider'}
-            }, ''),
-            h('p', {
-              class: 'tc w mb20',
-              style: {
-                'font-size': '24px',
-                'color': '#000000',
-                'font-weight': 'bold'
-              }
-            }, '确定删除选中的专项借款吗？'),
-          ]),
-          showCancelButton: true,
-          cancelButtonText: '取消',
-          confirmButtonText: '确定',
-          cancelButtonClass: "btn-custom-cancel",
-          customClass: 'custom-msgbox',
-          beforeClose: (action, instance, done) => {
-            if (action === 'confirm') {
-              delSpecial(ids).then(res => {
-                done();
-              });
-            } else {
-              done();
+        title: '提示',
+        message: h('div', null, [
+          h('el-divider', {
+            class: {
+              "no_mt": true,
+              "mb20": true
+            },
+            attrs: { "data-role": 'el-divider' }
+          }, ''),
+          h('p', {
+            class: 'tc w mb20',
+            style: {
+              'font-size': '24px',
+              'color': '#000000',
+              'font-weight': 'bold'
             }
+          }, '确定删除选中的专项借款吗？'),
+        ]),
+        showCancelButton: true,
+        cancelButtonText: '取消',
+        confirmButtonText: '确定',
+        cancelButtonClass: "btn-custom-cancel",
+        customClass: 'custom-msgbox',
+        beforeClose: (action, instance, done) => {
+          if (action === 'confirm') {
+            delSpecial(ids).then(res => {
+              done();
+            });
+          } else {
+            done();
           }
-        }).then(action => {
-          this.cancel();
-          this.getList();
-          this.$modal.msgSuccess("删除成功");
-        });
+        }
+      }).then(action => {
+        this.cancel();
+        this.getList();
+        this.$modal.msgSuccess("删除成功");
+      });
     },
     /** 附件表序号 */
     rowrzsrc2Index({ row, rowIndex }) {

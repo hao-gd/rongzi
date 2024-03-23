@@ -36,7 +36,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="融资金额（万元）" prop="financingAmount">
+            <el-form-item label="融资金额（万元）" :precision="2" prop="financingAmount">
               <el-input v-model="queryParams.financingAmount" placeholder="请输入融资金额" clearable
                 @keyup.enter.native="handleQuery" />
             </el-form-item>
