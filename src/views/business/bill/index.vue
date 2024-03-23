@@ -13,7 +13,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="付款人" prop="payer">
-              <el-select v-model="queryParams.payer" placeholder="请选择付款人" clearable>
+              <el-select filterable v-model="queryParams.payer" placeholder="请选择付款人" clearable>
                 <el-option v-for="dict in dict.type.sys_1757235323403763700" :key="dict.value" :label="dict.label"
                   :value="dict.value" />
               </el-select>
@@ -21,7 +21,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="收款人" prop="payee">
-              <el-select v-model="queryParams.payee" placeholder="请选择收款人" clearable>
+              <el-select filterable v-model="queryParams.payee" placeholder="请选择收款人" clearable>
                 <el-option v-for="dict in dict.type.sys_1757235466651828200" :key="dict.value" :label="dict.label"
                   :value="dict.value" />
               </el-select>
@@ -53,7 +53,7 @@
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="金融机构" prop="financialInstitution">
-              <el-select v-model="queryParams.financialInstitution" placeholder="请选择金融机构" clearable>
+              <el-select filterable v-model="queryParams.financialInstitution" placeholder="请选择金融机构" clearable>
                 <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
                   :value="dict.value" />
               </el-select>
@@ -174,7 +174,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="付款人" prop="payer">
-                <el-select :disabled="!isEditable" v-model="form.payer" placeholder="请选择付款人">
+                <el-select filterable :disabled="!isEditable" v-model="form.payer" placeholder="请选择付款人">
                   <el-option v-for="dict in dict.type.sys_1757235323403763700" :key="dict.value" :label="dict.label"
                     :value="dict.value"></el-option>
                 </el-select>
@@ -182,7 +182,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="收款人" prop="payee">
-                <el-select :disabled="!isEditable" v-model="form.payee" placeholder="请选择收款人">
+                <el-select filterable :disabled="!isEditable" v-model="form.payee" placeholder="请选择收款人">
                   <el-option v-for="dict in dict.type.sys_1757235466651828200" :key="dict.value" :label="dict.label"
                     :value="dict.value"></el-option>
                 </el-select>
@@ -216,7 +216,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="金融机构" prop="financialInstitution">
-                <el-select :disabled="!isEditable" v-model="form.financialInstitution" placeholder="请选择金融机构">
+                <el-select filterable :disabled="!isEditable" v-model="form.financialInstitution" placeholder="请选择金融机构">
                   <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
                     :value="dict.value"></el-option>
                 </el-select>

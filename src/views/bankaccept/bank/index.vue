@@ -15,7 +15,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="出票人" prop="drawer">
-              <el-select v-model="queryParams.drawer" placeholder="请选择出票人" clearable>
+              <el-select filterable v-model="queryParams.drawer" placeholder="请选择出票人" clearable>
                 <el-option v-for="dict in dict.type.sys_drawer" :key="dict.value" :label="dict.label"
                   :value="dict.value"></el-option>
               </el-select>
@@ -23,7 +23,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="收票人" prop="payee">
-              <el-select v-model="queryParams.payee" placeholder="请选择收票人" clearable>
+              <el-select filterable v-model="queryParams.payee" placeholder="请选择收票人" clearable>
                 <el-option v-for="dict in dict.type.sys_1754491769220759600" :key="dict.value" :label="dict.label"
                   :value="dict.value"></el-option>
               </el-select>
@@ -35,7 +35,7 @@
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="承兑人" prop="financialInstitution">
-              <el-select v-model="queryParams.financialInstitution" placeholder="请选择承兑人（金融机构）" clearable>
+              <el-select filterable v-model="queryParams.financialInstitution" placeholder="请选择承兑人（金融机构）" clearable>
                 <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
                   :value="dict.value"></el-option>
               </el-select>
@@ -69,7 +69,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="到期提醒">
-              <el-select v-model="queryParams.remark" clearable placeholder="请选择到期提醒" @change="handleSelect">
+              <el-select filterable v-model="queryParams.remark" clearable placeholder="请选择到期提醒" @change="handleSelect">
                 <el-option v-for="dict in reminderConfig" :key="dict.value" :label="dict.label"
                   :value="dict.value"></el-option>
               </el-select>
@@ -187,7 +187,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="出票人" prop="drawer">
-                <el-select :disabled="!isEditable" v-model="form.drawer" placeholder="请选择出票人">
+                <el-select filterable :disabled="!isEditable" v-model="form.drawer" placeholder="请选择出票人">
                   <el-option v-for="dict in dict.type.sys_drawer" :key="dict.value" :label="dict.label"
                     :value="dict.value"></el-option>
                 </el-select>
@@ -195,7 +195,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="收票人" prop="payee">
-                <el-select :disabled="!isEditable" v-model="form.payee" placeholder="请选择收票人">
+                <el-select filterable :disabled="!isEditable" v-model="form.payee" placeholder="请选择收票人">
                   <el-option v-for="dict in dict.type.sys_1754491769220759600" :key="dict.value" :label="dict.label"
                     :value="dict.value"></el-option>
                 </el-select>
@@ -207,7 +207,7 @@
 
             <el-col :span="8">
               <el-form-item label="金融机构" prop="financialInstitution">
-                <el-select :disabled="!isEditable" v-model="form.financialInstitution" placeholder="请选择金融机构">
+                <el-select filterable :disabled="!isEditable" v-model="form.financialInstitution" placeholder="请选择金融机构">
                   <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
                     :value="dict.value"></el-option>
                 </el-select>

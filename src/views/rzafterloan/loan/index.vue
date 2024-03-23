@@ -12,7 +12,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="金融机构" prop="financialInstitution">
-              <el-select v-model="queryParams.financialInstitution" placeholder="请选择金融机构" clearable>
+              <el-select filterable v-model="queryParams.financialInstitution" placeholder="请选择金融机构" clearable>
                 <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
                   :value="dict.value" />
               </el-select>
@@ -20,7 +20,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="借款单位" prop="borrowingUnit">
-              <el-select v-model="queryParams.borrowingUnit" placeholder="请选择借款单位" clearable>
+              <el-select filterable v-model="queryParams.borrowingUnit" placeholder="请选择借款单位" clearable>
                 <el-option v-for="dict in dict.type.sys_1759464239669444600" :key="dict.value" :label="dict.label"
                   :value="dict.value" />
               </el-select>
@@ -36,7 +36,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="贷后状态跟踪" prop="afterLoanState">
-              <el-select v-model="queryParams.afterLoanState" placeholder="请选择贷后状态跟踪" clearable>
+              <el-select filterable v-model="queryParams.afterLoanState" placeholder="请选择贷后状态跟踪" clearable>
                 <el-option v-for="dict in dict.type.sys_1759464706814247000" :key="dict.value" :label="dict.label"
                   :value="dict.value" />
               </el-select>
@@ -156,7 +156,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="金融机构" prop="financialInstitution">
-                <el-select :disabled="!isEditable" v-model="form.financialInstitution" placeholder="请选择金融机构">
+                <el-select filterable :disabled="!isEditable" v-model="form.financialInstitution" placeholder="请选择金融机构">
                   <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
                     :value="dict.value"></el-option>
                 </el-select>
@@ -172,7 +172,7 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="借款单位" prop="borrowingUnit">
-                <el-select :disabled="!isEditable" v-model="form.borrowingUnit" placeholder="请选择借款单位">
+                <el-select filterable :disabled="!isEditable" v-model="form.borrowingUnit" placeholder="请选择借款单位">
                   <el-option v-for="dict in dict.type.sys_1759464239669444600" :key="dict.value" :label="dict.label"
                     :value="dict.value"></el-option>
                 </el-select>
@@ -200,7 +200,7 @@
                 <el-input :readonly="!isEditable" v-model="creditCycle" placeholder="请输入借款期限" />
                 <!-- <el-input :readonly="!isEditable" placeholder="请输入借款期限" v-model.number.trim="form.loanTerm" type="number"
                   class="input-with-select">
-                  <el-select class="w150" :disabled="!isEditable" v-model="termType" slot="prepend" placeholder="选择期限类型">
+                  <el-select filterable class="w150" :disabled="!isEditable" v-model="termType" slot="prepend" placeholder="选择期限类型">
                     <el-option label="年" value="年"></el-option>
                     <el-option label="月" value="月"></el-option>
                   </el-select>
@@ -209,7 +209,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="贷后状态跟踪" prop="afterLoanState">
-                <el-select :disabled="!isEditable" v-model="form.afterLoanState" placeholder="请选择贷后状态跟踪">
+                <el-select filterable :disabled="!isEditable" v-model="form.afterLoanState" placeholder="请选择贷后状态跟踪">
                   <el-option v-for="dict in dict.type.sys_1759464706814247000" :key="dict.value" :label="dict.label"
                     :value="dict.value"></el-option>
                 </el-select>

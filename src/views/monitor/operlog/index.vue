@@ -20,7 +20,7 @@
         />
       </el-form-item>
       <el-form-item label="类型" prop="businessType">
-        <el-select
+        <el-select filterable
           v-model="queryParams.businessType"
           placeholder="操作类型"
           clearable
@@ -35,7 +35,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="状态" prop="status">
-        <el-select
+        <el-select filterable
           v-model="queryParams.status"
           placeholder="操作状态"
           clearable

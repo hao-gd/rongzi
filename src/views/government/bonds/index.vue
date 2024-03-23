@@ -18,7 +18,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="债券发行规模" prop="bondSize">
-              <el-select v-model="queryParams.bondSize" placeholder="请选择债券发行规模" clearable>
+              <el-select filterable v-model="queryParams.bondSize" placeholder="请选择债券发行规模" clearable>
                 <el-option v-for="dict in dict.type.sys_1762824645385388000" :key="dict.value" :label="dict.label"
                   :value="dict.value" />
               </el-select>
@@ -29,7 +29,7 @@
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="债券利率" prop="rate">
-              <el-select v-model="queryParams.rate" placeholder="请选择利率" clearable>
+              <el-select filterable v-model="queryParams.rate" placeholder="请选择利率" clearable>
                 <el-option v-for="dict in dict.type.sys_1762824761903153200" :key="dict.value" :label="dict.label"
                   :value="dict.value" />
               </el-select>
@@ -37,7 +37,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="债券发行期限" prop="bondDuration">
-              <el-select v-model="queryParams.bondDuration" placeholder="请选择债券发行期限" clearable>
+              <el-select filterable v-model="queryParams.bondDuration" placeholder="请选择债券发行期限" clearable>
                 <el-option v-for="dict in dict.type.sys_1762824852571422700" :key="dict.value" :label="dict.label"
                   :value="dict.value" />
               </el-select>
@@ -45,7 +45,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="偿还方式" prop="repaymentMethod">
-              <el-select v-model="queryParams.repaymentMethod" placeholder="请选择偿还方式" clearable>
+              <el-select filterable v-model="queryParams.repaymentMethod" placeholder="请选择偿还方式" clearable>
                 <el-option v-for="dict in dict.type.sys_1759533864251818000" :key="dict.value" :label="dict.label"
                   :value="dict.value" />
               </el-select>
@@ -62,7 +62,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="发行主体" prop="issuingEntity">
-              <el-select v-model="queryParams.issuingEntity" placeholder="请选择发行主体" clearable>
+              <el-select filterable v-model="queryParams.issuingEntity" placeholder="请选择发行主体" clearable>
                 <el-option v-for="dict in dict.type.sys_1762824996528324600" :key="dict.value" :label="dict.label"
                   :value="dict.value" />
               </el-select>
@@ -184,7 +184,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="债券发行规模" prop="bondSize">
-                <el-select :disabled="!isEditable" v-model="form.bondSize" placeholder="请选择债券发行规模">
+                <el-select filterable :disabled="!isEditable" v-model="form.bondSize" placeholder="请选择债券发行规模">
                   <el-option v-for="dict in dict.type.sys_1762824645385388000" :key="dict.value" :label="dict.label"
                     :value="dict.value"></el-option>
                 </el-select>
@@ -195,7 +195,7 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="债券利率" prop="rate">
-                <el-select :disabled="!isEditable" v-model="form.rate" placeholder="请选择利率">
+                <el-select filterable :disabled="!isEditable" v-model="form.rate" placeholder="请选择利率">
                   <el-option v-for="dict in dict.type.sys_1762824761903153200" :key="dict.value" :label="dict.label"
                     :value="dict.value"></el-option>
                 </el-select>
@@ -203,7 +203,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="债券发行期限" prop="bondDuration">
-                <el-select :disabled="!isEditable" v-model="form.bondDuration" placeholder="请选择债券发行期限">
+                <el-select filterable :disabled="!isEditable" v-model="form.bondDuration" placeholder="请选择债券发行期限">
                   <el-option v-for="dict in dict.type.sys_1762824852571422700" :key="dict.value" :label="dict.label"
                     :value="dict.value"></el-option>
                 </el-select>
@@ -211,7 +211,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="偿还方式" prop="repaymentMethod">
-                <el-select :disabled="!isEditable" v-model="form.repaymentMethod" placeholder="请选择偿还方式：先息后本">
+                <el-select filterable :disabled="!isEditable" v-model="form.repaymentMethod" placeholder="请选择偿还方式：先息后本">
                   <el-option v-for="dict in dict.type.sys_1759533864251818000" :key="dict.value" :label="dict.label"
                     :value="dict.value"></el-option>
                 </el-select>
@@ -227,7 +227,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="发行主体" prop="issuingEntity">
-                <el-select :disabled="!isEditable" v-model="form.issuingEntity" placeholder="请选择发行主体">
+                <el-select filterable :disabled="!isEditable" v-model="form.issuingEntity" placeholder="请选择发行主体">
                   <el-option v-for="dict in dict.type.sys_1762824996528324600" :key="dict.value" :label="dict.label"
                     :value="dict.value"></el-option>
                 </el-select>

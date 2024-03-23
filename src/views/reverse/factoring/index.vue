@@ -9,19 +9,19 @@
         <el-input v-model="queryParams.auditId" placeholder="请输入审核id" clearable @keyup.enter.native="handleQuery" />
       </el-form-item>
       <el-form-item label="债权人" prop="creditor">
-        <el-select v-model="queryParams.creditor" placeholder="请选择债权人" clearable>
+        <el-select filterable v-model="queryParams.creditor" placeholder="请选择债权人" clearable>
           <el-option v-for="dict in dict.type.sys_1757271666666242000" :key="dict.value" :label="dict.label"
             :value="dict.value" />
         </el-select>
       </el-form-item>
       <el-form-item label="保理商" prop="factor">
-        <el-select v-model="queryParams.factor" placeholder="请选择保理商" clearable>
+        <el-select filterable v-model="queryParams.factor" placeholder="请选择保理商" clearable>
           <el-option v-for="dict in dict.type.sys_1757288852172570600" :key="dict.value" :label="dict.label"
             :value="dict.value" />
         </el-select>
       </el-form-item>
       <el-form-item label="金融机构" prop="financialInstitution">
-        <el-select v-model="queryParams.financialInstitution" placeholder="请选择金融机构" clearable>
+        <el-select filterable v-model="queryParams.financialInstitution" placeholder="请选择金融机构" clearable>
           <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label" :value="dict.value" />
         </el-select>
       </el-form-item>
@@ -42,7 +42,7 @@
         <el-input v-model="queryParams.entryName" placeholder="请输入项目名称" clearable @keyup.enter.native="handleQuery" />
       </el-form-item>
       <el-form-item label="到期提醒" prop="remark">
-        <el-select v-model="queryParams.remark" placeholder="请选择到期提醒" clearable>
+        <el-select filterable v-model="queryParams.remark" placeholder="请选择到期提醒" clearable>
           <el-option v-for="dict in dict.type.sys_maturity" :key="dict.value" :label="dict.label" :value="dict.value" />
         </el-select>
       </el-form-item>
@@ -67,7 +67,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="债权人名称" prop="creditor">
-              <el-select v-model="queryParams.creditor" placeholder="请选择债权人（供应商）名称" clearable>
+              <el-select filterable v-model="queryParams.creditor" placeholder="请选择债权人（供应商）名称" clearable>
                 <el-option v-for="dict in dict.type.sys_1757271666666242000" :key="dict.value" :label="dict.label"
                   :value="dict.value" />
               </el-select>
@@ -75,7 +75,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="保理商" prop="factor">
-              <el-select v-model="queryParams.factor" placeholder="请选择保理商" clearable>
+              <el-select filterable v-model="queryParams.factor" placeholder="请选择保理商" clearable>
                 <el-option v-for="dict in dict.type.sys_1757288852172570600" :key="dict.value" :label="dict.label"
                   :value="dict.value" />
               </el-select>
@@ -85,7 +85,7 @@
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="金融机构" prop="financialInstitution">
-              <el-select v-model="queryParams.financialInstitution" placeholder="请选择金融机构" clearable>
+              <el-select filterable v-model="queryParams.financialInstitution" placeholder="请选择金融机构" clearable>
                 <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
                   :value="dict.value" />
               </el-select>
@@ -234,7 +234,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="债权人（供应商）名称" prop="creditor">
-                <el-select :disabled="!isEditable" v-model="form.creditor" placeholder="请选择债权人">
+                <el-select filterable :disabled="!isEditable" v-model="form.creditor" placeholder="请选择债权人">
                   <el-option v-for="dict in dict.type.sys_1757271666666242000" :key="dict.value" :label="dict.label"
                     :value="dict.value"></el-option>
                 </el-select>
@@ -242,7 +242,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="保理商名称" prop="factor">
-                <el-select :disabled="!isEditable" v-model="form.factor" placeholder="请选择保理商">
+                <el-select filterable :disabled="!isEditable" v-model="form.factor" placeholder="请选择保理商">
                   <el-option v-for="dict in dict.type.sys_1757288852172570600" :key="dict.value" :label="dict.label"
                     :value="dict.value"></el-option>
                 </el-select>
@@ -252,7 +252,7 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="金融机构" prop="financialInstitution">
-                <el-select :disabled="!isEditable" v-model="form.financialInstitution" placeholder="请选择金融机构">
+                <el-select filterable :disabled="!isEditable" v-model="form.financialInstitution" placeholder="请选择金融机构">
                   <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
                     :value="dict.value"></el-option>
                 </el-select>

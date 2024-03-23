@@ -1,7 +1,7 @@
 <template>
     <div class="content">
         <div class="app-container">
-            <search-panel title="历史融资余额" :isIcon="false">
+            <search-panel title="历史融资余额" HeaderIcon="lsrzye">
                 <el-form label-position="left" label-width="130px" :inline="false" :model="queryParams" size="small">
                     <el-row :gutter="20">
                         <el-col :span="8">

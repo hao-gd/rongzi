@@ -18,7 +18,7 @@
         />
       </el-form-item>
       <el-form-item label="金融机构" prop="financialInstitution">
-        <el-select v-model="queryParams.financialInstitution" placeholder="请选择金融机构" clearable>
+        <el-select filterable v-model="queryParams.financialInstitution" placeholder="请选择金融机构" clearable>
           <el-option
             v-for="dict in dict.type.sys_acceptor"
             :key="dict.value"
@@ -28,7 +28,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="授信类型" prop="creditType">
-        <el-select v-model="queryParams.creditType" placeholder="请选择授信类型" clearable>
+        <el-select filterable v-model="queryParams.creditType" placeholder="请选择授信类型" clearable>
           <el-option
             v-for="dict in dict.type.sys_1765001578994991000"
             :key="dict.value"
@@ -100,7 +100,7 @@
         />
       </el-form-item>
       <el-form-item label="授信状态" prop="creditState">
-        <el-select v-model="queryParams.creditState" placeholder="请选择授信状态" clearable>
+        <el-select filterable v-model="queryParams.creditState" placeholder="请选择授信状态" clearable>
           <el-option
             v-for="dict in dict.type.sys_1765002034026643500"
             :key="dict.value"
@@ -140,7 +140,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="金融机构" prop="financialInstitution">
-              <el-select v-model="queryParams.financialInstitution" placeholder="请选择金融机构" clearable>
+              <el-select filterable v-model="queryParams.financialInstitution" placeholder="请选择金融机构" clearable>
                 <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
                   :value="dict.value" />
               </el-select>
@@ -151,7 +151,7 @@
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="授信类型" prop="creditType">
-              <el-select v-model="queryParams.creditType" placeholder="请选择授信类型" clearable>
+              <el-select filterable v-model="queryParams.creditType" placeholder="请选择授信类型" clearable>
                 <el-option v-for="dict in dict.type.sys_1765001578994991000" :key="dict.value" :label="dict.label"
                   :value="dict.value" />
               </el-select>
@@ -180,7 +180,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="授信状态" prop="creditState">
-              <el-select v-model="queryParams.creditState" placeholder="请选择授信状态" clearable>
+              <el-select filterable v-model="queryParams.creditState" placeholder="请选择授信状态" clearable>
                 <el-option v-for="dict in dict.type.sys_1765002034026643500" :key="dict.value" :label="dict.label"
                   :value="dict.value" />
               </el-select>
@@ -320,7 +320,7 @@
 
             <el-col :span="8">
               <el-form-item label="金融机构" prop="financialInstitution">
-                <el-select :disabled="!isEditable" v-model="form.financialInstitution" placeholder="请选择金融机构">
+                <el-select filterable :disabled="!isEditable" v-model="form.financialInstitution" placeholder="请选择金融机构">
                   <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
                     :value="dict.value"></el-option>
                 </el-select>
@@ -331,7 +331,7 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="授信类型" prop="creditType">
-                <el-select :disabled="!isEditable" v-model="form.creditType" placeholder="请选择授信类型">
+                <el-select filterable :disabled="!isEditable" v-model="form.creditType" placeholder="请选择授信类型">
                   <el-option v-for="dict in dict.type.sys_1765001578994991000" :key="dict.value" :label="dict.label"
                     :value="dict.value"></el-option>
                 </el-select>
@@ -367,7 +367,7 @@
 
             <el-col :span="8">
               <el-form-item label="授信状态" prop="creditState">
-                <el-select :disabled="!isEditable" v-model="form.creditState" placeholder="请选择授信状态">
+                <el-select filterable :disabled="!isEditable" v-model="form.creditState" placeholder="请选择授信状态">
                   <el-option v-for="dict in dict.type.sys_1765002034026643500" :key="dict.value" :label="dict.label"
                     :value="dict.value"></el-option>
                 </el-select>

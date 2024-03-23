@@ -20,7 +20,7 @@
         />
       </el-form-item>
       <el-form-item label="状态" prop="status">
-        <el-select
+        <el-select filterable
           v-model="queryParams.status"
           placeholder="登录状态"
           clearable

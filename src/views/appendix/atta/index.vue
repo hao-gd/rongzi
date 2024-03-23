@@ -60,7 +60,7 @@
             <el-form-item label="种类" prop="type">
               <!-- <el-input v-model="queryParams.type" placeholder="请输入种类筛选：下拉" clearable
               @keyup.enter.native="handleQuery"></el-input> -->
-              <el-select v-model="queryParams.type" clearable placeholder="请选择">
+              <el-select filterable v-model="queryParams.type" clearable placeholder="请选择">
                 <el-option v-for="item in tooGens" :key="item.tableName" :label="item.tableComment"
                   :value="item.tableName">
                 </el-option>

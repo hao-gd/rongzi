@@ -1,20 +1,6 @@
 <template>
   <div class="content">
     <div class="app-container">
-      <!-- <el-row :gutter="20">
-      <el-col :sm="24" :lg="24">
-        <blockquote class="text-warning" style="font-size: 14px">
-
-          <h4 class="text-danger">
-            欢迎进入融资后台管理系统
-          </h4>
-        </blockquote>
-
-        <hr />
-      </el-col>
-    </el-row> -->
-
-
       <search-panel title="融资管理数据" :isIcon="false">
 
 
@@ -41,7 +27,7 @@
           单位（万元）
         </div>
 
-        <el-row v-for="row in rows" :key="row.id" class="row-panel">
+        <!-- <el-row v-for="row in rows" :key="row.id" class="row-panel">
           <el-col v-for="col in row.cols" :key="col.id" :span="col.span" style="background: #fff;" class="card-panel">
             <div class="card-content pt30 pl20" :class="'card-content-bg' + col.id">
               <div>
@@ -92,7 +78,51 @@
               </div>
             </div>
           </el-col>
-          
+
+        </el-row> -->
+
+        <el-row>
+          <el-col :span="5">
+            <el-row>
+              <el-col v-for="(value, key, index) in creditData" :key="index" :span="24" style="background: #fff;"
+                class="card-panel">
+                <div class="card-content pt30 pl20" :class="'card-content-bg' + 1">
+                  <div>
+                    <div class="card-title">{{ key }}</div>
+
+                    <el-tooltip content="42467000" placement="top" effect="light">
+                      <count-to class="card-amount amounts-font cp" :start-val='0' :end-val='calculateTotal(value)'
+                        :duration='1000' :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                        :useEasing="true"></count-to>
+                    </el-tooltip>
+
+                  </div>
+
+                  <div class="card-various-amounts flex">
+                    <div class="mb10" v-for="(valuec, keyc, indexc) in value" :key="indexc">
+                      <el-tooltip v-if="keyc !== 'bgID'" content="42467000" placement="top" effect="light">
+                        <div slot="content">
+                          <p class="various-amounts-title mb5">{{ keyc }}</p>
+                          <count-to class="various-amounts-amount" :start-val='0' :end-val='valuec' :duration='1000'
+                            :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                            :useEasing="true"></count-to>
+                        </div>
+                        <div>
+                          <p class="various-amounts-title mb5">{{ keyc }}</p>
+                          <count-to class="various-amounts-amount" :start-val='0' :end-val='valuec' :duration='1000'
+                            :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                            :useEasing="true"></count-to>
+                        </div>
+                      </el-tooltip>
+                    </div>
+                  </div>
+                </div>
+              </el-col>
+            </el-row>
+          </el-col>
+          <el-col :span="5"></el-col>
+          <el-col :span="7"></el-col>
+          <el-col :span="7"></el-col>
         </el-row>
       </search-panel>
     </div>
@@ -250,7 +280,8 @@ export default {
           },
         ]
       },
-      myChart: null
+      myChart: null,
+      creditData: {}
     };
   },
   watch: {
@@ -284,10 +315,32 @@ export default {
       try {
         const res = await getCardData();
         console.log(res);
+        if (res.code === 200) {
+          const data = JSON.parse(JSON.stringify(res.data));
+          const order = ['已授信金额', '授信余额'];
+          const orderedData = {};
+          order.forEach(key => {
+            if (data[key]) {
+              orderedData[key] = data[key];
+            }
+          });
+          this.creditData = orderedData;
+          console.log(data);
+        }
       } catch (error) {
         this.$modal.msgError('数据获取失败，请重新尝试。');
       }
     },
+    calculateTotal(obj) {
+      let total = 0;
+      for (let key in obj) {
+        if (key !== 'bgID') {
+          total += obj[key];
+        }
+      }
+      return total;
+    },
+
     goTarget(href) {
       window.open(href, "_blank");
     }
@@ -313,7 +366,7 @@ export default {
 }
 
 .card-panel+.card-panel {
-  padding-left: 17px;
+  margin-top: 17px;
 }
 
 .card-content {

@@ -18,7 +18,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="债权人" prop="financialInstitution">
-              <el-select v-model="queryParams.financialInstitution" placeholder="请选择债权人" clearable>
+              <el-select v-model="queryParams.financialInstitution" placeholder="请选择债权人" filterable clearable>
                 <el-option v-for="dict in dict.type.sys_1757271666666242000" :key="dict.value" :label="dict.label"
                   :value="dict.value" />
               </el-select>
@@ -29,7 +29,7 @@
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="借款人" prop="borrowingUnit">
-              <el-select v-model="queryParams.borrowingUnit" placeholder="请选择借款人" clearable>
+              <el-select v-model="queryParams.borrowingUnit" placeholder="请选择借款人" filterable clearable>
                 <el-option v-for="dict in dict.type.sys_1767154968256577500" :key="dict.value" :label="dict.label"
                   :value="dict.value" />
               </el-select>
@@ -43,7 +43,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="融资类型" prop="financingType">
-              <el-select v-model="queryParams.financingType" placeholder="请选择融资类型" clearable>
+              <el-select v-model="queryParams.financingType" placeholder="请选择融资类型" filterable clearable>
                 <el-option v-for="dict in dict.type.sys_1759508335389835300" :key="dict.value" :label="dict.label"
                   :value="dict.value" />
               </el-select>
@@ -65,10 +65,10 @@
 
     <el-divider class="mt20 mb20"></el-divider>
     <el-row type="flex" :gutter="10" class="mb8" justify="end">
-      <el-col :span="1.5">
+      <!-- <el-col :span="1.5">
         <el-button type="warning" plain icon="el-icon-download" size="mini" @click="handleExport"
           v-hasPermi="['financingproject:project:export']">导出</el-button>
-      </el-col>
+      </el-col> -->
       <el-col :span="1.5">
         <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
           v-hasPermi="['financingproject:project:add']">新 建</el-button>
@@ -193,7 +193,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="借款人" prop="borrowingUnit">
-                <el-select :disabled="!isEditable" v-model="form.borrowingUnit" placeholder="请选择借款人">
+                <el-select :disabled="!isEditable" v-model="form.borrowingUnit" filterable placeholder="请选择借款人">
                   <el-option v-for="dict in dict.type.sys_1767154968256577500" :key="dict.value" :label="dict.label"
                     :value="dict.value"></el-option>
                 </el-select>
@@ -201,7 +201,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="债权人" prop="financialInstitution">
-                <el-select :disabled="!isEditable" v-model="form.financialInstitution" placeholder="请选择债权人">
+                <el-select :disabled="!isEditable" v-model="form.financialInstitution" filterable placeholder="请选择债权人">
                   <el-option v-for="dict in dict.type.sys_1757271666666242000" :key="dict.value" :label="dict.label"
                     :value="dict.value"></el-option>
                 </el-select>
@@ -212,7 +212,7 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="融资类型" prop="financingType">
-                <el-select :disabled="!isEditable" v-model="form.financingType" placeholder="请选择融资类型">
+                <el-select :disabled="!isEditable" v-model="form.financingType" filterable placeholder="请选择融资类型">
                   <el-option v-for="dict in dict.type.sys_1759508335389835300" :key="dict.value" :label="dict.label"
                     :value="dict.value"></el-option>
                 </el-select>
@@ -283,7 +283,7 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="债务状态" prop="loanState">
-                <el-select :disabled="!isEditable" v-model="form.loanState" placeholder="请选择债务状态">
+                <el-select :disabled="!isEditable" v-model="form.loanState" filterable placeholder="请选择债务状态">
                   <el-option v-for="dict in dict.type.sys_1759509599150407700" :key="dict.value" :label="dict.label"
                     :value="dict.value"></el-option>
                 </el-select>
