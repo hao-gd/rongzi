@@ -19,7 +19,7 @@ import './assets/icons' // icon
 import './permission' // permission control
 import { getDicts } from "@/api/system/dict/data";
 import { getConfigKey } from "@/api/system/config";
-import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, handleTree, formatNumberAsRMB, creditCycleFN, appendUnit } from "@/utils/senye";
+import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, handleTree, formatNumberAsRMB, creditCycleFN, appendUnit, amountLimitMethod } from "@/utils/senye";
 // 分页组件
 import Pagination from "@/components/Pagination";
 // 自定义表格工具组件
@@ -58,6 +58,7 @@ Vue.prototype.handleTree = handleTree
 Vue.prototype.formatNumberAsRMB = formatNumberAsRMB
 Vue.prototype.creditCycleFN = creditCycleFN
 Vue.prototype.appendUnit = appendUnit
+Vue.prototype.amountLimitMethod = amountLimitMethod
 
 // 全局组件挂载
 Vue.component('DictTag', DictTag)

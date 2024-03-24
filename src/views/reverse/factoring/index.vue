@@ -260,7 +260,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="放贷金额（万元）" prop="loanAmount">
-                <el-input :readonly="!isEditable" v-model="form.loanAmount" placeholder="请输入放贷金额" />
+                <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number" v-model.number.trim="form.loanAmount" placeholder="请输入放贷金额" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -589,6 +589,9 @@ export default {
 
           this.form.rzsrc2List = this.rzsrc2List;
           this.rzaudit_data = null;
+
+          // 金额需要 * 10000
+          data.loanAmount = Number(data.loanAmount) * 10000;
           if (this.form.id != null) {
             data.scrUuid = Number(this.scrUuid);
             this.rzaudit_data = {

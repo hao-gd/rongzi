@@ -240,6 +240,8 @@ export function formatNumberAsRMB(number) {
   //     minimumFractionDigits: 2,
   //     maximumFractionDigits: 2
   // }).format(number);
+
+  number = Number(number) / 10000
   return new Intl.NumberFormat('en-US', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
@@ -285,4 +287,15 @@ export function addPeriods(deadline, period, unit) {
 }
 export function appendUnit(value, unit = '月') {
   return `${value}${unit}`;
+}
+
+export function amountLimitMethod(e) {
+  // 匹配非负浮点数，至多两位小数
+  // 检查是否存在小数点及其位置
+  const dotIndex = e.target.value.indexOf('.');
+  if (dotIndex !== -1) {
+    // 如果存在小数点，确保只保留小数点后两位
+    e.target.value = e.target.value.slice(0, dotIndex + 3);
+  }
+  // e.target.value = (e.target.value.match(/^\d*(\.?\d{1,2})/g)[0]) || ''
 }

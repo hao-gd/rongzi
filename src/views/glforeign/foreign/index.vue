@@ -131,7 +131,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="担保金额" prop="guaranteeAmount">
-              <el-input v-model="queryParams.guaranteeAmount" placeholder="请输入担保金额" clearable
+              <el-input type="number" v-model.number.trim="queryParams.guaranteeAmount" placeholder="请输入担保金额" clearable
                 @keyup.enter.native="handleQuery" />
             </el-form-item>
           </el-col>
@@ -142,7 +142,7 @@
           
           <el-col :span="8">
             <el-form-item label="担保余额" prop="guaranteeBalance">
-              <el-input v-model="queryParams.guaranteeBalance" placeholder="请输入担保余额" clearable
+              <el-input type="number" v-model.number.trim="queryParams.guaranteeBalance" placeholder="请输入担保余额" clearable
                 @keyup.enter.native="handleQuery" />
             </el-form-item>
           </el-col>
@@ -459,7 +459,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="担保金额（万元）" prop="guaranteeAmount">
-                <el-input :readonly="!isEditable" v-model="form.guaranteeAmount" placeholder="请输入担保金额" />
+                <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number" v-model.number.trim="form.guaranteeAmount" placeholder="请输入担保金额" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -469,7 +469,7 @@
             
             <el-col :span="8">
               <el-form-item label="担保余额（万元）" prop="guaranteeBalance">
-                <el-input :readonly="!isEditable" v-model="form.guaranteeBalance" placeholder="请输入担保余额" />
+                <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number" v-model.number.trim="form.guaranteeBalance" placeholder="请输入担保余额" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -764,8 +764,17 @@ export default {
         this.queryParams.params["beginCreateTime"] = this.daterangeCreateTime[0];
         this.queryParams.params["endCreateTime"] = this.daterangeCreateTime[1];
       }
-      this.queryParams['orderByColumn'] = 'id'
-      listForeign(this.queryParams).then(response => {
+      this.queryParams['orderByColumn'] = 'id';
+
+      let search = JSON.parse(JSON.stringify(this.queryParams));
+      if (![null, '', undefined].includes(search.guaranteeAmount)) {
+        search.guaranteeAmount = Number(search.guaranteeAmount) * 10000
+      }
+      if (![null, '', undefined].includes(search.guaranteeBalance)) {
+        search.guaranteeBalance = Number(search.guaranteeBalance) * 10000
+      }
+
+      listForeign(search).then(response => {
         this.foreignList = response.rows;
         this.total = response.total;
         this.loading = false;
@@ -858,6 +867,11 @@ export default {
           const data = JSON.parse(JSON.stringify(this.form))
           this.form.rzsrc2List = this.rzsrc2List;
           this.rzaudit_data = null;
+
+          // 金额需要 * 10000
+          data.guaranteeAmount = Number(data.guaranteeAmount) * 10000;
+          data.guaranteeBalance = Number(data.guaranteeBalance) * 10000;
+
           if (this.form.id != null) {
             // updateForeign(this.form).then(response => {
             //   this.$modal.msgSuccess("修改成功");

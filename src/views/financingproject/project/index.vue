@@ -2,7 +2,8 @@
   <div class="app-container">
 
     <search-panel HeaderIcon="financingprojectSvg" title="融资项目">
-      <el-form label-position="left" :model="queryParams" ref="queryForm" size="small" :inline="false" v-show="showSearch" label-width="130px">
+      <el-form label-position="left" :model="queryParams" ref="queryForm" size="small" :inline="false" v-show="showSearch"
+        label-width="130px">
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="管理编号" prop="managementId">
@@ -37,7 +38,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="融资金额（万元）" :precision="2" prop="financingAmount">
-              <el-input v-model="queryParams.financingAmount" placeholder="请输入融资金额" clearable
+              <el-input v-model.number.trim="queryParams.financingAmount" type="number" placeholder="请输入融资金额" clearable
                 @keyup.enter.native="handleQuery" />
             </el-form-item>
           </el-col>
@@ -88,7 +89,7 @@
       :header-cell-style="header_cell_style">
       <el-table-column show-overflow-tooltip fixed="left" type="selection" width="55" align="center" />
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
-      <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" min-width="100"/>
+      <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" min-width="100" />
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
       <el-table-column show-overflow-tooltip label="借款人" align="center" prop="borrowingUnit" min-width="120">
         <template slot-scope="scope">
@@ -144,7 +145,7 @@
         </template>
       </el-table-column> -->
       <el-table-column label="融资余额（万元）" align="center" prop="remainingAmount" width="160">
-         <template slot-scope="scope">
+        <template slot-scope="scope">
           <span>{{ formatNumberAsRMB(scope.row.remainingAmount) }}</span>
         </template>
       </el-table-column>
@@ -158,7 +159,8 @@
       </el-table-column>
       <!-- <el-table-column show-overflow-tooltip label="备注" align="center" prop="comment" min-width="120" /> -->
       <!-- <el-table-column label="uuid" align="center" prop="uuid" /> -->
-      <el-table-column show-overflow-tooltip fixed="right" label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column show-overflow-tooltip fixed="right" label="操作" align="center"
+        class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="handleUpdate(scope.row)"
             v-hasPermi="['financingproject:project:edit']">查 看</el-button>
@@ -220,7 +222,8 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="融资金额（万元）" prop="financingAmount">
-                <el-input :readonly="!isEditable" type="number" v-model.number.trim="form.financingAmount" placeholder="请输入融资金额" />
+                <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number" v-model.number.trim="form.financingAmount"
+                  placeholder="请输入融资金额" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -257,7 +260,7 @@
           </el-row>
 
           <el-row :gutter="20">
-            
+
             <el-col :span="8">
               <el-form-item label="年利率" prop="rate">
                 <el-input :readonly="!isEditable" v-model="rate" placeholder="请输入年利率" />
@@ -270,12 +273,14 @@
             </el-col> -->
             <el-col :span="8">
               <el-form-item label="已还金额（万元）" prop="repaidAmount">
-                <el-input :readonly="!isEditable" type="number" v-model.number.trim="form.repaidAmount" placeholder="请输入已还金额" />
+                <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number" v-model.number.trim="form.repaidAmount"
+                  placeholder="请输入已还金额" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="融资余额（万元）" prop="remainingAmount">
-                <el-input ::readonly="true" :disabled="true" v-model.number.trim="remainingCreditAmount" placeholder="请输入融资余额" />
+                <el-input ::readonly="true" :disabled="true" @keydown.native="amountLimitMethod" type="number" v-model.number.trim="remainingCreditAmount"
+                  placeholder="请输入融资余额" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -526,7 +531,7 @@ export default {
     rate: {
       get() {
         if (this.form.rate) {
-        // 当读取值时，添加百分号
+          // 当读取值时，添加百分号
           return this.form.rate + (this.form.rate ? '%' : '');
         } else {
           return this.form.rate;
@@ -549,13 +554,9 @@ export default {
         const start = moment(this.form.loanDate);
         const end = moment(this.form.dueDate);
 
-        const months = end.diff(start, 'months');
-        start.add(months, 'months');
+        const days = end.diff(start, 'days') + 1; // 直接计算天数，并加1表示至少一天
 
-        let days = end.diff(start, 'days');
-        days = days === 0 ? 1 : days;
-
-        this.form.loanTerm = days + 1;
+        this.form.loanTerm = days;
         this.isAutoCalculated = true; // 标记为自动计算
       }
     },
@@ -575,13 +576,18 @@ export default {
     /** 查询融资项目列表 */
     getList() {
       this.loading = true;
+      
       this.queryParams.params = {};
       this.queryParams['orderByColumn'] = 'id'
       if (null != this.daterangeContractSigningDate && '' != this.daterangeContractSigningDate) {
         this.queryParams.params["beginContractSigningDate"] = this.daterangeContractSigningDate[0];
         this.queryParams.params["endContractSigningDate"] = this.daterangeContractSigningDate[1];
       }
-      listProject(this.queryParams).then(response => {
+      const search = JSON.parse(JSON.stringify(this.queryParams))
+      if (![null, '', undefined].includes(search.financingAmount)) {
+        search.financingAmount = Number(search.financingAmount) * 10000
+      }
+      listProject(search).then(response => {
         this.projectList = response.rows;
         this.total = response.total;
         this.loading = false;
@@ -674,6 +680,12 @@ export default {
           const data = JSON.parse(JSON.stringify(this.form))
           this.form.rzsrc2List = this.rzsrc2List;
           this.rzaudit_data = null;
+
+          // 金额 * 10000
+          data.financingAmount = data.financingAmount * 10000;
+          data.repaidAmount = data.repaidAmount * 10000;
+          data.remainingAmount = data.remainingAmount * 10000;
+
           if (this.form.id != null) {
             data.scrUuid = Number(this.scrUuid);
 
@@ -713,8 +725,8 @@ export default {
             const uuid = String(generator.nextId())
             data.uuid = uuid;
             // end
-             // 计算周期，开始时间减去结束时间
-             let loanTermStr = data.loanTerm.toString();
+            // 计算周期，开始时间减去结束时间
+            let loanTermStr = data.loanTerm.toString();
             loanTermStr = loanTermStr.replace(/天$/, '');
 
             data.loanTerm = loanTermStr
@@ -764,43 +776,43 @@ export default {
 
       const h = this.$createElement;
       this.$msgbox({
-          title: '提示',
-          message: h('div', null, [
-            h('el-divider', {
-              class: {
-                "no_mt": true,
-                "mb20": true
-              },
-              attrs: {"data-role": 'el-divider'}
-            }, ''),
-            h('p', {
-              class: 'tc w mb20',
-              style: {
-                'font-size': '24px',
-                'color': '#000000',
-                'font-weight': 'bold'
-              }
-            }, '确定删除选中的融资项目吗？'),
-          ]),
-          showCancelButton: true,
-          cancelButtonText: '取消',
-          confirmButtonText: '确定',
-          cancelButtonClass: "btn-custom-cancel",
-          customClass: 'custom-msgbox',
-          beforeClose: (action, instance, done) => {
-            if (action === 'confirm') {
-              delProject(ids).then(res => {
-                done();
-              });
-            } else {
-              done();
+        title: '提示',
+        message: h('div', null, [
+          h('el-divider', {
+            class: {
+              "no_mt": true,
+              "mb20": true
+            },
+            attrs: { "data-role": 'el-divider' }
+          }, ''),
+          h('p', {
+            class: 'tc w mb20',
+            style: {
+              'font-size': '24px',
+              'color': '#000000',
+              'font-weight': 'bold'
             }
+          }, '确定删除选中的融资项目吗？'),
+        ]),
+        showCancelButton: true,
+        cancelButtonText: '取消',
+        confirmButtonText: '确定',
+        cancelButtonClass: "btn-custom-cancel",
+        customClass: 'custom-msgbox',
+        beforeClose: (action, instance, done) => {
+          if (action === 'confirm') {
+            delProject(ids).then(res => {
+              done();
+            });
+          } else {
+            done();
           }
-        }).then(action => {
-          this.cancel();
-          this.getList();
-          this.$modal.msgSuccess("删除成功");
-        });
+        }
+      }).then(action => {
+        this.cancel();
+        this.getList();
+        this.$modal.msgSuccess("删除成功");
+      });
     },
     /** 附件表序号 */
     rowrzsrc2Index({ row, rowIndex }) {

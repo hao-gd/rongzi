@@ -346,7 +346,7 @@
 
             <el-col :span="8">
               <el-form-item label="授信金额（万元）" prop="creditAmount">
-                <el-input :readonly="!isEditable" v-model.number.trim="form.creditAmount" placeholder="请输入授信金额" />
+                <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number" v-model.number.trim="form.creditAmount" placeholder="请输入授信金额" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -354,13 +354,13 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="已用授信金额（万元）" prop="usedCreditAmount">
-                <el-input :readonly="!isEditable" v-model.number.trim="form.usedCreditAmount" placeholder="请输入已用授信金额" />
+                <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number" v-model.number.trim="form.usedCreditAmount" placeholder="请输入已用授信金额" />
               </el-form-item>
             </el-col>
 
             <el-col :span="8">
               <el-form-item label="授信余额（万元）" prop="remainingCreditAmount">
-                <el-input :readonly="true" :disabled="true" v-model.number.trim="remainingCreditAmount"
+                <el-input :readonly="true" :disabled="true" @keydown.native="amountLimitMethod" type="number" v-model.number.trim="remainingCreditAmount"
                   placeholder="请输入剩余授信金额" />
               </el-form-item>
             </el-col>
@@ -632,13 +632,9 @@ export default {
         const start = moment(this.form.startDate);
         const end = moment(this.form.deadline);
 
-        const months = end.diff(start, 'months');
-        start.add(months, 'months');
+        const days = end.diff(start, 'days') + 1; // 直接计算天数，并加1表示至少一天
 
-        let days = end.diff(start, 'days');
-        days = days === 0 ? 1 : days;
-
-        this.form.creditCycle = days + 1;
+        this.form.creditCycle = days;
         this.isAutoCalculated = true; // 标记为自动计算
       }
     },
@@ -770,6 +766,10 @@ export default {
           const data = JSON.parse(JSON.stringify(this.form))
           this.form.rzsrc2List = this.rzsrc2List;
           this.rzaudit_data = null;
+          // 金额需要 * 10000
+          data.creditAmount = Number(data.creditAmount) * 10000;
+          data.usedCreditAmount = Number(data.usedCreditAmount) * 10000;
+          data.remainingCreditAmount = Number(data.remainingCreditAmount) * 10000;
           if (this.form.id != null) {
             // updateGrant(this.form).then(response => {
             //   this.$modal.msgSuccess("修改成功");

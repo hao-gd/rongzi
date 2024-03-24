@@ -13,7 +13,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="借款金额（万元）" prop="loanAmount">
-              <el-input v-model="queryParams.loanAmount" placeholder="请输入借款金额" clearable
+              <el-input type="number" v-model.number.trim="queryParams.loanAmount" placeholder="请输入借款金额" clearable
                 @keyup.enter.native="handleQuery" />
             </el-form-item>
           </el-col>
@@ -198,7 +198,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="借款金额（万元）" prop="loanAmount">
-                <el-input :readonly="!isEditable" v-model="form.loanAmount" placeholder="请输入借款金额" />
+                <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number" v-model.number.trim="form.loanAmount" placeholder="请输入借款金额" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -524,13 +524,9 @@ export default {
         const start = moment(this.form.borrowDate);
         const end = moment(this.form.dueDate);
 
-        const months = end.diff(start, 'months');
-        start.add(months, 'months');
+        const days = end.diff(start, 'days') + 1; // 直接计算天数，并加1表示至少一天
 
-        let days = end.diff(start, 'days');
-        days = days === 0 ? 1 : days;
-
-        this.form.loanTerm = days + 1;
+        this.form.loanTerm = days;
         this.isAutoCalculated = true; // 标记为自动计算
       }
     },
@@ -560,7 +556,12 @@ export default {
         this.queryParams.params["endDueDate"] = this.daterangeDueDate[1];
       }
       this.queryParams['orderByColumn'] = 'id'
-      listBorrowing(this.queryParams).then(response => {
+
+      let search = JSON.parse(JSON.stringify(this.queryParams));
+      if (![null, '', undefined].includes(search.loanAmount)) {
+        search.loanAmount = Number(search.loanAmount) * 10000
+      }
+      listBorrowing(search).then(response => {
         this.borrowingList = response.rows;
         this.total = response.total;
         this.loading = false;
@@ -653,6 +654,9 @@ export default {
           const data = JSON.parse(JSON.stringify(this.form))
           this.form.rzsrc2List = this.rzsrc2List;
           this.rzaudit_data = null;
+
+          // 金额计算 * 10000
+          data.loanAmount = Number(data.loanAmount) * 10000;
           if (this.form.id != null) {
             data.scrUuid = Number(this.scrUuid);
             // 计算周期，开始时间减去结束时间

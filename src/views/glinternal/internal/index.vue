@@ -123,7 +123,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="担保金额（万元）" prop="guaranteeAmount">
-              <el-input v-model="queryParams.guaranteeAmount" placeholder="请输入担保金额" clearable
+              <el-input type="number" v-model.number.trim="queryParams.guaranteeAmount" placeholder="请输入担保金额" clearable
                 @keyup.enter.native="handleQuery"></el-input>
             </el-form-item>
           </el-col>
@@ -132,7 +132,7 @@
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="担保余额（万元）" prop="guaranteeBalance">
-              <el-input v-model="queryParams.guaranteeBalance" placeholder="请输入担保余额" clearable
+              <el-input type="number" v-model.number.trim="queryParams.guaranteeBalance" placeholder="请输入担保余额" clearable
                 @keyup.enter.native="handleQuery"></el-input>
             </el-form-item>
           </el-col>
@@ -259,7 +259,7 @@
           <span>{{ parseTime(scope.row.startDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="截止日期" align="center" prop="deadline" width="180">
+      <el-table-column show-overflow-tooltip label="到期日" align="center" prop="deadline" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.deadline, '{y}-{m}-{d}') }}</span>
         </template>
@@ -450,7 +450,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="担保金额（万元）" prop="guaranteeAmount">
-                <el-input :readonly="!isEditable" v-model="form.guaranteeAmount" placeholder="请输入担保金额" />
+                <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number" v-model.number.trim="form.guaranteeAmount" placeholder="请输入担保金额" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -458,7 +458,7 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="担保余额（万元）" prop="guaranteeBalance">
-                <el-input :readonly="!isEditable" v-model="form.guaranteeBalance" placeholder="请输入担保余额" />
+                <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number" v-model.number.trim="form.guaranteeBalance" placeholder="请输入担保余额" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -544,6 +544,7 @@ import CreateSuccess from '@/components/createSuccess/index.vue'
 import SearchPanel from '@/components/SearchPanel/index.vue'
 import { checkDueReminderWithConfig } from '@/utils/expirationreminder';
 import { reminderConfig } from '@/config/expirationreminder'
+import { number } from 'echarts';
 export default {
   name: "Internal",
   dicts: ['sys_1767156259322069000', 'sys_1767154968256577500', 'sys_1767155091485229000', 'sys_1757271666666242000', 'sys_1767155302261588000', 'sys_1767155825266131000'],
@@ -660,7 +661,7 @@ export default {
           { required: true, message: "起始日不能为空", trigger: "blur" }
         ],
         deadline: [
-          { required: true, message: "截止日期不能为空", trigger: "blur" }
+          { required: true, message: "到期日不能为空", trigger: "blur" }
         ],
         guaranteeMethod: [
           { required: true, message: "保证方式不能为空", trigger: "change" }
@@ -760,6 +761,14 @@ export default {
         this.queryParams.params["endCreateTime"] = this.daterangeCreateTime[1];
       }
       this.queryParams['orderByColumn'] = 'id'
+
+      let search = JSON.parse(JSON.stringify(this.queryParams));
+      if (![null, '', undefined].includes(search.guaranteeAmount)) {
+        search.guaranteeAmount = Number(search.guaranteeAmount) * 10000
+      }
+      if (![null, '', undefined].includes(search.guaranteeBalance)) {
+        search.guaranteeBalance = Number(search.guaranteeBalance) * 10000
+      }
       listInternal(this.queryParams).then(response => {
         this.internalList = response.rows;
         this.total = response.total;
@@ -854,6 +863,9 @@ export default {
           const data = JSON.parse(JSON.stringify(this.form))
           this.form.rzsrc2List = this.rzsrc2List;
           this.rzaudit_data = null;
+          // 金额需要 * 10000
+          data.guaranteeAmount = Number(data.guaranteeAmount) * 10000;
+          data.guaranteeBalance = Number(data.guaranteeBalance) * 10000;
           if (this.form.id != null) {
             // updateInternal(this.form).then(response => {
             //   this.$modal.msgSuccess("修改成功");

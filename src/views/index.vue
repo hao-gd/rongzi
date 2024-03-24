@@ -81,7 +81,7 @@
 
         </el-row> -->
 
-        <el-row>
+        <el-row :gutter="20">
           <el-col :span="5">
             <el-row>
               <el-col v-for="(value, key, index) in creditData" :key="index" :span="24" style="background: #fff;"
@@ -90,7 +90,8 @@
                   <div>
                     <div class="card-title">{{ key }}</div>
 
-                    <el-tooltip content="42467000" placement="top" effect="light">
+                    <el-tooltip placement="top" effect="light">
+                      <P slot="content">{{ calculateTotal(value) }}</P>
                       <count-to class="card-amount amounts-font cp" :start-val='0' :end-val='calculateTotal(value)'
                         :duration='1000' :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
                         :useEasing="true"></count-to>
@@ -120,8 +121,85 @@
               </el-col>
             </el-row>
           </el-col>
-          <el-col :span="5"></el-col>
-          <el-col :span="7"></el-col>
+          <el-col :span="5">
+            <el-row>
+              <el-col v-for="(value, key, index) in rzjeData" :key="index" :span="24" style="background: #fff;"
+                class="card-panel">
+                <div class="card-content pt30 pl20" :class="'card-content-bg' + 4">
+                  <div>
+                    <div class="card-title">{{ key }}</div>
+
+                    <el-tooltip placement="top" effect="light">
+                      <P slot="content">{{ calculateTotal(value) }}</P>
+                      <count-to class="card-amount amounts-font cp" :start-val='0' :end-val='calculateTotal(value)'
+                        :duration='1000' :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                        :useEasing="true"></count-to>
+                    </el-tooltip>
+
+                  </div>
+
+                  <div class="card-various-amounts flex">
+                    <div class="mb10" v-for="(valuec, keyc, indexc) in value" :key="indexc">
+                      <el-tooltip v-if="keyc !== 'bgID'" content="42467000" placement="top" effect="light">
+                        <div slot="content">
+                          <p class="various-amounts-title mb5">{{ keyc }}</p>
+                          <count-to class="various-amounts-amount" :start-val='0' :end-val='valuec' :duration='1000'
+                            :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                            :useEasing="true"></count-to>
+                        </div>
+                        <div>
+                          <p class="various-amounts-title mb5">{{ keyc }}</p>
+                          <count-to class="various-amounts-amount" :start-val='0' :end-val='valuec' :duration='1000'
+                            :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                            :useEasing="true"></count-to>
+                        </div>
+                      </el-tooltip>
+                    </div>
+                  </div>
+                </div>
+              </el-col>
+            </el-row>
+          </el-col>
+
+          <el-col :span="7">
+            <el-row>
+              <el-col v-for="(value, key, index) in dbData" :key="index" :span="24" style="background: #fff;"
+                class="card-panel">
+                <div class="card-content pt30 pl20" :class="'card-content-bg' + 7">
+                  <div>
+                    <div class="card-title">{{ key }}</div>
+
+                    <el-tooltip placement="top" effect="light">
+                      <P slot="content">{{ calculateTotal(value) }}</P>
+                      <count-to class="card-amount amounts-font cp" :start-val='0' :end-val='calculateTotal(value)'
+                        :duration='1000' :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                        :useEasing="true"></count-to>
+                    </el-tooltip>
+
+                  </div>
+
+                  <div class="card-various-amounts flex">
+                    <div class="mb10" v-for="(valuec, keyc, indexc) in value" :key="indexc">
+                      <el-tooltip v-if="keyc !== 'bgID'" content="42467000" placement="top" effect="light">
+                        <div slot="content">
+                          <p class="various-amounts-title mb5">{{ keyc }}</p>
+                          <count-to class="various-amounts-amount" :start-val='0' :end-val='valuec' :duration='1000'
+                            :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                            :useEasing="true"></count-to>
+                        </div>
+                        <div>
+                          <p class="various-amounts-title mb5">{{ keyc }}</p>
+                          <count-to class="various-amounts-amount" :start-val='0' :end-val='valuec' :duration='1000'
+                            :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                            :useEasing="true"></count-to>
+                        </div>
+                      </el-tooltip>
+                    </div>
+                  </div>
+                </div>
+              </el-col>
+            </el-row>
+          </el-col>
           <el-col :span="7"></el-col>
         </el-row>
       </search-panel>
@@ -137,10 +215,14 @@
 <script>
 import SearchPanel from '@/components/SearchPanel/index.vue'
 import * as echarts from 'echarts';
-import { getCardData } from '@/api/dashboard/index'
+import { getCardData, getCardData2, getCardData3 } from '@/api/dashboard/index'
 import resize from './dashboard/mixins/resize'
 import { mapGetters, mapState } from "vuex";
-
+const color = {
+  totalFinancingAmount: '#F77234',
+  totalRepaidAmount: '#33D1C9',
+  totalRemainingAmount: '#F77234'
+}
 export default {
   name: "Index",
   mixins: [resize],
@@ -179,7 +261,8 @@ export default {
           show: false
         },
         tooltip: {
-          trigger: 'axis'
+          trigger: 'axis',
+          borderWidth: 5
         },
         legend: {
           show: false,
@@ -200,7 +283,13 @@ export default {
         xAxis: {
           type: 'category',
           boundaryGap: false,
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          axisPointer: {
+            lineStyle: {
+              color: '#4080FF',
+              width: 2
+            },
+          }
         },
         yAxis: {
           type: 'value'
@@ -216,6 +305,15 @@ export default {
             lineStyle: {
               width: 5 // 调整线条的粗细
             },
+            emphasis: {
+            focus: 'series',
+            itemStyle: {
+                color: 'White', // 鼠标悬停时数据点颜色
+                borderColor: 'red', // 数据点边框颜色
+                borderWidth: 1, // 数据点边框宽度
+                borderType: 'solid' // 数据点边框类型
+            }
+        },
             areaStyle: {
               opacity: 0.8,
               color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
@@ -281,7 +379,9 @@ export default {
         ]
       },
       myChart: null,
-      creditData: {}
+      creditData: {},
+      rzjeData: {},
+      dbData: {}
     };
   },
   watch: {
@@ -301,6 +401,8 @@ export default {
   mounted() {
 
     this.getCardData();
+    this.getCardData2();
+    this.getCardData3();
 
     this.init();
   },
@@ -325,6 +427,48 @@ export default {
             }
           });
           this.creditData = orderedData;
+          console.log(data);
+        }
+      } catch (error) {
+        this.$modal.msgError('数据获取失败，请重新尝试。');
+      }
+    },
+    /* 请求 card 数据 */
+    async getCardData2() {
+      try {
+        const res = await getCardData2();
+        console.log(res);
+        if (res.code === 200) {
+          const data = JSON.parse(JSON.stringify(res.data));
+          const order = ['已融资金额', '融资余额'];
+          const orderedData = {};
+          order.forEach(key => {
+            if (data[key]) {
+              orderedData[key] = data[key];
+            }
+          });
+          this.rzjeData = orderedData;
+          console.log(data);
+        }
+      } catch (error) {
+        this.$modal.msgError('数据获取失败，请重新尝试。');
+      }
+    },
+    /* 请求 card 数据 */
+    async getCardData3() {
+      try {
+        const res = await getCardData3();
+        console.log(res);
+        if (res.code === 200) {
+          const data = JSON.parse(JSON.stringify(res.data));
+          const order = ['已担保金额', '担保余额'];
+          const orderedData = {};
+          order.forEach(key => {
+            if (data[key]) {
+              orderedData[key] = data[key];
+            }
+          });
+          this.dbData = orderedData;
           console.log(data);
         }
       } catch (error) {

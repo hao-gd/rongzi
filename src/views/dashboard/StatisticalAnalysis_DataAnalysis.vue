@@ -2,20 +2,99 @@
     <div class="content">
         <div class="app-container">
             <search-panel title="历史融资余额" HeaderIcon="lsrzye">
+                <el-form label-position="left" label-width="130px" :inline="false" :model="queryParams" size="small">
+                    <el-row :gutter="20">
+                        <el-col :span="8">
+                            <el-form-item label="担保人" prop="guarantor">
+                                <el-select filterable v-model="queryParams.guarantor" placeholder="请选择担保人" clearable>
+                                    <el-option v-for="dict in dict.type.sys_1767155091485229000" :key="dict.value"
+                                        :label="dict.label" :value="dict.value"></el-option>
+                                </el-select>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="8">
+                            <el-form-item label="借款人" prop="creditor">
+                                <el-select filterable v-model="queryParams.creditor" placeholder="请选择借款人" clearable>
+                                    <el-option v-for="dict in dict.type.sys_1767154968256577500" :key="dict.value"
+                                        :label="dict.label" :value="dict.value"></el-option>
+                                </el-select>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="8">
+                            <el-form-item label="债权人" prop="financialInstitution">
+                                <el-select filterable v-model="queryParams.financialInstitution" placeholder="请选择债权人"
+                                    clearable>
+                                    <el-option v-for="dict in dict.type.sys_1757271666666242000" :key="dict.value"
+                                        :label="dict.label" :value="dict.value"></el-option>
+                                </el-select>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="8">
+                            <el-form-item label="业务类型" prop="businessType">
+                                <el-select filterable v-model="queryParams.businessType" placeholder="请选择业务类型" clearable>
+                                    <el-option v-for="dict in dict.type.sys_1767155302261588000" :key="dict.value"
+                                        :label="dict.label" :value="dict.value"></el-option>
+                                </el-select>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="8">
+                            <el-form-item label="时间选择" class="no_mb">
+                                <el-date-picker @change="changeRang" v-model="daterangeLogCreateTime" style="width: 240px"
+                                    value-format="yyyy-MM" type="monthrange" range-separator="-" start-placeholder="开始月份"
+                                    end-placeholder="结束月份"></el-date-picker>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                </el-form>
             </search-panel>
 
             <el-divider class="mt20 mb20"></el-divider>
 
             <div class="small-panel-content">
                 <el-row class="h" type="flex" align="middle">
-                    <el-col :span="6" v-for="i in 4" :key="i" class="flex pl20">
-                        <div class="small-panel-left-icon" :class="'left-icon' + i"></div>
+                    <el-col :span="6" class="flex pl20">
+                        <div class="small-panel-left-icon" :class="'left-icon' + 1"></div>
                         <div class="small-panel-right-text-content">
-                            <p class="right-text">融资总额（万元）xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</p>
-                            <!-- <p class="right-amount"></p> -->
+                            <p class="right-text">担保总额（万元）</p>
                             <p class="right-amount">
-                                <count-to :start-val='0' :end-val='10000000' :duration='1000' :decimals='0' :separator="','"
-                                    :prefix="''" :suffix="''" :autoplay=true :useEasing="true"></count-to>
+                                <count-to :start-val='0' :end-val="calculateTotalByKey(listData, 'totalGuaranteeAmount')"
+                                    :duration='1000' :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay=true
+                                    :useEasing="true"></count-to>
+                            </p>
+                        </div>
+                    </el-col>
+                    <el-col :span="6" class="flex pl20">
+                        <div class="small-panel-left-icon" :class="'left-icon' + 2"></div>
+                        <div class="small-panel-right-text-content">
+                            <p class="right-text">总担保余额（万元）</p>
+                            <p class="right-amount">
+                                <count-to :start-val='0' :end-val="calculateTotalByKey(listData, 'totalGuaranteeBalance')"
+                                    :duration='1000' :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay=true
+                                    :useEasing="true"></count-to>
+                            </p>
+                        </div>
+                    </el-col>
+                    <el-col :span="6" class="flex pl20">
+                        <div class="small-panel-left-icon" :class="'left-icon' + 3"></div>
+                        <div class="small-panel-right-text-content">
+                            <p class="right-text">对内担保余额（万元）</p>
+                            <p class="right-amount">
+                                <count-to :start-val='0'
+                                    :end-val="calculateTotalByKey(listData, 'internalGuaranteeBalance')" :duration='1000'
+                                    :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay=true
+                                    :useEasing="true"></count-to>
+                            </p>
+                        </div>
+                    </el-col>
+                    <el-col :span="6" class="flex pl20">
+                        <div class="small-panel-left-icon" :class="'left-icon' + 4"></div>
+                        <div class="small-panel-right-text-content">
+                            <p class="right-text">对外担保余额（万元）</p>
+                            <p class="right-amount">
+                                <count-to :start-val='0'
+                                    :end-val="calculateTotalByKey(listData, 'externalGuaranteeBalance')" :duration='1000'
+                                    :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay=true
+                                    :useEasing="true"></count-to>
                             </p>
                         </div>
                     </el-col>
@@ -36,35 +115,63 @@
 <script>
 import SearchPanel from '@/components/SearchPanel/index.vue'
 import * as echarts from 'echarts';
+
+import { getEchartData } from '@/api/dashboard/index'
+import moment from 'moment'
 export default {
     components: {
         SearchPanel
     },
-    dicts: ['sys_1767154968256577500', 'sys_1757271666666242000', 'sys_1759508335389835300', 'sys_1759509599150407700'],
+    dicts: ['sys_1767154968256577500', 'sys_1757271666666242000', 'sys_1759508335389835300', 'sys_1759509599150407700',
+        "sys_1767155091485229000",
+        "sys_1767154968256577500",
+        "sys_1757271666666242000",
+        "sys_1767155302261588000"
+    ],
     data() {
         return {
+            // 记录创建时间时间范围
+            daterangeLogCreateTime: [
+                moment().subtract(1, 'years').format('YYYY-MM'),
+                moment().format('YYYY-MM')
+            ],
             queryParams: {
-                borrower: '',
-                financialInstitution: '',
-                financingType: '',
-                financingAmount: '',
-                loanTerm: '',
-                loanDate: '',
-                dueDate: '',
-                rate: '',
-                loanState: '',
+                managementId: null,
+                contractId: null,
+                scrUuid: null,
+                creditor: null,
+                guarantor: null,
+                financialInstitution: null,
+                businessType: null,
+                guaranteeAmount: null,
+                guaranteeBalance: null,
+                startDate: null,
+                deadline: null,
+                guaranteeMethod: null,
+                isCreditInvestigation: null,
+                comment: null,
+                createTime: null,
+                createBy: null,
+                uuid: null,
+                type: null,
+                logCreateDate: null,
+                logCreateTime: null
             },
             option: {
+                color: [
+                    '#165DFF',
+                    '#33D1C9',
+                    '#F77234',
+                    '#722ED1',
+                    '#7cf700',
+                    '#f700e2'
+                ],
                 title: {
                     text: 'Stacked Line',
                     show: false,
                 },
                 tooltip: {
                     trigger: 'axis'
-                },
-                legend: {
-                    show: false,
-                    data: ['Email', 'Union Ads', 'Video Ads', 'Direct', 'Search Engine']
                 },
                 grid: {
                     left: '3%',
@@ -81,14 +188,21 @@ export default {
                 xAxis: {
                     type: 'category',
                     boundaryGap: false,
-                    data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                    data: [],
+                    axisPointer: {
+                        lineStyle: {
+                            color: '#4080FF',
+                            width: 2
+                        },
+                    }
                 },
                 yAxis: {
                     type: 'value'
                 },
                 series: [
                     {
-                        name: 'Email',
+                        name: '担保总额',
+                        key: 'totalGuaranteeAmount',
                         type: 'line',
                         stack: 'Total',
                         data: [120, 132, 101, 134, 90, 230, 210],
@@ -102,17 +216,18 @@ export default {
                             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
                                 {
                                     offset: 0,
-                                    color: 'rgb(0, 221, 255)'
+                                    color: 'rgba(22, 93, 255, .3)'
                                 },
                                 {
                                     offset: 1,
-                                    color: 'rgb(77, 119, 255)'
-                                }
+                                    color: 'rgba(22, 93, 255, 0)'
+                                },
                             ])
                         }
                     },
                     {
-                        name: 'Union Ads',
+                        name: '总担保余额',
+                        key: 'totalGuaranteeBalance',
                         type: 'line',
                         stack: 'Total',
                         data: [220, 182, 191, 234, 290, 330, 310],
@@ -126,17 +241,18 @@ export default {
                             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
                                 {
                                     offset: 0,
-                                    color: 'rgb(0, 221, 255)'
+                                    color: 'rgba(51, 209, 201, .3)'
                                 },
                                 {
                                     offset: 1,
-                                    color: 'rgb(77, 119, 255)'
-                                }
+                                    color: 'rgba(51, 209, 201, 0)'
+                                },
                             ])
                         }
                     },
                     {
-                        name: 'Video Ads',
+                        name: '对内担保余额',
+                        key: 'internalGuaranteeBalance',
                         type: 'line',
                         stack: 'Total',
                         data: [150, 232, 201, 154, 190, 330, 410],
@@ -150,27 +266,173 @@ export default {
                             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
                                 {
                                     offset: 0,
-                                    color: 'rgb(0, 221, 255)'
+                                    color: 'rgba(247, 114, 52, .3)'
                                 },
                                 {
                                     offset: 1,
-                                    color: 'rgb(77, 119, 255)'
+                                    color: 'rgba(247, 114, 52, 0)'
+                                },
+                            ])
+                        }
+                    },
+                    {
+                        name: '对外担保余额',
+                        key: 'externalGuaranteeBalance',
+                        type: 'line',
+                        stack: 'Total',
+                        data: [150, 232, 201, 154, 190, 330, 410],
+                        smooth: true,
+                        showSymbol: false,
+                        lineStyle: {
+                            width: 5 // 调整线条的粗细
+                        },
+                        areaStyle: {
+                            opacity: 0.8,
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                {
+                                    offset: 0,
+                                    color: 'rgba(114, 46, 209, .3)'
+                                },
+                                {
+                                    offset: 1,
+                                    color: 'rgba(114, 46, 209, 0)'
+                                },
+                            ])
+                        }
+                    },
+                    {
+                        name: '对内担保总额',
+                        key: 'internalGuaranteeAmount',
+                        type: 'line',
+                        stack: 'Total',
+                        data: [150, 232, 201, 154, 190, 330, 410],
+                        smooth: true,
+                        showSymbol: false,
+                        lineStyle: {
+                            width: 5 // 调整线条的粗细
+                        },
+                        areaStyle: {
+                            opacity: 0.8,
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                {
+                                    offset: 0,
+                                    color: 'rgba(124, 247, 0, .3)'
+                                },
+                                {
+                                    offset: 1,
+                                    color: 'rgba(124, 247, 0, 0)'
+                                },
+                            ])
+                        }
+                    },
+                    {
+                        name: '内外担保总额',
+                        key: 'externalGuaranteeAmount',
+                        type: 'line',
+                        stack: 'Total',
+                        data: [150, 232, 201, 154, 190, 330, 410],
+                        smooth: true,
+                        showSymbol: false,
+                        lineStyle: {
+                            width: 5 // 调整线条的粗细
+                        },
+                        areaStyle: {
+                            opacity: 0.8,
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                {
+                                    offset: 0,
+                                    color: 'rgba(247, 0, 226, .3)'
+                                },
+                                {
+                                    offset: 1,
+                                    color: 'rgba(247, 0, 226, 0)'
                                 }
                             ])
                         }
                     },
                 ]
-            }
+            },
+            myChart: null,
+            listData: [],
         }
     },
+    created() {
+        this.option.xAxis.data = this.generateMonthsMap();
+    },
     mounted() {
-        this.init()
+        this.getListData();
     },
     methods: {
         init() {
             var chartDom = document.getElementById('main-echart');
             var myChart = echarts.init(chartDom);
             myChart.setOption(this.option);
+        },
+        async getListData() {
+            try {
+                this.queryParams.params = {};
+                if (null != this.daterangeLogCreateTime && '' != this.daterangeLogCreateTime) {
+                    this.queryParams.params["beginLogCreateDate"] = this.daterangeLogCreateTime[0];
+                    this.queryParams.params["endLogCreateDate"] = this.daterangeLogCreateTime[1];
+                }
+                const res = await getEchartData(this.queryParams)
+
+                if (res.code === 200) {
+                    const data = JSON.parse(JSON.stringify(res.rows));
+                    this.listData = data;
+                    console.log(data);
+                    // this.option.xAxis.data = this.getMonths(data);
+                    this.option.series[0].data = this.getDatas(data, 'totalGuaranteeAmount');
+                    this.option.series[1].data = this.getDatas(data, 'totalGuaranteeBalance');
+                    this.option.series[2].data = this.getDatas(data, 'internalGuaranteeBalance');
+                    this.option.series[3].data = this.getDatas(data, 'externalGuaranteeBalance');
+                    this.option.series[4].data = this.getDatas(data, 'internalGuaranteeAmount');
+                    this.option.series[5].data = this.getDatas(data, 'externalGuaranteeAmount');
+                    this.init();
+                }
+            } catch (error) {
+                this.$modal.msgError('数据获取失败，请重新尝试。');
+            }
+        },
+        getMonths(data) {
+            return data.map(item => item.month);
+        },
+        getDatas(data, key) {
+            return data.map(item => Number(item[key]) / 10000);
+        },
+        changeRang() {
+            console.log(this.daterangeLogCreateTime);
+            if (null != this.daterangeLogCreateTime && '' != this.daterangeLogCreateTime) {
+                this.option.xAxis.data = this.generateMonthsMap();
+            }
+            this.getListData();
+        },
+        generateMonthsMap() {
+
+            let currentMonth = moment(this.daterangeLogCreateTime[0], 'YYYY-MM');
+            const end = moment(this.daterangeLogCreateTime[1], 'YYYY-MM');
+            const monthsArray = [];
+
+            while (currentMonth.isSameOrBefore(end)) {
+                // 将每个月份添加到数组中
+                monthsArray.push(currentMonth.format('YYYY-MM'));
+                // 移动到下一个月
+                currentMonth.add(1, 'months');
+            }
+
+            return monthsArray;
+        },
+        calculateTotalByKey(dataList, key) {
+            const total = dataList.reduce((total, item) => {
+                // 检查当前项是否有指定的key，并且该key对应的值是数字类型
+                if (item.hasOwnProperty(key) && typeof item[key] === 'number') {
+                    return total + item[key];
+                }
+                return total;
+            }, 0);
+
+            // 将总和除以10000，得到以“万”为单位的数值
+            return total / 10000;
         }
     }
 }
@@ -224,5 +486,4 @@ export default {
     line-height: 22px;
     height: 22px;
     font-weight: bold;
-}
-</style>
+}</style>

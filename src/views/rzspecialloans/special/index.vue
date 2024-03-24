@@ -12,7 +12,7 @@
           </el-col> -->
           <el-col :span="8">
             <el-form-item label="借款金额（万元）" prop="loanAmount">
-              <el-input v-model="queryParams.loanAmount" placeholder="请输入借款金额" clearable
+              <el-input type="number" v-model.number.trim="queryParams.loanAmount" placeholder="请输入借款金额" clearable
                 @keyup.enter.native="handleQuery" />
             </el-form-item>
           </el-col>
@@ -205,13 +205,13 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="借款金额（万元）" prop="loanAmount">
-                <el-input :readonly="!isEditable" type="number" v-model.number.trim="form.loanAmount"
+                <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number" v-model.number.trim="form.loanAmount"
                   placeholder="请输入借款金额" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="已还金额（万元）" prop="repaidAmount">
-                <el-input :readonly="!isEditable" v-model="form.repaidAmount" placeholder="请输入已还金额" />
+                <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number" v-model.number.trim="form.repaidAmount" placeholder="请输入已还金额" />
               </el-form-item>
             </el-col>
 
@@ -220,7 +220,7 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="余额（万元）" prop="balance">
-                <el-input :readonly="!isEditable" v-model="remainingCreditAmount" placeholder="请输入余额" />
+                <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number" v-model.number.trim="remainingCreditAmount" placeholder="请输入余额" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -530,7 +530,13 @@ export default {
         this.queryParams.params["endDueDate"] = this.daterangeDueDate[1];
       }
       this.queryParams['orderByColumn'] = 'id'
-      listSpecial(this.queryParams).then(response => {
+
+      let search = JSON.parse(JSON.stringify(this.queryParams))
+      if (![null, '', undefined].includes(search.loanAmount)) {
+        search.loanAmount = Number(search.loanAmount) * 10000
+      }
+
+      listSpecial(search).then(response => {
         this.specialList = response.rows;
         this.total = response.total;
         this.loading = false;
@@ -621,8 +627,13 @@ export default {
         if (valid) {
           const data = JSON.parse(JSON.stringify(this.form))
           this.form.rzsrc2List = this.rzsrc2List;
-
           this.rzaudit_data = null;
+
+          // 金额数据 * 10000
+          data.loanAmount = data.loanAmount * 10000;
+          data.repaidAmount = data.loanAmount * 10000;
+          data.balance = data.loanAmount * 10000;
+
           if (this.form.id != null) {
             data.scrUuid = Number(this.scrUuid);
             data.rate = data.rate.replace(/%/g, ''); // 替换掉所有的百分号
