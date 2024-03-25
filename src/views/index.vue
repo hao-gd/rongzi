@@ -125,8 +125,8 @@
             <el-row>
               <el-col v-for="(value, key, index) in rzjeData" :key="index" :span="24" style="background: #fff;"
                 class="card-panel">
-                <div class="card-content pt30 pl20" :class="'card-content-bg' + 4">
-                  <div>
+                <div class="card-content pl20" :class="'card-content-bg' + 4">
+                  <div class="pt30">
                     <div class="card-title">{{ key }}</div>
 
                     <el-tooltip placement="top" effect="light">
@@ -139,7 +139,24 @@
                   </div>
 
                   <div class="card-various-amounts flex">
-                    <div class="mb10" v-for="(valuec, keyc, indexc) in value" :key="indexc">
+                    <div class="mt10">
+                      <el-tooltip content="42467000" placement="top" effect="light">
+                        <div slot="content">
+                          <p class="various-amounts-title mb5">融资负债</p>
+                          <count-to class="various-amounts-amount" :start-val='0' :end-val='financingLiabilities(value)' :duration='1000'
+                            :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                            :useEasing="true"></count-to>
+                        </div>
+                        <div>
+                          <p class="various-amounts-title mb5">融资负债</p>
+                          <count-to class="various-amounts-amount" :start-val='0' :end-val='financingLiabilities(value)' :duration='1000'
+                            :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                            :useEasing="true"></count-to>
+                        </div>
+                      </el-tooltip>
+                    </div>
+
+                    <div class="mt10" v-for="(valuec, keyc, indexc) in value" :key="indexc">
                       <el-tooltip v-if="keyc !== 'bgID'" content="42467000" placement="top" effect="light">
                         <div slot="content">
                           <p class="various-amounts-title mb5">{{ keyc }}</p>
@@ -487,6 +504,10 @@ export default {
 
     goTarget(href) {
       window.open(href, "_blank");
+    },
+    financingLiabilities(value) {
+      const total = this.calculateTotal(value)
+      return total - value['专项借款'] - value['政府专项债']
     }
   }
 };
@@ -573,7 +594,7 @@ export default {
 .various-amounts-title,
 .various-amounts-amount {
   font-size: 12px;
-  line-height: 14px;
+  line-height: 12px;
   font-weight: 600;
   white-space: nowrap;
   /* 确保文本在一行内显示 */

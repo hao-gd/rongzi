@@ -1,7 +1,13 @@
 <template>
   <div class="login">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form">
-      <h3 class="title">融资管理系统</h3>
+      <!-- <h3 class="title">融资管理系统</h3> -->
+
+      <div class="logo">
+        <img src="../assets/logo/logo (1).png" alt="">
+      </div>
+      <p class="f12 aaaa">融资管理系统</p>
+
       <el-form-item prop="username">
         <el-input
           v-model="loginForm.username"
@@ -215,5 +221,22 @@ export default {
 }
 .login-code-img {
   height: 38px;
+}
+.logo {
+  width: 240px;
+  height: 50px;
+  transform: scale(.4) translateX(-180px) translateY(-40px);
+  img {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+}
+.aaaa {
+  transform: translateY(-30px);
+  font-size: 18px;
+  text-align: center;
+  font-weight: bold;
+  font-family: 'DIN Alternate Bold', sans-serif;
 }
 </style>

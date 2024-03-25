@@ -300,6 +300,7 @@ export default {
     },
     created() {
         this.option.xAxis.data = this.generateMonthsMap();
+        console.log(this.option.xAxis.data);
     },
     mounted() {
         this.getrzloghistoryFinancing();
@@ -319,15 +320,13 @@ export default {
                     this.queryParams.params["endLogCreateDate"] = this.daterangeLogCreateDate[1];
                 }
                 const res = await rzloghistoryFinancing(this.queryParams);
-                console.log(res);
                 if (res.code === 200) {
                     const data = JSON.parse(JSON.stringify(res.rows));
                     this.listData = data;
-                    console.log(data);
                     // this.option.xAxis.data = this.getMonths(data);
-                    this.option.series[0].data = this.getDatas(data, 'totalFinancingAmount');
-                    this.option.series[1].data = this.getDatas(data, 'totalRepaidAmount');
-                    this.option.series[2].data = this.getDatas(data, 'totalRemainingAmount');
+                    this.option.series[0].data = this.transformAndFillData(data, this.option.xAxis.data, 'totalFinancingAmount');
+                    this.option.series[1].data = this.transformAndFillData(data, this.option.xAxis.data, 'totalRepaidAmount');
+                    this.option.series[2].data = this.transformAndFillData(data, this.option.xAxis.data, 'totalRemainingAmount');
                     this.init();
                 }
             } catch (error) {
@@ -371,6 +370,22 @@ export default {
 
             // 将总和除以10000，得到以“万”为单位的数值
             return total / 10000;
+        },
+        transformAndFillData(backendData, xAxisData, key) {
+            // 创建一个填充了 null 的数组，长度与 xAxisData 相同
+            let filledData = new Array(xAxisData.length).fill(null);
+
+            // 遍历后端数据
+            backendData.forEach(dataItem => {
+                // 找到每个数据项对应的月份在 xAxisData 中的索引
+                const index = xAxisData.indexOf(dataItem.month);
+                if (index !== -1) {
+                    // 根据索引位置填充相应的数据
+                    filledData[index] = dataItem[key];
+                }
+            });
+
+            return filledData;
         }
     }
 }
@@ -424,4 +439,5 @@ export default {
     line-height: 22px;
     height: 22px;
     font-weight: bold;
-}</style>
+}
+</style>

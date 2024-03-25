@@ -182,7 +182,7 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="管理编号" prop="managementId">
-                <el-input :readonly="!isEditable" v-model="form.managementId" placeholder="请输入银行承兑管理编号" />
+                <el-input :readonly="title === '修改银行承兑汇票'" v-model="form.managementId" placeholder="请输入银行承兑管理编号" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -559,6 +559,8 @@ export default {
         response.data.rzsrc2List.forEach(i => {
           i.id = null;
         })
+        // 金额需要 / 10000
+        response.data.invoiceAmount = Number(response.data.invoiceAmount) / 10000;
         this.scrUuid = response.data.scrUuid;
         this.form = response.data;
         this.form.scrUuid = response.data.rzsrc2List.map(i => i.url)
@@ -624,7 +626,8 @@ export default {
               "dataJson": JSON.stringify(data),
               "tableName": "rz_bank_accept_bill",
               "auditState": "1759514891045044200",
-              "uuid": uuid
+              "uuid": uuid,
+              "managementId": data.managementId
             }
           }
           this.handleaddList();
@@ -632,7 +635,10 @@ export default {
       });
       /* end */
     },
-    handleaddList() {
+    async handleaddList() {
+      // 检验上一个数据步骤有没有审批通过
+      await this.inspectionPendingReview(this.rzaudit_data)
+
       addList(this.rzaudit_data).then(res => {
         this.created_successfully = true;
         if (this.title === '修改银行承兑汇票' && this.isEditable) {

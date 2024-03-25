@@ -112,7 +112,7 @@
 
         <el-row :gutter="20">
           <!-- Second row -->
-          
+
           <el-col :span="8">
             <el-form-item label="债权人" prop="financialInstitution">
               <el-select filterable v-model="queryParams.financialInstitution" placeholder="请选择债权人" clearable>
@@ -139,7 +139,7 @@
 
         <el-row :gutter="20">
           <!-- Third row -->
-          
+
           <el-col :span="8">
             <el-form-item label="担保余额" prop="guaranteeBalance">
               <el-input type="number" v-model.number.trim="queryParams.guaranteeBalance" placeholder="请输入担保余额" clearable
@@ -164,7 +164,7 @@
 
         <el-row :gutter="20">
           <!-- Fourth row -->
-          
+
           <el-col :span="8">
             <el-form-item label="是否上征信" prop="isCreditInvestigation">
               <el-select filterable v-model="queryParams.isCreditInvestigation" placeholder="请选择是否上征信" clearable>
@@ -278,14 +278,15 @@
           <dict-tag :options="dict.type.sys_1767156259322069000" :value="scope.row.isCreditInvestigation" />
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="备注" align="center" prop="comment" min-width="120"/>
+      <el-table-column show-overflow-tooltip label="备注" align="center" prop="comment" min-width="120" />
       <!-- <el-table-column label="创建人" align="center" prop="createBy" />
       <el-table-column label="创建时间" align="center" prop="createTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column> -->
-      <el-table-column show-overflow-tooltip label="操作" fixed="right" align="center" class-name="small-padding fixed-width">
+      <el-table-column show-overflow-tooltip label="操作" fixed="right" align="center"
+        class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="handleUpdate(scope.row)" v-hasPermi="['glforeign:foreign:edit']">查
             看</el-button>
@@ -412,7 +413,7 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="管理编号" prop="managementId">
-                <el-input :readonly="!isEditable" v-model="form.managementId" placeholder="请输入管理编号" />
+                <el-input :readonly="title === '修改对外担保台账'" v-model="form.managementId" placeholder="请输入管理编号" />
               </el-form-item>
             </el-col>
             <!-- <el-col :span="8">
@@ -440,7 +441,7 @@
 
           <!-- 第二行 -->
           <el-row :gutter="20">
-           
+
             <el-col :span="8">
               <el-form-item label="债权人" prop="financialInstitution">
                 <el-select filterable :disabled="!isEditable" v-model="form.financialInstitution" placeholder="请选择债权人">
@@ -459,17 +460,19 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="担保金额（万元）" prop="guaranteeAmount">
-                <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number" v-model.number.trim="form.guaranteeAmount" placeholder="请输入担保金额" />
+                <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number"
+                  v-model.number.trim="form.guaranteeAmount" placeholder="请输入担保金额" />
               </el-form-item>
             </el-col>
           </el-row>
 
           <!-- 第三行 -->
           <el-row :gutter="20">
-            
+
             <el-col :span="8">
               <el-form-item label="担保余额（万元）" prop="guaranteeBalance">
-                <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number" v-model.number.trim="form.guaranteeBalance" placeholder="请输入担保余额" />
+                <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number"
+                  v-model.number.trim="form.guaranteeBalance" placeholder="请输入担保余额" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -491,7 +494,7 @@
 
           <!-- 第四行 -->
           <el-row :gutter="20">
-            
+
             <el-col :span="8">
               <el-form-item label="是否上征信" prop="isCreditInvestigation">
                 <el-select filterable :disabled="!isEditable" v-model="form.isCreditInvestigation" placeholder="请选择是否上征信">
@@ -501,7 +504,7 @@
               </el-form-item>
             </el-col>
           </el-row>
-          
+
           <el-row :gutter="20">
             <!-- 备注和附件单独占一行 -->
             <el-col :span="24">
@@ -851,6 +854,9 @@ export default {
         response.data.rzsrc2List.forEach(i => {
           i.id = null;
         })
+        // 金额需要 / 10000
+        response.data.guaranteeAmount = Number(response.data.guaranteeAmount) / 10000;
+        response.data.guaranteeBalance = Number(response.data.guaranteeBalance) / 10000;
         this.scrUuid = response.data.scrUuid;
         this.form = response.data;
         this.form.scrUuid = response.data.rzsrc2List.map(i => i.url)
@@ -923,7 +929,8 @@ export default {
               "dataJson": JSON.stringify(data),
               "tableName": "rz_gl_foreign",
               "auditState": "1759514891045044200",
-              "uuid": uuid
+              "uuid": uuid,
+              "managementId": data.managementId
             }
           }
           this.handleaddList();
@@ -931,7 +938,10 @@ export default {
         }
       });
     },
-    handleaddList() {
+    async handleaddList() {
+      // 检验上一个数据步骤有没有审批通过
+      await this.inspectionPendingReview(this.rzaudit_data)
+
       addList(this.rzaudit_data).then(res => {
         this.created_successfully = true;
         if (this.title === '修改对外担保台账' && this.isEditable) {

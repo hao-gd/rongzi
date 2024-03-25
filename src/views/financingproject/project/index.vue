@@ -92,19 +92,19 @@
       <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" min-width="100" />
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
       <el-table-column show-overflow-tooltip label="借款人" align="center" prop="borrowingUnit" min-width="120">
-        <template slot-scope="scope">
+        <!-- <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1767154968256577500" :value="scope.row.borrowingUnit" />
-        </template>
+        </template> -->
       </el-table-column>
       <el-table-column show-overflow-tooltip label="债权人" align="center" prop="financialInstitution" min-width="120">
-        <template slot-scope="scope">
+        <!-- <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1757271666666242000" :value="scope.row.financialInstitution" />
-        </template>
+        </template> -->
       </el-table-column>
       <el-table-column show-overflow-tooltip label="融资类型" align="center" prop="financingType" min-width="120">
-        <template slot-scope="scope">
+        <!-- <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1759508335389835300" :value="scope.row.financingType" />
-        </template>
+        </template> -->
       </el-table-column>
       <el-table-column show-overflow-tooltip label="融资金额（万元）" align="center" prop="financingAmount" width="180">
         <template slot-scope="scope">
@@ -152,8 +152,9 @@
       <el-table-column show-overflow-tooltip label="债务状态" align="center" prop="loanState" width="120">
         <template slot-scope="scope">
           <svg-icon class="mr5" :icon-class="scope.row.loanState"></svg-icon>
-          <dict-tag style="display: inline-block;" :options="dict.type.sys_1759509599150407700"
-            :value="scope.row.loanState" />
+          {{ scope.row.loanState }}
+          <!-- <dict-tag style="display: inline-block;" :options="dict.type.sys_1759509599150407700"
+            :value="scope.row.loanState" /> -->
           <!-- <dict-tag :options="dict.type.sys_1759509599150407700" :value="scope.row.loanState" /> -->
         </template>
       </el-table-column>
@@ -190,14 +191,14 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="管理编号" prop="managementId">
-                <el-input :readonly="!isEditable" v-model="form.managementId" placeholder="请输入管理编号" />
+                <el-input :readonly="title === '修改融资项目'" v-model="form.managementId" placeholder="请输入管理编号" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="借款人" prop="borrowingUnit">
                 <el-select :disabled="!isEditable" v-model="form.borrowingUnit" filterable placeholder="请选择借款人">
                   <el-option v-for="dict in dict.type.sys_1767154968256577500" :key="dict.value" :label="dict.label"
-                    :value="dict.value"></el-option>
+                    :value="dict.label"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -205,7 +206,7 @@
               <el-form-item label="债权人" prop="financialInstitution">
                 <el-select :disabled="!isEditable" v-model="form.financialInstitution" filterable placeholder="请选择债权人">
                   <el-option v-for="dict in dict.type.sys_1757271666666242000" :key="dict.value" :label="dict.label"
-                    :value="dict.value"></el-option>
+                    :value="dict.label"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -216,14 +217,14 @@
               <el-form-item label="融资类型" prop="financingType">
                 <el-select :disabled="!isEditable" v-model="form.financingType" filterable placeholder="请选择融资类型">
                   <el-option v-for="dict in dict.type.sys_1759508335389835300" :key="dict.value" :label="dict.label"
-                    :value="dict.value"></el-option>
+                    :value="dict.label"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="融资金额（万元）" prop="financingAmount">
-                <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number" v-model.number.trim="form.financingAmount"
-                  placeholder="请输入融资金额" />
+                <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number"
+                  v-model.number.trim="form.financingAmount" placeholder="请输入融资金额" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -273,14 +274,14 @@
             </el-col> -->
             <el-col :span="8">
               <el-form-item label="已还金额（万元）" prop="repaidAmount">
-                <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number" v-model.number.trim="form.repaidAmount"
-                  placeholder="请输入已还金额" />
+                <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number"
+                  v-model.number.trim="form.repaidAmount" placeholder="请输入已还金额" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="融资余额（万元）" prop="remainingAmount">
-                <el-input ::readonly="true" :disabled="true" @keydown.native="amountLimitMethod" type="number" v-model.number.trim="remainingCreditAmount"
-                  placeholder="请输入融资余额" />
+                <el-input ::readonly="true" :disabled="true" @keydown.native="amountLimitMethod" type="number"
+                  v-model.number.trim="remainingCreditAmount" placeholder="请输入融资余额" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -288,9 +289,9 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="债务状态" prop="loanState">
-                <el-select :disabled="!isEditable" v-model="form.loanState" filterable placeholder="请选择债务状态">
+                <el-select :disabled="true" v-model="form.loanState" filterable placeholder="请选择债务状态">
                   <el-option v-for="dict in dict.type.sys_1759509599150407700" :key="dict.value" :label="dict.label"
-                    :value="dict.value"></el-option>
+                    :value="dict.label"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -494,6 +495,13 @@ export default {
       if (newVal !== oldVal) {
         this.calculateLoanTerm();
       }
+    },
+    'form.remainingAmount'(n, o) {
+      if (n === 0) {
+        this.form.loanState = '已结清'
+      } else {
+        this.form.loanState = '未结清'
+      }
     }
   },
   computed: {
@@ -576,7 +584,7 @@ export default {
     /** 查询融资项目列表 */
     getList() {
       this.loading = true;
-      
+
       this.queryParams.params = {};
       this.queryParams['orderByColumn'] = 'id'
       if (null != this.daterangeContractSigningDate && '' != this.daterangeContractSigningDate) {
@@ -664,6 +672,12 @@ export default {
         response.data.rzsrc2List.forEach(i => {
           i.id = null;
         })
+        
+        // 金额 / 10000
+        response.data.financingAmount = Number(response.data.financingAmount) / 10000;
+        response.data.repaidAmount = Number(response.data.repaidAmount) / 10000;
+        response.data.remainingAmount = Number(response.data.remainingAmount) / 10000;
+
         this.scrUuid = response.data.scrUuid;
         this.form = response.data;
         this.form.scrUuid = response.data.rzsrc2List.map(i => i.url)
@@ -740,14 +754,19 @@ export default {
               "dataJson": JSON.stringify(data),
               "tableName": "rz_financing_project",
               "auditState": "1759514891045044200",
-              "uuid": uuid
+              "uuid": uuid,
+              "managementId": data.managementId
             }
           }
           this.handleaddList();
         }
       });
     },
-    handleaddList() {
+   async handleaddList() {
+
+      // 检验上一个数据步骤有没有审批通过
+      await this.inspectionPendingReview(this.rzaudit_data)
+
       addList(this.rzaudit_data).then(res => {
         this.created_successfully = true;
         if (this.title === '修改融资项目' && this.isEditable) {
@@ -761,19 +780,38 @@ export default {
           this.isMessage = true;
           this.isEdit = false;
         }
+      }).catch(err => {
+
       })
+    },
+    // 校验数据是否审批通过
+    async checkApproved() {
+      const search = {}
+      
+      try {
+        const passStatus = ['1759515025552179200', '1759514942710481000', '1759515068883533800'];
+        search['orderByColumn'] = 'id';
+        // search['managementId'] = this.form.managementId;
+        search['createBy'] = this.name;
+        search['auditState'] = '1759514891045044200';
+        search['uuid'] = this.rzaudit_data.uuid;
+        const res = await listList(search)
+        if (res.code === 200 && res.rows.length !== 0) {  
+          const data = res.rows[0];
+          console.log(data);
+          // 判断数据的状态 只有使用 审批不通过，审批通过，已撤回的状才可以提交
+          if (!passStatus.includes(data.auditState)) {
+            this.$message.warning('您有一个审核编号为：' + data.id + ' 正在审核中，请等待审核通过后在进行操作！')
+            return false;
+          }
+        } 
+      } catch (error) {
+        
+      }
     },
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      // this.$modal.confirm('是否确认删除融资项目编号为"' + ids + '"的数据项？').then(function () {
-      //   return delProject(ids);
-      // }).then(() => {
-      //   this.cancel();
-      //   this.getList();
-      //   this.$modal.msgSuccess("删除成功");
-      // }).catch(() => { });
-
       const h = this.$createElement;
       this.$msgbox({
         title: '提示',

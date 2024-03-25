@@ -382,12 +382,12 @@ export default {
                     this.listData = data;
                     console.log(data);
                     // this.option.xAxis.data = this.getMonths(data);
-                    this.option.series[0].data = this.getDatas(data, 'totalGuaranteeAmount');
-                    this.option.series[1].data = this.getDatas(data, 'totalGuaranteeBalance');
-                    this.option.series[2].data = this.getDatas(data, 'internalGuaranteeBalance');
-                    this.option.series[3].data = this.getDatas(data, 'externalGuaranteeBalance');
-                    this.option.series[4].data = this.getDatas(data, 'internalGuaranteeAmount');
-                    this.option.series[5].data = this.getDatas(data, 'externalGuaranteeAmount');
+                    this.option.series[0].data = this.transformAndFillData(data, this.option.xAxis.data, 'totalGuaranteeAmount');
+                    this.option.series[1].data = this.transformAndFillData(data, this.option.xAxis.data, 'totalGuaranteeBalance');
+                    this.option.series[2].data = this.transformAndFillData(data, this.option.xAxis.data, 'internalGuaranteeBalance');
+                    this.option.series[3].data = this.transformAndFillData(data, this.option.xAxis.data, 'externalGuaranteeBalance');
+                    this.option.series[4].data = this.transformAndFillData(data, this.option.xAxis.data, 'internalGuaranteeAmount');
+                    this.option.series[5].data = this.transformAndFillData(data, this.option.xAxis.data, 'externalGuaranteeAmount');
                     this.init();
                 }
             } catch (error) {
@@ -433,6 +433,22 @@ export default {
 
             // 将总和除以10000，得到以“万”为单位的数值
             return total / 10000;
+        },
+        transformAndFillData(backendData, xAxisData, key) {
+            // 创建一个填充了 null 的数组，长度与 xAxisData 相同
+            let filledData = new Array(xAxisData.length).fill(null);
+
+            // 遍历后端数据
+            backendData.forEach(dataItem => {
+                // 找到每个数据项对应的月份在 xAxisData 中的索引
+                const index = xAxisData.indexOf(dataItem.month);
+                if (index !== -1) {
+                    // 根据索引位置填充相应的数据
+                    filledData[index] = dataItem[key];
+                }
+            });
+
+            return filledData;
         }
     }
 }

@@ -102,6 +102,7 @@
                     :header-cell-style="header_cell_style">
                     <el-table-column show-overflow-tooltip fixed="left" type="selection" width="55" align="center" />
                     <el-table-column show-overflow-tooltip label="序号" type="index" width="55" align="center" />
+                    <el-table-column show-overflow-tooltip label="审核编号" prop="id" width="100" align="center" />
                     <el-table-column show-overflow-tooltip label="提交的事项" align="center" prop="tableName">
                         <template slot-scope="scope">
                             {{ precautions_obj[scope.row.tableName] }}

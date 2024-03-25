@@ -279,7 +279,8 @@
         </template>
       </el-table-column>
       <!-- <el-table-column label="uuid" align="center" prop="uuid" /> -->
-      <el-table-column show-overflow-tooltip fixed="right" label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column show-overflow-tooltip fixed="right" label="操作" align="center"
+        class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <!-- <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)"
             v-hasPermi="['creditmanagement:grant:edit']">修改</el-button>
@@ -308,7 +309,7 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="管理编号" prop="managementId">
-                <el-input :readonly="!isEditable" v-model="form.managementId" placeholder="请输入管理编号" />
+                <el-input :readonly="title === '修改授信管理'" v-model="form.managementId" placeholder="请输入管理编号" />
               </el-form-item>
             </el-col>
 
@@ -346,7 +347,8 @@
 
             <el-col :span="8">
               <el-form-item label="授信金额（万元）" prop="creditAmount">
-                <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number" v-model.number.trim="form.creditAmount" placeholder="请输入授信金额" />
+                <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number"
+                  v-model.number.trim="form.creditAmount" placeholder="请输入授信金额" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -354,14 +356,15 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="已用授信金额（万元）" prop="usedCreditAmount">
-                <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number" v-model.number.trim="form.usedCreditAmount" placeholder="请输入已用授信金额" />
+                <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number"
+                  v-model.number.trim="form.usedCreditAmount" placeholder="请输入已用授信金额" />
               </el-form-item>
             </el-col>
 
             <el-col :span="8">
               <el-form-item label="授信余额（万元）" prop="remainingCreditAmount">
-                <el-input :readonly="true" :disabled="true" @keydown.native="amountLimitMethod" type="number" v-model.number.trim="remainingCreditAmount"
-                  placeholder="请输入剩余授信金额" />
+                <el-input :readonly="true" :disabled="true" @keydown.native="amountLimitMethod" type="number"
+                  v-model.number.trim="remainingCreditAmount" placeholder="请输入剩余授信金额" />
               </el-form-item>
             </el-col>
 
@@ -750,6 +753,10 @@ export default {
         response.data.rzsrc2List.forEach(i => {
           i.id = null;
         })
+        // 金额需要 / 10000
+        response.data.creditAmount = Number(response.data.creditAmount) / 10000;
+        response.data.usedCreditAmount = Number(response.data.usedCreditAmount) / 10000;
+        response.data.remainingCreditAmount = Number(response.data.remainingCreditAmount) / 10000;
         this.scrUuid = response.data.scrUuid;
         this.form = response.data;
         this.form.scrUuid = response.data.rzsrc2List.map(i => i.url)
@@ -838,14 +845,18 @@ export default {
               "dataJson": JSON.stringify(data),
               "tableName": "rz_credit_management",
               "auditState": "1759514891045044200",
-              "uuid": uuid
+              "uuid": uuid,
+              "managementId": data.managementId
             }
           }
           this.handleaddList();
         }
       });
     },
-    handleaddList() {
+    async handleaddList() {
+      // 检验上一个数据步骤有没有审批通过
+      await this.inspectionPendingReview(this.rzaudit_data)
+
       addList(this.rzaudit_data).then(res => {
         this.created_successfully = true;
         if (this.title === '修改授信管理' && this.isEditable) {
