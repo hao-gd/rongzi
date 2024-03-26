@@ -452,8 +452,8 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item :disabled="!isEditable" label="第1期开始时间" prop="firstRepaymentDate">
-                <el-date-picker clearable v-model="form.firstRepaymentDate" type="date" value-format="yyyy-MM-dd"
-                  placeholder="请选择第1期开始时间"></el-date-picker>
+                <el-date-picker :picker-options="pickerOptions3" clearable v-model="form.firstRepaymentDate" type="date"
+                  value-format="yyyy-MM-dd" placeholder="请选择第1期开始时间"></el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -489,7 +489,7 @@
           <el-divider class="no_mt mb20"></el-divider>
 
           <el-row>
-            <hkjh-panel></hkjh-panel>
+            <hkjh-panel :form="form"></hkjh-panel>
           </el-row>
         </el-form>
 
@@ -600,6 +600,14 @@ export default {
           if (this.form.loanDate) {
             return date.getTime() < new Date(this.form.loanDate).getTime();
           }
+        }
+      },
+      pickerOptions3: {
+        disabledDate: (date) => {
+          const start = new Date(this.form.loanDate).getTime();
+          const end = new Date(this.form.dueDate).getTime();
+          // 禁用不在开始和结束日期范围内的所有日期
+          return date.getTime() < start || date.getTime() > end;
         }
       }
     };
@@ -986,6 +994,4 @@ export default {
   }
 };
 </script>
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

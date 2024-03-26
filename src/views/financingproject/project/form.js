@@ -1,3 +1,5 @@
+import { Input, DatePicker as TinyDatePicker } from '@opentiny/vue'
+
 export const resetForm = {
     id: null,
     managementId: null,
@@ -139,4 +141,24 @@ export const rules = {
     lixichanghuan: [
         { required: true, message: "利息偿还不能为空", trigger: "blur" }
     ],
+}
+
+// 生成 还款计划的edit 组件
+export function renderInput(field) {
+    return (h, { row }) =>
+        row.editing
+            ? h(Input, {
+                props: { modelValue: row[field] },
+                on: { 'update:modelValue': (value) => (row[field] = value) }
+            })
+            : h('span', row[field])
+}
+export function renderDate(field) {
+    return (h, { row }) =>
+        row.editing
+            ? h(TinyDatePicker, {
+                props: { modelValue: row[field], format: 'yyyy-MM-dd' },
+                on: { 'update:modelValue': (value) => (row[field] = value) }
+            })
+            : h('span', row[field])
 }
