@@ -489,7 +489,7 @@
           <el-divider class="no_mt mb20"></el-divider>
 
           <el-row>
-            <hkjh-panel :form="form"></hkjh-panel>
+            <hkjh-panel ref="hkjhPanel" :form="form"></hkjh-panel>
           </el-row>
         </el-form>
 
@@ -799,6 +799,7 @@ export default {
     },
     /** 提交按钮 */
     submitForm() {
+      
       this.$refs["form"].validate(valid => {
         if (valid) {
           const data = JSON.parse(JSON.stringify(this.form))
@@ -874,10 +875,18 @@ export default {
     },
     async handleaddList() {
 
+      // 从 还款计划的表中获取数据
+      const { bjch,
+        zjbj,
+        lvbg,
+        lixichanghuanArray,
+        repaymentPlanTable } = this.$refs.hkjhPanel.getDatas();
+        console.log(repaymentPlanTable);
+
       // 检验上一个数据步骤有没有审批通过
       await this.inspectionPendingReview(this.rzaudit_data)
 
-      addList(this.rzaudit_data).then(res => {
+      false && addList(this.rzaudit_data).then(res => {
         this.created_successfully = true;
         if (this.title === '修改融资项目' && this.isEditable) {
           this.isSuccess = true;

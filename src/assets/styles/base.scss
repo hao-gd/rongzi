@@ -40,7 +40,7 @@ input,button,textarea,select{*font-size:100%;}
 /* 布局 */
 .flex{display:flex !important;}
 .fjs{justify-content: flex-start;}
-.fje{justify-content: flex-end;}
+.fje{justify-content: flex-end !important;}
 .fjc{justify-content: center;}
 .fjb{justify-content: space-between !important;}
 .fja{justify-content: space-around !important;}

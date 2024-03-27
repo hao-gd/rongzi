@@ -162,3 +162,54 @@ export function renderDate(field) {
             })
             : h('span', row[field])
 }
+
+export const hkjh_repaymentPlanClearingTableColumn = [
+    {
+        label: '期数',
+        prop: '期数',
+        width: '',
+        minWidth: '100',
+    },
+    {
+        label: '日期',
+        prop: '日期',
+        width: '',
+        minWidth: '100',
+    },
+    {
+        label: '还款金额',
+        prop: '还款金额',
+        width: '',
+        minWidth: '100',
+    },
+    {
+        label: '偿还本金',
+        prop: '偿还本金',
+        width: '',
+        minWidth: '100',
+    },
+    {
+        label: '支付利息',
+        prop: '支付利息',
+        width: '',
+        minWidth: '100',
+    },
+    {
+        label: '本金剩余',
+        prop: '本金剩余',
+        width: '',
+        minWidth: '100',
+    },
+    {
+        label: '利率',
+        prop: '利率',
+        width: '',
+        minWidth: '100',
+    },
+    {
+        label: '备注',
+        prop: '备注',
+        width: '',
+        minWidth: '100',
+    }
+]

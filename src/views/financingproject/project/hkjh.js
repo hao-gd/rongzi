@@ -115,8 +115,18 @@ lvbg.forEach(e => {
 		...e
 	});
 });
-
-// console.log(timeline);
+export function addEventsToTimeline(eventName, eventsArray, extraDataHandler) {
+	let timeline = [];
+	eventsArray.forEach(event => {
+		const timelineEvent = {
+			event: eventName,
+			...extraDataHandler(event)
+		};
+		timeline.push(timelineEvent);
+	});
+	return timeline;
+}
+console.log(timeline);
 
 timeline.sort((a, b) => {
 	const dateA = moment(a.date, 'YYYY-MM-DD');
@@ -195,7 +205,7 @@ timeline.forEach(event => {
 		case '偿还本金':
 			principal -= event.amount;
 			changhuanjine += event.amount
-			
+
 			changhuanindex += 1;
 			zuizhongjihua.push({
 				"期数": changhuanindex,
@@ -217,7 +227,7 @@ timeline.forEach(event => {
 			// 	"利率": rate,
 			// 	"备注": ""
 			// });
-			
+
 			break;
 		case '利率变更':
 			rate = event.rate;
@@ -256,4 +266,76 @@ timeline.forEach(event => {
 	lastDate = currentDate;
 });
 
-// console.log(zuizhongjihua);
+export function generateRepaymentPlan(timeline) {
+	let principal = 0;
+	let rate = 0;
+	let lastDate = null;
+	let interestAccrued = 0;
+	let days = 0;
+
+	let repaymentAmount = 0;
+	let repaymentIndex = 0;
+
+	let finalPlan = [];
+
+	timeline.forEach(event => {
+		const currentDate = moment(event.date, "YYYY-MM-DD");
+		let accrued = 0;
+		if (lastDate != null && principal > 0) {
+			days = currentDate.diff(lastDate, 'days');
+			accrued = principal * (rate / 360 / 100) * days;
+			interestAccrued += accrued;
+		}
+
+		event = {
+			...event,
+			"本阶段计息本金": principal,
+			"使用利率": rate,
+			"计息天数": days,
+			"阶段利息": accrued.toFixed(2),
+		};
+
+		switch (event.event) {
+			case '提取本金':
+				principal += event.amount;
+				if (principal == 0 && repaymentIndex == 0) {
+					finalPlan.push(generatePlanEntry(repaymentIndex, currentDate, 0, 0, 0, event.amount, 0, ""));
+				}
+				break;
+			case '偿还本金':
+				principal -= event.amount;
+				repaymentAmount += event.amount;
+				repaymentIndex += 1;
+				finalPlan.push(generatePlanEntry(repaymentIndex, currentDate, repaymentAmount, repaymentAmount, 0, principal, rate, ""));
+				break;
+			case '利率变更':
+				rate = event.rate;
+				break;
+			case '利息偿还':
+				repaymentIndex += 1;
+				finalPlan.push(generatePlanEntry(repaymentIndex, currentDate, interestAccrued.toFixed(2), repaymentAmount, interestAccrued.toFixed(2), principal, rate, ""));
+				interestAccrued = 0;
+				repaymentAmount = 0;
+				break;
+		}
+		lastDate = currentDate;
+	});
+
+	return finalPlan;
+}
+
+function generatePlanEntry(period, date, paymentAmount, principalPaid, interestPaid, principalRemaining, rate, remark) {
+	return {
+		"期数": period,
+		"日期": date.format("YYYY-MM-DD"),
+		"还款金额": paymentAmount,
+		"偿还本金": principalPaid,
+		"支付利息": interestPaid,
+		"本金剩余": principalRemaining,
+		"利率": rate,
+		"备注": remark
+	};
+}
+
+
+console.log(zuizhongjihua);
