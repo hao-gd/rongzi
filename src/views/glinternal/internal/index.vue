@@ -397,8 +397,9 @@
       <el-divider class="no_mt mb20"></el-divider>
       <div v-if="created_successfully == false">
         <div v-if="title === '修改对内担保台账'" class="modeify-btn" style="display: flex; justify-content: end;">
-          <el-button type="primary" @click="toggleEdit">编 辑</el-button>
-          <el-button @click="handleDelete(form)">删 除</el-button>
+          <el-button type="primary" v-if="!this.isEditable" @click="toggleEdit">编 辑</el-button>
+          <el-button type="warning" v-else @click="toggleEdit">取消编辑</el-button>
+          <el-button type="danger" plain @click="handleDelete(form)">删 除</el-button>
         </div>
 
         <el-form ref="form" :model="form" :rules="rules" label-width="80px" label-position="top">

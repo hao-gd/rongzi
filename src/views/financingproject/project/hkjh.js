@@ -10,7 +10,6 @@ export function getDatesBasedOnStartDate(startDate, endDate, intervalMonths) {
 	while (true) {
 		// 在开始date的基础上增加固定月份数的倍数
 		let current = start.clone().add(intervalMonths * multiplier, 'months');
-		console.log(current, end, multiplier);
 		// 如果当前计算的时间点大于等于结束date，则添加结束date并结束循环
 		if (current.isSameOrAfter(end)) {
 			dates.push(end.format('YYYY-MM-DD')); // 添加结束date到数组
@@ -30,7 +29,7 @@ export function getDatesBasedOnStartDate(startDate, endDate, intervalMonths) {
 let lxStartDate = "2023/9/21"; // 开始时间，他输入的 第1期开始日期
 let lxEndDate = "2052/12/24"; //结束时间默认是本金变为0的时间
 let lxIntervalMonths = 3; //利息偿还方式 月间隔，1个月 ,1季度3个月，半年6个月，年12个月
-let lixichanghuanArray = getDatesBasedOnStartDate(lxStartDate, lxEndDate, lxIntervalMonths);
+// let lixichanghuanArray = getDatesBasedOnStartDate(lxStartDate, lxEndDate, lxIntervalMonths);
 
 // console.log(lixichanghuanArray); // 输出时间点数组
 //[ "2023-01-31", "2023-04-30", "2023-07-31", "2023-10-31", "2024-01-31", "2024-04-30", "2024-07-31", "2024-10-31", "2025-01-31", "2025-03-13" ]
@@ -39,7 +38,7 @@ let lixichanghuanArray = getDatesBasedOnStartDate(lxStartDate, lxEndDate, lxInte
 let bjStartDate = "2023/6/29"; // 开始时间，就是借款时间
 let BJEndDate = "2052/12/24"; //结束时间默认是到期日期
 let bjIntervalMonths = 6; // 本金偿还方式 月间隔，1个月 ,1季度3个月，半年6个月，年12个月
-let benjinchanghuanArray = getDatesBasedOnStartDate(bjStartDate, BJEndDate, bjIntervalMonths);
+// let benjinchanghuanArray = getDatesBasedOnStartDate(bjStartDate, BJEndDate, bjIntervalMonths);
 
 // console.log(benjinchanghuanArray); // 输出时间点数组
 
@@ -87,34 +86,34 @@ const lvbg = [{
 
 
 // 初始化时间线数组
-let timeline = [];
+// let timeline = [];
 
-bjch.forEach(e => {
-	timeline.push({
-		event: '偿还本金',
-		...e
-	});
-});
-lixichanghuanArray.forEach(e => {
-	timeline.push({
-		event: '利息偿还',
-		date: e
-	});
-});
+// bjch.forEach(e => {
+// 	timeline.push({
+// 		event: '偿还本金',
+// 		...e
+// 	});
+// });
+// lixichanghuanArray.forEach(e => {
+// 	timeline.push({
+// 		event: '利息偿还',
+// 		date: e
+// 	});
+// });
 
 
-zjbj.forEach(e => {
-	timeline.push({
-		event: '提取本金',
-		...e
-	});
-});
-lvbg.forEach(e => {
-	timeline.push({
-		event: '利率变更',
-		...e
-	});
-});
+// zjbj.forEach(e => {
+// 	timeline.push({
+// 		event: '提取本金',
+// 		...e
+// 	});
+// });
+// lvbg.forEach(e => {
+// 	timeline.push({
+// 		event: '利率变更',
+// 		...e
+// 	});
+// });
 export function addEventsToTimeline(eventName, eventsArray, extraDataHandler) {
 	let timeline = [];
 	eventsArray.forEach(event => {
@@ -126,20 +125,20 @@ export function addEventsToTimeline(eventName, eventsArray, extraDataHandler) {
 	});
 	return timeline;
 }
-console.log(timeline);
+// console.log(timeline);
 
-timeline.sort((a, b) => {
-	const dateA = moment(a.date, 'YYYY-MM-DD');
-	const dateB = moment(b.date, 'YYYY-MM-DD');
+// timeline.sort((a, b) => {
+// 	const dateA = moment(a.date, 'YYYY-MM-DD');
+// 	const dateB = moment(b.date, 'YYYY-MM-DD');
 
-	if (dateA.isBefore(dateB)) {
-		return -1;
-	} else if (dateA.isAfter(dateB)) {
-		return 1;
-	} else {
-		return 0;
-	}
-});
+// 	if (dateA.isBefore(dateB)) {
+// 		return -1;
+// 	} else if (dateA.isAfter(dateB)) {
+// 		return 1;
+// 	} else {
+// 		return 0;
+// 	}
+// });
 
 export function sortTimeLineByDate(timeline) {
 	return timeline.sort((a, b) => {
@@ -392,6 +391,3 @@ export function generateRepaymentPlan(timeline) {
 	});
 	return zuizhongjihua
 }
-
-const a = generateRepaymentPlan(timeline)
-console.log(a);

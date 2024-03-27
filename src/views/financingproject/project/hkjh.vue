@@ -128,6 +128,15 @@ export default {
         form: {
             type: Object,
             default: () => { }
+        },
+        huankuanmingxi2List: { // 回显显示的还款计划明细
+            type: Array,
+            default: () => {
+                return []
+            }
+        },
+        isEditable: {
+            type: Boolean,
         }
     },
     data() {
@@ -167,7 +176,7 @@ export default {
             },
             lvKeyMap: {
                 "按月偿还": 1,
-                "按季偿还": 3,
+                "按季度偿还": 3,
                 "按半年偿还": 6,
                 "按年偿还": 12
             },
@@ -179,6 +188,52 @@ export default {
             },
             repaymentPlanTable: [],
         }
+    },
+    watch: {
+        huankuanmingxi2List: {
+            handler(newVal) {
+                if (newVal.length !== 0) {
+                    this.repaymentPlanTable = newVal;
+                }
+            },
+            deep: true
+        },
+        'form.lilvbiangeng': {
+            handler(newVal) {
+                if (newVal) {
+                    this.lixichanghuanArray = JSON.parse(newVal);
+                }
+            },
+            deep: true,
+            immediate: true
+        },
+        'form.lixichanghuan': {
+            handler(newVal) {
+                if (newVal) {
+                    this.lvbg = JSON.parse(newVal);
+                }
+            },
+            deep: true,
+            immediate: true
+        },
+        "form.changhuanbenjin": {
+            handler(newVal) {
+                if (newVal) {
+                    this.bjch = JSON.parse(newVal);
+                }
+            },
+            deep: true,
+            immediate: true
+        },
+        'form.tiqubenjin': {
+            handler(newVal) {
+                if (newVal) {
+                    this.zjbj = JSON.parse(newVal);
+                }
+            },
+            deep: true,
+            immediate: true
+        },
     },
     methods: {
         hkjh() {

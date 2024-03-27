@@ -512,7 +512,7 @@
           !empty.includes(this.form.rateType) &&
           !empty.includes(this.form.interestRepaymentMethod) &&
           !empty.includes(this.form.financingAmount))">
-            <hkjh-panel ref="hkjhPanel" :form="form" @getRepaymentPlan="ReturnGetRepaymentPlan"></hkjh-panel>
+            <hkjh-panel ref="hkjhPanel" :form="form" :isEditable="isEditable" :huankuanmingxi2List="EchoHuankuanmingxi2List" @getRepaymentPlan="ReturnGetRepaymentPlan"></hkjh-panel>
           </el-row>
         </el-form>
 
@@ -632,7 +632,8 @@ export default {
           // 禁用不在开始和结束日期范围内的所有日期
           return date.getTime() < start || date.getTime() > end;
         }
-      }
+      },
+      EchoHuankuanmingxi2List: []
     };
   },
   watch: {
@@ -759,11 +760,14 @@ export default {
       });
     },
     getRepaymentPlanlsit() {
-      const search = { managementId: this.form.managementId };
+      const search = { managerId: this.form.managementId };
       getRepaymentPlan(search).then(res => {
         console.log(res);
         if (res.code === 200) {
-          this.huankuanmingxi2List = replaceKeys(res.rows);
+          this.EchoHuankuanmingxi2List = replaceKeys(res.rows);
+
+
+          console.log(this.EchoHuankuanmingxi2List);
         }
       })
     },
@@ -825,7 +829,11 @@ export default {
 
         this.scrUuid = response.data.scrUuid;
         this.form = response.data;
-        this.getRepaymentPlanlsit()
+        this.getRepaymentPlanlsit();
+
+        
+        // this.bjch, this.zjbj, this.lvbg, this.lixichanghuanArray, this.repaymentPlanTable
+
         this.form.scrUuid = response.data.rzsrc2List.map(i => i.url)
         /* end */
         this.rzsrc2List = response.data.rzsrc2List;
@@ -843,8 +851,13 @@ export default {
       this.form.changhuanbenjin = JSON.stringify(bjch);
       this.form.lilvbiangeng = JSON.stringify(lixichanghuanArray);
       this.form.lixichanghuan = JSON.stringify(lvbg);
-      this.form.huankuanmingxi2List = repaymentPlanTable;
-      console.log(this.form);
+      console.log(repaymentPlanTable);
+      // 生成好的还款计划，里面的利率字段需要同步到备注里面
+      const huankuanmingxi2List = repaymentPlanTable.map(i => {
+        i['备注'] = i['利率'];
+        return i;
+      })
+      this.form.huankuanmingxi2List = huankuanmingxi2List;
     },
     /** 提交按钮 */
     submitForm() {
@@ -859,8 +872,8 @@ export default {
           data.repaidAmount = data.repaidAmount * 10000;
           data.remainingAmount = data.remainingAmount * 10000;
           // 利率
-          console.log(data);
-          data.rate = data.huankuanmingxi2List[data.lilvbiangeng.length - 1].rate;
+          const lvlist = JSON.parse(data.lixichanghuan);
+          data.rate = lvlist[lvlist.length - 1].rate;
 
           if (this.form.id != null) {
             data.scrUuid = Number(this.scrUuid);
@@ -870,7 +883,7 @@ export default {
             loanTermStr = loanTermStr.replace(/天$/, '');
 
             data.loanTerm = loanTermStr
-            data.rate =  data.rate ? data.rate.replace(/%/g, '') : data.rate; // 替换掉所有的百分号
+            // data.rate =  data.rate ? data.rate.replace(/%/g, '') : data.rate; // 替换掉所有的百分号
             this.rzaudit_data = {
               "auditId": data.id,
               "scrUuid": data.scrUuid,
@@ -906,7 +919,7 @@ export default {
             loanTermStr = loanTermStr.replace(/天$/, '');
 
             data.loanTerm = loanTermStr
-            data.rate =  data.rate ? data.rate.replace(/%/g, '') : data.rate; // 替换掉所有的百分号
+            // data.rate =  data.rate ? data.rate.replace(/%/g, '') : data.rate; // 替换掉所有的百分号
             this.rzaudit_data = {
               "id": null,
               "auditId": null,
@@ -1024,7 +1037,6 @@ export default {
     },
     /* 上传完成的回调 */
     upload_completed(url_string) {
-      console.log(url_string);
       const url_list = url_string.split(',')
       url_list.forEach(url_i => {
         let obj = {

@@ -236,20 +236,16 @@ const fieldMapping = {
     "偿还本金": "changhuanben",
     "支付利息": "zhifulixi",
     "本金剩余": "benjinshengyu",
-    "备注": "remark"
+    "利率": "remark"
 };
 // 替换 JSON 数据中的 key
 export function replaceKeys(jsonArray) {
-    // 创建一个新数组来存放替换 key 后的对象
     const replacedArray = jsonArray.map(item => {
         const newItem = {};
-        // 遍历每个对象的 key
         for (const key in item) {
-            // 查找映射关系中的中文字段名
-            const foundKey = Object.keys(mappifieldMappingng).find(chineseKey => fieldMapping[chineseKey] === key);
-            // 如果找到了对应的中文字段名，则使用该中文字段名作为新的 key
-            // 否则，保持原有的 key 不变
-            newItem[foundKey || key] = item[key];
+            // 使用映射关系中的英文字段名作为新的 key
+            const newKey = fieldMapping[key] || key;
+            newItem[newKey] = item[key];
         }
         return newItem;
     });

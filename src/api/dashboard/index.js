@@ -23,6 +23,15 @@ export function getCardData3() {
   })
 }
 
+// 还款计划（未来12个月查询展示接口）
+export function getRepaymentPlanData(query) {
+  return request({
+    url: '/huankuanjihua/mingxi/paymentSummary',
+    method: 'get',
+    params: query
+  })
+}
+
 // 历史融资和担保查询的列表图接口
 export function rzloghistoryFinancing(query) {
   return request({

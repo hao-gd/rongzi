@@ -139,23 +139,6 @@
                   </div>
 
                   <div class="card-various-amounts flex">
-                    <div class="mt10">
-                      <el-tooltip content="42467000" placement="top" effect="light">
-                        <div slot="content">
-                          <p class="various-amounts-title mb5">融资负债</p>
-                          <count-to class="various-amounts-amount" :start-val='0' :end-val='financingLiabilities(value)' :duration='1000'
-                            :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
-                            :useEasing="true"></count-to>
-                        </div>
-                        <div>
-                          <p class="various-amounts-title mb5">融资负债</p>
-                          <count-to class="various-amounts-amount" :start-val='0' :end-val='financingLiabilities(value)' :duration='1000'
-                            :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
-                            :useEasing="true"></count-to>
-                        </div>
-                      </el-tooltip>
-                    </div>
-
                     <div class="mt10" v-for="(valuec, keyc, indexc) in value" :key="indexc">
                       <el-tooltip v-if="keyc !== 'bgID'" content="42467000" placement="top" effect="light">
                         <div slot="content">
@@ -232,9 +215,10 @@
 <script>
 import SearchPanel from '@/components/SearchPanel/index.vue'
 import * as echarts from 'echarts';
-import { getCardData, getCardData2, getCardData3 } from '@/api/dashboard/index'
+import { getCardData, getCardData2, getCardData3, getRepaymentPlanData } from '@/api/dashboard/index'
 import resize from './dashboard/mixins/resize'
 import { mapGetters, mapState } from "vuex";
+import moment from 'moment';
 const color = {
   totalFinancingAmount: '#F77234',
   totalRepaidAmount: '#33D1C9',
@@ -270,9 +254,11 @@ export default {
           ],
         },
       ],
+      queryParams: {},
       year: '',
       month: '',
       option: {
+        color: ['#A086FD', '#23ADFF', '#13CFB2'],
         title: {
           text: 'Stacked Line',
           show: false
@@ -313,7 +299,7 @@ export default {
         },
         series: [
           {
-            name: 'Email',
+            name: '还款合计',
             type: 'line',
             stack: 'Total',
             data: [120, 132, 101, 134, 90, 230, 210],
@@ -322,31 +308,22 @@ export default {
             lineStyle: {
               width: 5 // 调整线条的粗细
             },
-            emphasis: {
-            focus: 'series',
-            itemStyle: {
-                color: 'White', // 鼠标悬停时数据点颜色
-                borderColor: 'red', // 数据点边框颜色
-                borderWidth: 1, // 数据点边框宽度
-                borderType: 'solid' // 数据点边框类型
-            }
-        },
             areaStyle: {
               opacity: 0.8,
               color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
                 {
                   offset: 0,
-                  color: 'rgb(0, 221, 255)'
+                  color: 'rgba(160, 134, 253, .3)'
                 },
                 {
                   offset: 1,
-                  color: 'rgb(77, 119, 255)'
+                  color: 'rgba(160, 134, 253, 0)'
                 }
               ])
             }
           },
           {
-            name: 'Union Ads',
+            name: '还款本金',
             type: 'line',
             stack: 'Total',
             data: [220, 182, 191, 234, 290, 330, 310],
@@ -360,17 +337,17 @@ export default {
               color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
                 {
                   offset: 0,
-                  color: 'rgb(0, 221, 255)'
+                  color: 'rgba(35, 173, 255, .3)'
                 },
                 {
                   offset: 1,
-                  color: 'rgb(77, 119, 255)'
+                  color: 'rgba(35, 173, 255, 0)'
                 }
               ])
             }
           },
           {
-            name: 'Video Ads',
+            name: '还款利息',
             type: 'line',
             stack: 'Total',
             data: [150, 232, 201, 154, 190, 330, 410],
@@ -384,11 +361,11 @@ export default {
               color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
                 {
                   offset: 0,
-                  color: 'rgb(0, 221, 255)'
+                  color: 'rgba(19, 207, 178, .3)'
                 },
                 {
                   offset: 1,
-                  color: 'rgb(77, 119, 255)'
+                  color: 'rgba(19, 207, 178, 0)'
                 }
               ])
             }
@@ -398,7 +375,11 @@ export default {
       myChart: null,
       creditData: {},
       rzjeData: {},
-      dbData: {}
+      dbData: {},
+      daterangeLogCreateDate: [
+        moment().subtract(1, 'years').format('YYYY-MM'),
+        moment().format('YYYY-MM')
+      ],
     };
   },
   watch: {
@@ -415,13 +396,16 @@ export default {
   computed: {
     ...mapGetters(["sidebarRouters", "sidebar"]),
   },
+  created() {
+    this.option.xAxis.data = this.generateMonthsMap();
+  },
   mounted() {
 
     this.getCardData();
     this.getCardData2();
     this.getCardData3();
-
-    this.init();
+    this.getHuankuanjihua();
+    // this.init();
   },
   methods: {
     init() {
@@ -492,6 +476,29 @@ export default {
         this.$modal.msgError('数据获取失败，请重新尝试。');
       }
     },
+    /* 请求还款计划列表数据 */
+    async getHuankuanjihua() {
+      try {
+        this.queryParams.params = {};
+        if (null != this.daterangeLogCreateDate && '' != this.daterangeLogCreateDate) {
+          this.queryParams.params["beginLogCreateDate"] = this.daterangeLogCreateDate[0];
+          this.queryParams.params["endLogCreateDate"] = this.daterangeLogCreateDate[1];
+        }
+        const res = await getRepaymentPlanData(this.queryParams);
+        if (res.code === 200) {
+          console.log(res);
+          const data = JSON.parse(JSON.stringify(res.data));
+          this.listData = data;
+
+          this.option.series[0].data = this.transformAndFillData(data, this.option.xAxis.data, ['totalPrincipal', 'totalInterest']);
+          this.option.series[1].data = this.transformAndFillData(data, this.option.xAxis.data, 'totalPrincipal');
+          this.option.series[2].data = this.transformAndFillData(data, this.option.xAxis.data, 'totalInterest');
+          this.init();
+        }
+      } catch (error) {
+        this.$modal.msgError('数据获取失败，请重新尝试。');
+      }
+    },
     calculateTotal(obj) {
       let total = 0;
       for (let key in obj) {
@@ -508,6 +515,45 @@ export default {
     financingLiabilities(value) {
       const total = this.calculateTotal(value)
       return total - value['专项借款'] - value['政府专项债']
+    },
+    generateMonthsMap() {
+      let currentMonth = moment(this.daterangeLogCreateDate[0], 'YYYY-MM');
+      const end = moment(this.daterangeLogCreateDate[1], 'YYYY-MM');
+      const monthsArray = [];
+
+      while (currentMonth.isSameOrBefore(end)) {
+        // 将每个月份添加到数组中
+        monthsArray.push(currentMonth.format('YYYY-MM'));
+        // 移动到下一个月
+        currentMonth.add(1, 'months');
+      }
+
+      return monthsArray;
+    },
+    transformAndFillData(backendData, xAxisData, key) {
+      // 创建一个填充了 null 的数组，长度与 xAxisData 相同
+      let filledData = new Array(xAxisData.length).fill(null);
+
+      // 遍历后端数据
+      backendData.forEach(dataItem => {
+        // 找到每个数据项对应的月份在 xAxisData 中的索引
+        const index = xAxisData.indexOf(dataItem.month);
+        if (index !== -1) {
+          // 如果 key 是字符串数组，则累加各项的值
+          if (Array.isArray(key)) {
+            let sum = 0;
+            key.forEach(k => {
+              sum += dataItem[k] || 0; // 使用 || 0 来确保未定义的值被当作 0 处理
+            });
+            filledData[index] = sum;
+          } else {
+            // 如果 key 是字符串，则直接赋值
+            filledData[index] = dataItem[key];
+          }
+        }
+      });
+
+      return filledData;
     }
   }
 };
