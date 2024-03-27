@@ -183,8 +183,9 @@
 
       <div v-if="created_successfully == false">
         <div v-if="title === '修改融资项目'" class="modeify-btn" style="display: flex; justify-content: end;">
-          <el-button type="primary" @click="toggleEdit">编 辑</el-button>
-          <el-button @click="handleDelete(form)">删 除</el-button>
+          <el-button type="primary" v-if="!this.isEditable" @click="toggleEdit">编 辑</el-button>
+          <el-button type="warning" v-else @click="toggleEdit">取消编辑</el-button>
+          <el-button type="danger" plain @click="handleDelete(form)">删 除</el-button>
         </div>
 
         <!-- <el-form ref="form" :model="form" :rules="rules" label-width="80px" label-position="top">
@@ -451,8 +452,8 @@
 
           <el-row :gutter="20">
             <el-col :span="8">
-              <el-form-item :disabled="!isEditable" label="第1期开始时间" prop="firstRepaymentDate">
-                <el-date-picker :picker-options="pickerOptions3" clearable v-model="form.firstRepaymentDate" type="date"
+              <el-form-item  label="第1期开始时间" prop="firstRepaymentDate">
+                <el-date-picker :disabled="!isEditable" :picker-options="pickerOptions3" clearable v-model="form.firstRepaymentDate" type="date"
                   value-format="yyyy-MM-dd" placeholder="请选择第1期开始时间"></el-date-picker>
               </el-form-item>
             </el-col>
@@ -486,10 +487,32 @@
             </el-col>
           </el-row>
 
-          <el-divider class="no_mt mb20"></el-divider>
+          <el-divider  v-if="(!empty.includes(this.form.loanDate) &&
+          !empty.includes(this.form.dueDate) &&
+          !empty.includes(this.form.firstRepaymentDate) &&
+          !empty.includes(this.form.rateType) &&
+          !empty.includes(this.form.interestRepaymentMethod) &&
+          !empty.includes(this.form.financingAmount))"  class="no_mt mb20">
+            <div style="color: red;">如果修改上述数据,需要重新创建还款计划</div>
+          </el-divider>
 
-          <el-row>
-            <hkjh-panel ref="hkjhPanel" :form="form"></hkjh-panel>
+
+          <div v-show="(!empty.includes(this.form.loanDate) &&
+          !empty.includes(this.form.dueDate) &&
+          !empty.includes(this.form.firstRepaymentDate) &&
+          !empty.includes(this.form.rateType) &&
+          !empty.includes(this.form.interestRepaymentMethod) &&
+          !empty.includes(this.form.financingAmount))" style="display: flex; justify-content: center;">
+            <el-button type="primary" @click="callChildMethod">
+              创建还款计划</el-button>
+          </div>
+          <el-row v-if="(!empty.includes(this.form.loanDate) &&
+          !empty.includes(this.form.dueDate) &&
+          !empty.includes(this.form.firstRepaymentDate) &&
+          !empty.includes(this.form.rateType) &&
+          !empty.includes(this.form.interestRepaymentMethod) &&
+          !empty.includes(this.form.financingAmount))">
+            <hkjh-panel ref="hkjhPanel" :form="form" @getRepaymentPlan="ReturnGetRepaymentPlan"></hkjh-panel>
           </el-row>
         </el-form>
 
@@ -510,11 +533,11 @@
 </template>
 
 <script>
-import { listProject, getProject, delProject, addProject, updateProject } from "@/api/financingproject/project";
+import { listProject, getProject, delProject, addProject, updateProject, getRepaymentPlan } from "@/api/financingproject/project";
 import { SnowflakeIdGenerator } from '@/utils/index'
 import { listList, getList, delList, addList, updateList } from "@/api/rzauditlist/list";
 
-import { resetForm, rules, queryParams } from './form'
+import { resetForm, rules, queryParams, multiplySelectedFields, replaceKeys } from './form'
 
 import { mapGetters } from 'vuex';
 import moment from 'moment'
@@ -532,7 +555,7 @@ export default {
   },
   data() {
     return {
-
+      empty: [null, undefined, ''],
       isSuccess: true,
       isTitle: true,
       isMessage: true,
@@ -735,8 +758,18 @@ export default {
         this.loading = false;
       });
     },
+    getRepaymentPlanlsit() {
+      const search = { managementId: this.form.managementId };
+      getRepaymentPlan(search).then(res => {
+        console.log(res);
+        if (res.code === 200) {
+          this.huankuanmingxi2List = replaceKeys(res.rows);
+        }
+      })
+    },
     // 取消按钮
     cancel() {
+      this.$refs.hkjhPanel.clearHkjhList();
       this.open = false;
       this.created_successfully = false;
       this.reset();
@@ -771,6 +804,7 @@ export default {
       this.isEditable = true;
       this.open = true;
       this.title = "添加融资项目";
+      // this.$refs.hkjhPanel.clearHkjhList();
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
@@ -783,6 +817,7 @@ export default {
           i.id = null;
         })
 
+
         // 金额 / 10000
         response.data.financingAmount = Number(response.data.financingAmount) / 10000;
         response.data.repaidAmount = Number(response.data.repaidAmount) / 10000;
@@ -790,6 +825,7 @@ export default {
 
         this.scrUuid = response.data.scrUuid;
         this.form = response.data;
+        this.getRepaymentPlanlsit()
         this.form.scrUuid = response.data.rzsrc2List.map(i => i.url)
         /* end */
         this.rzsrc2List = response.data.rzsrc2List;
@@ -797,9 +833,21 @@ export default {
         this.title = "修改融资项目";
       });
     },
+    callChildMethod() {
+        this.$refs.hkjhPanel.hkjh();
+      },
+    // 还款计划生成的数据返回
+    ReturnGetRepaymentPlan(data) {
+      const { bjch, zjbj, lvbg, lixichanghuanArray, repaymentPlanTable } = data;
+      this.form.tiqubenjin = JSON.stringify(zjbj);
+      this.form.changhuanbenjin = JSON.stringify(bjch);
+      this.form.lilvbiangeng = JSON.stringify(lixichanghuanArray);
+      this.form.lixichanghuan = JSON.stringify(lvbg);
+      this.form.huankuanmingxi2List = repaymentPlanTable;
+      console.log(this.form);
+    },
     /** 提交按钮 */
     submitForm() {
-      
       this.$refs["form"].validate(valid => {
         if (valid) {
           const data = JSON.parse(JSON.stringify(this.form))
@@ -810,6 +858,9 @@ export default {
           data.financingAmount = data.financingAmount * 10000;
           data.repaidAmount = data.repaidAmount * 10000;
           data.remainingAmount = data.remainingAmount * 10000;
+          // 利率
+          console.log(data);
+          data.rate = data.huankuanmingxi2List[data.lilvbiangeng.length - 1].rate;
 
           if (this.form.id != null) {
             data.scrUuid = Number(this.scrUuid);
@@ -819,7 +870,7 @@ export default {
             loanTermStr = loanTermStr.replace(/天$/, '');
 
             data.loanTerm = loanTermStr
-            data.rate = data.rate.replace(/%/g, ''); // 替换掉所有的百分号
+            data.rate =  data.rate ? data.rate.replace(/%/g, '') : data.rate; // 替换掉所有的百分号
             this.rzaudit_data = {
               "auditId": data.id,
               "scrUuid": data.scrUuid,
@@ -855,7 +906,7 @@ export default {
             loanTermStr = loanTermStr.replace(/天$/, '');
 
             data.loanTerm = loanTermStr
-            data.rate = data.rate.replace(/%/g, ''); // 替换掉所有的百分号
+            data.rate =  data.rate ? data.rate.replace(/%/g, '') : data.rate; // 替换掉所有的百分号
             this.rzaudit_data = {
               "id": null,
               "auditId": null,
@@ -874,19 +925,10 @@ export default {
       });
     },
     async handleaddList() {
-
-      // 从 还款计划的表中获取数据
-      const { bjch,
-        zjbj,
-        lvbg,
-        lixichanghuanArray,
-        repaymentPlanTable } = this.$refs.hkjhPanel.getDatas();
-        console.log(repaymentPlanTable);
-
       // 检验上一个数据步骤有没有审批通过
       await this.inspectionPendingReview(this.rzaudit_data)
 
-      false && addList(this.rzaudit_data).then(res => {
+      addList(this.rzaudit_data).then(res => {
         this.created_successfully = true;
         if (this.title === '修改融资项目' && this.isEditable) {
           this.isSuccess = true;

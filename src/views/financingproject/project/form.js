@@ -1,4 +1,5 @@
 import { Input, DatePicker as TinyDatePicker } from '@opentiny/vue'
+// import { ElDatePicker } from 'element-ui'
 
 export const resetForm = {
     id: null,
@@ -33,6 +34,7 @@ export const resetForm = {
     changhuanbenjin: null,
     lilvbiangeng: null,
     lixichanghuan: null,
+    huankuanmingxi2List: null
 }
 
 export const queryParams = {
@@ -97,7 +99,7 @@ export const rules = {
         { required: true, message: "到期日不能为空", trigger: "blur" }
     ],
     rate: [
-        { required: true, message: "年利率不能为空", trigger: "blur" }
+        { required: false, message: "年利率不能为空", trigger: "blur" }
     ],
     loanTerm: [
         { required: true, message: "借款期限不能为空", trigger: "blur" }
@@ -147,22 +149,21 @@ export const rules = {
 export function renderInput(field) {
     return (h, { row }) =>
         row.editing
-            ? h(Input, {
-                props: { modelValue: row[field] },
-                on: { 'update:modelValue': (value) => (row[field] = value) }
+            ? h('el-input', {
+                props: { value: row[field], type: 'number' },
+                on: { 'input': (value) => (row[field] = Number(value)) }
             })
             : h('span', row[field])
 }
 export function renderDate(field) {
     return (h, { row }) =>
         row.editing
-            ? h(TinyDatePicker, {
-                props: { modelValue: row[field], format: 'yyyy-MM-dd' },
-                on: { 'update:modelValue': (value) => (row[field] = value) }
+            ? h("el-date-picker", {
+                props: { value: row[field], format: 'yyyy-MM-dd', valueFormat: 'yyyy-MM-dd', type: "date" },
+                on: { 'input': (value) => (row[field] = value) }
             })
             : h('span', row[field])
 }
-
 export const hkjh_repaymentPlanClearingTableColumn = [
     {
         label: '期数',
@@ -206,10 +207,51 @@ export const hkjh_repaymentPlanClearingTableColumn = [
         width: '',
         minWidth: '100',
     },
-    {
-        label: '备注',
-        prop: '备注',
-        width: '',
-        minWidth: '100',
-    }
+    // {
+    //     label: '备注',
+    //     prop: '备注',
+    //     width: '',
+    //     minWidth: '100',
+    // }
 ]
+
+export function multiplySelectedFields(list, multiplier, fields) {
+    return list.map(item => {
+        let newItem = { ...item };
+        fields.forEach(field => {
+            if (newItem.hasOwnProperty(field)) {
+                newItem[field] = newItem[field] * multiplier;
+            }
+        });
+        return newItem;
+    });
+}
+
+
+// 定义一个映射关系
+const fieldMapping = {
+    "期数": "qishu",
+    "日期": "riqi",
+    "还款金额": "huankuanjine",
+    "偿还本金": "changhuanben",
+    "支付利息": "zhifulixi",
+    "本金剩余": "benjinshengyu",
+    "备注": "remark"
+};
+// 替换 JSON 数据中的 key
+export function replaceKeys(jsonArray) {
+    // 创建一个新数组来存放替换 key 后的对象
+    const replacedArray = jsonArray.map(item => {
+        const newItem = {};
+        // 遍历每个对象的 key
+        for (const key in item) {
+            // 查找映射关系中的中文字段名
+            const foundKey = Object.keys(mappifieldMappingng).find(chineseKey => fieldMapping[chineseKey] === key);
+            // 如果找到了对应的中文字段名，则使用该中文字段名作为新的 key
+            // 否则，保持原有的 key 不变
+            newItem[foundKey || key] = item[key];
+        }
+        return newItem;
+    });
+    return replacedArray;
+}

@@ -2,14 +2,16 @@
     <div class="w">
         <el-row>
             <transition name="el-fade-in-linear">
-                <el-form-item v-if="isZjbjShow">
+                <el-form-item v-if="zjbj">
                     <div class="w flex fjb" slot="label" @click.prevent.stop="addType($event, 'zjbj')">
                         <span class="required">提款信息输入区</span>
-                        <el-button type="primary" size="mini" class="w100 reset-total-btn" id="add-btn">新增一行</el-button>
+                        <div>
+                            <el-button size="mini" class="reset-total-btn" id="sort-btn">排序</el-button>
+                            <el-button type="primary" size="mini" class="reset-total-btn" id="add-btn">新增一行</el-button>
+                        </div>
                     </div>
 
-                    <tiny-grid align="center" ref="zjbj" :data="zjbj"
-                        :edit-config="{ trigger: 'manual', mode: 'row', showStatus: true }">
+                    <tiny-grid align="center" ref="zjbj" :data="zjbj" height="300" :optimization="optimizationData">
                         <tiny-grid-column type="index" width="60" title="序号"></tiny-grid-column>
                         <tiny-grid-column field="date" title="日期" :renderer="renderDate('date')"></tiny-grid-column>
                         <tiny-grid-column field="amount" title="提款金额" :renderer="renderInput('amount')"></tiny-grid-column>
@@ -28,13 +30,16 @@
         </el-row>
 
         <el-row>
-            <el-form-item v-if="isBjchShow">
+            <el-form-item v-if="bjch">
                 <div class="w flex fjb" slot="label" @click.prevent.stop="addType($event, 'bjch')">
                     <span class="required">本金偿还信息输入区</span>
-                    <el-button type="primary" size="mini" class="reset-total-btn" id="add-btn">新增一行</el-button>
+                    <div>
+                        <el-button size="mini" class="reset-total-btn" id="sort-btn">排序</el-button>
+                        <el-button type="primary" size="mini" class="reset-total-btn" id="add-btn">新增一行</el-button>
+                    </div>
                 </div>
 
-                <tiny-grid align="center" ref="bjch" :data="bjch">
+                <tiny-grid align="center" ref="bjch" :data="bjch" height="300" :optimization="optimizationData">
                     <tiny-grid-column type="index" width="60" title="序号"></tiny-grid-column>
                     <tiny-grid-column field="createdDate" title="日期" :renderer="renderDate('date')"></tiny-grid-column>
                     <tiny-grid-column field="amount" title="偿还本金" :renderer="renderInput('amount')"></tiny-grid-column>
@@ -50,14 +55,18 @@
             </el-form-item>
         </el-row>
         <el-row>
-            <el-form-item v-if="isLvbgShow">
+            <el-form-item v-if="lvbg">
                 <div class="w flex fjb" slot="label" @click.prevent.stop="addType($event, 'lvbg')">
-                    <span class="required">年利率信息输入区（固定利率请勿填写）</span>
-                    <el-button type="primary" size="mini" class="reset-total-btn" id="add-btn"
-                        :disabled="isLvShow">新增一行</el-button>
+                    <span class="required">年利率信息输入区（固定利率只写一个）</span>
+                    <div>
+                        <el-button size="mini" class="reset-total-btn" id="sort-btn">排序</el-button>
+                        <el-button type="primary" size="mini" class="reset-total-btn" id="add-btn"
+                            :disabled="form.rateType === '固定'">
+                            新增一行</el-button>
+                    </div>
                 </div>
 
-                <tiny-grid align="center" ref="lvbg" :data="lvbg">
+                <tiny-grid align="center" ref="lvbg" :data="lvbg" height="300" :optimization="optimizationData">
                     <tiny-grid-column type="index" width="60" title="序号"></tiny-grid-column>
                     <tiny-grid-column field="createdDate" title="日期" :renderer="renderDate('date')"></tiny-grid-column>
                     <tiny-grid-column field="rate" title="利率" :renderer="renderInput('rate')"></tiny-grid-column>
@@ -74,8 +83,8 @@
         </el-row>
 
         <div class="flex fje mb20">
-            <el-button v-if="isZjbjShow || isLvbgShow || isBjchShow" type="primary" size="mini" class="reset-total-btn"
-                @click="handleGenerate">生 成</el-button>
+            <el-button v-if="bjch || lvbg || lvbg" type="primary" class="reset-total-btn" @click="handleGenerate">
+                生成还款计划明细</el-button>
         </div>
 
         <el-row v-if="repaymentPlanTable.length !== 0" class="mb20">
@@ -91,19 +100,29 @@
         </el-row>
     </div>
 </template>
-
 <script>
-import { Grid as TinyGrid, GridColumn as TinyGridColumn, Input, DatePicker as TinyDatePicker } from '@opentiny/vue'
-// import { iconPlus as TinyIconPlus, iconDel as TinyIconDel } from '@opentiny/vue-icon'
-import { getDatesBasedOnStartDate, addEventsToTimeline, generateRepaymentPlan } from './hkjh'
-import { renderInput, renderDate, hkjh_repaymentPlanClearingTableColumn } from './form'
+import {
+    Grid as TinyGrid,
+    GridColumn as TinyGridColumn,
+    Input,
+    DatePicker as TinyDatePicker
+} from '@opentiny/vue'
+import {
+    getDatesBasedOnStartDate,
+    addEventsToTimeline,
+    generateRepaymentPlan,
+    sortTimeLineByDate
+} from './hkjh'
+import {
+    renderInput,
+    renderDate,
+    hkjh_repaymentPlanClearingTableColumn
+} from './form'
 export default {
     name: 'hkjhPanel',
     components: {
         TinyGrid,
         TinyGridColumn,
-        // TinyIconPlus,
-        // TinyIconDel
     },
     props: {
         form: {
@@ -113,6 +132,24 @@ export default {
     },
     data() {
         return {
+            optimizationData: {
+                animat: false,
+                delayHover: 1000,
+                scrollX: {
+                    gt: 100, // 指定大于多少范围时自动启动虚拟滚动（启用 X 虚拟滚动，必须固定所有列宽，否则无法兼容）默认100
+                    oSize: 2, // 当剩余数据少于指定范围时触发重新渲染 默认自动计算
+                    rSize: 10, // 每次渲染条数 默认自动计算
+                    vSize: 10 // 指定可视区域条数
+                },
+                scrollY: {
+                    gt: 20, // 指定大于多少范围时自动启动虚拟滚动（启用 Y 虚拟滚动，必须固定所有行高，否则无法兼容）默认500
+                    oSize: 2, // 当剩余数据少于指定范围时触发重新渲染 默认自动计算
+                    rSize: 10, // 每次渲染条数 默认自动计算
+                    vSize: 10, // 指定可视区域条数 默认自动计算
+                    rHeight: 50, // 指定行高 默认自动计算
+                    adaptive: true // 自动适配最优的渲染方式 默认true
+                }
+            },
             hkjh_repaymentPlanClearingTableColumn,
             bjch: [],
             zjbj: [],
@@ -140,113 +177,67 @@ export default {
                 "按年偿还": 12,
                 "到期还本": 0,
             },
-            repaymentPlanTable: []
+            repaymentPlanTable: [],
         }
-    },
-    watch: {
-        isZjbjShow(n, o) {
-            // 如果这个值为true的需要调用一个方法
-            if (n) {
-                setTimeout(() => {
-                    this.zjbj = []
-                    const data = JSON.parse(JSON.stringify(this.record));
-                    data.date = this.form.loanDate;
-                    data.amount = this.form.financingAmount
-                    this.addRow('zjbj', data)
-                }, 50);
-            }
-        },
-        // "form.rateType"(n, o) {
-        //     // 如果值是 false的话代表是浮动利率，可以创建多个利率信息
-        //     if (n && this.isLvbgShow) {
-        //         this.generateLvData(n);
-        //     } else {
-        //         this.$modal.msgError("请继续填写数据");
-        //     }
-        // },
-        "form.principalRepaymentMethod"(n, o) {
-            if (n && this.isBjchShow) {
-                this.generateBjTable(n)
-            } else {
-                this.$modal.msgError("请继续填写数据");
-            }
-        }
-    },
-    computed: {
-        // 计算当form中的开始时间和结束时间加上金额都不为空的情况下显示提款信息输入区
-        isZjbjShow() {
-            const empty = [null, undefined, '']
-            if (!empty.includes(this.form.loanDate)
-                && !empty.includes(this.form.dueDate)
-                && !empty.includes(this.form.financingAmount)) {
-                return true
-            } return false
-        },
-        // 计算form中开始时间结束时间，第一期开始时间，利息偿还方式 在都不为空的情况下显示年利率信息输入区
-        isLvbgShow() {
-            const empty = [null, undefined, '']
-            if (!empty.includes(this.form.loanDate)
-                && !empty.includes(this.form.dueDate)
-                && !empty.includes(this.form.firstRepaymentDate)
-                && !empty.includes(this.form.rateType)
-                && !empty.includes(this.form.interestRepaymentMethod)) {
-                this.generateLvData(this.form.rateType);
-                return true;
-            } return false
-        },
-        // 计算当form中的是否固定利率 如果选择了固定在不能创建利率的数据信息，如果选择了浮动则可以创建多条利率信息,依照disabled的方式
-        isLvShow() {
-            if (this.form.rateType === '固定') {
-                return true
-            } return false
-        },
-        // 计算当 form 中的开始事件结束事件，第一期开始事件，本金偿还方式，融资金额都不为空的情况下才显示本金偿还信息输入区
-        isBjchShow() {
-            const empty = [null, undefined, '']
-            if (!empty.includes(this.form.loanDate)
-                && !empty.includes(this.form.dueDate)
-                && !empty.includes(this.form.firstRepaymentDate)
-                && !empty.includes(this.form.financingAmount)
-                && !empty.includes(this.form.principalRepaymentMethod)) {
-                return true
-            } return false
-        },
-        // 计算数据本金偿还方式 是不是 到期还本
-        isPrincipalRepaymentMethod() {
-            return this.form.principalRepaymentMethod === '到期还本'
-        },
     },
     methods: {
-        // 事件委托
-        addType(e, type) {
-            try {
-                if (e.target.id === 'add-btn' || e.target.innerText == '新增一行') {
-                    this.addRow(type)
-                }
-            } catch (error) { }
+        hkjh() {
+            this.generateLvData();
+            this.generateBjZjData();
+            this.generateBjChTable();
         },
-        // 新增一行数据
-        addRow(refCode, record = this.record) {
-            this[refCode].push(JSON.parse(JSON.stringify(record)))
-        },
-        // 删除数据方法
-        remove(data, refCode) {
-            // 通过下标删除数组中指定的数据
-            this[refCode].splice(data.rowIndex, 1)
-            console.log(data, refCode);
-        },
-        renderInput,
-        renderDate,
 
+        // 增加bj数据
+        generateBjZjData() {
+            console.log("增加bj数据");
+            this.zjbj = []
+            const data = JSON.parse(JSON.stringify(this.record));
+            data.date = this.form.loanDate;
+            data.amount = this.form.financingAmount
+            this.$set(this, "zjbj", JSON.parse(JSON.stringify([data])))
+        },
+
+        // 生成本金偿还率表格
+        generateBjChTable() {
+            console.log("生成本金偿还率表格");
+            this.bjch = [];
+            let formattedArray = [];
+            if (this.form.principalRepaymentMethod === '到期还本') {
+                const data = JSON.parse(JSON.stringify(this.record));
+                data.date = this.form.dueDate;
+                data.amount = this.form.financingAmount;
+                formattedArray = [data]
+                // this.addRow('bjch', data)
+            } else {
+                const lxStartDate = this.form.firstRepaymentDate;
+                const lxEndDate = this.form.dueDate;
+                const lxIntervalMonths = this.bjKeyMap[this.form.principalRepaymentMethod];
+                let lixichanghuanArray = getDatesBasedOnStartDate(lxStartDate, lxEndDate, lxIntervalMonths);
+                console.log(lixichanghuanArray);
+                // 转换为指定的对象数组格式
+                formattedArray = lixichanghuanArray.map(date => ({
+                    date: date,
+                    amount: 0,
+                    editing: true
+                }));
+                // formattedArray.forEach(item => {
+                //   this.addRow('bjch', item)
+                // })
+            }
+            this.$set(this, "bjch", JSON.parse(JSON.stringify(formattedArray)))
+        },
         // 生成lv数据
-        generateLvData(lvType) {
+        generateLvData() {
+            console.log("生成lv数据");
             this.lvbg = [];
-            if (lvType === '固定') {
+            let formattedArray = [];
+            if (this.form.rateType === '固定') {
                 // 固定利率只能创建一条指定的利率数据
                 const data = JSON.parse(JSON.stringify(this.lvrecord));
                 data.date = this.form.firstRepaymentDate;
                 data.rate = 0;
-                this.addRow('lvbg', data)
+                formattedArray = [data]
+                // this.addRow('lvbg', data)
             } else {
                 // 浮动生成方式
                 const lxStartDate = this.form.firstRepaymentDate;
@@ -257,77 +248,77 @@ export default {
                 console.log(lixichanghuanArray);
 
                 // 转换为指定的对象数组格式
-                const formattedArray = lixichanghuanArray.map(date => ({
+                formattedArray = lixichanghuanArray.map(date => ({
                     date: date,
                     rate: 0,
                     editing: true
                 }));
 
-                formattedArray.forEach(item => {
-                    this.addRow('lvbg', item)
-                })
             }
+            this.$set(this, "lvbg", JSON.parse(JSON.stringify(formattedArray)))
         },
 
-        // 生成本金偿还率表格
-        generateBjTable(lvType) {
-            this.bjch = [];
-            if (lvType === '到期还本') {
-                const data = JSON.parse(JSON.stringify(this.record));
-                data.date = this.form.dueDate;
-                data.amount = this.form.financingAmount;
-                this.addRow('bjch', data)
-            } else {
-                const lxStartDate = this.form.firstRepaymentDate;
-                const lxEndDate = this.form.dueDate;
-                const lxIntervalMonths = this.bjKeyMap[this.form.principalRepaymentMethod];
-                let lixichanghuanArray = getDatesBasedOnStartDate(lxStartDate, lxEndDate, lxIntervalMonths);
-                console.log(lixichanghuanArray);
-                // 转换为指定的对象数组格式
-                const formattedArray = lixichanghuanArray.map(date => ({
-                    date: date,
-                    amount: 0,
-                    editing: true
-                }));
-                formattedArray.forEach(item => {
-                    this.addRow('bjch', item)
-                })
-            }
+        // 事件委托
+        addType(e, type) {
+            try {
+                if (e.target.id === 'add-btn' || e.target.innerText == '新增一行') {
+                    this.addRow(type)
+                } else if (e.target.id === 'sort-btn' || e.target.innerText == '排序') {
+                    this.sortRow(type)
+                }
+            } catch (error) { }
         },
-
+        // 新增一行数据
+        addRow(refCode, record = this.record) {
+            this[refCode].push(JSON.parse(JSON.stringify(record)))
+        },
+        // 排序方法
+        sortRow(refCode) {
+            this.$set(this, refCode, JSON.parse(JSON.stringify(sortTimeLineByDate(this[refCode]))))
+        },
+        // 删除数据方法
+        remove(data, refCode) {
+            // 通过下标删除数组中指定的数据
+            this[refCode].splice(data.rowIndex, 1)
+            console.log(data, refCode);
+        },
+        renderInput,
+        renderDate,
         // 生成需要渲染的代码数据
         handleGenerate() {
-            // const datas = []
-            // const bjch = addEventsToTimeline('偿还本金', this.bjch, e => e);
-            // const lcch = addEventsToTimeline('利息偿还', this.lixichanghuanArray, e => ({ date: e }));
-            // const zjbj = addEventsToTimeline('提取本金', this.zjbj, e => e);
-            // const lvbg = addEventsToTimeline('利率变更', this.lvbg, e => e);
-            // console.log(bjch, lcch, zjbj, lvbg);
+            console.log(this.lvbg);
             this.repaymentPlanTable = [];
             const datas = [
                 ...addEventsToTimeline('偿还本金', this.bjch, e => e),
-                ...addEventsToTimeline('利息偿还', this.lixichanghuanArray, e => ({ date: e })),
+                ...addEventsToTimeline('利息偿还', this.lixichanghuanArray, e => ({
+                    date: e
+                })),
                 ...addEventsToTimeline('提取本金', this.zjbj, e => e),
                 ...addEventsToTimeline('利率变更', this.lvbg, e => e)
             ];
-            console.log(datas, '1');
-
+            console.log(datas);
             this.repaymentPlanTable = generateRepaymentPlan(datas)
-            console.log(this.repaymentPlanTable, '1');
-        },
-        getDatas() {
-            return {
+            // 数据回传到父组件
+            this.$emit('getRepaymentPlan', {
                 bjch: this.bjch,
                 zjbj: this.zjbj,
                 lvbg: this.lvbg,
                 lixichanghuanArray: this.lixichanghuanArray,
                 repaymentPlanTable: this.repaymentPlanTable
-            }
+            })
+        },
+        // 数组清空
+        clearHkjhList() {
+            this.bjch = [];
+            this.zjbj = [];
+            this.lvbg = [];
+            this.lixichanghuanArray = [];
+            this.repaymentPlanTable = [];
         }
     }
 }
 </script>
-
+  
 <style lang="scss" scoped>
 .required::before {
     content: '*';

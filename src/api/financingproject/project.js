@@ -42,3 +42,13 @@ export function delProject(id) {
     method: 'delete'
   })
 }
+
+
+// 获取还款计划展示数据
+export function getRepaymentPlan(query) {
+  return request({
+    url: '/huankuanjihua/mingxi/list',
+    method: 'get',
+    params: query
+  })
+}

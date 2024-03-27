@@ -10,7 +10,7 @@ export function getDatesBasedOnStartDate(startDate, endDate, intervalMonths) {
 	while (true) {
 		// 在开始date的基础上增加固定月份数的倍数
 		let current = start.clone().add(intervalMonths * multiplier, 'months');
-
+		console.log(current, end, multiplier);
 		// 如果当前计算的时间点大于等于结束date，则添加结束date并结束循环
 		if (current.isSameOrAfter(end)) {
 			dates.push(end.format('YYYY-MM-DD')); // 添加结束date到数组
@@ -141,130 +141,134 @@ timeline.sort((a, b) => {
 	}
 });
 
+export function sortTimeLineByDate(timeline) {
+	return timeline.sort((a, b) => {
+		const dateA = moment(a.date, 'YYYY-MM-DD');
+		const dateB = moment(b.date, 'YYYY-MM-DD');
+
+		if (dateA.isBefore(dateB)) {
+			return -1;
+		} else if (dateA.isAfter(dateB)) {
+			return 1;
+		} else {
+			return 0;
+		}
+	});
+}
+
 // console.log(timeline);
 
 
-let principal = 0;
-let rate = 0;
-let lastDate = null;
-let interestAccrued = 0;
-let days = 0;
-
-let changhuanjine = 0;
-
-let changhuanindex = 0;
 
 
-let zuizhongjihua = []
 
+// timeline.forEach(event => {
+// 	const currentDate = moment(event.date, "YYYY-MM-DD");
+// 	let accrued = 0;
+// 	if (lastDate != null && principal > 0) {
+// 		days = currentDate.diff(lastDate, 'days');
+// 		accrued = principal * (rate / 360 / 100) * days;
+// 		interestAccrued += accrued;
+// 	}
 
-timeline.forEach(event => {
-	const currentDate = moment(event.date, "YYYY-MM-DD");
-	let accrued = 0;
-	if (lastDate != null && principal > 0) {
-		days = currentDate.diff(lastDate, 'days');
-		accrued = principal * (rate / 360 / 100) * days;
-		interestAccrued += accrued;
-	}
+// 	event = {
+// 		...event,
+// 		"本阶段计息本金": principal,
+// 		"使用利率": rate,
+// 		"计息天数": days,
+// 		"阶段利息": (accrued).toFixed(2),
+// 	}
+// 	switch (event.event) {
+// 		case '提取本金':
+// 			if (principal == 0 && changhuanindex == 0) {
 
-	event = {
-		...event,
-		"本阶段计息本金": principal,
-		"使用利率": rate,
-		"计息天数": days,
-		"阶段利息": (accrued).toFixed(2),
-	}
-	switch (event.event) {
-		case '提取本金':
-			if (principal == 0 && changhuanindex == 0) {
+// 				zuizhongjihua.push({
+// 					"期数": changhuanindex,
+// 					"日期": currentDate.format("YYYY-MM-DD"),
+// 					"还款金额": 0,
+// 					"偿还本金": 0,
+// 					"支付利息": 0,
+// 					"本金剩余": event.amount,
+// 					"利率": 0,
+// 					"备注": ""
+// 				})
 
-				zuizhongjihua.push({
-					"期数": changhuanindex,
-					"日期": currentDate.format("YYYY-MM-DD"),
-					"还款金额": 0,
-					"偿还本金": 0,
-					"支付利息": 0,
-					"本金剩余": event.amount,
-					"利率": 0,
-					"备注": ""
-				})
+// 				// console.log({
+// 				// 	"期数": changhuanindex,
+// 				// 	"日期": currentDate.format("YYYY-MM-DD"),
+// 				// 	"还款金额": 0,
+// 				// 	"偿还本金": 0,
+// 				// 	"支付利息": 0,
+// 				// 	"本金剩余": event.amount,
+// 				// 	"利率": 0,
+// 				// 	"备注": ""
+// 				// });
+// 			}
+// 			principal += event.amount;
+// 			break;
+// 		case '偿还本金':
+// 			principal -= event.amount;
+// 			changhuanjine += event.amount
 
-				// console.log({
-				// 	"期数": changhuanindex,
-				// 	"日期": currentDate.format("YYYY-MM-DD"),
-				// 	"还款金额": 0,
-				// 	"偿还本金": 0,
-				// 	"支付利息": 0,
-				// 	"本金剩余": event.amount,
-				// 	"利率": 0,
-				// 	"备注": ""
-				// });
-			}
-			principal += event.amount;
-			break;
-		case '偿还本金':
-			principal -= event.amount;
-			changhuanjine += event.amount
+// 			changhuanindex += 1;
+// 			zuizhongjihua.push({
+// 				"期数": changhuanindex,
+// 				"日期": currentDate.format("YYYY-MM-DD"),
+// 				"还款金额": changhuanjine,
+// 				"偿还本金": changhuanjine,
+// 				"支付利息": 0,
+// 				"本金剩余": principal,
+// 				"利率": rate,
+// 				"备注": ""
+// 			})
+// 			// console.log({
+// 			// 	"期数": changhuanindex,
+// 			// 	"日期": currentDate.format("YYYY-MM-DD"),
+// 			// 	"还款金额": changhuanjine,
+// 			// 	"偿还本金": changhuanjine,
+// 			// 	"支付利息": 0,
+// 			// 	"本金剩余": principal,
+// 			// 	"利率": rate,
+// 			// 	"备注": ""
+// 			// });
 
-			changhuanindex += 1;
-			zuizhongjihua.push({
-				"期数": changhuanindex,
-				"日期": currentDate.format("YYYY-MM-DD"),
-				"还款金额": changhuanjine,
-				"偿还本金": changhuanjine,
-				"支付利息": 0,
-				"本金剩余": principal,
-				"利率": rate,
-				"备注": ""
-			})
-			// console.log({
-			// 	"期数": changhuanindex,
-			// 	"日期": currentDate.format("YYYY-MM-DD"),
-			// 	"还款金额": changhuanjine,
-			// 	"偿还本金": changhuanjine,
-			// 	"支付利息": 0,
-			// 	"本金剩余": principal,
-			// 	"利率": rate,
-			// 	"备注": ""
-			// });
-
-			break;
-		case '利率变更':
-			rate = event.rate;
-			break;
-		case '利息偿还':
-			changhuanindex += 1;
-			zuizhongjihua.push({
-				"期数": changhuanindex,
-				"日期": currentDate.format("YYYY-MM-DD"),
-				"还款金额": (interestAccrued).toFixed(2),
-				"偿还本金": changhuanjine,
-				"支付利息": (interestAccrued).toFixed(2),
-				"本金剩余": principal,
-				"利率": rate,
-				"备注": ""
-			})
-			// console.log({
-			// 	"期数": changhuanindex,
-			// 	"日期": currentDate.format("YYYY-MM-DD"),
-			// 	"还款金额": (interestAccrued).toFixed(2),
-			// 	"偿还本金": changhuanjine,
-			// 	"支付利息": (interestAccrued).toFixed(2),
-			// 	"本金剩余": principal,
-			// 	"利率": rate,
-			// 	"备注": ""
-			// });
-			interestAccrued = 0;
-			changhuanjine = 0;
-			break;
-	}
-	event = {
-		...event,
-		"本金剩余": principal,
-	}
-	// console.log(event)
-	lastDate = currentDate;
-});
+// 			break;
+// 		case '利率变更':
+// 			rate = event.rate;
+// 			break;
+// 		case '利息偿还':
+// 			changhuanindex += 1;
+// 			zuizhongjihua.push({
+// 				"期数": changhuanindex,
+// 				"日期": currentDate.format("YYYY-MM-DD"),
+// 				"还款金额": (interestAccrued).toFixed(2),
+// 				"偿还本金": changhuanjine,
+// 				"支付利息": (interestAccrued).toFixed(2),
+// 				"本金剩余": principal,
+// 				"利率": rate,
+// 				"备注": ""
+// 			})
+// 			// console.log({
+// 			// 	"期数": changhuanindex,
+// 			// 	"日期": currentDate.format("YYYY-MM-DD"),
+// 			// 	"还款金额": (interestAccrued).toFixed(2),
+// 			// 	"偿还本金": changhuanjine,
+// 			// 	"支付利息": (interestAccrued).toFixed(2),
+// 			// 	"本金剩余": principal,
+// 			// 	"利率": rate,
+// 			// 	"备注": ""
+// 			// });
+// 			interestAccrued = 0;
+// 			changhuanjine = 0;
+// 			break;
+// 	}
+// 	event = {
+// 		...event,
+// 		"本金剩余": principal,
+// 	}
+// 	// console.log(event)
+// 	lastDate = currentDate;
+// });
 
 export function generateRepaymentPlan(timeline) {
 	let principal = 0;
@@ -273,11 +277,12 @@ export function generateRepaymentPlan(timeline) {
 	let interestAccrued = 0;
 	let days = 0;
 
-	let repaymentAmount = 0;
-	let repaymentIndex = 0;
+	let changhuanjine = 0;
 
-	let finalPlan = [];
+	let changhuanindex = 0;
 
+
+	let zuizhongjihua = []
 	timeline.forEach(event => {
 		const currentDate = moment(event.date, "YYYY-MM-DD");
 		let accrued = 0;
@@ -292,50 +297,101 @@ export function generateRepaymentPlan(timeline) {
 			"本阶段计息本金": principal,
 			"使用利率": rate,
 			"计息天数": days,
-			"阶段利息": accrued.toFixed(2),
-		};
-
+			"阶段利息": (accrued).toFixed(2),
+		}
 		switch (event.event) {
 			case '提取本金':
-				principal += event.amount;
-				if (principal == 0 && repaymentIndex == 0) {
-					finalPlan.push(generatePlanEntry(repaymentIndex, currentDate, 0, 0, 0, event.amount, 0, ""));
+				if (principal == 0 && changhuanindex == 0) {
+
+					zuizhongjihua.push({
+						"期数": changhuanindex,
+						"日期": currentDate.format("YYYY-MM-DD"),
+						"还款金额": 0,
+						"偿还本金": 0,
+						"支付利息": 0,
+						"本金剩余": event.amount,
+						"利率": 0,
+						"备注": ""
+					})
+
+					// console.log({
+					// 	"期数": changhuanindex,
+					// 	"日期": currentDate.format("YYYY-MM-DD"),
+					// 	"还款金额": 0,
+					// 	"偿还本金": 0,
+					// 	"支付利息": 0,
+					// 	"本金剩余": event.amount,
+					// 	"利率": 0,
+					// 	"备注": ""
+					// });
 				}
+				principal += event.amount;
 				break;
 			case '偿还本金':
 				principal -= event.amount;
-				repaymentAmount += event.amount;
-				repaymentIndex += 1;
-				finalPlan.push(generatePlanEntry(repaymentIndex, currentDate, repaymentAmount, repaymentAmount, 0, principal, rate, ""));
+				changhuanjine += event.amount
+
+				changhuanindex += 1;
+				zuizhongjihua.push({
+					"期数": changhuanindex,
+					"日期": currentDate.format("YYYY-MM-DD"),
+					"还款金额": changhuanjine,
+					"偿还本金": changhuanjine,
+					"支付利息": 0,
+					"本金剩余": principal,
+					"利率": rate,
+					"备注": ""
+				})
+				// console.log({
+				// 	"期数": changhuanindex,
+				// 	"日期": currentDate.format("YYYY-MM-DD"),
+				// 	"还款金额": changhuanjine,
+				// 	"偿还本金": changhuanjine,
+				// 	"支付利息": 0,
+				// 	"本金剩余": principal,
+				// 	"利率": rate,
+				// 	"备注": ""
+				// });
+
 				break;
 			case '利率变更':
 				rate = event.rate;
 				break;
 			case '利息偿还':
-				repaymentIndex += 1;
-				finalPlan.push(generatePlanEntry(repaymentIndex, currentDate, interestAccrued.toFixed(2), repaymentAmount, interestAccrued.toFixed(2), principal, rate, ""));
+				changhuanindex += 1;
+				zuizhongjihua.push({
+					"期数": changhuanindex,
+					"日期": currentDate.format("YYYY-MM-DD"),
+					"还款金额": (interestAccrued).toFixed(2),
+					"偿还本金": changhuanjine,
+					"支付利息": (interestAccrued).toFixed(2),
+					"本金剩余": principal,
+					"利率": rate,
+					"备注": ""
+				})
+				// console.log({
+				// 	"期数": changhuanindex,
+				// 	"日期": currentDate.format("YYYY-MM-DD"),
+				// 	"还款金额": (interestAccrued).toFixed(2),
+				// 	"偿还本金": changhuanjine,
+				// 	"支付利息": (interestAccrued).toFixed(2),
+				// 	"本金剩余": principal,
+				// 	"利率": rate,
+				// 	"备注": ""
+				// });
 				interestAccrued = 0;
-				repaymentAmount = 0;
+				changhuanjine = 0;
 				break;
 		}
+		event = {
+			...event,
+			"本金剩余": principal,
+		}
+		// console.log(event)
 		lastDate = currentDate;
 	});
-
-	return finalPlan;
+	return zuizhongjihua
 }
 
-function generatePlanEntry(period, date, paymentAmount, principalPaid, interestPaid, principalRemaining, rate, remark) {
-	return {
-		"期数": period,
-		"日期": date.format("YYYY-MM-DD"),
-		"还款金额": paymentAmount,
-		"偿还本金": principalPaid,
-		"支付利息": interestPaid,
-		"本金剩余": principalRemaining,
-		"利率": rate,
-		"备注": remark
-	};
-}
-
-
-console.log(zuizhongjihua);
+const a = generateRepaymentPlan(timeline)
+console.log(a);
