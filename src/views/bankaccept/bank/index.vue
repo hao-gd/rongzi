@@ -437,12 +437,10 @@ export default {
     this.isEditable = true;
   },
   mounted() {
-    console.log(this.name, this.avatar);
   },
   methods: {
     /* 到期提醒选择 */
     handleSelect(val) {
-      console.log(val);
       // this.queryParams.remark = null;
       if (val) {
         let start = moment().format("YYYY-MM-DD");
@@ -570,16 +568,13 @@ export default {
         this.rzsrc2List = response.data.rzsrc2List;
         this.open = true;
         this.title = "修改银行承兑汇票";
-        console.log(this.form);
       });
     },
     /** 提交按钮 */
     submitForm() {
-      console.log(this.created_successfully, this.isEditable);
       /* str 需要赋值粘贴到的 需要修改请求的接口 */
       this.$refs["form"].validate(valid => {
         if (valid) {
-          console.log(valid);
           const data = JSON.parse(JSON.stringify(this.form))
           this.form.rzsrc2List = this.rzsrc2List;
           this.rzaudit_data = null;
@@ -742,7 +737,6 @@ export default {
     },
     /* 上传完成的回调 */
     upload_completed(url_string) {
-      console.log(url_string);
       const url_list = url_string.split(',')
       url_list.forEach(url_i => {
         let obj = {

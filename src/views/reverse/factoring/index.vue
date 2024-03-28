@@ -749,7 +749,6 @@ export default {
     },
     /* 上传完成的回调 */
     upload_completed(url_string) {
-      console.log(url_string);
       const url_list = url_string.split(',')
       url_list.forEach(url_i => {
         let obj = {

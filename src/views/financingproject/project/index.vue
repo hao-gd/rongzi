@@ -792,12 +792,8 @@
           managerId: this.form.managementId
         };
         getRepaymentPlan(search).then(res => {
-          console.log(res);
           if (res.code === 200) {
             this.EchoHuankuanmingxi2List = res.rows;
-
-
-            console.log(this.EchoHuankuanmingxi2List);
           }
         })
       },
@@ -887,7 +883,6 @@
         this.form.changhuanbenjin = JSON.stringify(bjch);
         this.form.lilvbiangeng = JSON.stringify(lixichanghuanArray);
         this.form.lixichanghuan = JSON.stringify(lvbg);
-        console.log(repaymentPlanTable);
         // 生成好的还款计划，里面的利率字段需要同步到备注里面
         const huankuanmingxi2List = repaymentPlanTable.map(i => {
           i['备注'] = i['利率'];

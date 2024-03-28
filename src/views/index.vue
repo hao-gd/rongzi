@@ -104,13 +104,13 @@
                       <el-tooltip v-if="keyc !== 'bgID'" content="42467000" placement="top" effect="light">
                         <div slot="content">
                           <p class="various-amounts-title mb5">{{ keyc }}</p>
-                          <count-to class="various-amounts-amount" :start-val='0' :end-val='valuec' :duration='1000'
+                          <count-to class="various-amounts-amount" :start-val='0' :end-val='valuec / 10000' :duration='1000'
                             :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
                             :useEasing="true"></count-to>
                         </div>
                         <div>
                           <p class="various-amounts-title mb5">{{ keyc }}</p>
-                          <count-to class="various-amounts-amount" :start-val='0' :end-val='valuec' :duration='1000'
+                          <count-to class="various-amounts-amount" :start-val='0' :end-val='valuec / 10000' :duration='1000'
                             :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
                             :useEasing="true"></count-to>
                         </div>
@@ -143,13 +143,13 @@
                       <el-tooltip v-if="keyc !== 'bgID'" content="42467000" placement="top" effect="light">
                         <div slot="content">
                           <p class="various-amounts-title mb5">{{ keyc }}</p>
-                          <count-to class="various-amounts-amount" :start-val='0' :end-val='valuec' :duration='1000'
+                          <count-to class="various-amounts-amount" :start-val='0' :end-val='valuec / 10000' :duration='1000'
                             :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
                             :useEasing="true"></count-to>
                         </div>
                         <div>
                           <p class="various-amounts-title mb5">{{ keyc }}</p>
-                          <count-to class="various-amounts-amount" :start-val='0' :end-val='valuec' :duration='1000'
+                          <count-to class="various-amounts-amount" :start-val='0' :end-val='valuec / 10000' :duration='1000'
                             :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
                             :useEasing="true"></count-to>
                         </div>
@@ -209,36 +209,27 @@
                   <div class="w">
                     <div class="card-title">本月还款计划</div>
 
-                    <!-- <el-tooltip placement="top" effect="light">
-                      <P slot="content">{{ calculateTotal(currentMonthData) }}</P>
-                      <count-to class="card-amount amounts-font cp" :start-val='0' :end-val='calculateTotal(value)'
-                        :duration='1000' :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
-                        :useEasing="true"></count-to>
-                    </el-tooltip> -->
-
-
-
-                    <el-row>
+                    <el-row :gutter="10">
                       <el-col :span="12">
                         <el-tooltip placement="top" effect="light">
                           <div slot="content">
                             <p class="various-amounts-title mb5">本金（利息）</p>
                             <count-to class="various-amounts-amount dlb" :start-val='0'
-                              :end-val='currentMonthData.totalPrincipal' :duration='1000' :decimals='0' :separator="','"
+                              :end-val='currentMonthData.totalPrincipal / 10000' :duration='1000' :decimals='0' :separator="','"
                               :prefix="''" :suffix="''" :autoplay="true" :useEasing="true"></count-to>
 
                               (<count-to class="various-amounts-amount dlb" :start-val='0'
-                              :end-val='currentMonthData.totalInterest' :duration='1000' :decimals='0' :separator="','"
+                              :end-val='currentMonthData.totalInterest / 10000' :duration='1000' :decimals='0' :separator="','"
                               :prefix="''" :suffix="''" :autoplay="true" :useEasing="true"></count-to>)
                           </div>
-                          <div>
+                          <div class="various-amounts-amount w">
                             <p class="various-amounts-title mb5">本金（利息）</p>
                             <count-to class="various-amounts-amount dlb" :start-val='0'
-                              :end-val='currentMonthData.totalPrincipal' :duration='1000' :decimals='0' :separator="','"
+                              :end-val='currentMonthData.totalPrincipal / 10000' :duration='1000' :decimals='0' :separator="','"
                               :prefix="''" :suffix="''" :autoplay="true" :useEasing="true"></count-to>
 
                             (<count-to class="various-amounts-amount dlb" :start-val='0'
-                              :end-val='currentMonthData.totalInterest' :duration='1000' :decimals='0' :separator="','"
+                              :end-val='currentMonthData.totalInterest / 10000' :duration='1000' :decimals='0' :separator="','"
                               :prefix="''" :suffix="''" :autoplay="true" :useEasing="true"></count-to>)
                           </div>
 
@@ -249,31 +240,84 @@
                           <div slot="content">
                             <p class="various-amounts-title mb5">已还（未还）</p>
                             <count-to class="various-amounts-amount dlb" :start-val='0'
-                              :end-val='currentMonthData.totalPaidInterest + currentMonthData.totalPaidPrincipal'
+                              :end-val='(currentMonthData.totalPaidInterest + currentMonthData.totalPaidPrincipal) / 10000'
                               :duration='1000' :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
                               :useEasing="true"></count-to>
 
                             (<count-to class="various-amounts-amount dlb" :start-val='0'
-                              :end-val='currentMonthData.totalUnpaidInterest + currentMonthData.totalUnpaidPrincipal'
+                              :end-val='(currentMonthData.totalUnpaidInterest + currentMonthData.totalUnpaidPrincipal) / 10000'
                               :duration='1000' :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
                               :useEasing="true"></count-to>)
                           </div>
 
-                          <div>
+                          <div class="various-amounts-amount w">
                             <p class="various-amounts-title mb5">已还（未还）</p>
                           <count-to class="various-amounts-amount dlb" :start-val='0'
-                            :end-val='currentMonthData.totalPaidInterest + currentMonthData.totalPaidPrincipal'
+                            :end-val='(currentMonthData.totalPaidInterest + currentMonthData.totalPaidPrincipal) / 10000'
                             :duration='1000' :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
                             :useEasing="true"></count-to>
 
                             (<count-to class="various-amounts-amount dlb" :start-val='0'
-                            :end-val='currentMonthData.totalUnpaidInterest + currentMonthData.totalUnpaidPrincipal'
+                            :end-val='(currentMonthData.totalUnpaidInterest + currentMonthData.totalUnpaidPrincipal) / 10000'
                             :duration='1000' :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
                             :useEasing="true"></count-to>)
                           </div>
                         </el-tooltip>
                       </el-col>
                     </el-row>
+                  </div>
+                </div>
+              </el-col>
+
+              <el-col :span="24" style="background: #fff;"
+                class="card-panel">
+                <div class="card-content pl20 pt30" :class="'card-content-bg' + 5">
+                  <div>
+                    <div class="card-title">下月还款计划</div>
+
+                    <el-tooltip placement="top" effect="light">
+                      <P slot="content">{{ calculateTotal(NextMonthData) }}</P>
+                      <count-to class="card-amount amounts-font cp" :start-val='0' :end-val='calculateTotal(NextMonthData)'
+                        :duration='1000' :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                        :useEasing="true"></count-to>
+                    </el-tooltip>
+
+                  </div>
+
+                  <div class="card-various-amounts flex">
+                    <div class="mt10">
+                      <el-tooltip content="42467000" placement="top" effect="light">
+                        <div slot="content">
+                          <p class="various-amounts-title mb5">本金</p>
+                          <count-to class="various-amounts-amount" :start-val='0' :end-val='NextMonthData.totalPrincipal / 10000' :duration='1000'
+                            :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                            :useEasing="true"></count-to>
+                        </div>
+                        <div>
+                          <p class="various-amounts-title mb5">本金</p>
+                          <count-to class="various-amounts-amount" :start-val='0' :end-val='NextMonthData.totalPrincipal / 10000' :duration='1000'
+                            :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                            :useEasing="true"></count-to>
+                        </div>
+                      </el-tooltip>
+                    </div>
+
+                    <div class="mt10">
+                      <el-tooltip  content="42467000" placement="top" effect="light">
+                        <div slot="content">
+                          <p class="various-amounts-title mb5">利息</p>
+                          <count-to class="various-amounts-amount" :start-val='0' :end-val='NextMonthData.totalInterest / 10000' :duration='1000'
+                            :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                            :useEasing="true"></count-to>
+                        </div>
+                        <div>
+                          <p class="various-amounts-title mb5">利息</p>
+                          <count-to class="various-amounts-amount" :start-val='0' :end-val='NextMonthData.totalInterest / 10000' :duration='1000'
+                            :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                            :useEasing="true"></count-to>
+                        </div>
+                      </el-tooltip>
+                    </div>
                   </div>
                 </div>
               </el-col>
@@ -460,7 +504,12 @@ export default {
         moment().subtract(1, 'years').format('YYYY-MM'),
         moment().format('YYYY-MM')
       ],
-      currentMonthData: {}
+      currentMonthData: {},
+      NextMonthData: {},
+      NextMonthDataKey: {
+        'totalPrincipal': '本金',
+        'totalInterest': '利息'
+      }
     };
   },
   watch: {
@@ -487,7 +536,6 @@ export default {
     this.getCardData3();
     this.getCardData4();
     this.getHuankuanjihua();
-    // this.init();
   },
   methods: {
     init() {
@@ -499,7 +547,6 @@ export default {
     async getCardData() {
       try {
         const res = await getCardData();
-        console.log(res);
         if (res.code === 200) {
           const data = JSON.parse(JSON.stringify(res.data));
           const order = ['已授信金额', '授信余额'];
@@ -510,7 +557,6 @@ export default {
             }
           });
           this.creditData = orderedData;
-          console.log(data);
         }
       } catch (error) {
         this.$modal.msgError('数据获取失败，请重新尝试。');
@@ -520,7 +566,6 @@ export default {
     async getCardData2() {
       try {
         const res = await getCardData2();
-        console.log(res);
         if (res.code === 200) {
           const data = JSON.parse(JSON.stringify(res.data));
           const order = ['已融资金额', '融资余额'];
@@ -531,7 +576,6 @@ export default {
             }
           });
           this.rzjeData = orderedData;
-          console.log(data);
         }
       } catch (error) {
         this.$modal.msgError('数据获取失败，请重新尝试。');
@@ -541,7 +585,6 @@ export default {
     async getCardData3() {
       try {
         const res = await getCardData3();
-        console.log(res);
         if (res.code === 200) {
           const data = JSON.parse(JSON.stringify(res.data));
           const order = ['已担保金额', '担保余额'];
@@ -552,7 +595,6 @@ export default {
             }
           });
           this.dbData = orderedData;
-          console.log(data);
         }
       } catch (error) {
         this.$modal.msgError('数据获取失败，请重新尝试。');
@@ -568,7 +610,6 @@ export default {
         }
         const res = await getRepaymentPlanData(this.queryParams);
         if (res.code === 200) {
-          console.log(res);
           const data = JSON.parse(JSON.stringify(res.data));
           this.listData = data;
 
@@ -576,7 +617,6 @@ export default {
           this.option.series[1].data = this.transformAndFillData(data, this.option.xAxis.data, 'totalPrincipal');
           this.option.series[2].data = this.transformAndFillData(data, this.option.xAxis.data, 'totalInterest');
           this.init();
-          console.log(this.option.series[0].data);
         }
       } catch (error) {
         this.$modal.msgError('数据获取失败，请重新尝试。');
@@ -588,15 +628,13 @@ export default {
         const currentMonth = moment().format('YYYY-MM');
         const NextMonth = moment().add(1, 'months').format('YYYY-MM');;
 
-
         const currentMonthData = await getRepaymentPlan(currentMonth);
         const NextMonthData = await getNextRepaymentPlan(NextMonth);
         if (currentMonthData.code === 200) {
-          console.log(currentMonthData);
           this.currentMonthData = currentMonthData.data;
         }
         if (NextMonthData.code === 200) {
-          console.log(NextMonthData);
+          this.NextMonthData = NextMonthData.data;
         }
       } catch (error) {
         this.$modal.msgError('数据获取失败，请重新尝试。');
@@ -605,11 +643,11 @@ export default {
     calculateTotal(obj) {
       let total = 0;
       for (let key in obj) {
-        if (key !== 'bgID') {
+        if (key !== 'bgID' || key !== 'month') {
           total += obj[key];
         }
       }
-      return total;
+      return total / 10000;
     },
 
     goTarget(href) {
@@ -623,20 +661,17 @@ export default {
       let currentMonth = moment(this.daterangeLogCreateDate[0], 'YYYY-MM');
       const end = moment(this.daterangeLogCreateDate[1], 'YYYY-MM');
       const monthsArray = [];
-
       while (currentMonth.isSameOrBefore(end)) {
         // 将每个月份添加到数组中
         monthsArray.push(currentMonth.format('YYYY-MM'));
         // 移动到下一个月
         currentMonth.add(1, 'months');
       }
-
       return monthsArray;
     },
     transformAndFillData(backendData, xAxisData, key) {
       // 创建一个填充了 null 的数组，长度与 xAxisData 相同
       let filledData = new Array(xAxisData.length).fill(0);
-
       // 遍历后端数据
       backendData.forEach(dataItem => {
         // 找到每个数据项对应的月份在 xAxisData 中的索引
@@ -655,7 +690,6 @@ export default {
           }
         }
       });
-
       return filledData;
     }
   }

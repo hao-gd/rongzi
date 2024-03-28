@@ -88,7 +88,6 @@
                         <div class="small-panel-left-icon" :class="'left-icon' + 1"></div>
                         <div class="small-panel-right-text-content">
                             <p class="right-text">融资总额（万元）</p>
-                            <!-- <p class="right-amount"></p> -->
                             <p class="right-amount">
                                 <count-to :start-val='0' :end-val="calculateTotalByKey(listData, 'totalFinancingAmount')"
                                     :duration='1000' :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay=true
@@ -100,10 +99,9 @@
                         <div class="small-panel-left-icon" :class="'left-icon' + 2"></div>
                         <div class="small-panel-right-text-content">
                             <p class="right-text">月偿还金额（万元）</p>
-                            <!-- <p class="right-amount"></p> -->
                             <p class="right-amount">
-                                <count-to :start-val='0' :end-val='10000000' :duration='1000' :decimals='0' :separator="','"
-                                    :prefix="''" :suffix="''" :autoplay=true :useEasing="true"></count-to>
+                                <count-to :start-val='0' :end-val='calculateTotal(NextMonthData)' :duration='1000' :decimals='0'
+                                    :separator="','" :prefix="''" :suffix="''" :autoplay=true :useEasing="true"></count-to>
                             </p>
                         </div>
                     </el-col>
@@ -111,7 +109,6 @@
                         <div class="small-panel-left-icon" :class="'left-icon' + 3"></div>
                         <div class="small-panel-right-text-content">
                             <p class="right-text">融资余额（万元）</p>
-                            <!-- <p class="right-amount"></p> -->
                             <p class="right-amount">
                                 <count-to :start-val='0' :end-val="calculateTotalByKey(listData, 'totalRemainingAmount')"
                                     :duration='1000' :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay=true
@@ -128,15 +125,12 @@
                 <div id="main-echart" style="height: 500px;"></div>
             </search-panel>
         </div>
-        <!-- <div class="app-container">
-            
-        </div> -->
     </div>
 </template>
 <script>
 import SearchPanel from '@/components/SearchPanel/index.vue'
 import * as echarts from 'echarts';
-import { rzloghistoryFinancing } from '@/api/dashboard/index'
+import { rzloghistoryFinancing, getNextRepaymentPlan } from '@/api/dashboard/index'
 import moment from 'moment'
 const color = {
     totalFinancingAmount: '#F77234',
@@ -295,22 +289,34 @@ export default {
                     },
                 ]
             },
-            listData: []
+            listData: [],
+            NextMonthData: null
         }
     },
     created() {
         this.option.xAxis.data = this.generateMonthsMap();
-        console.log(this.option.xAxis.data);
     },
     mounted() {
         this.getrzloghistoryFinancing();
-        // this.init()
+        this.getCardData4();
     },
     methods: {
         init() {
             var chartDom = document.getElementById('main-echart');
             var myChart = echarts.init(chartDom);
             myChart.setOption(this.option);
+        },
+        // 获取当月和下个月还款计划
+        async getCardData4() {
+            try {
+                const currentMonth = moment().format('YYYY-MM');
+                const NextMonthData = await getNextRepaymentPlan(currentMonth);
+                if (NextMonthData.code === 200) {
+                    this.NextMonthData = NextMonthData.data;
+                }
+            } catch (error) {
+                this.$modal.msgError('数据获取失败，请重新尝试。');
+            }
         },
         async getrzloghistoryFinancing() {
             try {
@@ -323,7 +329,6 @@ export default {
                 if (res.code === 200) {
                     const data = JSON.parse(JSON.stringify(res.rows));
                     this.listData = data;
-                    // this.option.xAxis.data = this.getMonths(data);
                     this.option.series[0].data = this.transformAndFillData(data, this.option.xAxis.data, 'totalFinancingAmount');
                     this.option.series[1].data = this.transformAndFillData(data, this.option.xAxis.data, 'totalRepaidAmount');
                     this.option.series[2].data = this.transformAndFillData(data, this.option.xAxis.data, 'totalRemainingAmount');
@@ -374,7 +379,6 @@ export default {
         transformAndFillData(backendData, xAxisData, key) {
             // 创建一个填充了 null 的数组，长度与 xAxisData 相同
             let filledData = new Array(xAxisData.length).fill(0);
-
             // 遍历后端数据
             backendData.forEach(dataItem => {
                 // 找到每个数据项对应的月份在 xAxisData 中的索引
@@ -384,9 +388,17 @@ export default {
                     filledData[index] = dataItem[key];
                 }
             });
-
             return filledData;
-        }
+        },
+        calculateTotal(obj) {
+            let total = 0;
+            for (let key in obj) {
+                if (key !== 'bgID' || key !== 'month') {
+                    total += obj[key];
+                }
+            }
+            return total / 10000;
+        },
     }
 }
 </script>

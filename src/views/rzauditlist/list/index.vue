@@ -309,7 +309,6 @@ export default {
       // });
       const response = await getList(id);
       this.form = response.data;
-      console.log(this.form);
       this.form.auditState = "1759515068883533800";
       updateList(this.form).then(response => {
         this.$modal.msgSuccess("修改成功");

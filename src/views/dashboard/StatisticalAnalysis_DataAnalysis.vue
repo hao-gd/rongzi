@@ -380,8 +380,6 @@ export default {
                 if (res.code === 200) {
                     const data = JSON.parse(JSON.stringify(res.rows));
                     this.listData = data;
-                    console.log(data);
-                    // this.option.xAxis.data = this.getMonths(data);
                     this.option.series[0].data = this.transformAndFillData(data, this.option.xAxis.data, 'totalGuaranteeAmount');
                     this.option.series[1].data = this.transformAndFillData(data, this.option.xAxis.data, 'totalGuaranteeBalance');
                     this.option.series[2].data = this.transformAndFillData(data, this.option.xAxis.data, 'internalGuaranteeBalance');
@@ -401,25 +399,21 @@ export default {
             return data.map(item => Number(item[key]) / 10000);
         },
         changeRang() {
-            console.log(this.daterangeLogCreateTime);
             if (null != this.daterangeLogCreateTime && '' != this.daterangeLogCreateTime) {
                 this.option.xAxis.data = this.generateMonthsMap();
             }
             this.getListData();
         },
         generateMonthsMap() {
-
             let currentMonth = moment(this.daterangeLogCreateTime[0], 'YYYY-MM');
             const end = moment(this.daterangeLogCreateTime[1], 'YYYY-MM');
             const monthsArray = [];
-
             while (currentMonth.isSameOrBefore(end)) {
                 // 将每个月份添加到数组中
                 monthsArray.push(currentMonth.format('YYYY-MM'));
                 // 移动到下一个月
                 currentMonth.add(1, 'months');
             }
-
             return monthsArray;
         },
         calculateTotalByKey(dataList, key) {
@@ -437,7 +431,6 @@ export default {
         transformAndFillData(backendData, xAxisData, key) {
             // 创建一个填充了 null 的数组，长度与 xAxisData 相同
             let filledData = new Array(xAxisData.length).fill(0);
-
             // 遍历后端数据
             backendData.forEach(dataItem => {
                 // 找到每个数据项对应的月份在 xAxisData 中的索引
@@ -447,7 +440,6 @@ export default {
                     filledData[index] = dataItem[key];
                 }
             });
-
             return filledData;
         }
     }
