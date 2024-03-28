@@ -82,7 +82,7 @@
         </el-row> -->
 
         <el-row :gutter="20">
-          <el-col :span="5">
+          <el-col :span="6">
             <el-row>
               <el-col v-for="(value, key, index) in creditData" :key="index" :span="24" style="background: #fff;"
                 class="card-panel">
@@ -121,7 +121,7 @@
               </el-col>
             </el-row>
           </el-col>
-          <el-col :span="5">
+          <el-col :span="6">
             <el-row>
               <el-col v-for="(value, key, index) in rzjeData" :key="index" :span="24" style="background: #fff;"
                 class="card-panel">
@@ -161,7 +161,7 @@
             </el-row>
           </el-col>
 
-          <el-col :span="7">
+          <el-col :span="6">
             <el-row>
               <el-col v-for="(value, key, index) in dbData" :key="index" :span="24" style="background: #fff;"
                 class="card-panel">
@@ -202,7 +202,7 @@
           </el-col>
 
 
-          <el-col :span="7">
+          <el-col :span="6">
             <el-row>
               <el-col :span="24" style="background: #fff;" class="card-panel">
                 <div class="card-content pt30 pl20" :class="'card-content-bg' + 5">
