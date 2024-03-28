@@ -436,7 +436,7 @@ export default {
         },
         transformAndFillData(backendData, xAxisData, key) {
             // 创建一个填充了 null 的数组，长度与 xAxisData 相同
-            let filledData = new Array(xAxisData.length).fill(null);
+            let filledData = new Array(xAxisData.length).fill(0);
 
             // 遍历后端数据
             backendData.forEach(dataItem => {

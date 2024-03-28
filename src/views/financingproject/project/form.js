@@ -167,43 +167,43 @@ export function renderDate(field) {
 export const hkjh_repaymentPlanClearingTableColumn = [
     {
         label: '期数',
-        prop: '期数',
+        prop: 'qishu',
         width: '',
         minWidth: '100',
     },
     {
         label: '日期',
-        prop: '日期',
+        prop: 'riqi',
         width: '',
         minWidth: '100',
     },
     {
         label: '还款金额',
-        prop: '还款金额',
+        prop: 'huankuanjine',
         width: '',
         minWidth: '100',
     },
     {
         label: '偿还本金',
-        prop: '偿还本金',
+        prop: 'changhuanben',
         width: '',
         minWidth: '100',
     },
     {
         label: '支付利息',
-        prop: '支付利息',
+        prop: 'zhifulixi',
         width: '',
         minWidth: '100',
     },
     {
         label: '本金剩余',
-        prop: '本金剩余',
+        prop: 'benjinshengyu',
         width: '',
         minWidth: '100',
     },
     {
         label: '利率',
-        prop: '利率',
+        prop: 'comment',
         width: '',
         minWidth: '100',
     },
@@ -228,26 +228,26 @@ export function multiplySelectedFields(list, multiplier, fields) {
 }
 
 
-// 定义一个映射关系
-const fieldMapping = {
-    "期数": "qishu",
-    "日期": "riqi",
-    "还款金额": "huankuanjine",
-    "偿还本金": "changhuanben",
-    "支付利息": "zhifulixi",
-    "本金剩余": "benjinshengyu",
-    "利率": "remark"
-};
-// 替换 JSON 数据中的 key
-export function replaceKeys(jsonArray) {
-    const replacedArray = jsonArray.map(item => {
-        const newItem = {};
-        for (const key in item) {
-            // 使用映射关系中的英文字段名作为新的 key
-            const newKey = fieldMapping[key] || key;
-            newItem[newKey] = item[key];
-        }
-        return newItem;
-    });
-    return replacedArray;
-}
+// // 定义一个映射关系
+// const fieldMapping = {
+//     "期数": "qishu",
+//     "日期": "riqi",
+//     "还款金额": "huankuanjine",
+//     "偿还本金": "changhuanben",
+//     "支付利息": "zhifulixi",
+//     "本金剩余": "benjinshengyu",
+//     "利率": "remark"
+// };
+// // 替换 JSON 数据中的 key
+// export function replaceKeys(jsonArray) {
+//     const replacedArray = jsonArray.map(item => {
+//         const newItem = {};
+//         for (const key in item) {
+//             // 使用映射关系中的英文字段名作为新的 key
+//             const newKey = fieldMapping[key] || key;
+//             newItem[newKey] = item[key];
+//         }
+//         return newItem;
+//     });
+//     return replacedArray;
+// }

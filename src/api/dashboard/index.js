@@ -50,3 +50,19 @@ export function getEchartData(query) {
     params: query
   })
 }
+
+// 本月还款计划
+export function getRepaymentPlan(query) {
+  return request({
+    url: `/huankuanjihua/mingxi/financialSummaryByMonth/${query}`,
+    method: 'get',
+  })
+}
+
+// 下月还款计划
+export function getNextRepaymentPlan(query) {
+  return request({
+    url: `/huankuanjihua/mingxi/paymentSummaryByMonth/${query}`,
+    method: 'get',
+  })
+}

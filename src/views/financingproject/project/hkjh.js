@@ -1,7 +1,8 @@
 const moment = require('moment');
 
 export function getDatesBasedOnStartDate(startDate, endDate, intervalMonths) {
-	const start = moment(startDate);
+	console.log(startDate, endDate, intervalMonths);
+  const start = moment(startDate);
 	const end = moment(endDate);
 	let multiplier = 0;
 	let dates = []; // 初始化一个空数组来存放时间点
@@ -301,16 +302,16 @@ export function generateRepaymentPlan(timeline) {
 		switch (event.event) {
 			case '提取本金':
 				if (principal == 0 && changhuanindex == 0) {
-
+          //首次提取本金的时候，是0次信息
+          //忘记给利率字段了用comment 记录
 					zuizhongjihua.push({
-						"期数": changhuanindex,
-						"日期": currentDate.format("YYYY-MM-DD"),
-						"还款金额": 0,
-						"偿还本金": 0,
-						"支付利息": 0,
-						"本金剩余": event.amount,
-						"利率": 0,
-						"备注": ""
+						"qishu": changhuanindex,
+						"riqi": currentDate.format("YYYY-MM-DD"),
+						"huankuanjine": 0,
+						"changhuanben": 0,
+						"zhifulixi": 0,
+						"benjinshengyu": event.amount,
+						"comment": 0,
 					})
 
 					// console.log({
@@ -332,14 +333,13 @@ export function generateRepaymentPlan(timeline) {
 
 				changhuanindex += 1;
 				zuizhongjihua.push({
-					"期数": changhuanindex,
-					"日期": currentDate.format("YYYY-MM-DD"),
-					"还款金额": changhuanjine,
-					"偿还本金": changhuanjine,
-					"支付利息": 0,
-					"本金剩余": principal,
-					"利率": rate,
-					"备注": ""
+					"qishu": changhuanindex,
+					"riqi": currentDate.format("YYYY-MM-DD"),
+					"huankuanjine": changhuanjine,
+					"changhuanben": changhuanjine,
+					"zhifulixi": 0,
+					"benjinshengyu": principal,
+					"comment": rate,
 				})
 				// console.log({
 				// 	"期数": changhuanindex,
@@ -359,14 +359,13 @@ export function generateRepaymentPlan(timeline) {
 			case '利息偿还':
 				changhuanindex += 1;
 				zuizhongjihua.push({
-					"期数": changhuanindex,
-					"日期": currentDate.format("YYYY-MM-DD"),
-					"还款金额": (interestAccrued).toFixed(2),
-					"偿还本金": changhuanjine,
-					"支付利息": (interestAccrued).toFixed(2),
-					"本金剩余": principal,
-					"利率": rate,
-					"备注": ""
+					"qishu": changhuanindex,
+					"riqi": currentDate.format("YYYY-MM-DD"),
+					"huankuanjine": (interestAccrued).toFixed(2),
+					"changhuanben": 0,
+					"zhifulixi": (interestAccrued).toFixed(2),
+					"benjinshengyu": principal,
+					"comment": rate,
 				})
 				// console.log({
 				// 	"期数": changhuanindex,

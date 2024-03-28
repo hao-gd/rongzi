@@ -200,7 +200,85 @@
               </el-col>
             </el-row>
           </el-col>
-          <el-col :span="7"></el-col>
+
+
+          <el-col :span="7">
+            <el-row>
+              <el-col :span="24" style="background: #fff;" class="card-panel">
+                <div class="card-content pt30 pl20" :class="'card-content-bg' + 5">
+                  <div class="w">
+                    <div class="card-title">本月还款计划</div>
+
+                    <!-- <el-tooltip placement="top" effect="light">
+                      <P slot="content">{{ calculateTotal(currentMonthData) }}</P>
+                      <count-to class="card-amount amounts-font cp" :start-val='0' :end-val='calculateTotal(value)'
+                        :duration='1000' :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                        :useEasing="true"></count-to>
+                    </el-tooltip> -->
+
+
+
+                    <el-row>
+                      <el-col :span="12">
+                        <el-tooltip placement="top" effect="light">
+                          <div slot="content">
+                            <p class="various-amounts-title mb5">本金（利息）</p>
+                            <count-to class="various-amounts-amount dlb" :start-val='0'
+                              :end-val='currentMonthData.totalPrincipal' :duration='1000' :decimals='0' :separator="','"
+                              :prefix="''" :suffix="''" :autoplay="true" :useEasing="true"></count-to>
+
+                              (<count-to class="various-amounts-amount dlb" :start-val='0'
+                              :end-val='currentMonthData.totalInterest' :duration='1000' :decimals='0' :separator="','"
+                              :prefix="''" :suffix="''" :autoplay="true" :useEasing="true"></count-to>)
+                          </div>
+                          <div>
+                            <p class="various-amounts-title mb5">本金（利息）</p>
+                            <count-to class="various-amounts-amount dlb" :start-val='0'
+                              :end-val='currentMonthData.totalPrincipal' :duration='1000' :decimals='0' :separator="','"
+                              :prefix="''" :suffix="''" :autoplay="true" :useEasing="true"></count-to>
+
+                            (<count-to class="various-amounts-amount dlb" :start-val='0'
+                              :end-val='currentMonthData.totalInterest' :duration='1000' :decimals='0' :separator="','"
+                              :prefix="''" :suffix="''" :autoplay="true" :useEasing="true"></count-to>)
+                          </div>
+
+                        </el-tooltip>
+                      </el-col>
+                      <el-col :span="12">
+                        <el-tooltip placement="top" effect="light">
+                          <div slot="content">
+                            <p class="various-amounts-title mb5">已还（未还）</p>
+                            <count-to class="various-amounts-amount dlb" :start-val='0'
+                              :end-val='currentMonthData.totalPaidInterest + currentMonthData.totalPaidPrincipal'
+                              :duration='1000' :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                              :useEasing="true"></count-to>
+
+                            (<count-to class="various-amounts-amount dlb" :start-val='0'
+                              :end-val='currentMonthData.totalUnpaidInterest + currentMonthData.totalUnpaidPrincipal'
+                              :duration='1000' :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                              :useEasing="true"></count-to>)
+                          </div>
+
+                          <div>
+                            <p class="various-amounts-title mb5">已还（未还）</p>
+                          <count-to class="various-amounts-amount dlb" :start-val='0'
+                            :end-val='currentMonthData.totalPaidInterest + currentMonthData.totalPaidPrincipal'
+                            :duration='1000' :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                            :useEasing="true"></count-to>
+
+                            (<count-to class="various-amounts-amount dlb" :start-val='0'
+                            :end-val='currentMonthData.totalUnpaidInterest + currentMonthData.totalUnpaidPrincipal'
+                            :duration='1000' :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                            :useEasing="true"></count-to>)
+                          </div>
+                        </el-tooltip>
+                      </el-col>
+                    </el-row>
+                  </div>
+                </div>
+              </el-col>
+            </el-row>
+          </el-col>
         </el-row>
       </search-panel>
     </div>
@@ -215,7 +293,10 @@
 <script>
 import SearchPanel from '@/components/SearchPanel/index.vue'
 import * as echarts from 'echarts';
-import { getCardData, getCardData2, getCardData3, getRepaymentPlanData } from '@/api/dashboard/index'
+import {
+  getCardData, getCardData2, getCardData3, getRepaymentPlanData, getRepaymentPlan,
+  getNextRepaymentPlan
+} from '@/api/dashboard/index'
 import resize from './dashboard/mixins/resize'
 import { mapGetters, mapState } from "vuex";
 import moment from 'moment';
@@ -267,10 +348,6 @@ export default {
           trigger: 'axis',
           borderWidth: 5
         },
-        legend: {
-          show: false,
-          data: ['Email', 'Union Ads', 'Video Ads', 'Direct', 'Search Engine']
-        },
         grid: {
           left: '3%',
           right: '4%',
@@ -286,7 +363,7 @@ export default {
         xAxis: {
           type: 'category',
           boundaryGap: false,
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          data: [],
           axisPointer: {
             lineStyle: {
               color: '#4080FF',
@@ -302,7 +379,8 @@ export default {
             name: '还款合计',
             type: 'line',
             stack: 'Total',
-            data: [120, 132, 101, 134, 90, 230, 210],
+            data: [],
+            data: [],
             smooth: true,
             showSymbol: false,
             lineStyle: {
@@ -324,9 +402,10 @@ export default {
           },
           {
             name: '还款本金',
+            key: 'totalPrincipal',
             type: 'line',
             stack: 'Total',
-            data: [220, 182, 191, 234, 290, 330, 310],
+            data: [],
             smooth: true,
             showSymbol: false,
             lineStyle: {
@@ -348,9 +427,10 @@ export default {
           },
           {
             name: '还款利息',
+            key: 'totalInterest',
             type: 'line',
             stack: 'Total',
-            data: [150, 232, 201, 154, 190, 330, 410],
+            data: [],
             smooth: true,
             showSymbol: false,
             lineStyle: {
@@ -380,6 +460,7 @@ export default {
         moment().subtract(1, 'years').format('YYYY-MM'),
         moment().format('YYYY-MM')
       ],
+      currentMonthData: {}
     };
   },
   watch: {
@@ -404,6 +485,7 @@ export default {
     this.getCardData();
     this.getCardData2();
     this.getCardData3();
+    this.getCardData4();
     this.getHuankuanjihua();
     // this.init();
   },
@@ -481,8 +563,8 @@ export default {
       try {
         this.queryParams.params = {};
         if (null != this.daterangeLogCreateDate && '' != this.daterangeLogCreateDate) {
-          this.queryParams.params["beginLogCreateDate"] = this.daterangeLogCreateDate[0];
-          this.queryParams.params["endLogCreateDate"] = this.daterangeLogCreateDate[1];
+          this.queryParams["startDate"] = this.daterangeLogCreateDate[0];
+          this.queryParams["endDate"] = this.daterangeLogCreateDate[1];
         }
         const res = await getRepaymentPlanData(this.queryParams);
         if (res.code === 200) {
@@ -494,6 +576,27 @@ export default {
           this.option.series[1].data = this.transformAndFillData(data, this.option.xAxis.data, 'totalPrincipal');
           this.option.series[2].data = this.transformAndFillData(data, this.option.xAxis.data, 'totalInterest');
           this.init();
+          console.log(this.option.series[0].data);
+        }
+      } catch (error) {
+        this.$modal.msgError('数据获取失败，请重新尝试。');
+      }
+    },
+    // 获取当月和下个月还款计划
+    async getCardData4() {
+      try {
+        const currentMonth = moment().format('YYYY-MM');
+        const NextMonth = moment().add(1, 'months').format('YYYY-MM');;
+
+
+        const currentMonthData = await getRepaymentPlan(currentMonth);
+        const NextMonthData = await getNextRepaymentPlan(NextMonth);
+        if (currentMonthData.code === 200) {
+          console.log(currentMonthData);
+          this.currentMonthData = currentMonthData.data;
+        }
+        if (NextMonthData.code === 200) {
+          console.log(NextMonthData);
         }
       } catch (error) {
         this.$modal.msgError('数据获取失败，请重新尝试。');
@@ -532,7 +635,7 @@ export default {
     },
     transformAndFillData(backendData, xAxisData, key) {
       // 创建一个填充了 null 的数组，长度与 xAxisData 相同
-      let filledData = new Array(xAxisData.length).fill(null);
+      let filledData = new Array(xAxisData.length).fill(0);
 
       // 遍历后端数据
       backendData.forEach(dataItem => {

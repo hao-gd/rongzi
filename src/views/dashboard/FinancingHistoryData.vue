@@ -222,7 +222,7 @@ export default {
                         name: '总融资金额',
                         key: 'totalFinancingAmount',
                         type: 'line',
-                        // stack: 'Total',
+                        stack: 'Total',
                         data: [],
                         smooth: true,
                         showSymbol: false,
@@ -247,7 +247,7 @@ export default {
                         name: '月偿还金额',
                         key: 'totalRepaidAmount',
                         type: 'line',
-                        // stack: 'Total',
+                        stack: 'Total',
                         data: [],
                         smooth: true,
                         showSymbol: false,
@@ -272,7 +272,7 @@ export default {
                         name: '融资余额',
                         key: 'totalRemainingAmount',
                         type: 'line',
-                        // stack: 'Total',
+                        stack: 'Total',
                         data: [],
                         smooth: true,
                         showSymbol: false,
@@ -373,7 +373,7 @@ export default {
         },
         transformAndFillData(backendData, xAxisData, key) {
             // 创建一个填充了 null 的数组，长度与 xAxisData 相同
-            let filledData = new Array(xAxisData.length).fill(null);
+            let filledData = new Array(xAxisData.length).fill(0);
 
             // 遍历后端数据
             backendData.forEach(dataItem => {
