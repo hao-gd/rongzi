@@ -90,7 +90,7 @@
                             <p class="right-text">融资总额（万元）</p>
                             <p class="right-amount">
                                 <count-to :start-val='0' :end-val="calculateTotalByKey(listData, 'totalFinancingAmount')"
-                                    :duration='1000' :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay=true
+                                    :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay=true
                                     :useEasing="true"></count-to>
                             </p>
                         </div>
@@ -100,7 +100,7 @@
                         <div class="small-panel-right-text-content">
                             <p class="right-text">月偿还金额（万元）</p>
                             <p class="right-amount">
-                                <count-to :start-val='0' :end-val='calculateTotal(NextMonthData)' :duration='1000' :decimals='0'
+                                <count-to :start-val='0' :end-val='calculateTotal(NextMonthData)' :duration='1000' :decimals='2'
                                     :separator="','" :prefix="''" :suffix="''" :autoplay=true :useEasing="true"></count-to>
                             </p>
                         </div>
@@ -111,7 +111,7 @@
                             <p class="right-text">融资余额（万元）</p>
                             <p class="right-amount">
                                 <count-to :start-val='0' :end-val="calculateTotalByKey(listData, 'totalRemainingAmount')"
-                                    :duration='1000' :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay=true
+                                    :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay=true
                                     :useEasing="true"></count-to>
                             </p>
                         </div>

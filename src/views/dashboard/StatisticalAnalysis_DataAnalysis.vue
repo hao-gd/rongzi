@@ -58,7 +58,7 @@
                             <p class="right-text">担保总额（万元）</p>
                             <p class="right-amount">
                                 <count-to :start-val='0' :end-val="calculateTotalByKey(listData, 'totalGuaranteeAmount')"
-                                    :duration='1000' :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay=true
+                                    :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay=true
                                     :useEasing="true"></count-to>
                             </p>
                         </div>
@@ -69,7 +69,7 @@
                             <p class="right-text">总担保余额（万元）</p>
                             <p class="right-amount">
                                 <count-to :start-val='0' :end-val="calculateTotalByKey(listData, 'totalGuaranteeBalance')"
-                                    :duration='1000' :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay=true
+                                    :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay=true
                                     :useEasing="true"></count-to>
                             </p>
                         </div>
@@ -81,7 +81,7 @@
                             <p class="right-amount">
                                 <count-to :start-val='0'
                                     :end-val="calculateTotalByKey(listData, 'internalGuaranteeBalance')" :duration='1000'
-                                    :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay=true
+                                    :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay=true
                                     :useEasing="true"></count-to>
                             </p>
                         </div>
@@ -93,7 +93,7 @@
                             <p class="right-amount">
                                 <count-to :start-val='0'
                                     :end-val="calculateTotalByKey(listData, 'externalGuaranteeBalance')" :duration='1000'
-                                    :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay=true
+                                    :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay=true
                                     :useEasing="true"></count-to>
                             </p>
                         </div>
