@@ -391,7 +391,7 @@ export default {
                 const index = xAxisData.indexOf(dataItem.month);
                 if (index !== -1) {
                     // 根据索引位置填充相应的数据
-                    filledData[index] = dataItem[key].toFixed(2);
+                    filledData[index] = dataItem[key];
                 }
             });
             return filledData;
