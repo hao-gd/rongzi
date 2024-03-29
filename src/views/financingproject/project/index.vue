@@ -144,15 +144,15 @@
           <span>{{ formatNumberAsRMB(scope.row.repaidAmount) }}</span>
         </template>
       </el-table-column> -->
-      
-      
+
+
       <el-table-column show-overflow-tooltip label="还款计划" align="center" prop="hasRepaymentPlan" min-width="100">
         <!-- <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1759508335389835300" :value="scope.row.financingType" />
         </template> -->
       </el-table-column>
-     
-      
+
+
       <el-table-column label="融资余额（万元）" align="center" prop="remainingAmount" width="160">
         <template slot-scope="scope">
           <span>{{ formatNumberAsRMB(scope.row.remainingAmount) }}</span>
@@ -187,8 +187,9 @@
 
     <!-- 添加或修改融资项目对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="60%" append-to-body>
-
-      <el-divider class="no_mt mb20"><div style="color: red;">所有修改都需要提交审核，同一项目只能同时提交一个待审核</div></el-divider>
+    <el-alert title="所有修改都需要提交审核，同一项目只能同时提交一个待审核" type="warning" center effect="dark">
+    </el-alert>
+      <el-divider class="no_mt mb20"></el-divider>
 
       <div v-if="created_successfully == false">
         <div v-if="title === '修改融资项目'" class="modeify-btn" style="display: flex; justify-content: end;">
