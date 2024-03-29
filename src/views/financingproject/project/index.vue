@@ -187,8 +187,8 @@
 
     <!-- 添加或修改融资项目对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="60%" append-to-body>
-    <el-alert title="所有修改都需要提交审核，同一项目只能同时提交一个待审核" type="warning" center effect="dark">
-    </el-alert>
+      <el-alert title="所有修改都需要提交审核，同一项目只能同时提交一个待审核" type="warning" center effect="dark">
+      </el-alert>
       <el-divider class="no_mt mb20"></el-divider>
 
       <div v-if="created_successfully == false">
@@ -499,16 +499,6 @@
           </el-row>
 
           <el-divider></el-divider>
-
-          <!--          <div v-show="(!empty.includes(this.form.loanDate) &&
-          !empty.includes(this.form.dueDate) &&
-          !empty.includes(this.form.firstRepaymentDate) &&
-          !empty.includes(this.form.rateType) &&
-          !empty.includes(this.form.interestRepaymentMethod) &&
-          !empty.includes(this.form.financingAmount))" style="display: flex; justify-content: center;">
-            <el-button type="primary" @click="callChildMethod">
-              创建还款计划</el-button>
-          </div> -->
           <el-row v-if="(!empty.includes(this.form.loanDate) &&
           !empty.includes(this.form.dueDate) &&
           !empty.includes(this.form.firstRepaymentDate) &&
@@ -516,7 +506,7 @@
           !empty.includes(this.form.interestRepaymentMethod) &&
           !empty.includes(this.form.financingAmount))">
             <hkjh-panel ref="hkjhPanel" :form="form" :isEditable="isEditable"
-              :huankuanmingxi2List="EchoHuankuanmingxi2List" @getRepaymentPlan="ReturnGetRepaymentPlan"></hkjh-panel>
+              :huankuanmingxi2List="EchoHuankuanmingxi2List" ></hkjh-panel>
           </el-row>
         </el-form>
 
@@ -868,9 +858,7 @@
           this.title = "修改融资项目";
         });
       },
-      callChildMethod() {
-        this.$refs.hkjhPanel.hkjh();
-      },
+
       // 还款计划生成的数据返回
       ReturnGetRepaymentPlan(data) {
         const {
@@ -893,6 +881,14 @@
       },
       /** 提交按钮 */
       submitForm() {
+
+        this.form.bjch = this.$refs.hkjhPanel.bjch
+        this.form.zjbj = this.$refs.hkjhPanel.zjbj
+        this.form.lvbg = this.$refs.hkjhPanel.lvbg
+        this.form.lixichanghuanArray = this.$refs.hkjhPanel.lixichanghuanArray
+        this.form.repaymentPlanTable = this.$refs.hkjhPanel.repaymentPlanTable
+
+
         this.$refs["form"].validate(valid => {
           if (valid) {
             const data = JSON.parse(JSON.stringify(this.form))
@@ -903,9 +899,15 @@
             data.financingAmount = data.financingAmount * 10000;
             data.repaidAmount = data.repaidAmount * 10000;
             data.remainingAmount = data.remainingAmount * 10000;
-            // 利率
-            const lvlist = JSON.parse(data.lixichanghuan);
-            data.rate = lvlist[lvlist.length - 1].rate;
+
+            //取消下列自动计算，因为本金偿还可能都是提前输入好的，所以当前剩余的本金是跟时间有关系的，除非能根据当前时间实时刷新这个数据
+            // 取利率列表最后一个作为当前利率
+            // const lvlist = JSON.parse(data.lixichanghuan);
+            // data.rate = lvlist[lvlist.length - 1].rate;
+            // 取所有本金偿还金额作为本金偿还总金额
+
+            // 总额-本金偿还总金额=余额
+
 
             if (this.form.id != null) {
               data.scrUuid = Number(this.scrUuid);
