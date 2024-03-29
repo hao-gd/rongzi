@@ -200,7 +200,7 @@
       'form.lilvbiangeng': {
         handler(newVal) {
           if (newVal) {
-            this.lixichanghuanArray = JSON.parse(newVal);
+            this.lvbg = JSON.parse(newVal);
           }
         },
         deep: true,
@@ -209,7 +209,7 @@
       'form.lixichanghuan': {
         handler(newVal) {
           if (newVal) {
-            this.lvbg = JSON.parse(newVal);
+            this.lixichanghuanArray = JSON.parse(newVal);
           }
         },
         deep: true,
@@ -388,8 +388,8 @@
         this.repaymentPlanTable = generateRepaymentPlan(datas)
 
         this.repaymentPlanTable.forEach((plan) => {
-          plan.borrowing_unit = this.form.borrowingUnit
-          plan.financial_institution = this.form.financialInstitution
+          plan.borrowingUnit = this.form.borrowingUnit
+          plan.financialInstitution = this.form.financialInstitution
         });
 
 
