@@ -103,55 +103,55 @@
 
     <el-table v-loading="loading" :data="bondsList" @selection-change="handleSelectionChange"
       :header-cell-style="header_cell_style">
-      <el-table-column show-overflow-tooltip fixed="left" type="selection" width="55" align="center" />
+      <el-table-column show-overflow-tooltip fixed="left" type="selection" width="50" align="center" />
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
       <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" min-width="100" />
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
-      <el-table-column show-overflow-tooltip label="债券名称" align="center" prop="bondName" min-width="120" />
-      <el-table-column show-overflow-tooltip label="债券发行规模（万元）" align="center" prop="bondSize" width="180">
+      <el-table-column show-overflow-tooltip label="债券名称" align="center" prop="bondName" min-width="260" />
+      <el-table-column show-overflow-tooltip label="债券发行规模（万元）" align="center" prop="bondSize" width="160">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1762824645385388000" :value="scope.row.bondSize" />
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="利率" align="center" prop="rate" min-width="120">
+      <el-table-column show-overflow-tooltip label="利率" align="center" prop="rate" min-width="80">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1762824761903153200" :value="scope.row.rate" />
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="债券发行期限" align="center" prop="bondDuration" min-width="180">
+      <el-table-column show-overflow-tooltip label="债券发行期限" align="center" prop="bondDuration" min-width="120">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1762824852571422700" :value="scope.row.bondDuration" />
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="偿还方式" align="center" prop="repaymentMethod" min-width="120">
+      <el-table-column show-overflow-tooltip label="偿还方式" align="center" prop="repaymentMethod" min-width="80">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1759533864251818000" :value="scope.row.repaymentMethod" />
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip width="180" label="专项批复金额（万元）" align="center" prop="approvedAmount">
+      <el-table-column show-overflow-tooltip width="160" label="专项批复金额（万元）" align="center" prop="approvedAmount">
         <template slot-scope="scope">
           <span>{{ formatNumberAsRMB(scope.row.approvedAmount) }}</span>
         </template>
       </el-table-column>
       <el-table-column show-overflow-tooltip label="累计到账金额（万元）" align="center" prop="accumulatedAmountReceived"
-        width="180">
+        width="160">
         <template slot-scope="scope">
           <span>{{ formatNumberAsRMB(scope.row.accumulatedAmountReceived) }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column show-overflow-tooltip width="180" label="已还金额（万元）" align="center" prop="repaidAmount">
+      <el-table-column show-overflow-tooltip width="160" label="已还金额（万元）" align="center" prop="repaidAmount">
         <template slot-scope="scope">
           <span>{{ formatNumberAsRMB(scope.row.repaidAmount) }}</span>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip width="180" label="待还金额（万元）" align="center" prop="remainingAmount">
+      <el-table-column show-overflow-tooltip width="160" label="待还金额（万元）" align="center" prop="remainingAmount">
         <template slot-scope="scope">
           <span>{{ formatNumberAsRMB(scope.row.remainingAmount) }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column show-overflow-tooltip label="发行主体" align="center" prop="issuingEntity" min-width="150">
+      <el-table-column show-overflow-tooltip label="发行主体" align="center" prop="issuingEntity" min-width="260">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1762824996528324600" :value="scope.row.issuingEntity" />
         </template>
@@ -485,7 +485,7 @@ export default {
       if (![null, '', undefined].includes(search.accumulatedAmountReceived)) {
         search.accumulatedAmountReceived = Number(search.accumulatedAmountReceived) * 10000
       }
-      
+
 
       listBonds(search).then(response => {
         this.bondsList = response.rows;

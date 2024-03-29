@@ -155,42 +155,42 @@
 
     <el-table v-loading="loading" :data="factoringList" @selection-change="handleSelectionChange"
       :header-cell-style="header_cell_style">
-      <el-table-column checkDueReminderWithConfig fixed="left" type="selection" width="55" align="center" />
-      <el-table-column checkDueReminderWithConfig label="管理编号" align="center" prop="managementId" />
+      <el-table-column checkDueReminderWithConfig fixed="left" type="selection" min-width="50" align="center" />
+      <el-table-column checkDueReminderWithConfig label="管理编号" align="center" prop="managementId" min-width="100" />
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" />
       <el-table-column label="审核id" align="center" prop="auditId" /> -->
-      <el-table-column checkDueReminderWithConfig label="债权人（供应商）名称" align="center" prop="creditor" width="180">
+      <el-table-column checkDueReminderWithConfig label="债权人（供应商）名称" align="center" prop="creditor" min-width="260">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1757271666666242000" :value="scope.row.creditor" />
         </template>
       </el-table-column>
-      <el-table-column checkDueReminderWithConfig label="保理商名称" align="center" prop="factor" width="180">
+      <el-table-column checkDueReminderWithConfig label="保理商名称" align="center" prop="factor"  min-width="260">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1757288852172570600" :value="scope.row.factor" />
         </template>
       </el-table-column>
-      <el-table-column checkDueReminderWithConfig label="金融机构" align="center" prop="financialInstitution" min-width="180">
+      <el-table-column checkDueReminderWithConfig label="金融机构" align="center" prop="financialInstitution" min-width="260">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_acceptor" :value="scope.row.financialInstitution" />
         </template>
       </el-table-column>
-      <el-table-column checkDueReminderWithConfig label="放贷金额（万元）" align="center" prop="loanAmount" width="180">
+      <el-table-column checkDueReminderWithConfig label="放贷金额（万元）" align="center" prop="loanAmount" min-width="160">
         <template slot-scope="scope">
           <span>{{ formatNumberAsRMB(scope.row.loanAmount) }}</span>
         </template>
       </el-table-column>
-      <el-table-column checkDueReminderWithConfig label="开始日期" align="center" prop="startDate" width="180">
+      <el-table-column checkDueReminderWithConfig label="开始日期" align="center" prop="startDate" min-width="100">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.startDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column checkDueReminderWithConfig label="结束日期" align="center" prop="deadline" width="180">
+      <el-table-column checkDueReminderWithConfig label="结束日期" align="center" prop="deadline" min-width="100">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.deadline, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column checkDueReminderWithConfig label="项目名称" align="center" prop="entryName" />
-      <el-table-column checkDueReminderWithConfig label="到期提醒" align="center" prop="remark" min-width="180">
+      <el-table-column checkDueReminderWithConfig label="到期提醒" align="center" prop="remark" min-width="100">
         <template slot-scope="scope">
           <el-tag effect="plain" :hit="true" :class="checkDueReminderWithConfig(scope.row.deadline).color">
             {{ checkDueReminderWithConfig(scope.row.deadline).message }}
@@ -198,8 +198,8 @@
           <!-- <dict-tag :options="dict.type.sys_maturity" :value="scope.row.remark" /> -->
         </template>
       </el-table-column>
-      <el-table-column checkDueReminderWithConfig label="回款账户" align="center" prop="collectionAccount" />
-      <el-table-column checkDueReminderWithConfig label="备注" align="center" prop="comment" />
+      <el-table-column checkDueReminderWithConfig label="回款账户" align="center" prop="collectionAccount" min-width="260"/>
+      <el-table-column checkDueReminderWithConfig label="备注" align="center" prop="comment" min-width="200" />
       <!-- <el-table-column label="ID" align="center" prop="id" /> -->
       <el-table-column fixed="right" label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -217,7 +217,7 @@
       @pagination="getList" />
 
     <!-- 添加或修改反向保理对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="60%" append-to-body>
+    <el-dialog :title="title" :visible.sync="open" min-width="60%" append-to-body>
       <el-divider class="no_mt mb20"></el-divider>
 
       <div v-if="created_successfully == false">

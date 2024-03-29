@@ -80,35 +80,35 @@
 
     <el-table v-loading="loading" :data="loanList" @selection-change="handleSelectionChange"
       :header-cell-style="header_cell_style">
-      <el-table-column show-overflow-tooltip fixed="left" type="selection" width="55" align="center" />
+      <el-table-column show-overflow-tooltip fixed="left" type="selection" width="50" align="center" />
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
       <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" />
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
-      <el-table-column show-overflow-tooltip label="金融机构" align="center" prop="financialInstitution" min-width="180">
+      <el-table-column show-overflow-tooltip label="金融机构" align="center" prop="financialInstitution"  min-width="260">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_acceptor" :value="scope.row.financialInstitution" />
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="借款金额（万元）" align="center" prop="loanAmount" min-width="180">
+      <el-table-column show-overflow-tooltip label="借款金额（万元）" align="center" prop="loanAmount" min-width="160">
         <template slot-scope="scope">
           <span>{{ formatNumberAsRMB(scope.row.loanAmount) }}</span>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="借款单位" align="center" prop="borrowingUnit" min-width="180">
+      <el-table-column show-overflow-tooltip label="借款单位" align="center" prop="borrowingUnit"  min-width="260">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1759464239669444600" :value="scope.row.borrowingUnit" />
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="量化内容" align="center" prop="quantitativeContent" min-width="120" />
-      <el-table-column show-overflow-tooltip label="量化目标" align="center" prop="quantitativeGoals" min-width="120" />
-      <el-table-column show-overflow-tooltip label="当前实现" align="center" prop="currentImplementation" min-width="120" />
-      <el-table-column show-overflow-tooltip label="剩余实现" align="center" prop="remainingQuantity" min-width="120" />
-      <el-table-column show-overflow-tooltip label="借款期限" align="center" prop="loanTerm">
+      <el-table-column show-overflow-tooltip label="量化内容" align="center" prop="quantitativeContent" min-width="100" />
+      <el-table-column show-overflow-tooltip label="量化目标" align="center" prop="quantitativeGoals" min-width="100" />
+      <el-table-column show-overflow-tooltip label="当前实现" align="center" prop="currentImplementation" min-width="100" />
+      <el-table-column show-overflow-tooltip label="剩余实现" align="center" prop="remainingQuantity" min-width="100" />
+      <el-table-column show-overflow-tooltip label="借款期限" align="center" prop="loanTerm"  min-width="100">
         <template slot-scope="scope">
           <span>{{ appendUnit(scope.row.loanTerm, '天') }}</span>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="贷后状态跟踪" align="center" prop="afterLoanState" min-width="180">
+      <el-table-column show-overflow-tooltip label="贷后状态跟踪" align="center" prop="afterLoanState" min-width="120">
         <template slot-scope="scope">
           <!-- <dict-tag :options="dict.type.sys_1759464706814247000" :value="scope.row.afterLoanState" /> -->
           <svg-icon :icon-class="scope.row.afterLoanState"></svg-icon> <dict-tag style="display: inline-block;"
@@ -117,7 +117,7 @@
       </el-table-column>
 
       <!-- <el-table-column label="进度说明" align="center" prop="progressDescription" /> -->
-      <el-table-column show-overflow-tooltip label="备注" align="center" prop="comment" />
+      <el-table-column show-overflow-tooltip label="备注" align="center" prop="comment"  min-width="200"/>
       <!-- <el-table-column label="uuid" align="center" prop="uuid" /> -->
       <el-table-column show-overflow-tooltip label="操作" fixed="right" align="center"
         class-name="small-padding fixed-width">
@@ -592,7 +592,7 @@ export default {
           const data = JSON.parse(JSON.stringify(this.form))
           this.form.rzsrc2List = this.rzsrc2List;
           this.rzaudit_data = null;
-          
+
           // 金额需要 * 10000
           data.loanAmount = Number(data.loanAmount) * 10000;
           if (this.form.id != null) {

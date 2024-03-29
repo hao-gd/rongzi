@@ -218,23 +218,23 @@
 
     <el-table v-loading="loading" :data="internalList" @selection-change="handleSelectionChange"
       :header-cell-style="header_cell_style">
-      <el-table-column show-overflow-tooltip fixed="left" type="selection" width="55" align="center" />
+      <el-table-column show-overflow-tooltip fixed="left" type="selection" width="50" align="center" />
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
       <!-- <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" min-width="100"/> -->
       <!-- <el-table-column show-overflow-tooltip label="担保合同编号" align="center" prop="contractId" width="180" /> -->
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
-      <el-table-column show-overflow-tooltip label="担保人" align="center" prop="guarantor" min-width="120">
+      <el-table-column show-overflow-tooltip label="担保人" align="center" prop="guarantor"  min-width="260">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1767155091485229000" :value="scope.row.guarantor" />
         </template>
       </el-table-column>
       <!-- 少一个担保类别 -->
-      <el-table-column show-overflow-tooltip label="借款人" align="center" prop="creditor" min-width="120">
+      <el-table-column show-overflow-tooltip label="借款人" align="center" prop="creditor"  min-width="260">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1767154968256577500" :value="scope.row.creditor" />
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="债权人" align="center" prop="financialInstitution" min-width="120">
+      <el-table-column show-overflow-tooltip label="债权人" align="center" prop="financialInstitution"  min-width="260">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1757271666666242000" :value="scope.row.financialInstitution" />
         </template>
@@ -244,22 +244,22 @@
           <dict-tag :options="dict.type.sys_1767155302261588000" :value="scope.row.businessType" />
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="担保金额（万元）" align="center" prop="guaranteeAmount" width="180">
+      <el-table-column show-overflow-tooltip label="担保金额（万元）" align="center" prop="guaranteeAmount" width="160">
         <template slot-scope="scope">
           <span>{{ formatNumberAsRMB(scope.row.guaranteeAmount) }}</span>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="担保余额（万元）" align="center" prop="guaranteeBalance" width="180">
+      <el-table-column show-overflow-tooltip label="担保余额（万元）" align="center" prop="guaranteeBalance" width="160">
         <template slot-scope="scope">
           <span>{{ formatNumberAsRMB(scope.row.guaranteeBalance) }}</span>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="起始日" align="center" prop="startDate" width="180">
+      <el-table-column show-overflow-tooltip label="起始日" align="center" prop="startDate" width="100">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.startDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="到期日" align="center" prop="deadline" width="180">
+      <el-table-column show-overflow-tooltip label="到期日" align="center" prop="deadline" width="100">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.deadline, '{y}-{m}-{d}') }}</span>
         </template>
@@ -269,12 +269,12 @@
           <dict-tag :options="dict.type.sys_1767155825266131000" :value="scope.row.guaranteeMethod" />
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="是否上征信" align="center" prop="isCreditInvestigation" width="180">
+      <el-table-column show-overflow-tooltip label="是否上征信" align="center" prop="isCreditInvestigation" width="100">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1767156259322069000" :value="scope.row.isCreditInvestigation" />
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="备注" align="center" prop="comment" min-width="120"/>
+      <el-table-column show-overflow-tooltip label="备注" align="center" prop="comment" min-width="200"/>
       <!-- <el-table-column show-overflow-tooltip label="创建人" align="center" prop="createBy" min-width="120"/> -->
       <!-- <el-table-column show-overflow-tooltip label="创建时间" align="center" prop="createTime" width="180">
         <template slot-scope="scope">

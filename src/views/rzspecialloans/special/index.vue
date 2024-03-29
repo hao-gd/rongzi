@@ -105,17 +105,17 @@
 
     <el-table v-loading="loading" :data="specialList" @selection-change="handleSelectionChange"
       :header-cell-style="header_cell_style">
-      <el-table-column show-overflow-tooltip fixed="left" type="selection" width="55" align="center" />
+      <el-table-column show-overflow-tooltip fixed="left" type="selection" width="50" align="center" />
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
       <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" min-width="100" />
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
 
-      <el-table-column show-overflow-tooltip label="借款人" align="center" prop="borrower" min-width="120">
+      <el-table-column show-overflow-tooltip label="借款人" align="center" prop="borrower" min-width="260">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1767154968256577500" :value="scope.row.borrower" />
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="债权人" align="center" prop="payee" min-width="120">
+      <el-table-column show-overflow-tooltip label="债权人" align="center" prop="payee" min-width="260">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1757271666666242000" :value="scope.row.payee" />
         </template>
@@ -125,18 +125,18 @@
           <dict-tag :options="dict.type.sys_1767155302261588000" :value="scope.row.loanUse" />
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="借款金额（万元）" align="center" prop="loanAmount" width="180"
+      <el-table-column show-overflow-tooltip label="借款金额（万元）" align="center" prop="loanAmount" width="160"
         min-width="180">
         <template slot-scope="scope">
           <span>{{ formatNumberAsRMB(scope.row.loanAmount) }}</span>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip width="180" label="已还金额（万元）" align="center" prop="repaidAmount">
+      <el-table-column show-overflow-tooltip width="160" label="已还金额（万元）" align="center" prop="repaidAmount">
         <template slot-scope="scope">
           <span>{{ formatNumberAsRMB(scope.row.repaidAmount) }}</span>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip width="180" label="余额（万元）" align="center" prop="balance">
+      <el-table-column show-overflow-tooltip width="160" label="余额（万元）" align="center" prop="balance">
         <template slot-scope="scope">
           <span>{{ formatNumberAsRMB(scope.row.balance) }}</span>
         </template>
@@ -151,12 +151,12 @@
           <span>{{ parseTime(scope.row.dueDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column> -->
-      <el-table-column show-overflow-tooltip label="借款期限" align="center" prop="loanTerm" min-width="120">
+      <el-table-column show-overflow-tooltip label="借款期限" align="center" prop="loanTerm" min-width="100">
         <template slot-scope="scope">
           <span>{{ appendUnit(scope.row.loanTerm, '月') }}</span>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="利率" align="center" prop="rate" min-width="120">
+      <el-table-column show-overflow-tooltip label="利率" align="center" prop="rate" min-width="80">
         <template slot-scope="scope">
           <span>{{ appendUnit(scope.row.rate, '%') }}</span>
         </template>

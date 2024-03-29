@@ -88,27 +88,27 @@
 
     <el-table v-loading="loading" :data="letterList" @selection-change="handleSelectionChange"
       :header-cell-style="header_cell_style">
-      <el-table-column show-overflow-tooltip fixed="left" type="selection" width="55" align="center" />
-      <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" />
+      <el-table-column show-overflow-tooltip fixed="left" type="selection" min-width="50" align="center" />
+      <el-table-column show-overflow-tooltip label="管理编号" align="center"  min-width="100" prop="managementId" />
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
       <!-- <el-table-column label="审核id" align="center" prop="auditId" /> -->
-      <el-table-column show-overflow-tooltip label="信用证号码" align="center" prop="creditNumber" min-width="180"/>
-      <el-table-column show-overflow-tooltip label="开证金额" align="center" prop="issuingAmount">
+      <el-table-column show-overflow-tooltip label="信用证号码" align="center" prop="creditNumber"  min-width="180"/>
+      <el-table-column show-overflow-tooltip label="开证金额" align="center" prop="issuingAmount"  min-width="160">
         <template slot-scope="scope">
           <span>{{ formatNumberAsRMB(scope.row.issuingAmount) }}</span>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="开证日期" align="center" prop="issuingDate" width="180">
+      <el-table-column show-overflow-tooltip label="开证日期" align="center" prop="issuingDate" min-width="100">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.issuingDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="有效日期" align="center" prop="effectiveDate" width="180">
+      <el-table-column show-overflow-tooltip label="有效日期" align="center" prop="effectiveDate" min-width="100">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.effectiveDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="到期提醒" align="center" prop="remark">
+      <el-table-column show-overflow-tooltip label="到期提醒" align="center" prop="remark" min-width="100">
         <template slot-scope="scope">
           <!-- <dict-tag :options="dict.type.sys_maturity" :value="scope.row.remark" /> -->
           <el-tag effect="plain" :hit="true" :class="checkDueReminderWithConfig(scope.row.effectiveDate).color">
@@ -116,22 +116,22 @@
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="开证申请人" align="center" prop="applicant" min-width="180">
+      <el-table-column show-overflow-tooltip label="开证申请人" align="center" prop="applicant" min-width="260">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1757265915323351000" :value="scope.row.applicant" />
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="收益人" align="center" prop="beneficiary">
+      <el-table-column show-overflow-tooltip label="收益人" align="center" prop="beneficiary" min-width="260">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1757265828501258200" :value="scope.row.beneficiary" />
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="金融机构" align="center" prop="financialInstitution" min-width="180">
+      <el-table-column show-overflow-tooltip label="金融机构" align="center" prop="financialInstitution" min-width="260">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_acceptor" :value="scope.row.financialInstitution" />
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="备注" align="center" prop="comment" />
+      <el-table-column show-overflow-tooltip label="备注" align="center" prop="comment" min-width="200" />
       <!-- <el-table-column label="ID" align="center" prop="id" /> -->
       <el-table-column fixed="right" label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -149,7 +149,7 @@
       @pagination="getList" />
 
     <!-- 添加或修改信用证对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="60%" append-to-body>
+    <el-dialog :title="title" :visible.sync="open" min-width="60%" append-to-body>
       <el-divider class="no_mt mb20"></el-divider>
 
 
