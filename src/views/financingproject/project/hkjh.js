@@ -310,7 +310,7 @@ export function generateRepaymentPlan(timeline) {
 						"changhuanben": 0,
 						"zhifulixi": 0,
 						"benjinshengyu": event.amount,
-						"lilv": 0,
+						"lilv": rate,
 					})
 
 					// console.log({

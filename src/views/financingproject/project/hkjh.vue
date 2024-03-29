@@ -376,15 +376,16 @@
         this.generateLxData();
         this.repaymentPlanTable = [];
         let datas = [
+          ...addEventsToTimeline('利率变更', this.lvbg, e => e),
+          ...addEventsToTimeline('提取本金', this.zjbj, e => e),
           ...addEventsToTimeline('偿还本金', this.bjch, e => e),
           ...addEventsToTimeline('利息偿还', this.lixichanghuanArray, e => ({
             date: e
-          })),
-          ...addEventsToTimeline('提取本金', this.zjbj, e => e),
-          ...addEventsToTimeline('利率变更', this.lvbg, e => e)
+          }))
         ];
-        //console.log("datas", datas);
+        console.log("datas1", JSON.stringify(datas));
         datas = sortTimeLineByDate(datas)
+        console.log("datas2", datas);
         this.repaymentPlanTable = generateRepaymentPlan(datas)
 
         this.repaymentPlanTable.forEach((plan) => {
