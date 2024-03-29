@@ -35,7 +35,7 @@
 
                 <el-tooltip content="42467000" placement="top" effect="light">
                   <count-to class="card-amount amounts-font cp" :start-val='0' :end-val='42467000' :duration='1000'
-                    :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                    :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
                     :useEasing="true"></count-to>
                 </el-tooltip>
 
@@ -47,13 +47,13 @@
                     <div slot="content">
                       <p class="various-amounts-title mb5">项目贷xxxx</p>
                       <count-to class="various-amounts-amount" :start-val='0' :end-val='42467000' :duration='1000'
-                        :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                        :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
                         :useEasing="true"></count-to>
                     </div>
                     <div>
                       <p class="various-amounts-title mb5">项目贷xxxx</p>
                       <count-to class="various-amounts-amount" :start-val='0' :end-val='42467000' :duration='1000'
-                        :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                        :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
                         :useEasing="true"></count-to>
                     </div>
                   </el-tooltip>
@@ -64,13 +64,13 @@
                     <div slot="content">
                       <p class="various-amounts-title mb5">非项目贷xxxx</p>
                       <count-to class="various-amounts-amount" :start-val='0' :end-val='42467000' :duration='1000'
-                        :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                        :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
                         :useEasing="true"></count-to>
                     </div>
                     <div>
                       <p class="various-amounts-title mb5">非项目贷xxxx</p>
                       <count-to class="various-amounts-amount" :start-val='0' :end-val='42467000' :duration='1000'
-                        :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                        :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
                         :useEasing="true"></count-to>
                     </div>
                   </el-tooltip>
@@ -93,7 +93,7 @@
                     <el-tooltip placement="top" effect="light">
                       <P slot="content">{{ calculateTotal(value) }}</P>
                       <count-to class="card-amount amounts-font cp" :start-val='0' :end-val='calculateTotal(value)'
-                        :duration='1000' :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                        :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
                         :useEasing="true"></count-to>
                     </el-tooltip>
 
@@ -105,13 +105,13 @@
                         <div slot="content">
                           <p class="various-amounts-title mb5">{{ keyc }}</p>
                           <count-to class="various-amounts-amount" :start-val='0' :end-val='valuec / 10000'
-                            :duration='1000' :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                            :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
                             :useEasing="true"></count-to>
                         </div>
                         <div class="mb15">
                           <p class="various-amounts-title mb5">{{ keyc }}</p>
                           <count-to class="various-amounts-amount" :start-val='0' :end-val='valuec / 10000'
-                            :duration='1000' :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                            :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
                             :useEasing="true"></count-to>
                         </div>
                       </el-tooltip>
@@ -132,7 +132,7 @@
                     <el-tooltip placement="top" effect="light">
                       <P slot="content">{{ calculateTotal(value) }}</P>
                       <count-to class="card-amount amounts-font cp" :start-val='0' :end-val='calculateTotal(value)'
-                        :duration='1000' :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                        :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
                         :useEasing="true"></count-to>
                     </el-tooltip>
 
@@ -144,13 +144,13 @@
                         <div slot="content">
                           <p class="various-amounts-title mb5">{{ keyc }}</p>
                           <count-to class="various-amounts-amount" :start-val='0' :end-val='valuec / 10000'
-                            :duration='1000' :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                            :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
                             :useEasing="true"></count-to>
                         </div>
                         <div>
                           <p class="various-amounts-title mb5">{{ keyc }}</p>
                           <count-to class="various-amounts-amount" :start-val='0' :end-val='valuec / 10000'
-                            :duration='1000' :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                            :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
                             :useEasing="true"></count-to>
                         </div>
                       </el-tooltip>
@@ -172,7 +172,7 @@
                     <el-tooltip placement="top" effect="light">
                       <P slot="content">{{ calculateTotal(value) }}</P>
                       <count-to class="card-amount amounts-font cp" :start-val='0' :end-val='calculateTotal(value)'
-                        :duration='1000' :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                        :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
                         :useEasing="true"></count-to>
                     </el-tooltip>
 
@@ -184,14 +184,14 @@
                         <div slot="content">
                           <p class="various-amounts-title mb5">{{ keyc }}</p>
                           <count-to class="various-amounts-amount" :start-val='0' :end-val='valuec' :duration='1000'
-                            :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
-                            :useEasing="true"></count-to>
+                            :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay="true" :useEasing="true">
+                          </count-to>
                         </div>
                         <div class="mb15">
                           <p class="various-amounts-title mb5">{{ keyc }}</p>
                           <count-to class="various-amounts-amount" :start-val='0' :end-val='valuec' :duration='1000'
-                            :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
-                            :useEasing="true"></count-to>
+                            :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay="true" :useEasing="true">
+                          </count-to>
                         </div>
                       </el-tooltip>
                     </div>
@@ -215,21 +215,21 @@
                           <div slot="content">
                             <p class="various-amounts-title mb5">本金（利息）</p>
                             <count-to class="various-amounts-amount dlb" :start-val='0'
-                              :end-val='currentMonthData.totalPrincipal / 10000' :duration='1000' :decimals='0'
+                              :end-val='currentMonthData.totalPrincipal / 10000' :duration='1000' :decimals='2'
                               :separator="','" :prefix="''" :suffix="''" :autoplay="true" :useEasing="true"></count-to>
 
                             (<count-to class="various-amounts-amount dlb" :start-val='0'
-                              :end-val='currentMonthData.totalInterest / 10000' :duration='1000' :decimals='0'
+                              :end-val='currentMonthData.totalInterest / 10000' :duration='1000' :decimals='2'
                               :separator="','" :prefix="''" :suffix="''" :autoplay="true" :useEasing="true"></count-to>)
                           </div>
                           <div class="various-amounts-amount w">
                             <p class="various-amounts-title mb5">本金（利息）</p>
                             <count-to class="various-amounts-amount dlb" :start-val='0'
-                              :end-val='currentMonthData.totalPrincipal / 10000' :duration='1000' :decimals='0'
+                              :end-val='currentMonthData.totalPrincipal / 10000' :duration='1000' :decimals='2'
                               :separator="','" :prefix="''" :suffix="''" :autoplay="true" :useEasing="true"></count-to>
 
                             (<count-to class="various-amounts-amount dlb" :start-val='0'
-                              :end-val='currentMonthData.totalInterest / 10000' :duration='1000' :decimals='0'
+                              :end-val='currentMonthData.totalInterest / 10000' :duration='1000' :decimals='2'
                               :separator="','" :prefix="''" :suffix="''" :autoplay="true" :useEasing="true"></count-to>)
                           </div>
 
@@ -241,12 +241,12 @@
                             <p class="various-amounts-title mb5">已还（未还）</p>
                             <count-to class="various-amounts-amount dlb" :start-val='0'
                               :end-val='(currentMonthData.totalPaidInterest + currentMonthData.totalPaidPrincipal) / 10000'
-                              :duration='1000' :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                              :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
                               :useEasing="true"></count-to>
 
                             (<count-to class="various-amounts-amount dlb" :start-val='0'
                               :end-val='(currentMonthData.totalUnpaidInterest + currentMonthData.totalUnpaidPrincipal) / 10000'
-                              :duration='1000' :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                              :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
                               :useEasing="true"></count-to>)
                           </div>
 
@@ -254,12 +254,12 @@
                             <p class="various-amounts-title mb5">已还（未还）</p>
                             <count-to class="various-amounts-amount dlb" :start-val='0'
                               :end-val='(currentMonthData.totalPaidInterest + currentMonthData.totalPaidPrincipal) / 10000'
-                              :duration='1000' :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                              :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
                               :useEasing="true"></count-to>
 
                             (<count-to class="various-amounts-amount dlb" :start-val='0'
                               :end-val='(currentMonthData.totalUnpaidInterest + currentMonthData.totalUnpaidPrincipal) / 10000'
-                              :duration='1000' :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                              :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
                               :useEasing="true"></count-to>)
                           </div>
                         </el-tooltip>
@@ -277,7 +277,7 @@
                     <el-tooltip placement="top" effect="light">
                       <P slot="content">{{ calculateTotal(NextMonthData) }}</P>
                       <count-to class="card-amount amounts-font cp" :start-val='0'
-                        :end-val='calculateTotal(NextMonthData)' :duration='1000' :decimals='0' :separator="','"
+                        :end-val='calculateTotal(NextMonthData)' :duration='1000' :decimals='2' :separator="','"
                         :prefix="''" :suffix="''" :autoplay="true" :useEasing="true"></count-to>
                     </el-tooltip>
 
@@ -289,13 +289,13 @@
                         <div slot="content">
                           <p class="various-amounts-title mb5">本金</p>
                           <count-to class="various-amounts-amount" :start-val='0'
-                            :end-val='NextMonthData.totalPrincipal / 10000' :duration='1000' :decimals='0'
+                            :end-val='NextMonthData.totalPrincipal / 10000' :duration='1000' :decimals='2'
                             :separator="','" :prefix="''" :suffix="''" :autoplay="true" :useEasing="true"></count-to>
                         </div>
                         <div>
                           <p class="various-amounts-title mb5">本金</p>
                           <count-to class="various-amounts-amount" :start-val='0'
-                            :end-val='NextMonthData.totalPrincipal / 10000' :duration='1000' :decimals='0'
+                            :end-val='NextMonthData.totalPrincipal / 10000' :duration='1000' :decimals='2'
                             :separator="','" :prefix="''" :suffix="''" :autoplay="true" :useEasing="true"></count-to>
                         </div>
                       </el-tooltip>
@@ -306,13 +306,13 @@
                         <div slot="content">
                           <p class="various-amounts-title mb5">利息</p>
                           <count-to class="various-amounts-amount" :start-val='0'
-                            :end-val='NextMonthData.totalInterest / 10000' :duration='1000' :decimals='0' :separator="','"
+                            :end-val='NextMonthData.totalInterest / 10000' :duration='1000' :decimals='2' :separator="','"
                             :prefix="''" :suffix="''" :autoplay="true" :useEasing="true"></count-to>
                         </div>
                         <div>
                           <p class="various-amounts-title mb5">利息</p>
                           <count-to class="various-amounts-amount" :start-val='0'
-                            :end-val='NextMonthData.totalInterest / 10000' :duration='1000' :decimals='0' :separator="','"
+                            :end-val='NextMonthData.totalInterest / 10000' :duration='1000' :decimals='2' :separator="','"
                             :prefix="''" :suffix="''" :autoplay="true" :useEasing="true"></count-to>
                         </div>
                       </el-tooltip>
@@ -337,11 +337,18 @@
 import SearchPanel from '@/components/SearchPanel/index.vue'
 import * as echarts from 'echarts';
 import {
-  getCardData, getCardData2, getCardData3, getRepaymentPlanData, getRepaymentPlan,
+  getCardData,
+  getCardData2,
+  getCardData3,
+  getRepaymentPlanData,
+  getRepaymentPlan,
   getNextRepaymentPlan
 } from '@/api/dashboard/index'
 import resize from './dashboard/mixins/resize'
-import { mapGetters, mapState } from "vuex";
+import {
+  mapGetters,
+  mapState
+} from "vuex";
 import moment from 'moment';
 const color = {
   totalFinancingAmount: '#F77234',
@@ -358,25 +365,62 @@ export default {
     return {
       // 版本号
       version: "3.8.6",
-      rows: [
-        {
+      rows: [{
+        id: 1,
+        cols: [{
           id: 1,
-          cols: [
-            { id: 1, span: 5, content: '第一行第一个列', bgurl: require('../assets/images/rzkb1.png') },
-            { id: 2, span: 5, content: '第一行第二个列', bgurl: require('../assets/images/rzkb2.png') },
-            { id: 3, span: 7, content: '第一行第三个列', bgurl: require('../assets/images/rzkb3.png') },
-            { id: 4, span: 7, content: '第一行第四个列', bgurl: require('../assets/images/rzkb4.png') },
-          ],
+          span: 5,
+          content: '第一行第一个列',
+          bgurl: require('../assets/images/rzkb1.png')
         },
         {
           id: 2,
-          cols: [
-            { id: 5, span: 5, content: '第二行第一个列', bgurl: require('../assets/images/rzkb5.png') },
-            { id: 6, span: 5, content: '第二行第二个列', bgurl: require('../assets/images/rzkb6.png') },
-            { id: 7, span: 7, content: '第二行第三个列', bgurl: require('../assets/images/rzkb7.png') },
-            { id: 8, span: 7, content: '第二行第四个列', bgurl: require('../assets/images/rzkb8.png') },
-          ],
+          span: 5,
+          content: '第一行第二个列',
+          bgurl: require('../assets/images/rzkb2.png')
         },
+        {
+          id: 3,
+          span: 7,
+          content: '第一行第三个列',
+          bgurl: require('../assets/images/rzkb3.png')
+        },
+        {
+          id: 4,
+          span: 7,
+          content: '第一行第四个列',
+          bgurl: require('../assets/images/rzkb4.png')
+        },
+        ],
+      },
+      {
+        id: 2,
+        cols: [{
+          id: 5,
+          span: 5,
+          content: '第二行第一个列',
+          bgurl: require('../assets/images/rzkb5.png')
+        },
+        {
+          id: 6,
+          span: 5,
+          content: '第二行第二个列',
+          bgurl: require('../assets/images/rzkb6.png')
+        },
+        {
+          id: 7,
+          span: 7,
+          content: '第二行第三个列',
+          bgurl: require('../assets/images/rzkb7.png')
+        },
+        {
+          id: 8,
+          span: 7,
+          content: '第二行第四个列',
+          bgurl: require('../assets/images/rzkb8.png')
+        },
+        ],
+      },
       ],
       queryParams: {},
       year: '',
@@ -390,12 +434,12 @@ export default {
         tooltip: {
           trigger: 'axis',
           borderWidth: 5,
-          formatter (datas) {
+          formatter(datas) {
             var result = datas[0].axisValue + '<br/>'; // 显示横坐标值
             datas.forEach(function (item) {
-                // item 是一个包含数据的对象
-                // item.value 是数据值，toFixed(2) 方法用于保留两位小数
-                result += item.marker + ' ' + item.seriesName + ' : ' + item.value.toFixed(2) + '<br/>';
+              // item 是一个包含数据的对象
+              // item.value 是数据值，toFixed(2) 方法用于保留两位小数
+              result += item.marker + ' ' + item.seriesName + ' : ' + (item.value).toFixed(2) + '<br/>';
             });
             return result;
           }
@@ -426,82 +470,78 @@ export default {
         yAxis: {
           type: 'value'
         },
-        series: [
-          {
-            name: '还款合计',
-            type: 'line',
-            stack: 'Total',
-            data: [],
-            data: [],
-            smooth: true,
-            showSymbol: false,
-            lineStyle: {
-              width: 5 // 调整线条的粗细
-            },
-            areaStyle: {
-              opacity: 0.8,
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                {
-                  offset: 0,
-                  color: 'rgba(160, 134, 253, .3)'
-                },
-                {
-                  offset: 1,
-                  color: 'rgba(160, 134, 253, 0)'
-                }
-              ])
-            }
+        series: [{
+          name: '还款合计',
+          type: 'line',
+          stack: 'Total',
+          data: [],
+          data: [],
+          smooth: true,
+          showSymbol: false,
+          lineStyle: {
+            width: 5 // 调整线条的粗细
           },
-          {
-            name: '还款本金',
-            key: 'totalPrincipal',
-            type: 'line',
-            stack: 'Total',
-            data: [],
-            smooth: true,
-            showSymbol: false,
-            lineStyle: {
-              width: 5 // 调整线条的粗细
+          areaStyle: {
+            opacity: 0.8,
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+              offset: 0,
+              color: 'rgba(160, 134, 253, .3)'
             },
-            areaStyle: {
-              opacity: 0.8,
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                {
-                  offset: 0,
-                  color: 'rgba(35, 173, 255, .3)'
-                },
-                {
-                  offset: 1,
-                  color: 'rgba(35, 173, 255, 0)'
-                }
-              ])
+            {
+              offset: 1,
+              color: 'rgba(160, 134, 253, 0)'
             }
+            ])
+          }
+        },
+        {
+          name: '还款本金',
+          key: 'totalPrincipal',
+          type: 'line',
+          stack: 'Total',
+          data: [],
+          smooth: true,
+          showSymbol: false,
+          lineStyle: {
+            width: 5 // 调整线条的粗细
           },
-          {
-            name: '还款利息',
-            key: 'totalInterest',
-            type: 'line',
-            stack: 'Total',
-            data: [],
-            smooth: true,
-            showSymbol: false,
-            lineStyle: {
-              width: 5 // 调整线条的粗细
+          areaStyle: {
+            opacity: 0.8,
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+              offset: 0,
+              color: 'rgba(35, 173, 255, .3)'
             },
-            areaStyle: {
-              opacity: 0.8,
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                {
-                  offset: 0,
-                  color: 'rgba(19, 207, 178, .3)'
-                },
-                {
-                  offset: 1,
-                  color: 'rgba(19, 207, 178, 0)'
-                }
-              ])
+            {
+              offset: 1,
+              color: 'rgba(35, 173, 255, 0)'
             }
+            ])
+          }
+        },
+        {
+          name: '还款利息',
+          key: 'totalInterest',
+          type: 'line',
+          stack: 'Total',
+          data: [],
+          smooth: true,
+          showSymbol: false,
+          lineStyle: {
+            width: 5 // 调整线条的粗细
           },
+          areaStyle: {
+            opacity: 0.8,
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+              offset: 0,
+              color: 'rgba(19, 207, 178, .3)'
+            },
+            {
+              offset: 1,
+              color: 'rgba(19, 207, 178, 0)'
+            }
+            ])
+          }
+        },
         ]
       },
       myChart: null,
@@ -621,10 +661,11 @@ export default {
           const data = JSON.parse(JSON.stringify(res.data));
           this.listData = data;
 
-          this.option.series[0].data = this.transformAndFillData(data, this.option.xAxis.data, ['totalPrincipal', 'totalInterest']);
+          this.option.series[0].data = this.transformAndFillData(data, this.option.xAxis.data, ['totalPrincipal',
+            'totalInterest'
+          ]);
           this.option.series[1].data = this.transformAndFillData(data, this.option.xAxis.data, 'totalPrincipal');
           this.option.series[2].data = this.transformAndFillData(data, this.option.xAxis.data, 'totalInterest');
-          console.log(this.option.series[0].data);
           this.init();
         }
       } catch (error) {
@@ -650,6 +691,7 @@ export default {
       }
     },
     calculateTotal(obj) {
+      console.log(obj);
       let total = 0;
       for (let key in obj) {
         if (key !== 'bgID' || key !== 'month') {
@@ -732,7 +774,7 @@ export default {
   box-sizing: border-box;
   display: flex;
   justify-content: space-between;
-  padding-right: 20px;
+  padding-right: 30px;
 
   >div:nth-of-type(1) {
     width: 60%;

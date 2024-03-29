@@ -177,7 +177,7 @@ export default {
                         datas.forEach(function (item) {
                             // item 是一个包含数据的对象
                             // item.value 是数据值，toFixed(2) 方法用于保留两位小数
-                            result += item.marker + ' ' + item.seriesName + ' : ' + item.value.toFixed(2) + '<br/>';
+                            result += item.marker + ' ' + item.seriesName + ' : ' + (item.value).toFixed(2) + '<br/>';
                         });
                         return result;
                     }

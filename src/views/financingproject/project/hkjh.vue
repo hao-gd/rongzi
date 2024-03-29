@@ -387,13 +387,13 @@
         datas = sortTimeLineByDate(datas)
         this.repaymentPlanTable = generateRepaymentPlan(datas)
         // 数据回传到父组件
-        this.$emit('getRepaymentPlan', {
-          bjch: this.bjch,
-          zjbj: this.zjbj,
-          lvbg: this.lvbg,
-          lixichanghuanArray: this.lixichanghuanArray,
-          repaymentPlanTable: this.repaymentPlanTable
-        })
+        // this.$emit('getRepaymentPlan', {
+        //   bjch: this.bjch,
+        //   zjbj: this.zjbj,
+        //   lvbg: this.lvbg,
+        //   lixichanghuanArray: this.lixichanghuanArray,
+        //   repaymentPlanTable: this.repaymentPlanTable
+        // })
       },
       // 数组清空
       clearHkjhList() {
