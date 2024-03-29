@@ -47,7 +47,7 @@ export function delProject(id) {
 // 获取还款计划展示数据
 export function getRepaymentPlan(query) {
   return request({
-    url: '/huankuanjihua/mingxi/list',
+    url: '/huankuanjihua/mingxi/all',
     method: 'get',
     params: query
   })
