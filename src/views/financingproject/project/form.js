@@ -203,7 +203,7 @@ export const hkjh_repaymentPlanClearingTableColumn = [
     },
     {
         label: '利率',
-        prop: 'comment',
+        prop: 'lilv',
         width: '',
         minWidth: '100',
     },

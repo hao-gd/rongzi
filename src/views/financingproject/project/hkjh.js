@@ -303,7 +303,6 @@ export function generateRepaymentPlan(timeline) {
 			case '提取本金':
 				if (principal == 0 && changhuanindex == 0) {
           //首次提取本金的时候，是0次信息
-          //忘记给利率字段了用comment 记录
 					zuizhongjihua.push({
 						"qishu": changhuanindex,
 						"riqi": currentDate.format("YYYY-MM-DD"),
@@ -311,7 +310,7 @@ export function generateRepaymentPlan(timeline) {
 						"changhuanben": 0,
 						"zhifulixi": 0,
 						"benjinshengyu": event.amount,
-						"comment": 0,
+						"lilv": 0,
 					})
 
 					// console.log({
@@ -339,7 +338,7 @@ export function generateRepaymentPlan(timeline) {
 					"changhuanben": changhuanjine,
 					"zhifulixi": 0,
 					"benjinshengyu": principal,
-					"comment": rate,
+					"lilv": rate,
 				})
 				// console.log({
 				// 	"期数": changhuanindex,
@@ -365,7 +364,7 @@ export function generateRepaymentPlan(timeline) {
 					"changhuanben": 0,
 					"zhifulixi": (interestAccrued).toFixed(2),
 					"benjinshengyu": principal,
-					"comment": rate,
+					"lilv": rate,
 				})
 				// console.log({
 				// 	"期数": changhuanindex,
