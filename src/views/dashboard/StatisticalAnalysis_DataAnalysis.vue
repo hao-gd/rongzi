@@ -58,7 +58,7 @@
                             <p class="right-text">担保总额（万元）</p>
                             <p class="right-amount">
                                 <count-to :start-val='0' :end-val="calculateTotalByKey(listData, 'totalGuaranteeAmount')"
-                                    :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay=true
+                                    :duration='1000' :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay=true
                                     :useEasing="true"></count-to>
                             </p>
                         </div>
@@ -69,7 +69,7 @@
                             <p class="right-text">总担保余额（万元）</p>
                             <p class="right-amount">
                                 <count-to :start-val='0' :end-val="calculateTotalByKey(listData, 'totalGuaranteeBalance')"
-                                    :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay=true
+                                    :duration='1000' :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay=true
                                     :useEasing="true"></count-to>
                             </p>
                         </div>
@@ -81,7 +81,7 @@
                             <p class="right-amount">
                                 <count-to :start-val='0'
                                     :end-val="calculateTotalByKey(listData, 'internalGuaranteeBalance')" :duration='1000'
-                                    :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay=true
+                                    :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay=true
                                     :useEasing="true"></count-to>
                             </p>
                         </div>
@@ -93,7 +93,7 @@
                             <p class="right-amount">
                                 <count-to :start-val='0'
                                     :end-val="calculateTotalByKey(listData, 'externalGuaranteeBalance')" :duration='1000'
-                                    :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay=true
+                                    :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay=true
                                     :useEasing="true"></count-to>
                             </p>
                         </div>
@@ -171,7 +171,16 @@ export default {
                     show: false,
                 },
                 tooltip: {
-                    trigger: 'axis'
+                    trigger: 'axis',
+                    formatter(datas) {
+                        var result = datas[0].axisValue + '<br/>'; // 显示横坐标值
+                        datas.forEach(function (item) {
+                            // item 是一个包含数据的对象
+                            // item.value 是数据值，toFixed(2) 方法用于保留两位小数
+                            result += item.marker + ' ' + item.seriesName + ' : ' + (item.value).toFixed(2) + '<br/>';
+                        });
+                        return result;
+                    }
                 },
                 grid: {
                     left: '3%',
@@ -494,4 +503,5 @@ export default {
     line-height: 22px;
     height: 22px;
     font-weight: bold;
-}</style>
+}
+</style>

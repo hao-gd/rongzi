@@ -349,7 +349,7 @@
             <el-col :span="8">
               <el-form-item label="授信金额（万元）" prop="creditAmount">
                 <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number"
-                  v-model.number.trim="form.creditAmount" placeholder="请输入授信金额" />
+                  v-model.trim="form.creditAmount" placeholder="请输入授信金额" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -358,14 +358,14 @@
             <el-col :span="8">
               <el-form-item label="已用授信金额（万元）" prop="usedCreditAmount">
                 <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number"
-                  v-model.number.trim="form.usedCreditAmount" placeholder="请输入已用授信金额" />
+                  v-model.trim="form.usedCreditAmount" placeholder="请输入已用授信金额" />
               </el-form-item>
             </el-col>
 
             <el-col :span="8">
               <el-form-item label="授信余额（万元）" prop="remainingCreditAmount">
                 <el-input :readonly="true" :disabled="true" @keydown.native="amountLimitMethod" type="number"
-                  v-model.number.trim="remainingCreditAmount" placeholder="请输入剩余授信金额" />
+                  v-model.trim="remainingCreditAmount" placeholder="请输入剩余授信金额" />
               </el-form-item>
             </el-col>
 

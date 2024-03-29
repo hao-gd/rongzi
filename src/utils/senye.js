@@ -295,7 +295,7 @@ export function amountLimitMethod(e) {
   const dotIndex = e.target.value.indexOf('.');
   if (dotIndex !== -1) {
     // 如果存在小数点，确保只保留小数点后两位
-    e.target.value = e.target.value.slice(0, dotIndex + 3);
+    e.target.value = e.target.value.slice(0, dotIndex + 2);
   }
   // e.target.value = (e.target.value.match(/^\d*(\.?\d{1,2})/g)[0]) || ''
 }

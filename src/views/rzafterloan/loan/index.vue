@@ -165,7 +165,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="借款金额（万元）" prop="loanAmount">
-                <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number" v-model.number.trim="form.loanAmount" placeholder="请输入借款金额" />
+                <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number" v-model.trim="form.loanAmount" placeholder="请输入借款金额" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -199,7 +199,7 @@
             <el-col :span="8">
               <el-form-item label="借款期限（月）" prop="loanTerm">
                 <el-input :readonly="!isEditable" v-model="creditCycle" placeholder="请输入借款期限" />
-                <!-- <el-input :readonly="!isEditable" placeholder="请输入借款期限" v-model.number.trim="form.loanTerm" type="number"
+                <!-- <el-input :readonly="!isEditable" placeholder="请输入借款期限" v-model.trim="form.loanTerm" type="number"
                   class="input-with-select">
                   <el-select filterable class="w150" :disabled="!isEditable" v-model="termType" slot="prepend" placeholder="选择期限类型">
                     <el-option label="年" value="年"></el-option>
@@ -226,13 +226,13 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="量化目标（数量）" prop="quantitativeGoals">
-                <el-input :readonly="!isEditable" type="number" v-model.number.trim="form.quantitativeGoals"
+                <el-input :readonly="!isEditable" type="number" v-model.trim="form.quantitativeGoals"
                   placeholder="请输入量化目标" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="当前实现（数量）" prop="currentImplementation">
-                <el-input :readonly="!isEditable" type="number" v-model.number.trim="form.currentImplementation"
+                <el-input :readonly="!isEditable" type="number" v-model.trim="form.currentImplementation"
                   placeholder="请输入当前实现" />
               </el-form-item>
             </el-col>

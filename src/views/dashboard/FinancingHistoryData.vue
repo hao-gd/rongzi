@@ -184,6 +184,15 @@ export default {
                 },
                 tooltip: {
                     trigger: 'axis',
+                    formatter(datas) {
+                        var result = datas[0].axisValue + '<br/>'; // 显示横坐标值
+                        datas.forEach(function (item) {
+                            // item 是一个包含数据的对象
+                            // item.value 是数据值，toFixed(2) 方法用于保留两位小数
+                            result += item.marker + ' ' + item.seriesName + ' : ' + (item.value).toFixed(2) + '<br/>';
+                        });
+                        return result;
+                    }
                 },
                 grid: {
                     left: '3%',
@@ -337,9 +346,6 @@ export default {
             } catch (error) {
                 this.$modal.msgError('数据获取失败，请重新尝试。');
             }
-        },
-        getMonths(data) {
-            return data.map(item => item.month);
         },
         getDatas(data, key) {
             return data.map(item => Number(item[key]) / 10000);
