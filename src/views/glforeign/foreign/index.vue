@@ -461,7 +461,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="担保金额（万元）" prop="guaranteeAmount">
-                <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number"
+                <el-input-number class="w" :controls="false" :precision="2" :readonly="!isEditable" type="number"
                   v-model.trim="form.guaranteeAmount" placeholder="请输入担保金额" />
               </el-form-item>
             </el-col>
@@ -472,7 +472,7 @@
 
             <el-col :span="8">
               <el-form-item label="担保余额（万元）" prop="guaranteeBalance">
-                <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number"
+                <el-input-number class="w" :controls="false" :precision="2" :readonly="!isEditable" type="number"
                   v-model.trim="form.guaranteeBalance" placeholder="请输入担保余额" />
               </el-form-item>
             </el-col>

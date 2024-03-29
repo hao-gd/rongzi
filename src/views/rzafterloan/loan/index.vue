@@ -165,7 +165,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="借款金额（万元）" prop="loanAmount">
-                <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number" v-model.trim="form.loanAmount" placeholder="请输入借款金额" />
+                <el-input-number class="w" :controls="false" :precision="2" :readonly="!isEditable" type="number" v-model.trim="form.loanAmount" placeholder="请输入借款金额" />
               </el-form-item>
             </el-col>
           </el-row>

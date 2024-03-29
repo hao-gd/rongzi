@@ -149,8 +149,9 @@ export const rules = {
 export function renderInput(field) {
     return (h, { row }) =>
         row.editing
-            ? h('el-input', {
-                props: { value: row[field], type: 'number' },
+            ? h('el-input-number', {
+                class: 'w',
+                props: { value: row[field], type: 'number', controls: false, precision: 2 },
                 on: { 'input': (value) => (row[field] = Number(value)) }
             })
             : h('span', row[field])

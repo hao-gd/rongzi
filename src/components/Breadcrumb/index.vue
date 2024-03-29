@@ -35,7 +35,7 @@ export default {
       const first = matched[0]
 
       if (!this.isDashboard(first)) {
-        matched = [{ path: '/index', meta: { title: '首页' }}].concat(matched)
+        matched = [{ path: '/', meta: { title: '融资快报' }}].concat(matched)
       }
 
       this.levelList = matched.filter(item => item.meta && item.meta.title && item.meta.breadcrumb !== false)
@@ -45,7 +45,7 @@ export default {
       if (!name) {
         return false
       }
-      return name.trim() === 'Index'
+      return name.trim() === '/'
     },
     handleLink(item) {
       const { redirect, path } = item

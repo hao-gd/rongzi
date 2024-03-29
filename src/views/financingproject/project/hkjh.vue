@@ -103,8 +103,6 @@
   import {
     Grid as TinyGrid,
     GridColumn as TinyGridColumn,
-    Input,
-    DatePicker as TinyDatePicker
   } from '@opentiny/vue'
   import {
     getDatesBasedOnStartDate,

@@ -239,17 +239,17 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="借款金额（万元）" prop="loanAmount">
-                <el-input :readonly="!isEditable" v-model="form.loanAmount" placeholder="请输入借款金额" />
+                <el-input-number class="w" :controls="false" :precision="2" :readonly="!isEditable" v-model="form.loanAmount" placeholder="请输入借款金额" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="手续费（万元）" prop="commission">
-                <el-input :readonly="!isEditable" v-model="form.commission" placeholder="请输入手续费" />
+                <el-input-number class="w" :controls="false" :precision="2" :readonly="!isEditable" v-model="form.commission" placeholder="请输入手续费" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="保证金（万元）" prop="margin">
-                <el-input :readonly="!isEditable" v-model="form.margin" placeholder="请输入保证金" />
+                <el-input-number class="w" :controls="false" :precision="2" :readonly="!isEditable" v-model="form.margin" placeholder="请输入保证金" />
               </el-form-item>
             </el-col>
           </el-row>

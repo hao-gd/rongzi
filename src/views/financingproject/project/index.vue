@@ -175,10 +175,6 @@
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="handleUpdate(scope.row)"
             v-hasPermi="['financingproject:project:edit']">查 看</el-button>
-          <!-- <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)"
-            v-hasPermi="['financingproject:project:edit']">修改</el-button>
-          <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"
-            v-hasPermi="['financingproject:project:remove']">删除</el-button> -->
         </template>
       </el-table-column>
     </el-table>
@@ -198,127 +194,6 @@
           <el-button type="warning" v-else @click="toggleEdit">取消编辑</el-button>
           <el-button type="danger" plain @click="handleDelete(form)">删 除</el-button>
         </div>
-
-        <!-- <el-form ref="form" :model="form" :rules="rules" label-width="80px" label-position="top">
-          <el-row :gutter="20">
-            <el-col :span="8">
-              <el-form-item label="管理编号" prop="managementId">
-                <el-input :readonly="title === '修改融资项目'" v-model="form.managementId" placeholder="请输入管理编号" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="借款人" prop="borrowingUnit">
-                <el-select :disabled="!isEditable" v-model="form.borrowingUnit" filterable placeholder="请选择借款人">
-                  <el-option v-for="dict in dict.type.sys_1767154968256577500" :key="dict.value" :label="dict.label"
-                    :value="dict.label"></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="债权人" prop="financialInstitution">
-                <el-select :disabled="!isEditable" v-model="form.financialInstitution" filterable placeholder="请选择债权人">
-                  <el-option v-for="dict in dict.type.sys_1757271666666242000" :key="dict.value" :label="dict.label"
-                    :value="dict.label"></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-          </el-row>
-
-          <el-row :gutter="20">
-            <el-col :span="8">
-              <el-form-item label="融资类型" prop="financingType">
-                <el-select :disabled="!isEditable" v-model="form.financingType" filterable placeholder="请选择融资类型">
-                  <el-option v-for="dict in dict.type.sys_1759508335389835300" :key="dict.value" :label="dict.label"
-                    :value="dict.label"></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="融资金额（万元）" prop="financingAmount">
-                <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number"
-                  v-model.trim="form.financingAmount" placeholder="请输入融资金额" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="资金用途" prop="contractId">
-                <el-input :readonly="!isEditable" v-model="form.contractId" placeholder="请输入资金用途" />
-              </el-form-item>
-            </el-col>
-          </el-row>
-
-          <el-row :gutter="20">
-            <el-col :span="8">
-              <el-form-item label="放款日" prop="loanDate">
-                <el-date-picker :disabled="!isEditable" clearable v-model="form.loanDate" type="date"
-                  value-format="yyyy-MM-dd" placeholder="请选择放款日" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="到期日" prop="dueDate">
-                <el-date-picker :disabled="!isEditable" clearable v-model="form.dueDate" type="date"
-                  value-format="yyyy-MM-dd" placeholder="请选择到期日" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="借款期限（月）" prop="loanTerm">
-                <el-input :readonly="!isEditable" v-model="creditCycle" placeholder="请输入借款期限" />
-              </el-form-item>
-            </el-col>
-          </el-row>
-
-          <el-row :gutter="20">
-
-            <el-col :span="8">
-              <el-form-item label="年利率" prop="rate">
-                <el-input :readonly="!isEditable" v-model="rate" placeholder="请输入年利率" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="已还金额（万元）" prop="repaidAmount">
-                <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number"
-                  v-model.trim="form.repaidAmount" placeholder="请输入已还金额" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="融资余额（万元）" prop="remainingAmount">
-                <el-input ::readonly="true" :disabled="true" @keydown.native="amountLimitMethod" type="number"
-                  v-model.trim="remainingCreditAmount" placeholder="请输入融资余额" />
-              </el-form-item>
-            </el-col>
-          </el-row>
-
-          <el-row :gutter="20">
-            <el-col :span="8">
-              <el-form-item label="债务状态" prop="loanState">
-                <el-select :disabled="true" v-model="form.loanState" filterable placeholder="请选择债务状态">
-                  <el-option v-for="dict in dict.type.sys_1759509599150407700" :key="dict.value" :label="dict.label"
-                    :value="dict.label"></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-          </el-row>
-
-
-          <el-row :gutter="20">
-            <el-col :span="24">
-              <el-form-item label="备注" prop="comment">
-                <el-input :readonly="!isEditable" v-model="form.comment" show-word-limit maxlength="200" type="textarea"
-                  :rows="4" placeholder="请输入备注信息，最多不超过200字" />
-              </el-form-item>
-            </el-col>
-          </el-row>
-
-          <el-row :gutter="20">
-            <el-col :span="24">
-              <el-form-item label="附件" prop="scrUuid">
-                <div class="p20 appendix">
-                  <file-upload :disabled="!isEditable" v-model="form.scrUuid" :managementId="form.managementId"
-                    @input="upload_completed" :fileSize="10000" :limit="1000" :isShowTip="false" />
-                </div>
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </el-form> -->
 
         <el-form ref="form" :model="form" :rules="rules" label-width="100%" label-position="top">
           <el-row :gutter="20">
@@ -541,18 +416,13 @@
     SnowflakeIdGenerator
   } from '@/utils/index'
   import {
-    listList,
-    getList,
-    delList,
     addList,
-    updateList
   } from "@/api/rzauditlist/list";
 
   import {
     resetForm,
     rules,
     queryParams,
-    multiplySelectedFields
   } from './form'
 
   import {
@@ -863,16 +733,16 @@
       /** 提交按钮 */
       submitForm() {
 
-
-        this.form.tiqubenjin = JSON.stringify(this.$refs.hkjhPanel.zjbj);
-        this.form.changhuanbenjin = JSON.stringify(this.$refs.hkjhPanel.bjch);
-        this.form.lilvbiangeng = JSON.stringify(this.$refs.hkjhPanel.lvbg);
-        this.form.lixichanghuan = JSON.stringify(this.$refs.hkjhPanel.lixichanghuanArray);
-
-        this.form.huankuanmingxi2List = this.$refs.hkjhPanel.repaymentPlanTable
-
         this.$refs["form"].validate(valid => {
           if (valid) {
+
+            this.form.tiqubenjin = JSON.stringify(this.$refs.hkjhPanel.zjbj);
+            this.form.changhuanbenjin = JSON.stringify(this.$refs.hkjhPanel.bjch);
+            this.form.lilvbiangeng = JSON.stringify(this.$refs.hkjhPanel.lvbg);
+            this.form.lixichanghuan = JSON.stringify(this.$refs.hkjhPanel.lixichanghuanArray);
+
+            this.form.huankuanmingxi2List = this.$refs.hkjhPanel.repaymentPlanTable
+
             const data = JSON.parse(JSON.stringify(this.form))
             this.form.rzsrc2List = this.rzsrc2List;
             this.rzaudit_data = null;

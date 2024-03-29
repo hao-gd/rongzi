@@ -201,10 +201,9 @@
             </el-row>
           </el-col>
 
-
           <el-col :span="6">
             <el-row>
-              <el-col :span="24" style="background: #fff;" class="card-panel">
+              <el-col v-if="Object.keys(currentMonthData).length !== 0" :span="24" style="background: #fff;" class="card-panel">
                 <div class="card-content pt40 pb30 pl20" :class="'card-content-bg' + 5">
                   <div class="w">
                     <div class="card-title">本月还款计划</div>
@@ -217,7 +216,6 @@
                             <count-to class="various-amounts-amount dlb" :start-val='0'
                               :end-val='currentMonthData.totalPrincipal / 10000' :duration='1000' :decimals='2'
                               :separator="','" :prefix="''" :suffix="''" :autoplay="true" :useEasing="true"></count-to>
-
                             (<count-to class="various-amounts-amount dlb" :start-val='0'
                               :end-val='currentMonthData.totalInterest / 10000' :duration='1000' :decimals='2'
                               :separator="','" :prefix="''" :suffix="''" :autoplay="true" :useEasing="true"></count-to>)
@@ -269,7 +267,7 @@
                 </div>
               </el-col>
 
-              <el-col :span="24" style="background: #fff;" class="card-panel">
+              <el-col v-if="Object.keys(NextMonthData).length !== 0" :span="24" style="background: #fff;" class="card-panel">
                 <div class="card-content pl20 pb30 pt30" :class="'card-content-bg' + 5">
                   <div>
                     <div class="card-title">下月还款计划</div>
@@ -365,63 +363,6 @@ export default {
     return {
       // 版本号
       version: "3.8.6",
-      rows: [{
-        id: 1,
-        cols: [{
-          id: 1,
-          span: 5,
-          content: '第一行第一个列',
-          bgurl: require('../assets/images/rzkb1.png')
-        },
-        {
-          id: 2,
-          span: 5,
-          content: '第一行第二个列',
-          bgurl: require('../assets/images/rzkb2.png')
-        },
-        {
-          id: 3,
-          span: 7,
-          content: '第一行第三个列',
-          bgurl: require('../assets/images/rzkb3.png')
-        },
-        {
-          id: 4,
-          span: 7,
-          content: '第一行第四个列',
-          bgurl: require('../assets/images/rzkb4.png')
-        },
-        ],
-      },
-      {
-        id: 2,
-        cols: [{
-          id: 5,
-          span: 5,
-          content: '第二行第一个列',
-          bgurl: require('../assets/images/rzkb5.png')
-        },
-        {
-          id: 6,
-          span: 5,
-          content: '第二行第二个列',
-          bgurl: require('../assets/images/rzkb6.png')
-        },
-        {
-          id: 7,
-          span: 7,
-          content: '第二行第三个列',
-          bgurl: require('../assets/images/rzkb7.png')
-        },
-        {
-          id: 8,
-          span: 7,
-          content: '第二行第四个列',
-          bgurl: require('../assets/images/rzkb8.png')
-        },
-        ],
-      },
-      ],
       queryParams: {},
       year: '',
       month: '',
@@ -553,7 +494,10 @@ export default {
         moment().add(1, 'years').format('YYYY-MM')
       ],
       currentMonthData: {},
-      NextMonthData: {},
+      NextMonthData: {
+        totalPrincipal: 0,
+        totalInterest: 0,
+      },
       NextMonthDataKey: {
         'totalPrincipal': '本金',
         'totalInterest': '利息'
@@ -567,6 +511,12 @@ export default {
         setTimeout(() => {
           this.myChart.resize();
         }, 200)
+      },
+      deep: true
+    },
+    currentMonthData: {
+      handler(n, o) {
+        console.log(n, o);
       },
       deep: true
     }
@@ -679,11 +629,11 @@ export default {
         const NextMonth = moment().add(1, 'months').format('YYYY-MM');;
 
         const currentMonthData = await getRepaymentPlan(currentMonth);
-        const NextMonthData = await getNextRepaymentPlan(NextMonth);
-        if (currentMonthData.code === 200) {
+        if (currentMonthData.code === 200 && 'data' in currentMonthData) {
           this.currentMonthData = currentMonthData.data;
         }
-        if (NextMonthData.code === 200) {
+        const NextMonthData = await getNextRepaymentPlan(NextMonth);
+        if (NextMonthData.code === 200 && 'data' in NextMonthData) {
           this.NextMonthData = NextMonthData.data;
         }
       } catch (error) {
@@ -691,7 +641,6 @@ export default {
       }
     },
     calculateTotal(obj) {
-      console.log(obj);
       let total = 0;
       for (let key in obj) {
         if (key !== 'bgID' || key !== 'month') {
