@@ -210,7 +210,7 @@
                     <div class="card-title">本月还款计划</div>
 
                     <el-row :gutter="10">
-                      <el-col :span="12">
+                      <el-col :span="17">
                         <el-tooltip placement="top" effect="light">
                           <div slot="content">
                             <p class="various-amounts-title mb5">本金（利息）</p>
@@ -235,7 +235,7 @@
 
                         </el-tooltip>
                       </el-col>
-                      <el-col :span="12">
+                      <el-col :span="7">
                         <el-tooltip placement="top" effect="light">
                           <div slot="content">
                             <p class="various-amounts-title mb5">已还（未还）</p>
