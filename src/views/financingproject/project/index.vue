@@ -396,7 +396,7 @@
 
             <el-col :span="8">
               <el-form-item label="年利率" prop="rate">
-                <el-input :readonly="true" :disabled="true" v-model="rate" placeholder="请输入年利率" />
+                <el-input :readonly="true"  v-model="rate" placeholder="请输入年利率" />
               </el-form-item>
             </el-col>
             <!-- <el-col :span="8">
