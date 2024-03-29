@@ -13,7 +13,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="借款金额（万元）" prop="loanAmount">
-              <el-input type="number" v-model.number.trim="queryParams.loanAmount" placeholder="请输入借款金额" clearable
+              <el-input type="number" v-model.trim="queryParams.loanAmount" placeholder="请输入借款金额" clearable
                 @keyup.enter.native="handleQuery" />
             </el-form-item>
           </el-col>
@@ -199,7 +199,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="借款金额（万元）" prop="loanAmount">
-                <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number" v-model.number.trim="form.loanAmount" placeholder="请输入借款金额" />
+                <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number" v-model.trim="form.loanAmount" placeholder="请输入借款金额" />
               </el-form-item>
             </el-col>
             <el-col :span="8">

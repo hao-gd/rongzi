@@ -38,7 +38,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="融资金额（万元）" :precision="2" prop="financingAmount">
-              <el-input v-model.number.trim="queryParams.financingAmount" type="number" placeholder="请输入融资金额" clearable
+              <el-input v-model.trim="queryParams.financingAmount" type="number" placeholder="请输入融资金额" clearable
                 @keyup.enter.native="handleQuery" />
             </el-form-item>
           </el-col>
@@ -235,7 +235,7 @@
             <el-col :span="8">
               <el-form-item label="融资金额（万元）" prop="financingAmount">
                 <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number"
-                  v-model.number.trim="form.financingAmount" placeholder="请输入融资金额" />
+                  v-model.trim="form.financingAmount" placeholder="请输入融资金额" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -275,13 +275,13 @@
             <el-col :span="8">
               <el-form-item label="已还金额（万元）" prop="repaidAmount">
                 <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number"
-                  v-model.number.trim="form.repaidAmount" placeholder="请输入已还金额" />
+                  v-model.trim="form.repaidAmount" placeholder="请输入已还金额" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="融资余额（万元）" prop="remainingAmount">
                 <el-input ::readonly="true" :disabled="true" @keydown.native="amountLimitMethod" type="number"
-                  v-model.number.trim="remainingCreditAmount" placeholder="请输入融资余额" />
+                  v-model.trim="remainingCreditAmount" placeholder="请输入融资余额" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -356,7 +356,7 @@
             <el-col :span="8">
               <el-form-item label="融资金额（万元）" prop="financingAmount">
                 <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number"
-                  v-model.number.trim="form.financingAmount" placeholder="请输入融资金额" />
+                  v-model.trim="form.financingAmount" placeholder="请输入融资金额" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -407,13 +407,13 @@
             <el-col :span="8">
               <el-form-item label="已还金额（万元）" prop="repaidAmount">
                 <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number"
-                  v-model.number.trim="form.repaidAmount" placeholder="请输入已还金额" />
+                  v-model.trim="form.repaidAmount" placeholder="请输入已还金额" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="融资余额（万元）" prop="remainingAmount">
                 <el-input :readonly="true" :disabled="true" @keydown.native="amountLimitMethod" type="number"
-                  v-model.number.trim="remainingCreditAmount" placeholder="请输入融资余额" />
+                  v-model="remainingCreditAmount" placeholder="请输入融资余额" />
               </el-form-item>
             </el-col>
           </el-row>

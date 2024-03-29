@@ -100,8 +100,9 @@
                         <div class="small-panel-right-text-content">
                             <p class="right-text">月偿还金额（万元）</p>
                             <p class="right-amount">
-                                <count-to :start-val='0' :end-val='calculateTotal(NextMonthData)' :duration='1000' :decimals='0'
-                                    :separator="','" :prefix="''" :suffix="''" :autoplay=true :useEasing="true"></count-to>
+                                <count-to :start-val='0' :end-val='calculateTotal(NextMonthData)' :duration='1000'
+                                    :decimals='0' :separator="','" :prefix="''" :suffix="''" :autoplay=true
+                                    :useEasing="true"></count-to>
                             </p>
                         </div>
                     </el-col>
@@ -184,6 +185,15 @@ export default {
                 },
                 tooltip: {
                     trigger: 'axis',
+                    formatter(datas) {
+                        var result = datas[0].axisValue + '<br/>'; // 显示横坐标值
+                        datas.forEach(function (item) {
+                            // item 是一个包含数据的对象
+                            // item.value 是数据值，toFixed(2) 方法用于保留两位小数
+                            result += item.marker + ' ' + item.seriesName + ' : ' + item.value.toFixed(2) + '<br/>';
+                        });
+                        return result;
+                    }
                 },
                 grid: {
                     left: '3%',
@@ -338,9 +348,6 @@ export default {
                 this.$modal.msgError('数据获取失败，请重新尝试。');
             }
         },
-        getMonths(data) {
-            return data.map(item => item.month);
-        },
         getDatas(data, key) {
             return data.map(item => Number(item[key]) / 10000);
         },
@@ -385,7 +392,7 @@ export default {
                 const index = xAxisData.indexOf(dataItem.month);
                 if (index !== -1) {
                     // 根据索引位置填充相应的数据
-                    filledData[index] = dataItem[key];
+                    filledData[index] = dataItem[key].toFixed(2);
                 }
             });
             return filledData;

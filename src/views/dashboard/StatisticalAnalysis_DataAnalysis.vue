@@ -171,7 +171,16 @@ export default {
                     show: false,
                 },
                 tooltip: {
-                    trigger: 'axis'
+                    trigger: 'axis',
+                    formatter(datas) {
+                        var result = datas[0].axisValue + '<br/>'; // 显示横坐标值
+                        datas.forEach(function (item) {
+                            // item 是一个包含数据的对象
+                            // item.value 是数据值，toFixed(2) 方法用于保留两位小数
+                            result += item.marker + ' ' + item.seriesName + ' : ' + item.value.toFixed(2) + '<br/>';
+                        });
+                        return result;
+                    }
                 },
                 grid: {
                     left: '3%',
@@ -437,7 +446,7 @@ export default {
                 const index = xAxisData.indexOf(dataItem.month);
                 if (index !== -1) {
                     // 根据索引位置填充相应的数据
-                    filledData[index] = dataItem[key];
+                    filledData[index] = dataItem[key].toFixed(2);
                 }
             });
             return filledData;
@@ -494,4 +503,5 @@ export default {
     line-height: 22px;
     height: 22px;
     font-weight: bold;
-}</style>
+}
+</style>

@@ -174,7 +174,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="开证金额（万元）" prop="issuingAmount">
-                <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number" v-model.number.trim="form.issuingAmount" placeholder="请输入开证金额" />
+                <el-input :readonly="!isEditable" @keydown.native="amountLimitMethod" type="number" v-model.trim="form.issuingAmount" placeholder="请输入开证金额" />
               </el-form-item>
             </el-col>
           </el-row>

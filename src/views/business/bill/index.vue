@@ -193,7 +193,7 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="出票金额（万元）" prop="invoiceAmount">
-                <el-input :readonly="!isEditable" type="number" v-model.number.trim="form.invoiceAmount" placeholder="请输入出票金额" />
+                <el-input :readonly="!isEditable" type="number" v-model.trim="form.invoiceAmount" placeholder="请输入出票金额" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
