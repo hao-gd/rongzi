@@ -549,8 +549,8 @@ export default {
       rzjeData: {},
       dbData: {},
       daterangeLogCreateDate: [
-        moment().subtract(1, 'years').format('YYYY-MM'),
-        moment().format('YYYY-MM')
+        moment().format('YYYY-MM'),
+        moment().add(1, 'years').format('YYYY-MM')
       ],
       currentMonthData: {},
       NextMonthData: {},
