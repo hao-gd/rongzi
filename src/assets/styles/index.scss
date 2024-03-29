@@ -235,3 +235,13 @@ div[data-role="el-divider"] {
 .el-textarea .el-input__count {
   background: transparent !important;
 }
+
+// 隐藏数字类型输入框的左右按钮
+.dis-number-input {
+  .el-input-number__decrease {
+    display: none !important;
+  }
+  .el-input-number__increase {
+    display: none !important;
+  }
+}
