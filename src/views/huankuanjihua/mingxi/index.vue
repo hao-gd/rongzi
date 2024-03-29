@@ -59,24 +59,24 @@
 
     <el-table v-loading="loading" :data="mingxiList" @selection-change="handleSelectionChange"
       :header-cell-style="header_cell_style">
-      <el-table-column fixed="left" type="selection" width="55" align="center" />
       <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managerId" />
-      <el-table-column show-overflow-tooltip label="借款人" align="center" prop="borrowingUnit">
-        <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_1767154968256577500" :value="scope.row.borrowingUnit" />
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="债权人" align="center" prop="financialInstitution">
-        <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_1757271666666242000" :value="scope.row.financialInstitution" />
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="备注" align="center" prop="comment" />
-      <el-table-column show-overflow-tooltip label="还款金额" align="center" prop="huankuanjine" />
-      <el-table-column show-overflow-tooltip label="偿还本金" align="center" prop="changhuanben" />
-      <el-table-column show-overflow-tooltip label="支付利息" align="center" prop="zhifulixi" />
-      <el-table-column show-overflow-tooltip label="本金剩余" align="center" prop="benjinshengyu" />
-      <!-- <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="期数" align="center" prop="qishu" min-width="80" />
+      <el-table-column label="日期" align="center" prop="riqi" min-width="100"/>
+        <el-table-column show-overflow-tooltip label="借款人" align="center" prop="borrowingUnit"  min-width="260">
+          <template slot-scope="scope">
+            <dict-tag :options="dict.type.sys_1767154968256577500" :value="scope.row.borrowingUnit" />
+          </template>
+        </el-table-column>
+        <el-table-column show-overflow-tooltip label="债权人" align="center" prop="financialInstitution"  min-width="260">
+          <template slot-scope="scope">
+            <dict-tag :options="dict.type.sys_1757271666666242000" :value="scope.row.financialInstitution" />
+          </template>
+        </el-table-column>
+        <el-table-column show-overflow-tooltip label="还款金额" align="center" prop="huankuanjine"  min-width="160" />
+        <el-table-column show-overflow-tooltip label="偿还本金" align="center" prop="changhuanben" min-width="160" />
+        <el-table-column show-overflow-tooltip label="支付利息" align="center" prop="zhifulixi" min-width="160" />
+        <el-table-column show-overflow-tooltip label="本金剩余" align="center" prop="benjinshengyu" min-width="160" />
+        <!-- <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)"
             v-hasPermi="['huankuanjihua:mingxi:edit']">修改</el-button>
@@ -90,7 +90,7 @@
       @pagination="getList" />
 
     <!-- 添加或修改还款计划明细对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
+    <el-dialog :title="title" :visible.sync="open" min-width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="还款计划对应项目的管理编号" prop="managerId">
           <el-input v-model="form.managerId" placeholder="请输入还款计划对应项目的管理编号" />
@@ -127,181 +127,186 @@
 </template>
 
 <script>
-import { listMingxi, getMingxi, delMingxi, addMingxi, updateMingxi } from "@/api/huankuanjihua/mingxi";
-import SearchPanel from '@/components/SearchPanel/index.vue'
+  import {
+    listMingxi,
+    getMingxi,
+    delMingxi,
+    addMingxi,
+    updateMingxi
+  } from "@/api/huankuanjihua/mingxi";
+  import SearchPanel from '@/components/SearchPanel/index.vue'
 
-export default {
-  name: "Mingxi",
-  dicts: ['sys_1767154968256577500', 'sys_1757271666666242000'],
-  components: {
-    SearchPanel
-  },
-  data() {
-    return {
-      header_cell_style: {
-        backgroundColor: '#f2f4f5',
-        color: '#000000',
-        fontSize: '14px',
-        fontWeight: 'bold',
-      },
-      // 遮罩层
-      loading: true,
-      // 选中数组
-      ids: [],
-      // 非单个禁用
-      single: true,
-      // 非多个禁用
-      multiple: true,
-      // 显示搜索条件
-      showSearch: true,
-      // 总条数
-      total: 0,
-      // 还款计划明细表格数据
-      mingxiList: [],
-      // 弹出层标题
-      title: "",
-      // 是否显示弹出层
-      open: false,
-      // 备注时间范围
-      daterangeRiqi: [],
-      // 查询参数
-      queryParams: {
-        pageNum: 1,
-        pageSize: 10,
-        managerId: null,
-        borrowingUnit: null,
-        financialInstitution: null,
-        qishu: null,
-        riqi: null,
-        huankuanjine: null,
-        changhuanben: null,
-        zhifulixi: null,
-        benjinshengyu: null,
-        lilv: null,
-        comment: null,
-        createTime: null,
-        createBy: null,
-        updateTime: null,
-        updateBy: null
-      },
-      // 表单参数
-      form: {},
-      // 表单校验
-      rules: {
-      }
-    };
-  },
-  created() {
-    this.getList();
-  },
-  methods: {
-    /** 查询还款计划明细列表 */
-    getList() {
-      this.loading = true;
-      this.queryParams.params = {};
-      if (null != this.daterangeRiqi && '' != this.daterangeRiqi) {
-        this.queryParams.params["beginRiqi"] = this.daterangeRiqi[0];
-        this.queryParams.params["endRiqi"] = this.daterangeRiqi[1];
-      }
-      listMingxi(this.queryParams).then(response => {
-        this.mingxiList = response.rows;
-        this.total = response.total;
-        this.loading = false;
-      });
+  export default {
+    name: "Mingxi",
+    dicts: ['sys_1767154968256577500', 'sys_1757271666666242000'],
+    components: {
+      SearchPanel
     },
-    // 取消按钮
-    cancel() {
-      this.open = false;
-      this.reset();
-    },
-    // 表单重置
-    reset() {
-      this.form = {
-        id: null,
-        managerId: null,
-        qishu: null,
-        riqi: null,
-        huankuanjine: null,
-        changhuanben: null,
-        zhifulixi: null,
-        benjinshengyu: null,
-        comment: null,
-        createTime: null,
-        createBy: null,
-        updateTime: null,
-        updateBy: null
+    data() {
+      return {
+        header_cell_style: {
+          backgroundColor: '#f2f4f5',
+          color: '#000000',
+          fontSize: '14px',
+          fontWeight: 'bold',
+        },
+        // 遮罩层
+        loading: true,
+        // 选中数组
+        ids: [],
+        // 非单个禁用
+        single: true,
+        // 非多个禁用
+        multiple: true,
+        // 显示搜索条件
+        showSearch: true,
+        // 总条数
+        total: 0,
+        // 还款计划明细表格数据
+        mingxiList: [],
+        // 弹出层标题
+        title: "",
+        // 是否显示弹出层
+        open: false,
+        // 备注时间范围
+        daterangeRiqi: [],
+        // 查询参数
+        queryParams: {
+          pageNum: 1,
+          pageSize: 10,
+          managerId: null,
+          borrowingUnit: null,
+          financialInstitution: null,
+          qishu: null,
+          riqi: null,
+          huankuanjine: null,
+          changhuanben: null,
+          zhifulixi: null,
+          benjinshengyu: null,
+          lilv: null,
+          comment: null,
+          createTime: null,
+          createBy: null,
+          updateTime: null,
+          updateBy: null
+        },
+        // 表单参数
+        form: {},
+        // 表单校验
+        rules: {}
       };
-      this.resetForm("form");
     },
-    /** 搜索按钮操作 */
-    handleQuery() {
-      this.queryParams.pageNum = 1;
+    created() {
       this.getList();
     },
-    /** 重置按钮操作 */
-    resetQuery() {
-      this.daterangeRiqi = [];
-      this.resetForm("queryForm");
-      this.handleQuery();
-    },
-    // 多选框选中数据
-    handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.id)
-      this.single = selection.length !== 1
-      this.multiple = !selection.length
-    },
-    /** 新增按钮操作 */
-    handleAdd() {
-      this.reset();
-      this.open = true;
-      this.title = "添加还款计划明细";
-    },
-    /** 修改按钮操作 */
-    handleUpdate(row) {
-      this.reset();
-      const id = row.id || this.ids
-      getMingxi(id).then(response => {
-        this.form = response.data;
-        this.open = true;
-        this.title = "修改还款计划明细";
-      });
-    },
-    /** 提交按钮 */
-    submitForm() {
-      this.$refs["form"].validate(valid => {
-        if (valid) {
-          if (this.form.id != null) {
-            updateMingxi(this.form).then(response => {
-              this.$modal.msgSuccess("修改成功");
-              this.open = false;
-              this.getList();
-            });
-          } else {
-            addMingxi(this.form).then(response => {
-              this.$modal.msgSuccess("新增成功");
-              this.open = false;
-              this.getList();
-            });
-          }
+    methods: {
+      /** 查询还款计划明细列表 */
+      getList() {
+        this.loading = true;
+        this.queryParams.params = {};
+        if (null != this.daterangeRiqi && '' != this.daterangeRiqi) {
+          this.queryParams.params["beginRiqi"] = this.daterangeRiqi[0];
+          this.queryParams.params["endRiqi"] = this.daterangeRiqi[1];
         }
-      });
-    },
-    /** 删除按钮操作 */
-    handleDelete(row) {
-      const ids = row.id || this.ids;
-      this.$modal.confirm('是否确认删除还款计划明细编号为"' + ids + '"的数据项？').then(function () {
-        return delMingxi(ids);
-      }).then(() => {
+        listMingxi(this.queryParams).then(response => {
+          this.mingxiList = response.rows;
+          this.total = response.total;
+          this.loading = false;
+        });
+      },
+      // 取消按钮
+      cancel() {
+        this.open = false;
+        this.reset();
+      },
+      // 表单重置
+      reset() {
+        this.form = {
+          id: null,
+          managerId: null,
+          qishu: null,
+          riqi: null,
+          huankuanjine: null,
+          changhuanben: null,
+          zhifulixi: null,
+          benjinshengyu: null,
+          comment: null,
+          createTime: null,
+          createBy: null,
+          updateTime: null,
+          updateBy: null
+        };
+        this.resetForm("form");
+      },
+      /** 搜索按钮操作 */
+      handleQuery() {
+        this.queryParams.pageNum = 1;
         this.getList();
-        this.$modal.msgSuccess("删除成功");
-      }).catch(() => { });
-    },
-    /** 导出按钮操作 */
-    handleExport() {
-      this.download('huankuanjihua/mingxi/export', {
-        ...this.queryParams
-      }, `mingxi_${new Date().getTime()}.xlsx`)
+      },
+      /** 重置按钮操作 */
+      resetQuery() {
+        this.daterangeRiqi = [];
+        this.resetForm("queryForm");
+        this.handleQuery();
+      },
+      // 多选框选中数据
+      handleSelectionChange(selection) {
+        this.ids = selection.map(item => item.id)
+        this.single = selection.length !== 1
+        this.multiple = !selection.length
+      },
+      /** 新增按钮操作 */
+      handleAdd() {
+        this.reset();
+        this.open = true;
+        this.title = "添加还款计划明细";
+      },
+      /** 修改按钮操作 */
+      handleUpdate(row) {
+        this.reset();
+        const id = row.id || this.ids
+        getMingxi(id).then(response => {
+          this.form = response.data;
+          this.open = true;
+          this.title = "修改还款计划明细";
+        });
+      },
+      /** 提交按钮 */
+      submitForm() {
+        this.$refs["form"].validate(valid => {
+          if (valid) {
+            if (this.form.id != null) {
+              updateMingxi(this.form).then(response => {
+                this.$modal.msgSuccess("修改成功");
+                this.open = false;
+                this.getList();
+              });
+            } else {
+              addMingxi(this.form).then(response => {
+                this.$modal.msgSuccess("新增成功");
+                this.open = false;
+                this.getList();
+              });
+            }
+          }
+        });
+      },
+      /** 删除按钮操作 */
+      handleDelete(row) {
+        const ids = row.id || this.ids;
+        this.$modal.confirm('是否确认删除还款计划明细编号为"' + ids + '"的数据项？').then(function() {
+          return delMingxi(ids);
+        }).then(() => {
+          this.getList();
+          this.$modal.msgSuccess("删除成功");
+        }).catch(() => {});
+      },
+      /** 导出按钮操作 */
+      handleExport() {
+        this.download('huankuanjihua/mingxi/export', {
+          ...this.queryParams
+        }, `mingxi_${new Date().getTime()}.xlsx`)
+      }
     }
-  }
-};
+  };
 </script>

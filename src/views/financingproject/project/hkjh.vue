@@ -290,7 +290,7 @@
         this.zjbj = []
         const data = JSON.parse(JSON.stringify(this.record));
         data.date = this.form.loanDate;
-        data.amount = this.form.financingAmount*10000
+        data.amount = this.form.financingAmount * 10000
         this.$set(this, "zjbj", JSON.parse(JSON.stringify([data])))
       },
 
@@ -303,7 +303,7 @@
         if (this.form.principalRepaymentMethod === '到期还本') {
           const data = JSON.parse(JSON.stringify(this.record));
           data.date = this.form.dueDate;
-          data.amount = this.form.financingAmount*10000;
+          data.amount = this.form.financingAmount * 10000;
           formattedArray = [data]
           // this.addRow('bjch', data)
         } else {
@@ -386,6 +386,13 @@
         //console.log("datas", datas);
         datas = sortTimeLineByDate(datas)
         this.repaymentPlanTable = generateRepaymentPlan(datas)
+
+        this.repaymentPlanTable.forEach((plan) => {
+          plan.borrowing_unit = this.form.borrowingUnit
+          plan.financial_institution = this.form.financialInstitution
+        });
+
+
         // 数据回传到父组件
         // this.$emit('getRepaymentPlan', {
         //   bjch: this.bjch,

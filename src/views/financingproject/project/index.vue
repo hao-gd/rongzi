@@ -397,7 +397,7 @@
 
             <el-col :span="8">
               <el-form-item label="年利率" prop="rate">
-                <el-input :readonly="!isEditable"  v-model="rate" placeholder="请输入年利率" />
+                <el-input :readonly="!isEditable" v-model="rate" placeholder="请输入年利率" />
               </el-form-item>
             </el-col>
             <!-- <el-col :span="8">
@@ -507,7 +507,7 @@
           !empty.includes(this.form.interestRepaymentMethod) &&
           !empty.includes(this.form.financingAmount))">
             <hkjh-panel ref="hkjhPanel" :form="form" :isEditable="isEditable"
-              :huankuanmingxi2List="EchoHuankuanmingxi2List" ></hkjh-panel>
+              :huankuanmingxi2List="EchoHuankuanmingxi2List"></hkjh-panel>
           </el-row>
         </el-form>
 
@@ -860,35 +860,16 @@
         });
       },
 
-      // 还款计划生成的数据返回
-      ReturnGetRepaymentPlan(data) {
-        const {
-          bjch,
-          zjbj,
-          lvbg,
-          lixichanghuanArray,
-          repaymentPlanTable
-        } = data;
-        this.form.tiqubenjin = JSON.stringify(zjbj);
-        this.form.changhuanbenjin = JSON.stringify(bjch);
-        this.form.lilvbiangeng = JSON.stringify(lixichanghuanArray);
-        this.form.lixichanghuan = JSON.stringify(lvbg);
-        // 生成好的还款计划，里面的利率字段需要同步到备注里面
-        const huankuanmingxi2List = repaymentPlanTable.map(i => {
-          i['备注'] = i['利率'];
-          return i;
-        })
-        this.form.huankuanmingxi2List = huankuanmingxi2List;
-      },
       /** 提交按钮 */
       submitForm() {
 
-        this.form.bjch = this.$refs.hkjhPanel.bjch
-        this.form.zjbj = this.$refs.hkjhPanel.zjbj
-        this.form.lvbg = this.$refs.hkjhPanel.lvbg
-        this.form.lixichanghuanArray = this.$refs.hkjhPanel.lixichanghuanArray
-        this.form.repaymentPlanTable = this.$refs.hkjhPanel.repaymentPlanTable
 
+        this.form.tiqubenjin = JSON.stringify(this.$refs.hkjhPanel.zjbj);
+        this.form.changhuanbenjin = JSON.stringify(this.$refs.hkjhPanel.bjch);
+        this.form.lilvbiangeng = JSON.stringify(this.$refs.hkjhPanel.lvbg);
+        this.form.lixichanghuan = JSON.stringify(this.$refs.hkjhPanel.lixichanghuanArray);
+
+        this.form.huankuanmingxi2List = this.$refs.hkjhPanel.repaymentPlanTable
 
         this.$refs["form"].validate(valid => {
           if (valid) {
