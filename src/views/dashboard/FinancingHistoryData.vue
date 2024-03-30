@@ -107,7 +107,7 @@
             <div class="small-panel-right-text-content">
               <p class="right-text">月偿还金额（元）</p>
               <p class="right-amount">
-                <count-to :start-val='0' :end-val="last_data(listData, 'totalRepaidAmount')" :duration='1000'
+                <count-to :start-val='0' :end-val="last_data_add(listData1, 'totalPrincipal','totalInterest')" :duration='1000'
                   :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay=true :useEasing="true"></count-to>
               </p>
             </div>
@@ -138,6 +138,7 @@
   import * as echarts from 'echarts';
   import {
     rzloghistoryFinancing,
+    getRepaymentPlanData,
     getNextRepaymentPlan
   } from '@/api/dashboard/index'
   import moment from 'moment'
@@ -304,6 +305,7 @@
           ]
         },
         listData: [],
+        listData1: [],
       }
     },
     created() {
@@ -363,14 +365,33 @@
             this.listData = data;
             this.option.series[0].data = this.transformAndFillData(data, this.option.xAxis.data,
               'totalFinancingAmount');
-            this.option.series[1].data = this.transformAndFillData(data, this.option.xAxis.data, 'totalRepaidAmount');
+
             this.option.series[2].data = this.transformAndFillData(data, this.option.xAxis.data,
               'totalRemainingAmount');
-            this.init();
+
+            const res1 = await getRepaymentPlanData(this.queryParams);
+            if (res1.code === 200) {
+              const data1 = JSON.parse(JSON.stringify(res1.data));
+              this.listData1 = data1;
+              this.option.series[1].data = this.transformAndFillData(data1, this.option.xAxis.data, ['totalPrincipal',
+                'totalInterest'
+              ]);
+
+              //都成功再初始化
+              this.init();
+            }
+
           }
+
         } catch (error) {
+          console.log(error);
           this.$modal.msgError('数据获取失败，请重新尝试。');
         }
+
+
+
+
+
       },
       getDatas(data, key) {
         return data.map(item => Number(item[key]));
@@ -403,6 +424,15 @@
 
         return total
       },
+
+      last_data_add(listData, k1, k2) {
+        let total = 0
+        if (listData != undefined && listData.length > 0) {
+          total = listData[listData.length - 1][k1]+listData[listData.length - 1][k2]
+        }
+
+        return total
+      },
       calculateTotalByKey(dataList, key) {
         const total = dataList.reduce((total, item) => {
           // 检查当前项是否有指定的key，并且该key对应的值是数字类型
@@ -424,8 +454,17 @@
           // 找到每个数据项对应的月份在 xAxisData 中的索引
           const index = xAxisData.indexOf(dataItem.month);
           if (index !== -1) {
-            // 根据索引位置填充相应的数据
-            filledData[index] = dataItem[key];
+            // 如果 key 是字符串数组，则累加各项的值
+            if (Array.isArray(key)) {
+              let sum = 0;
+              key.forEach(k => {
+                sum += dataItem[k] || 0; // 使用 || 0 来确保未定义的值被当作 0 处理
+              });
+              filledData[index] = sum;
+            } else {
+              // 如果 key 是字符串，则直接赋值
+              filledData[index] = dataItem[key];
+            }
           }
         });
         return filledData;
