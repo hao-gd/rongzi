@@ -11,12 +11,12 @@
                 @keyup.enter.native="handleQuery" />
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <!-- <el-col :span="8">
             <el-form-item label="融资项目" prop="managementId">
               <el-input v-model="queryParams.managementId" placeholder="请输入融资项目" clearable
                 @keyup.enter.native="handleQuery" />
             </el-form-item>
-          </el-col>
+          </el-col> -->
           <el-col :span="8">
             <el-form-item label="债权人" prop="financialInstitution">
               <el-select v-model="queryParams.financialInstitution" placeholder="请选择债权人" filterable clearable>
@@ -25,9 +25,6 @@
               </el-select>
             </el-form-item>
           </el-col>
-        </el-row>
-
-        <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="借款人" prop="borrowingUnit">
               <el-select v-model="queryParams.borrowingUnit" placeholder="请选择借款人" filterable clearable>
@@ -36,6 +33,10 @@
               </el-select>
             </el-form-item>
           </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          
           <el-col :span="8">
             <el-form-item label="融资金额（万元）" :precision="2" prop="financingAmount">
               <el-input v-model.trim="queryParams.financingAmount" type="number" placeholder="请输入融资金额" clearable
@@ -50,16 +51,22 @@
               </el-select>
             </el-form-item>
           </el-col>
-        </el-row>
-
-        <el-row :gutter="20">
-          <el-col :span="24">
+          <el-col :span="8">
             <el-form-item class="flex" style="display: flex; justify-content: flex-end;">
               <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">查 询</el-button>
               <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重 置</el-button>
             </el-form-item>
           </el-col>
         </el-row>
+
+        <!-- <el-row :gutter="20">
+          <el-col :span="24">
+            <el-form-item class="flex" style="display: flex; justify-content: flex-end;">
+              <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">查 询</el-button>
+              <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重 置</el-button>
+            </el-form-item>
+          </el-col>
+        </el-row> -->
       </el-form>
     </search-panel>
 
