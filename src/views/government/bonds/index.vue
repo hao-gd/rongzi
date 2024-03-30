@@ -709,7 +709,7 @@
               // end
               this.rzaudit_data = {
                 "id": null,
-                "auditId": String(generator.nextId()).substring(0, 6),
+                "auditId": null,
                 "scrUuid": data.scrUuid,
                 "createBy": this.name,
                 "createTime": null,

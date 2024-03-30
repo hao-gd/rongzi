@@ -343,7 +343,7 @@
         const func_ = this.form.auditId != null ?
           this.update_precautions_obj_fun[this.form.tableName] :
           this.precautions_obj_fun[this.form.tableName];
-
+          console.log(this.form);
         if (func_ == undefined) {
           this.$modal.msgError("数据有问题，请联系管理员");
           return;

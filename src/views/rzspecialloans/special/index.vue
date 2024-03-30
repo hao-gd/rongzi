@@ -12,8 +12,8 @@
           </el-col> -->
           <el-col :span="8">
             <el-form-item label="借款金额（万元）" prop="loanAmount">
-              <el-input-number class="w" :controls="false" :precision="2" type="number" v-model.trim="queryParams.loanAmount" placeholder="请输入借款金额" clearable
-                @keyup.enter.native="handleQuery" />
+              <el-input-number class="w" :controls="false" :precision="2" type="number"
+                v-model.trim="queryParams.loanAmount" placeholder="请输入借款金额" clearable @keyup.enter.native="handleQuery" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -207,13 +207,14 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="借款金额（万元）" prop="loanAmount">
-                <el-input-number class="w" :controls="false" :precision="2" :readonly="!isEditable"  type="number" v-model.trim="form.loanAmount"
-                  placeholder="请输入借款金额" />
+                <el-input-number class="w" :controls="false" :precision="2" :readonly="!isEditable" type="number"
+                  v-model.trim="form.loanAmount" placeholder="请输入借款金额" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="已还金额（万元）" prop="repaidAmount">
-                <el-input-number class="w" :controls="false" :precision="2" :readonly="!isEditable"  type="number" v-model.trim="form.repaidAmount" placeholder="请输入已还金额" />
+                <el-input-number class="w" :controls="false" :precision="2" :readonly="!isEditable" type="number"
+                  v-model.trim="form.repaidAmount" placeholder="请输入已还金额" />
               </el-form-item>
             </el-col>
 
@@ -222,7 +223,8 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="余额（万元）" prop="balance">
-                <el-input-number class="w" :controls="false" :precision="2" :readonly="!isEditable"  type="number" v-model.trim="remainingCreditAmount" placeholder="请输入余额" />
+                <el-input-number class="w" :controls="false" :precision="2" :readonly="!isEditable" type="number"
+                  v-model.trim="remainingCreditAmount" placeholder="请输入余额" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -255,21 +257,21 @@
             </el-col>
 
 
-              <el-col :span="8">
-                <el-form-item label="业务类型" prop="loanUse">
-                  <el-select filterable :disabled="!isEditable" v-model="form.loanUse" placeholder="请选择业务类型">
-                    <el-option v-for="dict in dict.type.sys_1767155302261588000" :key="dict.value" :label="dict.label"
-                      :value="dict.value"></el-option>
-                  </el-select>
-                </el-form-item>
-              </el-col>
+            <el-col :span="8">
+              <el-form-item label="业务类型" prop="loanUse">
+                <el-select filterable :disabled="!isEditable" v-model="form.loanUse" placeholder="请选择业务类型">
+                  <el-option v-for="dict in dict.type.sys_1767155302261588000" :key="dict.value" :label="dict.label"
+                    :value="dict.value"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
 
           </el-row>
 
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="借款期限（月）" prop="loanTerm">
-                <el-input :readonly="!isEditable" type="number" v-model.trim="form.loanTerm"
+                <el-input :disabled="true" :readonly="true" type="number" v-model="creditCycle"
                   placeholder="请输入借款期限" />
               </el-form-item>
             </el-col>
@@ -467,6 +469,17 @@ export default {
     };
   },
   watch: {
+    // 观察开始和结束日期的变化，自动重新计算天数
+    'form.loanDate': function (newVal, oldVal) {
+      if (newVal !== oldVal) {
+        this.calculateLoanTerm();
+      }
+    },
+    'form.dueDate': function (newVal, oldVal) {
+      if (newVal !== oldVal) {
+        this.calculateLoanTerm();
+      }
+    },
     open(n, o) {
       if (n == false) {
         this.created_successfully = false;
@@ -487,6 +500,25 @@ export default {
     ...mapGetters([
       'name', 'avatar'
     ]),
+    /* 计算周期，开始时间减去结束时间 */
+    creditCycle: {
+      get() {
+        // 如果是自动计算的，直接返回计算结果加"天"，否则返回当前值
+        if (this.isAutoCalculated) {
+          return this.form.loanTerm ? `${this.form.loanTerm}月` : '';
+        } else {
+          return this.form.loanTerm ? `${this.form.loanTerm}月` : '';
+        }
+      },
+      set(value) {
+        this.isAutoCalculated = false; // 用户手动输入，更改标志状态
+        if (typeof value === 'string' && value.includes('月')) {
+          this.form.loanTerm = parseInt(value.replace('月', ''), 10);
+        } else if (!isNaN(value)) {
+          this.form.loanTerm = parseInt(value, 10);
+        }
+      }
+    },
     rate: {
       get() {
         if (this.form.rate) {
@@ -507,6 +539,20 @@ export default {
     this.isEditable = true;
   },
   methods: {
+    calculateLoanTerm() {
+      console.log(1);
+      if (this.form.loanDate && this.form.dueDate) {
+        const start = moment(this.form.loanDate);
+        const end = moment(this.form.dueDate);
+
+        // const days = end.diff(start, 'days') + 1; // 直接计算天数，并加1表示至少一天
+        let creditCycle = moment(end).diff(moment(start), 'month', true)
+        // return (creditCycle).toFixed(2);
+
+        this.form.loanTerm = (creditCycle).toFixed(2);
+        this.isAutoCalculated = true; // 标记为自动计算
+      }
+    },
     /* 创建成功关闭弹窗 */
     closeDialog() {
       this.open = false;
@@ -645,6 +691,11 @@ export default {
 
           if (this.form.id != null) {
             data.scrUuid = Number(this.scrUuid);
+            // 计算周期，开始时间减去结束时间
+            let loanTermStr = data.loanTerm.toString();
+            loanTermStr = loanTermStr.replace(/月$/, '');
+
+            data.loanTerm = loanTermStr
             data.rate = data.rate.replace(/%/g, ''); // 替换掉所有的百分号
             this.rzaudit_data = {
               "auditId": data.id,
@@ -675,6 +726,13 @@ export default {
             // start
             const uuid = String(generator.nextId())
             data.uuid = uuid;
+
+
+            // 计算周期，开始时间减去结束时间
+            let loanTermStr = data.loanTerm.toString();
+            loanTermStr = loanTermStr.replace(/月$/, '');
+
+            data.loanTerm = loanTermStr
             // end
             data.rate = data.rate.replace(/%/g, ''); // 替换掉所有的百分号
             this.rzaudit_data = {
