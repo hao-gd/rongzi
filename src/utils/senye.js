@@ -88,7 +88,7 @@ export function selectDictLabel(datas, value) {
 
 // 回显数据字典（字符串、数组）
 export function selectDictLabels(datas, value, separator) {
-  if (value === undefined || value.length ===0) {
+  if (value === undefined || value.length === 0) {
     return "";
   }
   if (Array.isArray(value)) {
@@ -245,7 +245,7 @@ export function formatNumberAsRMB(number) {
   return new Intl.NumberFormat('en-US', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
-}).format(number);
+  }).format(number);
 }
 
 
@@ -256,16 +256,16 @@ export function creditCycleFN(startDate, deadline) {
     const end = moment(deadline);
 
     // 计算月份差异
-    const months = end.diff(start, 'months');
-    start.add(months, 'months'); // 将起始日期增加计算出的月数
+    // const months = end.diff(start, 'months');
+    // start.add(months, 'months'); // 将起始日期增加计算出的月数
 
-    // 计算天数差异，如果相等则算作一天
-    let days = end.diff(start, 'days');
-    if (days === 0) {
-      days = 1;
-    }
+    // // 计算天数差异，如果相等则算作一天
+    // let days = end.diff(start, 'days');
+    // if (days === 0) {
+    //   days = 1;
+    // }
 
-    // 根据月份和天数创建相应的显示字符串
+    // // 根据月份和天数创建相应的显示字符串
     // let creditCycle = '';
     // if (months > 0) {
     //   creditCycle += `${months}个月`;
@@ -273,10 +273,34 @@ export function creditCycleFN(startDate, deadline) {
     // if (days > 0) {
     //   creditCycle += `${creditCycle ? ' ' : ''}${days}天`;
     // }
-    return days + '天';
+    // return days + '天';
+    let creditCycle = moment(deadline).diff(moment(startDate),'month',true)
+    return (creditCycle).toFixed(2);
   }
-}
 
+  // if (startDate && daysToAdd) {
+  //   var startMoment = moment(startDate);
+  //   var endMoment = moment(startMoment).add(daysToAdd, 'days');
+
+  //   var months = endMoment.diff(startMoment, 'months');
+  //   startMoment.add(months, 'months');
+  //   var remainingDays = endMoment.diff(startMoment, 'days');
+
+  //   let creditCycle = '';
+
+  //   if (months > 0) {
+  //     creditCycle += `${months}个月`;
+  //   }
+  //   if (remainingDays > 0) {
+  //     if (creditCycle) {
+  //       creditCycle += ' ';
+  //     }
+  //     creditCycle += `${remainingDays}天`;
+  //   }
+
+  //   return creditCycle;
+  // }
+}
 /* 期限加上一个单位默认是 '月' */
 export function addPeriods(deadline, period, unit) {
   if (deadline && period) {

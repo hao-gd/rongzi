@@ -222,7 +222,7 @@
       :header-cell-style="header_cell_style">
       <el-table-column show-overflow-tooltip fixed="left" type="selection" min-width="50" align="center" />
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
-      <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId"   min-width="100" />
+      <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" min-width="100" />
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
       <el-table-column show-overflow-tooltip label="借款人" align="center" prop="creditor" min-width="260" />
       <el-table-column show-overflow-tooltip label="金融机构" align="center" prop="financialInstitution" min-width="260">
@@ -263,10 +263,10 @@
       </el-table-column>
       <el-table-column show-overflow-tooltip label="授信有效期" align="center" prop="creditCycle" min-width="100">
         <template slot-scope="scope">
-          <span>{{ appendUnit(scope.row.creditCycle, '天') }}</span>
+          <span>{{ creditCycleFN(scope.row.startDate, scope.row.deadline) }}</span>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="授信状态" align="center" prop="creditState" min-width="80" >
+      <el-table-column show-overflow-tooltip label="授信状态" align="center" prop="creditState" min-width="80">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1765002034026643500" :value="scope.row.creditState" />
         </template>
@@ -364,8 +364,8 @@
 
             <el-col :span="8">
               <el-form-item label="授信余额（万元）" prop="remainingCreditAmount">
-                <el-input-number class="w" :controls="false" :precision="2" :readonly="true" :disabled="true" type="number"
-                  v-model.trim="remainingCreditAmount" placeholder="请输入剩余授信金额" />
+                <el-input-number class="w" :controls="false" :precision="2" :readonly="true" :disabled="true"
+                  type="number" v-model.trim="remainingCreditAmount" placeholder="请输入剩余授信金额" />
               </el-form-item>
             </el-col>
 
@@ -382,20 +382,20 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="起始日" prop="startDate">
-                <el-date-picker :disabled="!isEditable" clearable v-model="form.startDate" type="date"
-                  value-format="yyyy-MM-dd" placeholder="请选择起始日"></el-date-picker>
+                <el-date-picker :picker-options="pickerOptions1" :disabled="!isEditable" clearable
+                  v-model="form.startDate" type="date" value-format="yyyy-MM-dd" placeholder="请选择起始日"></el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="到期日" prop="deadline">
-                <el-date-picker :disabled="!isEditable" clearable v-model="form.deadline" type="date"
-                  value-format="yyyy-MM-dd" placeholder="请选择到期日"></el-date-picker>
+                <el-date-picker :picker-options="pickerOptions2" :disabled="!isEditable" clearable v-model="form.deadline"
+                  type="date" value-format="yyyy-MM-dd" placeholder="请选择到期日"></el-date-picker>
               </el-form-item>
             </el-col>
 
             <el-col :span="8">
               <el-form-item label="授信有效期" prop="creditCycle">
-                <el-input :readonly="!isEditable" v-model="creditCycle" placeholder="请输入授信有效期" />
+                <el-input :disabled="true" :readonly="true" v-model="creditCycle" placeholder="请输入授信有效期" />
               </el-form-item>
             </el-col>
 
@@ -450,6 +450,22 @@ export default {
   },
   data() {
     return {
+      pickerOptions1: {
+        // 禁用开始日期中，所有大于结束日期的日期
+        disabledDate: (date) => {
+          if (this.form.deadline) {
+            return date.getTime() > new Date(this.form.deadline).getTime();
+          }
+        }
+      },
+      pickerOptions2: {
+        // 禁用结束日期中，所有小于开始日期的日期
+        disabledDate: (date) => {
+          if (this.form.startDate) {
+            return date.getTime() < new Date(this.form.startDate).getTime();
+          }
+        }
+      },
       isSuccess: true,
       isTitle: true,
       isMessage: true,

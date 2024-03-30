@@ -111,9 +111,9 @@
           <span>{{ formatNumberAsRMB(scope.row.financingAmount) }}</span>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="期限" align="center" prop="loanTerm" min-width="80">
+      <el-table-column show-overflow-tooltip label="期限（月）" align="center" prop="loanTerm" min-width="80">
         <template slot-scope="scope">
-          <span>{{ appendUnit(scope.row.loanTerm, '天') }}</span>
+          <span>{{ creditCycleFN(scope.row.loanDate, scope.row.dueDate) }}</span>
         </template>
       </el-table-column>
       <!-- <el-table-column label="资金用途" align="center" prop="contractId" /> -->
@@ -263,7 +263,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="借款期限（月）" prop="loanTerm">
-                <el-input :readonly="!isEditable" v-model="creditCycle" placeholder="请输入借款期限" />
+                <el-input :disabled="true" :readonly="true" v-model="creditCycle" placeholder="请输入借款期限" />
               </el-form-item>
             </el-col>
           </el-row>

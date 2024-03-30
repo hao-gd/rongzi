@@ -273,13 +273,13 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="开始日期" prop="startDate">
-                <el-date-picker :disabled="!isEditable" clearable v-model="form.startDate" type="date"
+                <el-date-picker :picker-options="pickerOptions1" :disabled="!isEditable" clearable v-model="form.startDate" type="date"
                   value-format="yyyy-MM-dd" placeholder="请选择开始日期"></el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="结束日期" prop="deadline">
-                <el-date-picker :disabled="!isEditable" clearable v-model="form.deadline" type="date"
+                <el-date-picker :picker-options="pickerOptions2" :disabled="!isEditable" clearable v-model="form.deadline" type="date"
                   value-format="yyyy-MM-dd" placeholder="请选择结束日期"></el-date-picker>
               </el-form-item>
             </el-col>
@@ -350,6 +350,22 @@ export default {
   },
   data() {
     return {
+      pickerOptions1: {
+          // 禁用开始日期中，所有大于结束日期的日期
+          disabledDate: (date) => {
+            if (this.form.deadline) {
+              return date.getTime() > new Date(this.form.deadline).getTime();
+            }
+          }
+        },
+        pickerOptions2: {
+          // 禁用结束日期中，所有小于开始日期的日期
+          disabledDate: (date) => {
+            if (this.form.startDate) {
+              return date.getTime() < new Date(this.form.startDate).getTime();
+            }
+          }
+        },
       isSuccess: true,
       isTitle: true,
       isMessage: true,

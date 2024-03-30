@@ -221,7 +221,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="出票日期" prop="draftDate">
-                <el-date-picker :disabled="!isEditable" clearable v-model="form.draftDate" type="date"
+                <el-date-picker :picker-options="pickerOptions1" :disabled="!isEditable" clearable v-model="form.draftDate" type="date"
                   value-format="yyyy-MM-dd" placeholder="请选择出票日期">
                 </el-date-picker>
               </el-form-item>
@@ -232,7 +232,7 @@
 
             <el-col :span="8">
               <el-form-item label="到期日" prop="dueDate">
-                <el-date-picker :disabled="!isEditable" clearable v-model="form.dueDate" type="date"
+                <el-date-picker :picker-options="pickerOptions2" :disabled="!isEditable" clearable v-model="form.dueDate" type="date"
                   value-format="yyyy-MM-dd" placeholder="请选择到期日">
                 </el-date-picker>
               </el-form-item>
@@ -308,6 +308,22 @@ export default {
   },
   data() {
     return {
+      pickerOptions1: {
+          // 禁用开始日期中，所有大于结束日期的日期
+          disabledDate: (date) => {
+            if (this.form.dueDate) {
+              return date.getTime() > new Date(this.form.dueDate).getTime();
+            }
+          }
+        },
+        pickerOptions2: {
+          // 禁用结束日期中，所有小于开始日期的日期
+          disabledDate: (date) => {
+            if (this.form.draftDate) {
+              return date.getTime() < new Date(this.form.draftDate).getTime();
+            }
+          }
+        },
       isSuccess: true,
       isTitle: true,
       isMessage: true,

@@ -105,7 +105,7 @@
       <el-table-column show-overflow-tooltip label="剩余实现" align="center" prop="remainingQuantity" min-width="100" />
       <el-table-column show-overflow-tooltip label="借款期限" align="center" prop="loanTerm"  min-width="100">
         <template slot-scope="scope">
-          <span>{{ appendUnit(scope.row.loanTerm, '天') }}</span>
+          <span>{{ creditCycleFN(scope.row.startDate, scope.row.deadline) }}</span>
         </template>
       </el-table-column>
       <el-table-column show-overflow-tooltip label="贷后状态跟踪" align="center" prop="afterLoanState" min-width="120">
@@ -182,13 +182,13 @@
 
             <el-col :span="8">
               <el-form-item label="起始日" prop="startDate">
-                <el-date-picker :disabled="!isEditable" clearable v-model="form.startDate" type="date"
+                <el-date-picker :picker-options="pickerOptions1" :disabled="!isEditable" clearable v-model="form.startDate" type="date"
                   value-format="yyyy-MM-dd" placeholder="请选择起始日"></el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="到期日" prop="deadline">
-                <el-date-picker :disabled="!isEditable" clearable v-model="form.deadline" type="date"
+                <el-date-picker :picker-options="pickerOptions2" :disabled="!isEditable" clearable v-model="form.deadline" type="date"
                   value-format="yyyy-MM-dd" placeholder="请选择到期日"></el-date-picker>
               </el-form-item>
             </el-col>
@@ -198,7 +198,7 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="借款期限（月）" prop="loanTerm">
-                <el-input :readonly="!isEditable" v-model="creditCycle" placeholder="请输入借款期限" />
+                <el-input :disabled="true" :readonly="true" v-model="creditCycle" placeholder="请输入借款期限" />
                 <!-- <el-input :readonly="!isEditable" placeholder="请输入借款期限" v-model.trim="form.loanTerm" type="number"
                   class="input-with-select">
                   <el-select filterable class="w150" :disabled="!isEditable" v-model="termType" slot="prepend" placeholder="选择期限类型">
@@ -295,7 +295,22 @@ export default {
   },
   data() {
     return {
-
+      pickerOptions1: {
+          // 禁用开始日期中，所有大于结束日期的日期
+          disabledDate: (date) => {
+            if (this.form.deadline) {
+              return date.getTime() > new Date(this.form.deadline).getTime();
+            }
+          }
+        },
+        pickerOptions2: {
+          // 禁用结束日期中，所有小于开始日期的日期
+          disabledDate: (date) => {
+            if (this.form.startDate) {
+              return date.getTime() < new Date(this.form.startDate).getTime();
+            }
+          }
+        },
       isSuccess: true,
       isTitle: true,
       isMessage: true,
