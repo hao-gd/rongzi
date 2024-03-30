@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <div class="app-container">
-      <search-panel title="融资管理数据" :isIcon="false">
+      <search-panel title="融资快报" :isIcon="false">
 
 
         <!-- <div slot="search">
