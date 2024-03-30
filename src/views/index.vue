@@ -436,7 +436,8 @@ export default {
                 color: 'rgba(160, 134, 253, 0)'
               }
               ])
-            }
+            },
+			z: 1
           },
           {
             name: '还款本金',
@@ -460,7 +461,8 @@ export default {
                 color: 'rgba(35, 173, 255, 0)'
               }
               ])
-            }
+            },
+			z: 2 
           },
           {
             name: '还款利息',
@@ -484,7 +486,8 @@ export default {
                 color: 'rgba(19, 207, 178, 0)'
               }
               ])
-            }
+            },
+			z: 3
           },
         ]
       },

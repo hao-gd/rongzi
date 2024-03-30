@@ -215,7 +215,7 @@
               name: '担保总额',
               key: 'totalGuaranteeAmount',
               type: 'line',
-              stack: 'Total',
+              // stack: 'Total',
               data: [120, 132, 101, 134, 90, 230, 210],
               smooth: true,
               showSymbol: false,
@@ -233,13 +233,14 @@
                     color: 'rgba(22, 93, 255, 0)'
                   },
                 ])
-              }
+              },
+			  z: 1
             },
             {
               name: '总担保余额',
               key: 'totalGuaranteeBalance',
               type: 'line',
-              stack: 'Total',
+              // stack: 'Total',
               data: [220, 182, 191, 234, 290, 330, 310],
               smooth: true,
               showSymbol: false,
@@ -257,13 +258,14 @@
                     color: 'rgba(51, 209, 201, 0)'
                   },
                 ])
-              }
+              },
+			  z: 2 
             },
             {
               name: '对内担保余额',
               key: 'internalGuaranteeBalance',
               type: 'line',
-              stack: 'Total',
+              // stack: 'Total',
               data: [150, 232, 201, 154, 190, 330, 410],
               smooth: true,
               showSymbol: false,
@@ -281,13 +283,14 @@
                     color: 'rgba(247, 114, 52, 0)'
                   },
                 ])
-              }
+              },
+			  z: 3
             },
             {
               name: '对外担保余额',
               key: 'externalGuaranteeBalance',
               type: 'line',
-              stack: 'Total',
+              // stack: 'Total',
               data: [150, 232, 201, 154, 190, 330, 410],
               smooth: true,
               showSymbol: false,
@@ -305,13 +308,14 @@
                     color: 'rgba(114, 46, 209, 0)'
                   },
                 ])
-              }
+              },
+			  z: 4
             },
             {
               name: '对内担保总额',
               key: 'internalGuaranteeAmount',
               type: 'line',
-              stack: 'Total',
+              // stack: 'Total',
               data: [150, 232, 201, 154, 190, 330, 410],
               smooth: true,
               showSymbol: false,
@@ -329,13 +333,14 @@
                     color: 'rgba(124, 247, 0, 0)'
                   },
                 ])
-              }
+              },
+			  z: 5
             },
             {
               name: '对外担保总额',
               key: 'externalGuaranteeAmount',
               type: 'line',
-              stack: 'Total',
+              // stack: 'Total',
               data: [150, 232, 201, 154, 190, 330, 410],
               smooth: true,
               showSymbol: false,
@@ -353,7 +358,8 @@
                     color: 'rgba(247, 0, 226, 0)'
                   }
                 ])
-              }
+              },
+			  z: 6
             },
           ]
         },
