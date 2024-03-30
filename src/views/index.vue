@@ -268,7 +268,7 @@
                 </div>
               </el-col>
 
-              <el-col v-if="Object.keys(NextMonthData).length !== 0" :span="24" style="background: #fff;"
+              <el-col :span="24" style="background: #fff;"
                 class="card-panel">
                 <div class="card-content pl20 pb30 pt30" :class="'card-content-bg' + 5">
                   <div>
