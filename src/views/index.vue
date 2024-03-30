@@ -496,7 +496,14 @@ export default {
         moment().format('YYYY-MM'),
         moment().add(1, 'years').format('YYYY-MM')
       ],
-      currentMonthData: {},
+      currentMonthData: {
+        totalPrincipal: 0,
+        totalInterest: 0,
+        totalPaidInterest: 0,
+        totalPaidPrincipal: 0,
+        totalUnpaidInterest: 0,
+        totalUnpaidPrincipal: 0,
+      },
       NextMonthData: {
         totalPrincipal: 0,
         totalInterest: 0,
