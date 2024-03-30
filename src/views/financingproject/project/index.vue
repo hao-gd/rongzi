@@ -671,7 +671,7 @@ export default {
     },
     // 表单重置
     reset() {
-      this.form = resetForm;
+      this.form = JSON.parse(JSON.stringify(resetForm));
       this.rzsrc2List = [];
       this.resetForm("form");
     },
