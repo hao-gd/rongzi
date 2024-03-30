@@ -13,8 +13,8 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="借款金额（万元）" prop="loanAmount">
-              <el-input-number class="w" :controls="false" :precision="2" type="number" v-model.trim="queryParams.loanAmount" placeholder="请输入借款金额" clearable
-                @keyup.enter.native="handleQuery" />
+              <el-input-number class="w" :controls="false" :precision="2" type="number"
+                v-model.trim="queryParams.loanAmount" placeholder="请输入借款金额" clearable @keyup.enter.native="handleQuery" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -144,7 +144,7 @@
       </el-table-column> -->
       <el-table-column show-overflow-tooltip label="借款期限" align="center" prop="loanTerm" min-width="80">
         <template slot-scope="scope">
-          <span>{{ appendUnit(scope.row.loanTerm, '天') }}</span>
+          <span>{{ creditCycleFN(scope.row.borrowDate, scope.row.dueDate) }}</span>
         </template>
       </el-table-column>
       <el-table-column show-overflow-tooltip label="利率" align="center" prop="rate" min-width="80">
@@ -199,7 +199,8 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="借款金额（万元）" prop="loanAmount">
-                <el-input-number class="w" :controls="false" :precision="2" :readonly="!isEditable" type="number" v-model.trim="form.loanAmount" placeholder="请输入借款金额" />
+                <el-input-number class="w" :controls="false" :precision="2" :readonly="!isEditable" type="number"
+                  v-model.trim="form.loanAmount" placeholder="请输入借款金额" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -233,8 +234,8 @@
 
             <el-col :span="8">
               <el-form-item label="借款日期" prop="borrowDate">
-                <el-date-picker :disabled="!isEditable" clearable v-model="form.borrowDate" type="date"
-                  value-format="yyyy-MM-dd" placeholder="请选择借款日期"></el-date-picker>
+                <el-date-picker :picker-options="pickerOptions1" :disabled="!isEditable" clearable
+                  v-model="form.borrowDate" type="date" value-format="yyyy-MM-dd" placeholder="请选择借款日期"></el-date-picker>
               </el-form-item>
             </el-col>
 
@@ -243,14 +244,14 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="到期日期" prop="dueDate">
-                <el-date-picker :disabled="!isEditable" clearable v-model="form.dueDate" type="date"
-                  value-format="yyyy-MM-dd" placeholder="请选择到期日期"></el-date-picker>
+                <el-date-picker :picker-options="pickerOptions2" :disabled="!isEditable" clearable v-model="form.dueDate"
+                  type="date" value-format="yyyy-MM-dd" placeholder="请选择到期日期"></el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="借款期限" prop="loanTerm">
                 <!-- <el-input :readonly="!isEditable" v-model="form.loanTerm" placeholder="请输入借款期限" /> -->
-                <el-input :readonly="!isEditable" v-model="creditCycle" placeholder="请输入借款期限" />
+                <el-input :disabled="true" :readonly="true" v-model="creditCycle" placeholder="请输入借款期限" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -343,7 +344,22 @@ export default {
   },
   data() {
     return {
-
+      pickerOptions1: {
+        // 禁用开始日期中，所有大于结束日期的日期
+        disabledDate: (date) => {
+          if (this.form.dueDate) {
+            return date.getTime() > new Date(this.form.dueDate).getTime();
+          }
+        }
+      },
+      pickerOptions2: {
+        // 禁用结束日期中，所有小于开始日期的日期
+        disabledDate: (date) => {
+          if (this.form.borrowDate) {
+            return date.getTime() < new Date(this.form.borrowDate).getTime();
+          }
+        }
+      },
       isSuccess: true,
       isTitle: true,
       isMessage: true,

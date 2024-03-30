@@ -1,46 +1,43 @@
 <template>
-  <div class="content">
-    <div class="app-container">
-      <search-panel title="统计分析" HeaderIcon="lsrzye">
-        <el-form label-position="left" label-width="130px" :inline="false" :model="queryParams" size="small">
-          <el-row :gutter="20">
-            <el-col :span="8">
-              <el-form-item label="担保人" prop="guarantor">
-                <el-select filterable v-model="queryParams.guarantor" placeholder="请选择担保人" clearable
-                  @change="getListData">
-                  <el-option v-for="dict in dict.type.sys_1767155091485229000" :key="dict.value" :label="dict.label"
-                    :value="dict.value"></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="借款人" prop="creditor">
-                <el-select filterable v-model="queryParams.creditor" placeholder="请选择借款人" clearable
-                  @change="getListData">
-                  <el-option v-for="dict in dict.type.sys_1767154968256577500" :key="dict.value" :label="dict.label"
-                    :value="dict.value"></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="债权人" prop="financialInstitution">
-                <el-select filterable v-model="queryParams.financialInstitution" placeholder="请选择债权人"
-                  @change="getListData" clearable>
-                  <el-option v-for="dict in dict.type.sys_1757271666666242000" :key="dict.value" :label="dict.label"
-                    :value="dict.value"></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="业务类型" prop="businessType">
-                <el-select filterable v-model="queryParams.businessType" placeholder="请选择业务类型" clearable
-                  @change="getListData">
-                  <el-option v-for="dict in dict.type.sys_1767155302261588000" :key="dict.value" :label="dict.label"
-                    :value="dict.value"></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <!--                        <el-col :span="8">
+    <div class="content">
+        <div class="app-container">
+            <search-panel title="统计分析" HeaderIcon="lsrzye">
+                <el-form label-position="left" label-width="130px" :inline="false" :model="queryParams" size="small">
+                    <el-row :gutter="20">
+                        <el-col :span="8">
+                            <el-form-item label="担保人" prop="guarantor">
+                                <el-select filterable v-model="queryParams.guarantor" placeholder="请选择担保人" clearable @change="getListData">
+                                    <el-option v-for="dict in dict.type.sys_1767155091485229000" :key="dict.value"
+                                        :label="dict.label" :value="dict.value"></el-option>
+                                </el-select>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="8">
+                            <el-form-item label="借款人" prop="creditor">
+                                <el-select filterable v-model="queryParams.creditor" placeholder="请选择借款人" clearable @change="getListData">
+                                    <el-option v-for="dict in dict.type.sys_1767154968256577500" :key="dict.value"
+                                        :label="dict.label" :value="dict.value"></el-option>
+                                </el-select>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="8">
+                            <el-form-item label="债权人" prop="financialInstitution">
+                                <el-select filterable v-model="queryParams.financialInstitution" placeholder="请选择债权人" @change="getListData"
+                                    clearable>
+                                    <el-option v-for="dict in dict.type.sys_1757271666666242000" :key="dict.value"
+                                        :label="dict.label" :value="dict.value"></el-option>
+                                </el-select>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="8">
+                            <el-form-item label="业务类型" prop="businessType">
+                                <el-select filterable v-model="queryParams.businessType" placeholder="请选择业务类型" clearable @change="getListData">
+                                    <el-option v-for="dict in dict.type.sys_1767155302261588000" :key="dict.value"
+                                        :label="dict.label" :value="dict.value"></el-option>
+                                </el-select>
+                            </el-form-item>
+                        </el-col>
+                        <!-- <el-col :span="8">
                             <el-form-item label="时间选择" class="no_mb">
                                 <el-date-picker @change="changeRang" v-model="daterangeLogCreateTime" style="width: 240px"
                                     value-format="yyyy-MM" type="monthrange" range-separator="-" start-placeholder="开始月份"
