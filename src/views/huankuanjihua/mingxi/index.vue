@@ -31,7 +31,7 @@
         <!-- Row 2 -->
         <el-row :gutter="20">
           <el-col :span="8">
-            <el-form-item label="放款日期">
+            <el-form-item label="还款日期">
               <el-date-picker v-model="daterangeRiqi" value-format="yyyy-MM-dd" type="daterange" range-separator="-"
                 start-placeholder="起始日" end-placeholder="起始日"></el-date-picker>
             </el-form-item>
@@ -61,7 +61,7 @@
       :header-cell-style="header_cell_style">
       <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managerId" />
       <el-table-column label="期数" align="center" prop="qishu" min-width="80" />
-      <el-table-column label="日期" align="center" prop="riqi" min-width="100"/>
+      <el-table-column label="还款日期" align="center" prop="riqi" min-width="100"/>
         <el-table-column show-overflow-tooltip label="借款人" align="center" prop="borrowingUnit"  min-width="260">
           <template slot-scope="scope">
             <dict-tag :options="dict.type.sys_1767154968256577500" :value="scope.row.borrowingUnit" />

@@ -3,7 +3,7 @@
     <el-row>
       <el-form-item>
         <div class="w flex fjb" slot="label" @click.prevent.stop="addType($event, 'zjbj')">
-          <span class="required">提款信息输入区</span>
+          <span class="required">提款信息输入区（元）</span>
           <div>
             <el-button size="mini" class="reset-total-btn" id="sort-btn">排序</el-button>
             <el-button type="primary" size="mini" class="reset-total-btn" id="add-btn">新增一行</el-button>
@@ -30,7 +30,7 @@
     <el-row>
       <el-form-item>
         <div class="w flex fjb" slot="label" @click.prevent.stop="addType($event, 'bjch')">
-          <span class="required">本金偿还信息输入区</span>
+          <span class="required">本金偿还信息输入区（元）</span>
           <div>
             <el-button size="mini" class="reset-total-btn" id="sort-btn">排序</el-button>
             <el-button type="primary" size="mini" class="reset-total-btn" id="add-btn">新增一行</el-button>
@@ -381,9 +381,9 @@
             date: e
           }))
         ];
-        console.log("datas1", JSON.stringify(datas));
+        // console.log("datas1", JSON.stringify(datas));
         datas = sortTimeLineByDate(datas)
-        console.log("datas2", datas);
+        // console.log("datas2", datas);
         this.repaymentPlanTable = generateRepaymentPlan(datas)
 
         this.repaymentPlanTable.forEach((plan) => {
