@@ -63,7 +63,7 @@
         </el-row>
 
         <el-row :gutter="20">
-          
+
           <el-col :span="8">
             <el-form-item label="业务类型" prop="loanUse">
               <el-select filterable v-model="queryParams.loanUse" placeholder="请选择业务类型" clearable>
@@ -142,16 +142,16 @@
           <span>{{ formatNumberAsRMB(scope.row.balance) }}</span>
         </template>
       </el-table-column>
-      <!-- <el-table-column label="借款日期" align="center" prop="loanDate" width="180">
+      <el-table-column label="起始日" align="center" prop="loanDate" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.loanDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="到期日期" align="center" prop="dueDate" width="180">
+      <el-table-column label="到期日" align="center" prop="dueDate" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.dueDate, '{y}-{m}-{d}') }}</span>
         </template>
-      </el-table-column> -->
+      </el-table-column>
       <el-table-column show-overflow-tooltip label="借款期限" align="center" prop="loanTerm" min-width="100">
         <template slot-scope="scope">
           <span>{{ appendUnit(scope.row.loanTerm, '月') }}</span>
@@ -241,18 +241,28 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <!-- <el-col :span="8">
-              <el-form-item label="借款日期" prop="loanDate">
+            <el-col :span="8">
+              <el-form-item label="起始日" prop="loanDate">
                 <el-date-picker :disabled="!isEditable" clearable v-model="form.loanDate" type="date"
-                  value-format="yyyy-MM-dd" placeholder="请选择借款日期"></el-date-picker>
+                  value-format="yyyy-MM-dd" placeholder="请选择起始日"></el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="到期日期" prop="dueDate">
+              <el-form-item label="到期日" prop="dueDate">
                 <el-date-picker :disabled="!isEditable" clearable v-model="form.dueDate" type="date"
-                  value-format="yyyy-MM-dd" placeholder="请选择到期日期"></el-date-picker>
+                  value-format="yyyy-MM-dd" placeholder="请选择到期日"></el-date-picker>
               </el-form-item>
-            </el-col> -->
+            </el-col>
+
+
+              <el-col :span="8">
+                <el-form-item label="业务类型" prop="loanUse">
+                  <el-select filterable :disabled="!isEditable" v-model="form.loanUse" placeholder="请选择业务类型">
+                    <el-option v-for="dict in dict.type.sys_1767155302261588000" :key="dict.value" :label="dict.label"
+                      :value="dict.value"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
 
           </el-row>
 
@@ -283,17 +293,7 @@
             </el-col>
           </el-row>
 
-          <el-row :gutter="20">
-            
-            <el-col :span="8">
-              <el-form-item label="业务类型" prop="loanUse">
-                <el-select filterable :disabled="!isEditable" v-model="form.loanUse" placeholder="请选择业务类型">
-                  <el-option v-for="dict in dict.type.sys_1767155302261588000" :key="dict.value" :label="dict.label"
-                    :value="dict.value"></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-          </el-row>
+
 
           <el-row :gutter="20">
             <el-col :span="24">
@@ -443,10 +443,10 @@ export default {
           { required: true, message: "出借人不能为空", trigger: "change" }
         ],
         loanDate: [
-          { required: true, message: "借款日期不能为空", trigger: "blur" }
+          { required: true, message: "起始日不能为空", trigger: "blur" }
         ],
         dueDate: [
-          { required: true, message: "到期日期不能为空", trigger: "blur" }
+          { required: true, message: "到期日不能为空", trigger: "blur" }
         ],
         loanTerm: [
           { required: true, message: "借款期限不能为空", trigger: "blur" }

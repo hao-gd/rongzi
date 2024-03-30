@@ -180,8 +180,14 @@ export default {
 }
 
 .login-form {
-  border-radius: 6px;
-  background: #ffffff;
+    box-sizing:border-box;
+    box-shadow: 0px 15px 25px rgba(0,0,0,.5);
+    /*边框阴影  水平阴影0 垂直阴影15px 模糊25px 颜色黑色透明度0.5*/
+    border-radius:15px;
+    /*边框圆角，四个角均为15px*/
+  background: rgba(255, 255, 255, 0.5);
+  // border-radius: 6px;
+  // background: #ffffff;
   width: 400px;
   padding: 25px 25px 5px 25px;
   .el-input {
