@@ -271,8 +271,7 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="借款期限（月）" prop="loanTerm">
-                <el-input :disabled="true" :readonly="true" type="number" v-model="creditCycle"
-                  placeholder="请输入借款期限" />
+                <el-input :disabled="true" :readonly="true" v-model="creditCycle" placeholder="请输入借款期限" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -421,6 +420,7 @@ export default {
       // 表单参数
       form: {},
       // 表单校验
+      isAutoCalculated: false, // 是否自动计算的标志
       rules: {
         managementId: [
           { required: true, message: "管理编号不能为空", trigger: "blur" }
@@ -540,17 +540,13 @@ export default {
   },
   methods: {
     calculateLoanTerm() {
-      console.log(1);
       if (this.form.loanDate && this.form.dueDate) {
         const start = moment(this.form.loanDate);
         const end = moment(this.form.dueDate);
 
-        // const days = end.diff(start, 'days') + 1; // 直接计算天数，并加1表示至少一天
         let creditCycle = moment(end).diff(moment(start), 'month', true)
-        // return (creditCycle).toFixed(2);
-
         this.form.loanTerm = (creditCycle).toFixed(2);
-        this.isAutoCalculated = true; // 标记为自动计算
+        console.log(this.form.loanTerm);
       }
     },
     /* 创建成功关闭弹窗 */
