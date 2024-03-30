@@ -6,7 +6,7 @@
                     <el-row :gutter="20">
                         <el-col :span="8">
                             <el-form-item label="担保人" prop="guarantor">
-                                <el-select filterable v-model="queryParams.guarantor" placeholder="请选择担保人" clearable>
+                                <el-select filterable v-model="queryParams.guarantor" placeholder="请选择担保人" clearable @change="getListData">
                                     <el-option v-for="dict in dict.type.sys_1767155091485229000" :key="dict.value"
                                         :label="dict.label" :value="dict.value"></el-option>
                                 </el-select>
@@ -14,7 +14,7 @@
                         </el-col>
                         <el-col :span="8">
                             <el-form-item label="借款人" prop="creditor">
-                                <el-select filterable v-model="queryParams.creditor" placeholder="请选择借款人" clearable>
+                                <el-select filterable v-model="queryParams.creditor" placeholder="请选择借款人" clearable @change="getListData">
                                     <el-option v-for="dict in dict.type.sys_1767154968256577500" :key="dict.value"
                                         :label="dict.label" :value="dict.value"></el-option>
                                 </el-select>
@@ -22,7 +22,7 @@
                         </el-col>
                         <el-col :span="8">
                             <el-form-item label="债权人" prop="financialInstitution">
-                                <el-select filterable v-model="queryParams.financialInstitution" placeholder="请选择债权人"
+                                <el-select filterable v-model="queryParams.financialInstitution" placeholder="请选择债权人" @change="getListData"
                                     clearable>
                                     <el-option v-for="dict in dict.type.sys_1757271666666242000" :key="dict.value"
                                         :label="dict.label" :value="dict.value"></el-option>
@@ -31,7 +31,7 @@
                         </el-col>
                         <el-col :span="8">
                             <el-form-item label="业务类型" prop="businessType">
-                                <el-select filterable v-model="queryParams.businessType" placeholder="请选择业务类型" clearable>
+                                <el-select filterable v-model="queryParams.businessType" placeholder="请选择业务类型" clearable @change="getListData">
                                     <el-option v-for="dict in dict.type.sys_1767155302261588000" :key="dict.value"
                                         :label="dict.label" :value="dict.value"></el-option>
                                 </el-select>
