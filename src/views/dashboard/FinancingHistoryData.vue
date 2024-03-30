@@ -88,7 +88,7 @@
             <div class="small-panel-right-text-content">
               <p class="right-text">融资总额（元）</p>
               <p class="right-amount">
-                <count-to :start-val='0' :end-val="calculateTotalByKey(listData, 'totalFinancingAmount')"
+                <count-to :start-val='0' :end-val="last_data(listData, 'totalFinancingAmount')"
                   :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay=true :useEasing="true"></count-to>
               </p>
             </div>
@@ -98,7 +98,7 @@
             <div class="small-panel-right-text-content">
               <p class="right-text">月偿还金额（元）</p>
               <p class="right-amount">
-                <count-to :start-val='0' :end-val="calculateTotalByKey(listData, 'totalRepaidAmount')"
+                <count-to :start-val='0' :end-val="last_data(listData, 'totalRepaidAmount')"
                 :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay=true :useEasing="true"></count-to>
               </p>
             </div>
@@ -108,7 +108,7 @@
             <div class="small-panel-right-text-content">
               <p class="right-text">融资余额（元）</p>
               <p class="right-amount">
-                <count-to :start-val='0' :end-val="calculateTotalByKey(listData, 'totalRemainingAmount')"
+                <count-to :start-val='0' :end-val="last_data(listData, 'totalRemainingAmount')"
                   :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay=true
                   :useEasing="true"></count-to>
               </p>
@@ -368,6 +368,14 @@
         }
 
         return monthsArray;
+      },
+      last_data(listData, key) {
+        let total = 0
+        if (listData!= undefined &&listData.length > 0) {
+          total = listData[listData.length - 1][key]
+        }
+      
+        return total
       },
       calculateTotalByKey(dataList, key) {
         const total = dataList.reduce((total, item) => {
