@@ -414,7 +414,7 @@ export default {
         series: [{
           name: '还款合计',
           type: 'line',
-          stack: 'Total',
+          // stack: 'Total',
           data: [],
           data: [],
           smooth: true,
@@ -436,34 +436,10 @@ export default {
           }
         },
         {
-          name: '还款本金',
-          key: 'totalPrincipal',
-          type: 'line',
-          stack: 'Total',
-          data: [],
-          smooth: true,
-          showSymbol: false,
-          lineStyle: {
-            width: 5 // 调整线条的粗细
-          },
-          areaStyle: {
-            opacity: 0.8,
-            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-              offset: 0,
-              color: 'rgba(35, 173, 255, .3)'
-            },
-            {
-              offset: 1,
-              color: 'rgba(35, 173, 255, 0)'
-            }
-            ])
-          }
-        },
-        {
           name: '还款利息',
           key: 'totalInterest',
           type: 'line',
-          stack: 'Total',
+          // stack: 'Total',
           data: [],
           smooth: true,
           showSymbol: false,

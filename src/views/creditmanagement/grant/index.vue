@@ -628,15 +628,15 @@ export default {
       get() {
         // 如果是自动计算的，直接返回计算结果加"天"，否则返回当前值
         if (this.isAutoCalculated) {
-          return this.form.creditCycle ? `${this.form.creditCycle}天` : '';
+          return this.form.creditCycle ? `${this.form.creditCycle}月` : '';
         } else {
-          return this.form.creditCycle ? `${this.form.creditCycle}天` : '';
+          return this.form.creditCycle ? `${this.form.creditCycle}月` : '';
         }
       },
       set(value) {
         this.isAutoCalculated = false; // 用户手动输入，更改标志状态
-        if (typeof value === 'string' && value.includes('天')) {
-          this.form.creditCycle = parseInt(value.replace('天', ''), 10);
+        if (typeof value === 'string' && value.includes('月')) {
+          this.form.creditCycle = parseInt(value.replace('月', ''), 10);
         } else if (!isNaN(value)) {
           this.form.creditCycle = parseInt(value, 10);
         }
@@ -654,9 +654,10 @@ export default {
         const start = moment(this.form.startDate);
         const end = moment(this.form.deadline);
 
-        const days = end.diff(start, 'days') + 1; // 直接计算天数，并加1表示至少一天
+        // const days = end.diff(start, 'days') + 1; // 直接计算天数，并加1表示至少一天
+        let creditCycle = moment(end).diff(moment(start),'month',true)
 
-        this.form.creditCycle = days;
+        this.form.creditCycle = (creditCycle).toFixed(2);
         this.isAutoCalculated = true; // 标记为自动计算
       }
     },
@@ -806,7 +807,7 @@ export default {
             // data.creditCycle = creditCycle === 0 ? 1 : creditCycle;
 
             let loanTermStr = data.creditCycle.toString();
-            loanTermStr = loanTermStr.replace(/天$/, '');
+            loanTermStr = loanTermStr.replace(/月$/, '');
 
             data.creditCycle = loanTermStr
             this.rzaudit_data = {
@@ -846,7 +847,7 @@ export default {
             // let creditCycle = moment(data.deadline).diff(moment(data.startDate), 'days');
             // data.creditCycle = creditCycle === 0 ? 1 : creditCycle;
             let loanTermStr = data.creditCycle.toString();
-            loanTermStr = loanTermStr.replace(/天$/, '');
+            loanTermStr = loanTermStr.replace(/月$/, '');
 
             data.creditCycle = loanTermStr
 
