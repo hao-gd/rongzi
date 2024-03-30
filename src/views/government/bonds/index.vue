@@ -286,7 +286,8 @@
                  <el-date-picker clearable :disabled="!isEditable" v-model="form.loanDate" type="date" value-format="yyyy-MM-dd"
                    placeholder="请选择起始日">
                  </el-date-picker>
-               </el-form-item>
+               </el-form-item>
+
             </el-col>
             <el-col :span="8">
               <el-form-item label="到期日" prop="dueDate">
@@ -304,7 +305,7 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row :gutter="20">
+          <!-- <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="发行主体" prop="issuingEntity">
                 <el-select filterable :disabled="!isEditable" v-model="form.issuingEntity" placeholder="请选择发行主体">
@@ -313,7 +314,7 @@
                 </el-select>
               </el-form-item>
             </el-col>
-          </el-row>
+          </el-row> -->
           <el-row :gutter="20">
             <el-col :span="24">
               <el-form-item label="备注" prop="comment">
