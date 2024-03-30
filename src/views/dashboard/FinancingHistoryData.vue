@@ -107,8 +107,9 @@
             <div class="small-panel-right-text-content">
               <p class="right-text">月偿还金额（元）</p>
               <p class="right-amount">
-                <count-to :start-val='0' :end-val="last_data_add(listData1, 'totalPrincipal','totalInterest')" :duration='1000'
-                  :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay=true :useEasing="true"></count-to>
+                <count-to :start-val='0' :end-val="last_data_add(listData1, 'totalPrincipal','totalInterest')"
+                  :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay=true
+                  :useEasing="true"></count-to>
               </p>
             </div>
           </el-col>
@@ -234,7 +235,7 @@
               name: '总融资金额',
               key: 'totalFinancingAmount',
               type: 'line',
-              stack: 'Total',
+              // stack: 'Total',
               data: [],
               smooth: true,
               showSymbol: false,
@@ -252,13 +253,14 @@
                     color: 'rgba(22, 93, 255, 0)'
                   }
                 ])
-              }
+              },
+			  z: 1
             },
             {
               name: '月偿还金额',
               key: 'totalRepaidAmount',
               type: 'line',
-              stack: 'Total',
+              // stack: 'Total',
               data: [],
               smooth: true,
               showSymbol: false,
@@ -276,13 +278,14 @@
                     color: 'rgba(51, 209, 201, 0)'
                   }
                 ])
-              }
+              },
+			  z: 2 
             },
             {
               name: '融资余额',
               key: 'totalRemainingAmount',
               type: 'line',
-              stack: 'Total',
+              // stack: 'Total',
               data: [],
               smooth: true,
               showSymbol: false,
@@ -300,7 +303,8 @@
                     color: 'rgba(247, 114, 52, 0)'
                   }
                 ])
-              }
+              },
+			  z: 3
             },
           ]
         },
@@ -369,6 +373,9 @@
             this.option.series[2].data = this.transformAndFillData(data, this.option.xAxis.data,
               'totalRemainingAmount');
 
+            this.queryParams["startDate"] = this.daterangeLogCreateDate[0];
+            this.queryParams["endDate"] = this.daterangeLogCreateDate[1];
+
             const res1 = await getRepaymentPlanData(this.queryParams);
             if (res1.code === 200) {
               const data1 = JSON.parse(JSON.stringify(res1.data));
@@ -387,9 +394,6 @@
           console.log(error);
           this.$modal.msgError('数据获取失败，请重新尝试。');
         }
-
-
-
 
 
       },
@@ -428,7 +432,7 @@
       last_data_add(listData, k1, k2) {
         let total = 0
         if (listData != undefined && listData.length > 0) {
-          total = listData[listData.length - 1][k1]+listData[listData.length - 1][k2]
+          total = listData[listData.length - 1][k1] + listData[listData.length - 1][k2]
         }
 
         return total
