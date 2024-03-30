@@ -255,19 +255,19 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="专项批复金额（万元）" prop="approvedAmount">
-                <el-input-number class="w" :controls="false" :precision="2" :readonly="!isEditable" type="number"
+                <el-input-number :disabled="!isEditable" class="w" :controls="false" :precision="2" :readonly="!isEditable" type="number"
                   v-model.trim="form.approvedAmount" placeholder="请输入专项批复金额" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="累计到账金额（万元）" prop="accumulatedAmountReceived">
-                <el-input-number class="w" :controls="false" :precision="2" :readonly="!isEditable" type="number"
+                <el-input-number :disabled="!isEditable" class="w" :controls="false" :precision="2" :readonly="!isEditable" type="number"
                   v-model.trim="form.accumulatedAmountReceived" placeholder="请输入累计到账金额" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="已还金额（万元）" prop="repaidAmount">
-                <el-input-number class="w" :controls="false" :precision="2" :readonly="!isEditable" type="number"
+                <el-input-number :disabled="!isEditable" class="w" :controls="false" :precision="2" :readonly="!isEditable" type="number"
                   v-model.trim="form.repaidAmount" placeholder="请输入已还金额" />
               </el-form-item>
             </el-col>
@@ -277,7 +277,7 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="待还金额（万元）" prop="remainingAmount">
-                <el-input-number class="w" :controls="false" :precision="2" :readonly="!isEditable" type="number"
+                <el-input-number :disabled="!isEditable" class="w" :controls="false" :precision="2" :readonly="!isEditable" type="number"
                   v-model.trim="remainingCreditAmount" placeholder="请输入待还金额" />
               </el-form-item>
             </el-col>
@@ -646,9 +646,9 @@
 
           // 金额数据 / 10000
           response.data.approvedAmount = Number(response.data.approvedAmount) / 10000;
-          response.data.accumulatedAmountReceived = Number(response.data.approvedAmount) / 10000;
-          response.data.repaidAmount = Number(response.data.approvedAmount) / 10000;
-          response.data.remainingAmount = Number(response.data.approvedAmount) / 10000;
+          response.data.accumulatedAmountReceived = Number(response.data.accumulatedAmountReceived) / 10000;
+          response.data.repaidAmount = Number(response.data.repaidAmount) / 10000;
+          response.data.remainingAmount = Number(response.data.remainingAmount) / 10000;
 
           this.scrUuid = response.data.scrUuid;
           this.form = response.data;
@@ -670,9 +670,9 @@
 
             // 金额数据 * 10000
             data.approvedAmount = data.approvedAmount * 10000;
-            data.accumulatedAmountReceived = data.approvedAmount * 10000;
-            data.repaidAmount = data.approvedAmount * 10000;
-            data.remainingAmount = data.approvedAmount * 10000;
+            data.accumulatedAmountReceived = data.accumulatedAmountReceived * 10000;
+            data.repaidAmount = data.repaidAmount * 10000;
+            data.remainingAmount = data.remainingAmount * 10000;
 
             if (this.form.id != null) {
               data.scrUuid = Number(this.scrUuid);

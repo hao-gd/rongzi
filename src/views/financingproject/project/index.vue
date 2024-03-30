@@ -231,7 +231,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="融资金额（万元）" prop="financingAmount">
-                <el-input-number class="w" :controls="false" :precision="2" :readonly="!isEditable" type="number"
+                <el-input-number class="w" :controls="false" :precision="2" :disabled="!isEditable" :readonly="!isEditable" type="number"
                   v-model.trim="form.financingAmount" placeholder="请输入融资金额" />
               </el-form-item>
             </el-col>
@@ -282,7 +282,7 @@
             </el-col> -->
             <el-col :span="8">
               <el-form-item label="已还金额（万元）" prop="repaidAmount">
-                <el-input-number class="w" :controls="false" :precision="2" :readonly="!isEditable" type="number"
+                <el-input-number class="w" :controls="false" :precision="2" :disabled="!isEditable" :readonly="!isEditable" type="number"
                   v-model.trim="form.repaidAmount" placeholder="请输入已还金额" />
               </el-form-item>
             </el-col>
