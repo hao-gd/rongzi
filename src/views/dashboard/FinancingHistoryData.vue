@@ -37,6 +37,7 @@
                   end-placeholder="结束月份"></el-date-picker>
               </el-form-item>
             </el-col>
+
             <!-- <el-col :span="8" class="mt20">
                             <el-form-item class="no_mb" label="融资金额（万元）" prop="financingAmount">
                                 <el-input v-model="queryParams.financingAmount" placeholder="请输入融资金额" clearable
@@ -76,6 +77,14 @@
                             </el-form-item>
                         </el-col> -->
           </el-row>
+
+          <el-row :gutter="20">
+            <el-col :span="24">
+              <el-form-item class="flex" style="display: flex; justify-content: flex-end;">
+                <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重 置</el-button>
+              </el-form-item>
+            </el-col>
+          </el-row>
         </el-form>
       </search-panel>
 
@@ -88,8 +97,8 @@
             <div class="small-panel-right-text-content">
               <p class="right-text">融资总额（元）</p>
               <p class="right-amount">
-                <count-to :start-val='0' :end-val="last_data(listData, 'totalFinancingAmount')"
-                  :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay=true :useEasing="true"></count-to>
+                <count-to :start-val='0' :end-val="last_data(listData, 'totalFinancingAmount')" :duration='1000'
+                  :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay=true :useEasing="true"></count-to>
               </p>
             </div>
           </el-col>
@@ -98,8 +107,8 @@
             <div class="small-panel-right-text-content">
               <p class="right-text">月偿还金额（元）</p>
               <p class="right-amount">
-                <count-to :start-val='0' :end-val="last_data(listData, 'totalRepaidAmount')"
-                :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay=true :useEasing="true"></count-to>
+                <count-to :start-val='0' :end-val="last_data(listData, 'totalRepaidAmount')" :duration='1000'
+                  :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay=true :useEasing="true"></count-to>
               </p>
             </div>
           </el-col>
@@ -108,9 +117,8 @@
             <div class="small-panel-right-text-content">
               <p class="right-text">融资余额（元）</p>
               <p class="right-amount">
-                <count-to :start-val='0' :end-val="last_data(listData, 'totalRemainingAmount')"
-                  :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay=true
-                  :useEasing="true"></count-to>
+                <count-to :start-val='0' :end-val="last_data(listData, 'totalRemainingAmount')" :duration='1000'
+                  :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay=true :useEasing="true"></count-to>
               </p>
             </div>
           </el-col>
@@ -296,7 +304,6 @@
           ]
         },
         listData: [],
-        NextMonthData: null
       }
     },
     created() {
@@ -304,26 +311,45 @@
     },
     mounted() {
       this.getrzloghistoryFinancing();
-      this.getCardData4();
     },
     methods: {
+
+      async resetQuery() {
+        this.queryParams = {
+          managementId: null,
+          scrUuid: null,
+          borrowingUnit: null,
+          financialInstitution: null,
+          financingAmount: null,
+          financingType: null,
+          contractId: null,
+          contractSigningDate: null,
+          loanDate: null,
+          dueDate: null,
+          rate: null,
+          loanTerm: null,
+          creditEnhancementMeasures: null,
+          repaidAmount: null,
+          remainingAmount: null,
+          loanState: null,
+          comment: null,
+          uuid: null,
+          logCreateTime: null,
+          logCreateDate: null
+        }
+        this.daterangeLogCreateDate = [
+          moment().subtract(1, 'years').format('YYYY-MM'),
+          moment().format('YYYY-MM')
+        ]
+        this.changeRang()
+        await this.getrzloghistoryFinancing()
+      },
       init() {
         var chartDom = document.getElementById('main-echart');
         var myChart = echarts.init(chartDom);
         myChart.setOption(this.option);
       },
-      // 获取当月和下个月还款计划
-      async getCardData4() {
-        try {
-          const currentMonth = moment().format('YYYY-MM');
-          const NextMonthData = await getNextRepaymentPlan(currentMonth);
-          if (NextMonthData.code === 200) {
-            this.NextMonthData = NextMonthData.data;
-          }
-        } catch (error) {
-          this.$modal.msgError('数据获取失败，请重新尝试。');
-        }
-      },
+
       async getrzloghistoryFinancing() {
         try {
           this.queryParams.params = {};
@@ -371,22 +397,22 @@
       },
       last_data(listData, key) {
         let total = 0
-        if (listData!= undefined &&listData.length > 0) {
+        if (listData != undefined && listData.length > 0) {
           total = listData[listData.length - 1][key]
         }
-      
+
         return total
       },
       calculateTotalByKey(dataList, key) {
         const total = dataList.reduce((total, item) => {
           // 检查当前项是否有指定的key，并且该key对应的值是数字类型
-          console.log("total",key, total,item[key],item);
+          console.log("total", key, total, item[key], item);
           if (item.hasOwnProperty(key) && typeof item[key] === 'number') {
             return total + item[key];
           }
           return total;
         }, 0);
-        console.log("total",key, total);
+        console.log("total", key, total);
         // 将总和除以10000，得到以“万”为单位的数值
         return total;
       },

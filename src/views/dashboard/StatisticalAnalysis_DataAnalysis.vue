@@ -48,6 +48,13 @@
                             </el-form-item>
                         </el-col> -->
           </el-row>
+          <el-row :gutter="20">
+            <el-col :span="24">
+              <el-form-item class="flex" style="display: flex; justify-content: flex-end;">
+                <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重 置</el-button>
+              </el-form-item>
+            </el-col>
+          </el-row>
         </el-form>
       </search-panel>
 
@@ -364,6 +371,33 @@
       this.getListData();
     },
     methods: {
+
+      async resetQuery() {
+        this.queryParams = {
+          managementId: null,
+          contractId: null,
+          scrUuid: null,
+          creditor: null,
+          guarantor: null,
+          financialInstitution: null,
+          businessType: null,
+          guaranteeAmount: null,
+          guaranteeBalance: null,
+          startDate: null,
+          deadline: null,
+          guaranteeMethod: null,
+          isCreditInvestigation: null,
+          comment: null,
+          createTime: null,
+          createBy: null,
+          uuid: null,
+          type: null,
+          logCreateDate: null,
+          logCreateTime: null
+        }
+        await this.getListData()
+      },
+
       init() {
         var chartDom = document.getElementById('main-echart');
         var myChart = echarts.init(chartDom);
@@ -425,7 +459,7 @@
       },
       last_data(listData, key) {
         let total = 0
-        if (listData!= undefined &&listData.length > 0) {
+        if (listData != undefined && listData.length > 0) {
           total = listData[listData.length - 1][key]
         }
 
