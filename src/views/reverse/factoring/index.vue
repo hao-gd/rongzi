@@ -164,7 +164,7 @@
           <dict-tag :options="dict.type.sys_1757271666666242000" :value="scope.row.creditor" />
         </template>
       </el-table-column>
-      <el-table-column checkDueReminderWithConfig label="保理商名称" align="center" prop="factor"  min-width="260">
+      <el-table-column checkDueReminderWithConfig label="保理商名称" align="center" prop="factor" min-width="260">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1757288852172570600" :value="scope.row.factor" />
         </template>
@@ -198,7 +198,7 @@
           <!-- <dict-tag :options="dict.type.sys_maturity" :value="scope.row.remark" /> -->
         </template>
       </el-table-column>
-      <el-table-column checkDueReminderWithConfig label="回款账户" align="center" prop="collectionAccount" min-width="260"/>
+      <el-table-column checkDueReminderWithConfig label="回款账户" align="center" prop="collectionAccount" min-width="260" />
       <el-table-column checkDueReminderWithConfig label="备注" align="center" prop="comment" min-width="200" />
       <!-- <el-table-column label="ID" align="center" prop="id" /> -->
       <el-table-column fixed="right" label="操作" align="center" class-name="small-padding fixed-width">
@@ -261,7 +261,8 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="放贷金额（万元）" prop="loanAmount">
-                <el-input-number class="w" :controls="false" :precision="2" :readonly="!isEditable" type="number" v-model.trim="form.loanAmount" placeholder="请输入放贷金额" />
+                <el-input-number class="w" :controls="false" :precision="2" :readonly="!isEditable" type="number"
+                  v-model.trim="form.loanAmount" placeholder="请输入放贷金额" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -273,14 +274,14 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="开始日期" prop="startDate">
-                <el-date-picker :picker-options="pickerOptions1" :disabled="!isEditable" clearable v-model="form.startDate" type="date"
-                  value-format="yyyy-MM-dd" placeholder="请选择开始日期"></el-date-picker>
+                <el-date-picker :picker-options="pickerOptions1" :disabled="!isEditable" clearable
+                  v-model="form.startDate" type="date" value-format="yyyy-MM-dd" placeholder="请选择开始日期"></el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="结束日期" prop="deadline">
-                <el-date-picker :picker-options="pickerOptions2" :disabled="!isEditable" clearable v-model="form.deadline" type="date"
-                  value-format="yyyy-MM-dd" placeholder="请选择结束日期"></el-date-picker>
+                <el-date-picker :picker-options="pickerOptions2" :disabled="!isEditable" clearable v-model="form.deadline"
+                  type="date" value-format="yyyy-MM-dd" placeholder="请选择结束日期"></el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -293,8 +294,8 @@
           <el-row :gutter="20">
             <el-col :span="24">
               <el-form-item label="备注" prop="comment">
-                <el-input :readonly="!isEditable" v-model="form.comment" show-word-limit maxlength="200" type="textarea" :rows="4"
-                  placeholder="请输入备注信息，最多不超过200字" />
+                <el-input :readonly="!isEditable" v-model="form.comment" show-word-limit maxlength="200" type="textarea"
+                  :rows="4" placeholder="请输入备注信息，最多不超过200字" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -351,21 +352,23 @@ export default {
   data() {
     return {
       pickerOptions1: {
-          // 禁用开始日期中，所有大于结束日期的日期
-          disabledDate: (date) => {
-            if (this.form.deadline) {
-              return date.getTime() > new Date(this.form.deadline).getTime();
-            }
+        // 禁用开始日期中，所有大于结束日期的日期
+        disabledDate: (date) => {
+          if (this.form.deadline) {
+            return date.getTime() > new Date(this.form.deadline).getTime();
           }
-        },
-        pickerOptions2: {
-          // 禁用结束日期中，所有小于开始日期的日期
-          disabledDate: (date) => {
-            if (this.form.startDate) {
-              return date.getTime() < new Date(this.form.startDate).getTime();
-            }
+        }
+      },
+      pickerOptions2: {
+        // 禁用结束日期中，所有小于开始日期的日期
+        disabledDate: (date) => {
+          if (this.form.startDate) {
+            // 一天的毫秒数
+            var oneDayInMilliseconds = 24 * 60 * 60 * 1000;
+            return date.getTime() < new Date(this.form.startDate).getTime() - oneDayInMilliseconds;
           }
-        },
+        }
+      },
       isSuccess: true,
       isTitle: true,
       isMessage: true,
@@ -659,7 +662,7 @@ export default {
         }
       });
     },
-   async handleaddList() {
+    async handleaddList() {
       // 检验上一个数据步骤有没有审批通过
       await this.inspectionPendingReview(this.rzaudit_data)
 
@@ -691,43 +694,43 @@ export default {
 
       const h = this.$createElement;
       this.$msgbox({
-          title: '提示',
-          message: h('div', null, [
-            h('el-divider', {
-              class: {
-                "no_mt": true,
-                "mb20": true
-              },
-              attrs: {"data-role": 'el-divider'}
-            }, ''),
-            h('p', {
-              class: 'tc w mb20',
-              style: {
-                'font-size': '24px',
-                'color': '#000000',
-                'font-weight': 'bold'
-              }
-            }, '确定删除选中的反向保理吗？'),
-          ]),
-          showCancelButton: true,
-          cancelButtonText: '取消',
-          confirmButtonText: '确定',
-          cancelButtonClass: "btn-custom-cancel",
-          customClass: 'custom-msgbox',
-          beforeClose: (action, instance, done) => {
-            if (action === 'confirm') {
-              delFactoring(ids).then(res => {
-                done();
-              });
-            } else {
-              done();
+        title: '提示',
+        message: h('div', null, [
+          h('el-divider', {
+            class: {
+              "no_mt": true,
+              "mb20": true
+            },
+            attrs: { "data-role": 'el-divider' }
+          }, ''),
+          h('p', {
+            class: 'tc w mb20',
+            style: {
+              'font-size': '24px',
+              'color': '#000000',
+              'font-weight': 'bold'
             }
+          }, '确定删除选中的反向保理吗？'),
+        ]),
+        showCancelButton: true,
+        cancelButtonText: '取消',
+        confirmButtonText: '确定',
+        cancelButtonClass: "btn-custom-cancel",
+        customClass: 'custom-msgbox',
+        beforeClose: (action, instance, done) => {
+          if (action === 'confirm') {
+            delFactoring(ids).then(res => {
+              done();
+            });
+          } else {
+            done();
           }
-        }).then(action => {
-          this.cancel();
-          this.getList();
-          this.$modal.msgSuccess("删除成功");
-        });
+        }
+      }).then(action => {
+        this.cancel();
+        this.getList();
+        this.$modal.msgSuccess("删除成功");
+      });
     },
     /** 附件表序号 */
     rowrzsrc2Index({ row, rowIndex }) {

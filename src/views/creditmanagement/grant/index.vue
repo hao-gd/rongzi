@@ -462,7 +462,9 @@ export default {
         // 禁用结束日期中，所有小于开始日期的日期
         disabledDate: (date) => {
           if (this.form.startDate) {
-            return date.getTime() < new Date(this.form.startDate).getTime();
+            // 一天的毫秒数
+            var oneDayInMilliseconds = 24 * 60 * 60 * 1000;
+            return date.getTime() < new Date(this.form.startDate).getTime() - oneDayInMilliseconds;
           }
         }
       },

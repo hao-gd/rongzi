@@ -118,12 +118,12 @@
           <dict-tag :options="dict.type.sys_drawer" :value="scope.row.drawer" />
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="收票人"  min-width="260" align="center" prop="payee">
+      <el-table-column show-overflow-tooltip label="收票人" min-width="260" align="center" prop="payee">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1754491769220759600" :value="scope.row.payee" />
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="承兑人(金融机构)"  min-width="260" align="center" prop="financialInstitution">
+      <el-table-column show-overflow-tooltip label="承兑人(金融机构)" min-width="260" align="center" prop="financialInstitution">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_acceptor" :value="scope.row.financialInstitution" />
         </template>
@@ -153,7 +153,7 @@
       </el-table-column>
       <el-table-column show-overflow-tooltip label="承兑协议编号" min-width="180" align="center" prop="acceptAgreementId" />
       <el-table-column show-overflow-tooltip label="项目名称" align="center" min-width="180" prop="entryName" />
-      <el-table-column show-overflow-tooltip label="备注" align="center"  min-width="200" prop="comment" />
+      <el-table-column show-overflow-tooltip label="备注" align="center" min-width="200" prop="comment" />
       <!-- <el-table-column label="ID" align="center" prop="id" /> -->
       <el-table-column fixed="right" label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -216,13 +216,14 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="出票金额（万元）" prop="invoiceAmount">
-                <el-input-number class="w" :controls="false" :precision="2" :readonly="!isEditable" type="number" v-model.trim="form.invoiceAmount" placeholder="请输入出票金额" />
+                <el-input-number class="w" :controls="false" :precision="2" :readonly="!isEditable" type="number"
+                  v-model.trim="form.invoiceAmount" placeholder="请输入出票金额" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="出票日期" prop="draftDate">
-                <el-date-picker :picker-options="pickerOptions1" :disabled="!isEditable" clearable v-model="form.draftDate" type="date"
-                  value-format="yyyy-MM-dd" placeholder="请选择出票日期">
+                <el-date-picker :picker-options="pickerOptions1" :disabled="!isEditable" clearable
+                  v-model="form.draftDate" type="date" value-format="yyyy-MM-dd" placeholder="请选择出票日期">
                 </el-date-picker>
               </el-form-item>
             </el-col>
@@ -232,8 +233,8 @@
 
             <el-col :span="8">
               <el-form-item label="到期日" prop="dueDate">
-                <el-date-picker :picker-options="pickerOptions2" :disabled="!isEditable" clearable v-model="form.dueDate" type="date"
-                  value-format="yyyy-MM-dd" placeholder="请选择到期日">
+                <el-date-picker :picker-options="pickerOptions2" :disabled="!isEditable" clearable v-model="form.dueDate"
+                  type="date" value-format="yyyy-MM-dd" placeholder="请选择到期日">
                 </el-date-picker>
               </el-form-item>
             </el-col>
@@ -309,21 +310,23 @@ export default {
   data() {
     return {
       pickerOptions1: {
-          // 禁用开始日期中，所有大于结束日期的日期
-          disabledDate: (date) => {
-            if (this.form.dueDate) {
-              return date.getTime() > new Date(this.form.dueDate).getTime();
-            }
+        // 禁用开始日期中，所有大于结束日期的日期
+        disabledDate: (date) => {
+          if (this.form.dueDate) {
+            return date.getTime() > new Date(this.form.dueDate).getTime();
           }
-        },
-        pickerOptions2: {
-          // 禁用结束日期中，所有小于开始日期的日期
-          disabledDate: (date) => {
-            if (this.form.draftDate) {
-              return date.getTime() < new Date(this.form.draftDate).getTime();
-            }
+        }
+      },
+      pickerOptions2: {
+        // 禁用结束日期中，所有小于开始日期的日期
+        disabledDate: (date) => {
+          if (this.form.draftDate) {
+            // 一天的毫秒数
+            var oneDayInMilliseconds = 24 * 60 * 60 * 1000;
+            return date.getTime() < new Date(this.form.draftDate).getTime() - oneDayInMilliseconds;
           }
-        },
+        }
+      },
       isSuccess: true,
       isTitle: true,
       isMessage: true,

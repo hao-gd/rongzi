@@ -50,12 +50,12 @@
         </el-row>
 
         <el-row :gutter="20">
-          <el-col :span="8">
+          <!-- <el-col :span="8">
             <el-form-item label="合同编号" prop="contractId">
               <el-input v-model="queryParams.contractId" placeholder="请输入合同编号" clearable
                 @keyup.enter.native="handleQuery" />
             </el-form-item>
-          </el-col>
+          </el-col> -->
           <el-col :span="8">
             <el-form-item label="还款方式" prop="repaymentMethod">
               <el-select filterable v-model="queryParams.repaymentMethod" placeholder="请选择还款方式" clearable>
@@ -263,11 +263,11 @@
           </el-row>
 
           <el-row :gutter="20">
-            <el-col :span="8">
+            <!-- <el-col :span="8">
               <el-form-item label="合同编号" prop="contractId">
                 <el-input :readonly="!isEditable" v-model="form.contractId" placeholder="请输入合同编号" />
               </el-form-item>
-            </el-col>
+            </el-col> -->
             <el-col :span="8">
               <el-form-item label="还款方式" prop="repaymentMethod">
                 <el-select filterable :disabled="!isEditable" v-model="form.repaymentMethod" placeholder="请选择还款方式">
@@ -356,7 +356,9 @@ export default {
         // 禁用结束日期中，所有小于开始日期的日期
         disabledDate: (date) => {
           if (this.form.borrowDate) {
-            return date.getTime() < new Date(this.form.borrowDate).getTime();
+            // 一天的毫秒数
+            var oneDayInMilliseconds = 24 * 60 * 60 * 1000;
+            return date.getTime() < new Date(this.form.borrowDate).getTime() - oneDayInMilliseconds;
           }
         }
       },

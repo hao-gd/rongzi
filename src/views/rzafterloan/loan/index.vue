@@ -84,7 +84,7 @@
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
       <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" />
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
-      <el-table-column show-overflow-tooltip label="金融机构" align="center" prop="financialInstitution"  min-width="260">
+      <el-table-column show-overflow-tooltip label="金融机构" align="center" prop="financialInstitution" min-width="260">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_acceptor" :value="scope.row.financialInstitution" />
         </template>
@@ -94,7 +94,7 @@
           <span>{{ formatNumberAsRMB(scope.row.loanAmount) }}</span>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="借款单位" align="center" prop="borrowingUnit"  min-width="260">
+      <el-table-column show-overflow-tooltip label="借款单位" align="center" prop="borrowingUnit" min-width="260">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1759464239669444600" :value="scope.row.borrowingUnit" />
         </template>
@@ -103,7 +103,7 @@
       <el-table-column show-overflow-tooltip label="量化目标" align="center" prop="quantitativeGoals" min-width="100" />
       <el-table-column show-overflow-tooltip label="当前实现" align="center" prop="currentImplementation" min-width="100" />
       <el-table-column show-overflow-tooltip label="剩余实现" align="center" prop="remainingQuantity" min-width="100" />
-      <el-table-column show-overflow-tooltip label="借款期限" align="center" prop="loanTerm"  min-width="100">
+      <el-table-column show-overflow-tooltip label="借款期限" align="center" prop="loanTerm" min-width="100">
         <template slot-scope="scope">
           <span>{{ creditCycleFN(scope.row.startDate, scope.row.deadline) }}</span>
         </template>
@@ -117,7 +117,7 @@
       </el-table-column>
 
       <!-- <el-table-column label="进度说明" align="center" prop="progressDescription" /> -->
-      <el-table-column show-overflow-tooltip label="备注" align="center" prop="comment"  min-width="200"/>
+      <el-table-column show-overflow-tooltip label="备注" align="center" prop="comment" min-width="200" />
       <!-- <el-table-column label="uuid" align="center" prop="uuid" /> -->
       <el-table-column show-overflow-tooltip label="操作" fixed="right" align="center"
         class-name="small-padding fixed-width">
@@ -165,7 +165,8 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="借款金额（万元）" prop="loanAmount">
-                <el-input-number class="w" :controls="false" :precision="2" :readonly="!isEditable" type="number" v-model.trim="form.loanAmount" placeholder="请输入借款金额" />
+                <el-input-number class="w" :controls="false" :precision="2" :readonly="!isEditable" type="number"
+                  v-model.trim="form.loanAmount" placeholder="请输入借款金额" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -182,14 +183,14 @@
 
             <el-col :span="8">
               <el-form-item label="起始日" prop="startDate">
-                <el-date-picker :picker-options="pickerOptions1" :disabled="!isEditable" clearable v-model="form.startDate" type="date"
-                  value-format="yyyy-MM-dd" placeholder="请选择起始日"></el-date-picker>
+                <el-date-picker :picker-options="pickerOptions1" :disabled="!isEditable" clearable
+                  v-model="form.startDate" type="date" value-format="yyyy-MM-dd" placeholder="请选择起始日"></el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="到期日" prop="deadline">
-                <el-date-picker :picker-options="pickerOptions2" :disabled="!isEditable" clearable v-model="form.deadline" type="date"
-                  value-format="yyyy-MM-dd" placeholder="请选择到期日"></el-date-picker>
+                <el-date-picker :picker-options="pickerOptions2" :disabled="!isEditable" clearable v-model="form.deadline"
+                  type="date" value-format="yyyy-MM-dd" placeholder="请选择到期日"></el-date-picker>
               </el-form-item>
             </el-col>
 
@@ -296,21 +297,23 @@ export default {
   data() {
     return {
       pickerOptions1: {
-          // 禁用开始日期中，所有大于结束日期的日期
-          disabledDate: (date) => {
-            if (this.form.deadline) {
-              return date.getTime() > new Date(this.form.deadline).getTime();
-            }
+        // 禁用开始日期中，所有大于结束日期的日期
+        disabledDate: (date) => {
+          if (this.form.deadline) {
+            return date.getTime() > new Date(this.form.deadline).getTime();
           }
-        },
-        pickerOptions2: {
-          // 禁用结束日期中，所有小于开始日期的日期
-          disabledDate: (date) => {
-            if (this.form.startDate) {
-              return date.getTime() < new Date(this.form.startDate).getTime();
-            }
+        }
+      },
+      pickerOptions2: {
+        // 禁用结束日期中，所有小于开始日期的日期
+        disabledDate: (date) => {
+          if (this.form.startDate) {
+            // 一天的毫秒数
+            var oneDayInMilliseconds = 24 * 60 * 60 * 1000;
+            return date.getTime() < new Date(this.form.startDate).getTime() - oneDayInMilliseconds;
           }
-        },
+        }
+      },
       isSuccess: true,
       isTitle: true,
       isMessage: true,

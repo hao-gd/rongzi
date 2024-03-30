@@ -46,15 +46,12 @@
               <el-input v-model="queryParams.rate" placeholder="请输入利率" clearable @keyup.enter.native="handleQuery" />
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <!-- <el-col :span="8">
             <el-form-item label="合同编号" prop="contractId">
               <el-input v-model="queryParams.contractId" placeholder="请输入合同编号" clearable
                 @keyup.enter.native="handleQuery" />
             </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-row :gutter="20">
+          </el-col> -->
           <el-col :span="8">
             <el-form-item label="还款方式" prop="repaymentMethod">
               <el-select filterable v-model="queryParams.repaymentMethod" placeholder="请选择还款方式" clearable>
@@ -63,6 +60,10 @@
               </el-select>
             </el-form-item>
           </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          
           <el-col :span="8">
             <el-form-item label="业务类型" prop="loanUse">
               <el-select filterable v-model="queryParams.loanUse" placeholder="请选择业务类型" clearable>
@@ -267,14 +268,11 @@
                 <el-input :readonly="!isEditable" v-model="rate" placeholder="请输入利率" />
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <!-- <el-col :span="8">
               <el-form-item label="合同编号" prop="contractId">
                 <el-input :readonly="!isEditable" v-model="form.contractId" placeholder="请输入合同编号" />
               </el-form-item>
-            </el-col>
-          </el-row>
-
-          <el-row :gutter="20">
+            </el-col> -->
             <el-col :span="8">
               <el-form-item label="还款方式" prop="repaymentMethod">
                 <el-select filterable :disabled="!isEditable" v-model="form.repaymentMethod" placeholder="请选择还款方式">
@@ -283,6 +281,10 @@
                 </el-select>
               </el-form-item>
             </el-col>
+          </el-row>
+
+          <el-row :gutter="20">
+            
             <el-col :span="8">
               <el-form-item label="业务类型" prop="loanUse">
                 <el-select filterable :disabled="!isEditable" v-model="form.loanUse" placeholder="请选择业务类型">
