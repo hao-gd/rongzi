@@ -852,6 +852,8 @@ export default {
         response.data.guaranteeBalance = Number(response.data.guaranteeBalance) / 10000;
         this.scrUuid = response.data.scrUuid;
         this.form = response.data;
+        this.daterangeStartDate2[0] = response.data.startDate;
+        this.daterangeStartDate2[1] = response.data.deadline;
         this.form.scrUuid = response.data.rzsrc2List.map(i => i.url)
         /* end */
         this.rzsrc2List = response.data.rzsrc2List;

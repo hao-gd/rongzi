@@ -332,7 +332,7 @@
               }
             },
             {
-              name: '内外担保总额',
+              name: '对外担保总额',
               key: 'externalGuaranteeAmount',
               type: 'line',
               stack: 'Total',

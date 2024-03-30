@@ -860,6 +860,8 @@ export default {
         this.scrUuid = response.data.scrUuid;
         this.form = response.data;
         this.form.scrUuid = response.data.rzsrc2List.map(i => i.url)
+        this.daterangeStartDate2[0] = response.data.startDate;
+        this.daterangeStartDate2[1] = response.data.deadline;
         /* end */
         this.rzsrc2List = response.data.rzsrc2List;
         this.open = true;
