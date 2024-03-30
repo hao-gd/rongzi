@@ -203,7 +203,8 @@
 
           <el-col :span="6">
             <el-row>
-              <el-col v-if="Object.keys(currentMonthData).length !== 0" :span="24" style="background: #fff;" class="card-panel">
+              <el-col v-if="Object.keys(currentMonthData).length !== 0" :span="24" style="background: #fff;"
+                class="card-panel">
                 <div class="card-content pt40 pb30 pl20" :class="'card-content-bg' + 5">
                   <div class="w">
                     <div class="card-title">本月还款计划</div>
@@ -267,7 +268,8 @@
                 </div>
               </el-col>
 
-              <el-col v-if="Object.keys(NextMonthData).length !== 0" :span="24" style="background: #fff;" class="card-panel">
+              <el-col v-if="Object.keys(NextMonthData).length !== 0" :span="24" style="background: #fff;"
+                class="card-panel">
                 <div class="card-content pl20 pb30 pt30" :class="'card-content-bg' + 5">
                   <div>
                     <div class="card-title">下月还款计划</div>
@@ -411,54 +413,79 @@ export default {
         yAxis: {
           type: 'value'
         },
-        series: [{
-          name: '还款合计',
-          type: 'line',
-          // stack: 'Total',
-          data: [],
-          data: [],
-          smooth: true,
-          showSymbol: false,
-          lineStyle: {
-            width: 5 // 调整线条的粗细
-          },
-          areaStyle: {
-            opacity: 0.8,
-            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-              offset: 0,
-              color: 'rgba(160, 134, 253, .3)'
+        series: [
+           {
+            name: '还款合计',
+            type: 'line',
+            // stack: 'Total',
+            data: [],
+            data: [],
+            smooth: true,
+            showSymbol: false,
+            lineStyle: {
+              width: 5 // 调整线条的粗细
             },
-            {
-              offset: 1,
-              color: 'rgba(160, 134, 253, 0)'
+            areaStyle: {
+              opacity: 0.8,
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                offset: 0,
+                color: 'rgba(160, 134, 253, .3)'
+              },
+              {
+                offset: 1,
+                color: 'rgba(160, 134, 253, 0)'
+              }
+              ])
             }
-            ])
-          }
-        },
-        {
-          name: '还款利息',
-          key: 'totalInterest',
-          type: 'line',
-          // stack: 'Total',
-          data: [],
-          smooth: true,
-          showSymbol: false,
-          lineStyle: {
-            width: 5 // 调整线条的粗细
           },
-          areaStyle: {
-            opacity: 0.8,
-            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-              offset: 0,
-              color: 'rgba(19, 207, 178, .3)'
+          {
+            name: '还款本金',
+            key: 'totalPrincipal',
+            type: 'line',
+            // stack: 'Total',
+            data: [],
+            smooth: true,
+            showSymbol: false,
+            lineStyle: {
+              width: 5 // 调整线条的粗细
             },
-            {
-              offset: 1,
-              color: 'rgba(19, 207, 178, 0)'
+            areaStyle: {
+              opacity: 0.8,
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                offset: 0,
+                color: 'rgba(35, 173, 255, .3)'
+              },
+              {
+                offset: 1,
+                color: 'rgba(35, 173, 255, 0)'
+              }
+              ])
             }
-            ])
-          }
-        },
+          },
+          {
+            name: '还款利息',
+            key: 'totalInterest',
+            type: 'line',
+            // stack: 'Total',
+            data: [],
+            smooth: true,
+            showSymbol: false,
+            lineStyle: {
+              width: 5 // 调整线条的粗细
+            },
+            areaStyle: {
+              opacity: 0.8,
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                offset: 0,
+                color: 'rgba(19, 207, 178, .3)'
+              },
+              {
+                offset: 1,
+                color: 'rgba(19, 207, 178, 0)'
+              }
+              ])
+            }
+          },
         ]
       },
       myChart: null,
