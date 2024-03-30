@@ -660,8 +660,8 @@ export default {
 
         // 金额数据 / 10000
         response.data.loanAmount = Number(response.data.loanAmount) / 10000;
-        response.data.repaidAmount = Number(response.data.loanAmount) / 10000;
-        response.data.balance = Number(response.data.loanAmount) / 10000;
+        response.data.repaidAmount = Number(response.data.repaidAmount) / 10000;
+        response.data.balance = Number(response.data.balance) / 10000;
 
         this.scrUuid = response.data.scrUuid;
         this.form = response.data;
@@ -682,8 +682,8 @@ export default {
 
           // 金额数据 * 10000
           data.loanAmount = data.loanAmount * 10000;
-          data.repaidAmount = data.loanAmount * 10000;
-          data.balance = data.loanAmount * 10000;
+          data.repaidAmount = data.repaidAmount * 10000;
+          data.balance = data.balance * 10000;
 
           if (this.form.id != null) {
             data.scrUuid = Number(this.scrUuid);
