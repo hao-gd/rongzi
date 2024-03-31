@@ -33,7 +33,7 @@
           <el-col :span="8">
             <el-form-item label="还款日期">
               <el-date-picker v-model="daterangeRiqi" value-format="yyyy-MM-dd" type="daterange" range-separator="-"
-                start-placeholder="开始" end-placeholder="结束"></el-date-picker>
+                start-placeholder="开始时间" end-placeholder="结束时间"></el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="16">
