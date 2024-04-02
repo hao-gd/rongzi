@@ -125,7 +125,7 @@
         // 查询参数
         queryParams: {
           pageNum: 1,
-          pageSize: 10,
+          pageSize: 100,
           title: null,
           comment: null,
           scrUuid: null,

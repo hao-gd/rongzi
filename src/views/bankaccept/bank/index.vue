@@ -4,7 +4,7 @@
     <search-panel HeaderIcon="bank" title="银行承兑汇票">
 
       <el-form label-position="left" :model="queryParams" ref="queryForm" size="small" v-show="showSearch"
-        label-width="100px">
+        label-width="120px">
         <!-- 第一组表单项 -->
         <el-row :gutter="20">
           <el-col :span="8">
@@ -42,19 +42,15 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="出票日期">
-              <el-date-picker v-model="daterangeDraftDate" style="width: 100%" value-format="yyyy-MM-dd" type="daterange"
-                range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
+            <el-form-item label="出票起始日">
+              <el-date-picker :picker-options="pickerOptions3" v-model="daterangeDraftDate1" style="width: 100%" value-format="yyyy-MM-dd" type="date"
+                placeholder="请选择出票起始日"></el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="汇票到期日">
-              <!-- <el-date-picker clearable v-model="daterangeDueDate1" type="date" value-format="yyyy-MM-dd"
-                placeholder="请选择汇票到期日"></el-date-picker> -->
-
-              <el-date-picker clearable v-model="daterangeDueDate1" type="daterange" style="width: 100%"
-                value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-              </el-date-picker>
+            <el-form-item label="出票结束日">
+              <el-date-picker :picker-options="pickerOptions4" v-model="daterangeDraftDate2" style="width: 100%" value-format="yyyy-MM-dd" type="date"
+                placeholder="请选择出票结束日"></el-date-picker>
             </el-form-item>
           </el-col>
         </el-row>
@@ -62,11 +58,29 @@
         <!-- 第三组表单项 -->
         <el-row :gutter="20">
           <el-col :span="8">
+            <el-form-item label="汇票到期起始日">
+              <el-date-picker :picker-options="pickerOptions5" clearable v-model="daterangeDueDate1" type="date" style="width: 100%"
+                value-format="yyyy-MM-dd" placeholder="请选择汇票到期起始日">
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="汇票到期结束日">
+              <el-date-picker :picker-options="pickerOptions6" clearable v-model="daterangeDueDate2" type="date" style="width: 100%"
+                value-format="yyyy-MM-dd" placeholder="请选择汇票到期结束日">
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
             <el-form-item label="项目名称" prop="entryName">
               <el-input v-model="queryParams.entryName" placeholder="请输入项目名称" clearable
                 @keyup.enter.native="handleQuery"></el-input>
             </el-form-item>
           </el-col>
+          
+        </el-row>
+
+        <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="到期提醒">
               <el-select filterable v-model="queryParams.remark" clearable placeholder="请选择到期提醒" @change="handleSelect">
@@ -75,7 +89,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="16">
             <el-form-item class="flex" style="display: flex; justify-content: flex-end;">
               <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">查 询</el-button>
               <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -216,8 +230,8 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="出票金额（万元）" prop="invoiceAmount">
-                <el-input-number :disabled="!isEditable" class="w" :controls="false" :precision="2" :readonly="!isEditable" type="number"
-                  v-model.trim="form.invoiceAmount" placeholder="请输入出票金额" />
+                <el-input-number :disabled="!isEditable" class="w" :controls="false" :precision="2"
+                  :readonly="!isEditable" type="number" v-model.trim="form.invoiceAmount" placeholder="请输入出票金额" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -368,13 +382,20 @@ export default {
       open: false,
       // 创建人时间范围
       daterangeDraftDate: [],
-      daterangeDueDate1: [],
+      // daterangeDueDate1: [],
       // 到期提醒
       daterangeDueDate: [],
+
+      daterangeDraftDate1: '',
+      daterangeDraftDate2: '',
+
+      daterangeDueDate1: '',
+      daterangeDueDate2: '',
+
       // 查询参数
       queryParams: {
         pageNum: 1,
-        pageSize: 10,
+        pageSize: 100,
         managementId: null,
         scrUuid: null,
         auditId: null,
@@ -435,6 +456,43 @@ export default {
           { required: true, message: "项目名称不能为空", trigger: "blur" }
         ],
       },
+      pickerOptions3: {
+        // 禁用开始日期中，所有大于结束日期的日期
+        disabledDate: (date) => {
+          if (this.daterangeDraftDate2) {
+            return date.getTime() > new Date(this.daterangeDraftDate2).getTime();
+          }
+        }
+      },
+      pickerOptions4: {
+        // 禁用结束日期中，所有小于开始日期的日期
+        disabledDate: (date) => {
+          if (this.daterangeDraftDate1) {
+            // 一天的毫秒数
+            var oneDayInMilliseconds = 24 * 60 * 60 * 1000;
+            return date.getTime() < new Date(this.daterangeDraftDate1).getTime() - oneDayInMilliseconds;
+          }
+        }
+      },
+
+      pickerOptions5: {
+        // 禁用开始日期中，所有大于结束日期的日期
+        disabledDate: (date) => {
+          if (this.daterangeDueDate2) {
+            return date.getTime() > new Date(this.daterangeDueDate2).getTime();
+          }
+        }
+      },
+      pickerOptions6: {
+        // 禁用结束日期中，所有小于开始日期的日期
+        disabledDate: (date) => {
+          if (this.daterangeDueDate1) {
+            // 一天的毫秒数
+            var oneDayInMilliseconds = 24 * 60 * 60 * 1000;
+            return date.getTime() < new Date(this.daterangeDueDate1).getTime() - oneDayInMilliseconds;
+          }
+        }
+      },
     };
   },
   watch: {
@@ -486,18 +544,18 @@ export default {
     getList() {
       this.loading = true;
       this.queryParams.params = {};
-      if (null != this.daterangeDraftDate && '' != this.daterangeDraftDate) {
-        this.queryParams.params["beginDraftDate"] = this.daterangeDraftDate[0];
-        this.queryParams.params["endDraftDate"] = this.daterangeDraftDate[1];
+      if (![null, undefined, ''].includes(this.daterangeDraftDate1) && ![null, undefined, ''].includes(this.daterangeDraftDate2)) {
+        this.queryParams.params["beginDraftDate"] = this.daterangeDraftDate1;
+        this.queryParams.params["endDraftDate"] = this.daterangeDraftDate2;
       }
       if (null != this.daterangeDueDate && '' != this.daterangeDueDate) {
         this.queryParams.params["beginDueDate"] = this.daterangeDueDate[0];
         this.queryParams.params["endDueDate"] = this.daterangeDueDate[1];
       }
 
-      if (null != this.daterangeDueDate1 && '' != this.daterangeDueDate1) {
-        this.queryParams.params["beginDueDate"] = this.daterangeDueDate1[0];
-        this.queryParams.params["endDueDate"] = this.daterangeDueDate1[1];
+      if (![null, undefined, ''].includes(this.daterangeDueDate1) && ![null, undefined, ''].includes(this.daterangeDueDate2)) {
+        this.queryParams.params["beginDueDate"] = this.daterangeDueDate1;
+        this.queryParams.params["endDueDate"] = this.daterangeDueDate2;
       }
 
       const searchData = JSON.parse(JSON.stringify(this.queryParams));
@@ -549,7 +607,16 @@ export default {
     resetQuery() {
       this.daterangeDraftDate = [];
       this.daterangeDueDate = [];
-      this.daterangeDueDate1 = [];
+      // this.daterangeDueDate1 = [];
+
+
+      this.daterangeDraftDate1 = '';
+      this.daterangeDraftDate2 = '';
+
+      this.daterangeDueDate1 = '';
+      this.daterangeDueDate2 = '';
+
+      this.queryParams.remark = null;
       this.resetForm("queryForm");
       this.handleQuery();
     },

@@ -57,7 +57,7 @@ export default {
       // 分页信息
       total: 0,
       pageNum: 1,
-      pageSize: 10,
+      pageSize: 100,
       // 选中角色编号
       roleIds:[],
       // 角色信息

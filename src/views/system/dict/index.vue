@@ -165,7 +165,7 @@
         // 查询参数
         queryParams: {
           pageNum: 1,
-          pageSize: 10,
+          pageSize: 100,
           dictName: undefined,
           dictType: undefined,
           status: undefined

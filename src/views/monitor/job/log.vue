@@ -209,7 +209,7 @@ export default {
       // 查询参数
       queryParams: {
         pageNum: 1,
-        pageSize: 10,
+        pageSize: 100,
         jobName: undefined,
         jobGroup: undefined,
         status: undefined
