@@ -45,6 +45,7 @@ import DictData from '@/components/DictData'
 import Fragment from 'vue-fragment';
 
 import CountTo from 'vue-count-to';
+import TinyVue from '@opentiny/vue'
 
 
 // 全局方法挂载
@@ -77,7 +78,7 @@ Vue.use(directive)
 Vue.use(plugins)
 Vue.use(VueMeta)
 Vue.use(Fragment.Plugin)
-
+Vue.use(TinyVue)
 DictData.install()
 
 /**

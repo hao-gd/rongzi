@@ -159,14 +159,12 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="起始日">
-              <el-date-picker v-model="daterangeStartDate" style="width: 100%" value-format="yyyy-MM-dd" type="daterange"
-                range-separator="-" start-placeholder="起始日" end-placeholder="结束日期"></el-date-picker>
+              <el-date-picker v-model="daterangeStartDate" style="width: 100%" value-format="yyyy-MM-dd" type="date" placeholder="起始日"></el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="到期日">
-              <el-date-picker v-model="daterangeDeadline" style="width: 100%" value-format="yyyy-MM-dd" type="daterange"
-                range-separator="-" start-placeholder="起始日" end-placeholder="结束日期"></el-date-picker>
+              <el-date-picker v-model="daterangeDeadline" style="width: 100%" value-format="yyyy-MM-dd" type="date" placeholder="结束日期"></el-date-picker>
             </el-form-item>
           </el-col>
         </el-row>
@@ -508,9 +506,9 @@ export default {
       // 是否显示弹出层
       open: false,
       // 创建人时间范围
-      daterangeStartDate: [],
+      daterangeStartDate: '',
       // 创建人时间范围
-      daterangeDeadline: [],
+      daterangeDeadline: '',
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -688,13 +686,13 @@ export default {
     getList() {
       this.loading = true;
       this.queryParams.params = {};
-      if (null != this.daterangeStartDate && '' != this.daterangeStartDate) {
-        this.queryParams.params["beginStartDate"] = this.daterangeStartDate[0];
-        this.queryParams.params["endStartDate"] = this.daterangeStartDate[1];
+      if (null != this.daterangeStartDate && '' != this.daterangeDeadline) {
+        this.queryParams.params["beginStartDate"] = this.daterangeStartDate;
+        this.queryParams.params["endStartDate"] = this.daterangeDeadline;
       }
       if (null != this.daterangeDeadline && '' != this.daterangeDeadline) {
-        this.queryParams.params["beginDeadline"] = this.daterangeDeadline[0];
-        this.queryParams.params["endDeadline"] = this.daterangeDeadline[1];
+        this.queryParams.params["beginDeadline"] = this.daterangeStartDate;
+        this.queryParams.params["endDeadline"] = this.daterangeDeadline;
       }
       this.queryParams['orderByColumn'] = 'id'
       listGrant(this.queryParams).then(response => {
@@ -742,8 +740,8 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.daterangeStartDate = [];
-      this.daterangeDeadline = [];
+      this.daterangeStartDate = '';
+      this.daterangeDeadline = '';
       this.resetForm("queryForm");
       this.handleQuery();
     },

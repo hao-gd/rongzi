@@ -387,7 +387,8 @@
             !empty.includes(this.form.firstRepaymentDate) &&
             !empty.includes(this.form.rateType) &&
             !empty.includes(this.form.interestRepaymentMethod) &&
-            !empty.includes(this.form.financingAmount))">
+            !empty.includes(this.form.financingAmount)) &&
+            this.form.hasRepaymentPlan === '有'">
             <hkjh-panel ref="hkjhPanel" :form="form" :isEditable="isEditable"
               :huankuanmingxi2List="EchoHuankuanmingxi2List"></hkjh-panel>
           </el-row>
@@ -671,7 +672,9 @@ export default {
     },
     // 取消按钮
     cancel() {
-      this.$refs.hkjhPanel.clearHkjhList();
+      if (this.$refs.hkjhPanel) {
+        this.$refs.hkjhPanel.clearHkjhList();
+      }
       this.open = false;
       this.created_successfully = false;
       this.reset();

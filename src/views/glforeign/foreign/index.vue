@@ -147,11 +147,19 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="担保期限">
-              <el-date-picker v-model="daterangeStartDate" style="width: 100%" value-format="yyyy-MM-dd" type="daterange"
-                range-separator="-" start-placeholder="起始日" end-placeholder="到期日"></el-date-picker>
+            <el-form-item label="担保期限起始日">
+              <el-date-picker v-model="daterangeStartDate1" :picker-options="pickerOptions3" style="width: 100%" value-format="yyyy-MM-dd" placeholder="请选择担保期限起始日" type="date"></el-date-picker>
             </el-form-item>
           </el-col>
+          <el-col :span="8">
+            <el-form-item label="担保期限到期日">
+              <el-date-picker v-model="daterangeStartDate2" :picker-options="pickerOptions4" style="width: 100%" value-format="yyyy-MM-dd" placeholder="请选择担保期限到期日" type="date"></el-date-picker>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <!-- Fourth row -->
           <el-col :span="8">
             <el-form-item label="保证方式" prop="guaranteeMethod">
               <el-select filterable v-model="queryParams.guaranteeMethod" placeholder="请选择保证方式" clearable>
@@ -160,11 +168,6 @@
               </el-select>
             </el-form-item>
           </el-col>
-        </el-row>
-
-        <el-row :gutter="20">
-          <!-- Fourth row -->
-
           <el-col :span="8">
             <el-form-item label="是否上征信" prop="isCreditInvestigation">
               <el-select filterable v-model="queryParams.isCreditInvestigation" placeholder="请选择是否上征信" clearable>
@@ -184,7 +187,7 @@
                 type="daterange" range-separator="-" start-placeholder="起始日" end-placeholder="到期日"></el-date-picker>
             </el-form-item>
           </el-col> -->
-          <el-col :span="16">
+          <el-col :span="8">
             <el-form-item class="flex" style="display: flex; justify-content: flex-end;">
               <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">查 询</el-button>
               <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -477,12 +480,21 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="担保期限" prop="startDate">
-                <el-date-picker :disabled="!isEditable" v-model="daterangeStartDate2" style="width: 100%"
-                  value-format="yyyy-MM-dd" type="daterange" range-separator="-" start-placeholder="起始日"
-                  end-placeholder="到期日" @change="handleLimitChange"></el-date-picker>
+              <el-form-item label="担保期限起始日" prop="startDate">
+                <el-date-picker :disabled="!isEditable" :picker-options="pickerOptions1" v-model="form.startDate" style="width: 100%"
+                  value-format="yyyy-MM-dd" type="date" placeholder="担保期限起始日"></el-date-picker>
               </el-form-item>
             </el-col>
+            <el-col :span="8">
+              <el-form-item label="担保期限到期日" prop="deadline">
+                <el-date-picker :disabled="!isEditable" :picker-options="pickerOptions2" v-model="form.deadline" style="width: 100%"
+                  value-format="yyyy-MM-dd" type="date" placeholder="担保期限到期日"></el-date-picker>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <!-- 第四行 -->
+          <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="保证方式" prop="guaranteeMethod">
                 <el-select filterable :disabled="!isEditable" v-model="form.guaranteeMethod" placeholder="请选择保证方式">
@@ -491,11 +503,6 @@
                 </el-select>
               </el-form-item>
             </el-col>
-          </el-row>
-
-          <!-- 第四行 -->
-          <el-row :gutter="20">
-
             <el-col :span="8">
               <el-form-item label="是否上征信" prop="isCreditInvestigation">
                 <el-select filterable :disabled="!isEditable" v-model="form.isCreditInvestigation" placeholder="请选择是否上征信">
@@ -562,7 +569,42 @@ export default {
   },
   data() {
     return {
-      daterangeStartDate2: [],
+      pickerOptions1: {
+        // 禁用开始日期中，所有大于结束日期的日期
+        disabledDate: (date) => {
+          if (this.form.deadline) {
+            return date.getTime() > new Date(this.form.deadline).getTime();
+          }
+        }
+      },
+      pickerOptions2: {
+        // 禁用结束日期中，所有小于开始日期的日期
+        disabledDate: (date) => {
+          if (this.form.startDate) {
+            // 一天的毫秒数
+            var oneDayInMilliseconds = 24 * 60 * 60 * 1000;
+            return date.getTime() < new Date(this.form.startDate).getTime() - oneDayInMilliseconds;
+          }
+        }
+      },
+      pickerOptions3: {
+        // 禁用开始日期中，所有大于结束日期的日期
+        disabledDate: (date) => {
+          if (this.daterangeStartDate2) {
+            return date.getTime() > new Date(this.daterangeStartDate2).getTime();
+          }
+        }
+      },
+      pickerOptions4: {
+        // 禁用结束日期中，所有小于开始日期的日期
+        disabledDate: (date) => {
+          if (this.daterangeStartDate1) {
+            // 一天的毫秒数
+            var oneDayInMilliseconds = 24 * 60 * 60 * 1000;
+            return date.getTime() < new Date(this.daterangeStartDate1).getTime() - oneDayInMilliseconds;
+          }
+        }
+      },
       isSuccess: true,
       isTitle: true,
       isMessage: true,
@@ -608,6 +650,8 @@ export default {
       daterangeDeadline: [],
       // 创建人时间范围
       daterangeCreateTime: [],
+      daterangeStartDate1: '',
+      daterangeStartDate2: '',
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -667,10 +711,10 @@ export default {
           { required: true, message: "担保余额不能为空", trigger: "blur" }
         ],
         startDate: [
-          { required: true, message: "担保余额不能为空", trigger: "blur" }
+          { required: true, message: "担保期限起始日不能为空", trigger: "blur" }
         ],
         deadline: [
-          { required: true, message: "截止日期不能为空", trigger: "blur" }
+          { required: true, message: "担保期限到期日不能为空", trigger: "blur" }
         ],
         guaranteeMethod: [
           { required: true, message: "保证方式不能为空", trigger: "change" }
@@ -754,15 +798,24 @@ export default {
       //   this.queryParams.params["beginDeadline"] = this.daterangeDeadline[0];
       //   this.queryParams.params["endDeadline"] = this.daterangeDeadline[1];
       // }
-      if (null != this.daterangeStartDate && '' != this.daterangeStartDate) {
-        // 直接合并 开始时间和结束时间
-        this.queryParams.params["beginStartDate"] = this.daterangeStartDate[0];
-        this.queryParams.params["endStartDate"] = this.daterangeStartDate[1];
+      // if (null != this.daterangeStartDate && '' != this.daterangeStartDate) {
+      //   // 直接合并 开始时间和结束时间
+      //   this.queryParams.params["beginStartDate"] = this.daterangeStartDate[0];
+      //   this.queryParams.params["endStartDate"] = this.daterangeStartDate[1];
 
-        this.queryParams.params["beginDeadline"] = this.daterangeStartDate[0];
-        this.queryParams.params["endDeadline"] = this.daterangeStartDate[1];
+      //   this.queryParams.params["beginDeadline"] = this.daterangeStartDate[0];
+      //   this.queryParams.params["endDeadline"] = this.daterangeStartDate[1];
 
+      // }
+
+      if (![null, '', undefined].includes(this.daterangeStartDate1) && ![null, '', undefined].includes(this.daterangeStartDate2)) {
+        this.queryParams.params["beginStartDate"] = this.daterangeStartDate1;
+        this.queryParams.params["endStartDate"] = this.daterangeStartDate2;
+
+        this.queryParams.params["beginDeadline"] = this.daterangeStartDate1;
+        this.queryParams.params["endDeadline"] = this.daterangeStartDate2;
       }
+
       if (null != this.daterangeCreateTime && '' != this.daterangeCreateTime) {
         this.queryParams.params["beginCreateTime"] = this.daterangeCreateTime[0];
         this.queryParams.params["endCreateTime"] = this.daterangeCreateTime[1];
@@ -813,7 +866,6 @@ export default {
         uuid: null
       };
       this.rzsrc2List = [];
-      this.daterangeStartDate2 = [];
       this.resetForm("form");
     },
     /** 搜索按钮操作 */
@@ -860,8 +912,6 @@ export default {
         this.scrUuid = response.data.scrUuid;
         this.form = response.data;
         this.form.scrUuid = response.data.rzsrc2List.map(i => i.url)
-        this.daterangeStartDate2[0] = response.data.startDate;
-        this.daterangeStartDate2[1] = response.data.deadline;
         /* end */
         this.rzsrc2List = response.data.rzsrc2List;
         this.open = true;

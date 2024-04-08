@@ -92,19 +92,17 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="开始日期" prop="startDate">
+            <el-form-item label="起始日" prop="startDate">
               <!-- <el-date-picker clearable v-model="queryParams.startDate" type="date" value-format="yyyy-MM-dd"
               placeholder="请选择开始日期"></el-date-picker> -->
-              <el-date-picker clearable v-model="daterangeStartDate" value-format="yyyy-MM-dd" type="daterange"
-                range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
+              <el-date-picker clearable v-model="daterangeStartDate1" value-format="yyyy-MM-dd" type="date" placeholder="请选择起始日"></el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="结束日期" prop="deadline">
+            <el-form-item label="到期日" prop="deadline">
               <!-- <el-date-picker clearable v-model="queryParams.deadline" type="date" value-format="yyyy-MM-dd"
                 placeholder="请选择结束日期"></el-date-picker> -->
-              <el-date-picker clearable v-model="daterangeDeadline" value-format="yyyy-MM-dd" type="daterange"
-                range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
+              <el-date-picker clearable v-model="daterangeDeadline2" value-format="yyyy-MM-dd" type="date" placeholder="请选择到期日"></el-date-picker>
             </el-form-item>
           </el-col>
         </el-row>
@@ -412,6 +410,8 @@ export default {
       daterangeStartDate: [],
       // 结束时间范围
       daterangeDeadline: [],
+      daterangeStartDate1: '',
+      daterangeDeadline2: '',
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -510,14 +510,23 @@ export default {
     getList() {
       this.loading = true;
       this.queryParams.params = {};
-      if (null != this.daterangeStartDate && '' != this.daterangeStartDate) {
-        this.queryParams.params["beginStartDate"] = this.daterangeStartDate[0];
-        this.queryParams.params["endStartDate"] = this.daterangeStartDate[1];
+      // if (null != this.daterangeStartDate && '' != this.daterangeStartDate) {
+      //   this.queryParams.params["beginStartDate"] = this.daterangeStartDate[0];
+      //   this.queryParams.params["endStartDate"] = this.daterangeStartDate[1];
+      // }
+      // if (null != this.daterangeDeadline && '' != this.daterangeDeadline) {
+      //   this.queryParams.params["beginDeadline"] = this.daterangeDeadline[0];
+      //   this.queryParams.params["endDeadline"] = this.daterangeDeadline[1];
+      // }
+
+      if (![null, undefined, ''].includes(this.daterangeStartDate1) && ![null, undefined, ''].includes(this.daterangeDeadline2)) {
+        this.queryParams.params["beginStartDate"] = this.daterangeStartDate1;
+        this.queryParams.params["endStartDate"] = this.daterangeDeadline2;
+
+        this.queryParams.params["beginDeadline"] = this.daterangeStartDate1;
+        this.queryParams.params["endDeadline"] = this.daterangeDeadline2;
       }
-      if (null != this.daterangeDeadline && '' != this.daterangeDeadline) {
-        this.queryParams.params["beginDeadline"] = this.daterangeDeadline[0];
-        this.queryParams.params["endDeadline"] = this.daterangeDeadline[1];
-      }
+
       this.queryParams['orderByColumn'] = 'id'
       listFactoring(this.queryParams).then(response => {
         this.factoringList = response.rows;
@@ -563,8 +572,11 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.daterangeStartDate = [];
-      this.daterangeDeadline = [];
+      // this.daterangeStartDate = [];
+      // this.daterangeDeadline = [];
+
+      this.daterangeStartDate1 = '';
+      this.daterangeDeadline2 = '';
       this.resetForm("queryForm");
       this.handleQuery();
     },

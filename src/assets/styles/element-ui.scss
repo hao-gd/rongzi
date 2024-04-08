@@ -131,7 +131,7 @@
 .el-select .el-input__inner,
 .el-cascader .el-input__inner,
 .el-time-select .el-input__inner,
-.el-date-picker .el-input__inner .el-range-input {
+.el-date-picker .el-input__inner .el-range-input, .tiny-numeric__input ,.tiny-numeric__input-inner{
   border: none !important; /* 取消边框 */
   background-color: #F7F8FA !important; /* 设置背景色 */
   box-shadow: none !important; /* 取消阴影 */
@@ -149,7 +149,8 @@
 .el-select .el-input__inner:focus,
 .el-cascader .el-input__inner:focus,
 .el-time-select .el-input__inner:focus,
-.el-date-picker .el-input__inner:focus {
+.el-date-picker .el-input__inner:focus,
+.tiny-numeric__input .tiny-numeric__input-inner:focus {
   border: none !important;
   box-shadow: none !important;
 }

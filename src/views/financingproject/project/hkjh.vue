@@ -18,7 +18,7 @@
             <template #default="data">
               <div class="f16 tc">
                 <!-- <el-button icon="el-icon-plus" type="text" @click="$refs.insertGrid.insertAt(record, data.row)"></el-button> -->
-                <el-button icon="el-icon-minus" type="text" @click="remove(data, 'zjbj')"></el-button>
+                <el-button type="text" @click="remove(data, 'zjbj')">删 除</el-button>
               </div>
             </template>
           </tiny-grid-column>
@@ -45,7 +45,7 @@
             <template #default="data">
               <div class="f16 tc">
                 <!-- <el-button icon="el-icon-plus" type="text" @click="$refs.insertGrid2.insertAt(record, data.row)"></el-button> -->
-                <el-button icon="el-icon-minus" type="text" @click="remove(data, 'bjch')"></el-button>
+                <el-button type="text" @click="remove(data, 'bjch')">删 除</el-button>
               </div>
             </template>
           </tiny-grid-column>
@@ -64,16 +64,15 @@
               新增一行</el-button>
           </div>
         </div>
-
         <tiny-grid align="center" ref="lvbg" :data="lvbg" max-height="300" :optimization="optimizationData">
           <tiny-grid-column type="index" width="60" title="序号"></tiny-grid-column>
           <tiny-grid-column field="createdDate" title="日期" :renderer="renderDate('date')"></tiny-grid-column>
-          <tiny-grid-column field="rate" title="利率" :renderer="renderInput('rate')"></tiny-grid-column>
+          <tiny-grid-column field="rate" title="利率" :renderer="renderRate('rate')"></tiny-grid-column>
           <tiny-grid-column width="100">
             <template #default="data">
               <div class="f16 tc">
                 <!-- <el-button icon="el-icon-plus" type="text" @click="$refs.insertGrid3.insertAt(record, data.row)"></el-button> -->
-                <el-button icon="el-icon-minus" type="text" @click="remove(data, 'lvbg')"></el-button>
+                <el-button type="text" @click="remove(data, 'lvbg')">删 除</el-button>
               </div>
             </template>
           </tiny-grid-column>
@@ -103,6 +102,7 @@
   import {
     Grid as TinyGrid,
     GridColumn as TinyGridColumn,
+    Numeric as TinyNumeric
   } from '@opentiny/vue'
   import {
     getDatesBasedOnStartDate,
@@ -113,6 +113,7 @@
   import {
     renderInput,
     renderDate,
+    renderRate,
     hkjh_repaymentPlanClearingTableColumn
   } from './form'
   export default {
@@ -120,6 +121,7 @@
     components: {
       TinyGrid,
       TinyGridColumn,
+      TinyNumeric
     },
     props: {
       form: {
@@ -349,6 +351,7 @@
       },
       renderInput,
       renderDate,
+      renderRate,
       // 生成需要渲染的代码数据
       handleGenerate() {
         this.$msgbox({

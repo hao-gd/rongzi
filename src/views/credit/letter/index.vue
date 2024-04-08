@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <search-panel HeaderIcon="credit" title="信用证">
-      <el-form label-position="left" :model="queryParams" ref="queryForm" size="small" :inline="false" v-show="showSearch" label-width="100px">
+      <el-form label-position="left" :model="queryParams" ref="queryForm" size="small" :inline="false" v-show="showSearch" label-width="120px">
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="管理编号" prop="managementId">
@@ -16,19 +16,34 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="开证日期">
-              <el-date-picker v-model="daterangeIssuingDate" style="width: 100%" value-format="yyyy-MM-dd"
-                type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
+            <el-form-item label="开证日期起始日">
+              <el-date-picker v-model="daterangeIssuingDate1" style="width: 100%" value-format="yyyy-MM-dd"
+                type="date" placeholder="请选择开证日期起始日"></el-date-picker>
+            </el-form-item>
+          </el-col>
+          
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="8">
+            <el-form-item label="开证日期到期日">
+              <el-date-picker v-model="daterangeIssuingDate2" style="width: 100%" value-format="yyyy-MM-dd"
+                type="date" placeholder="请选择开证日期到期日"></el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="有效日期起始日">
+              <el-date-picker v-model="daterangeEffectiveDate1" style="width: 100%" value-format="yyyy-MM-dd"
+                type="date" placeholder="请选择有效日期起始日"></el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="有效日期到期日">
+              <el-date-picker v-model="daterangeEffectiveDate2" style="width: 100%" value-format="yyyy-MM-dd"
+                type="date" placeholder="请选择有效日期到期日"></el-date-picker>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="20">
-          <el-col :span="8">
-            <el-form-item label="有效日期">
-              <el-date-picker v-model="daterangeEffectiveDate" style="width: 100%" value-format="yyyy-MM-dd"
-                type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
-            </el-form-item>
-          </el-col>
           <el-col :span="8">
             <el-form-item label="开证申请人" prop="applicant">
               <el-select filterable v-model="queryParams.applicant" placeholder="请选择开证申请人" clearable>
@@ -45,8 +60,6 @@
               </el-select>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="金融机构" prop="financialInstitution">
               <el-select filterable v-model="queryParams.financialInstitution" placeholder="请选择金融机构" clearable>
@@ -55,7 +68,9 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="16">
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="24">
             <el-form-item style="display: flex; justify-content: flex-end;">
               <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">查 询</el-button>
               <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重 置</el-button>
@@ -316,9 +331,12 @@ export default {
       // 是否显示弹出层
       open: false,
       // 创建人时间范围
-      daterangeIssuingDate: [],
+      // daterangeIssuingDate: [],
+      daterangeIssuingDate1: '',
+daterangeIssuingDate2: '',
       // 创建人时间范围
-      daterangeEffectiveDate: [],
+      daterangeEffectiveDate1: '',
+daterangeEffectiveDate2: '',
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -413,13 +431,13 @@ export default {
     getList() {
       this.loading = true;
       this.queryParams.params = {};
-      if (null != this.daterangeIssuingDate && '' != this.daterangeIssuingDate) {
-        this.queryParams.params["beginIssuingDate"] = this.daterangeIssuingDate[0];
-        this.queryParams.params["endIssuingDate"] = this.daterangeIssuingDate[1];
+      if (null != this.daterangeIssuingDate1 && '' != this.daterangeIssuingDate2) {
+        this.queryParams.params["beginIssuingDate"] = this.daterangeIssuingDate1;
+        this.queryParams.params["endIssuingDate"] = this.daterangeIssuingDate2;
       }
-      if (null != this.daterangeEffectiveDate && '' != this.daterangeEffectiveDate) {
-        this.queryParams.params["beginEffectiveDate"] = this.daterangeEffectiveDate[0];
-        this.queryParams.params["endEffectiveDate"] = this.daterangeEffectiveDate[1];
+      if (null != this.daterangeEffectiveDate1 && '' != this.daterangeEffectiveDate2) {
+        this.queryParams.params["beginEffectiveDate"] = this.daterangeEffectiveDate1;
+        this.queryParams.params["endEffectiveDate"] = this.daterangeEffectiveDate2;
       }
       this.queryParams['orderByColumn'] = 'id'
       listLetter(this.queryParams).then(response => {
@@ -465,8 +483,11 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.daterangeIssuingDate = [];
-      this.daterangeEffectiveDate = [];
+      this.daterangeIssuingDate1 = '',
+      this.daterangeIssuingDate2 = '',
+      // 创建人时间范围
+      this.daterangeEffectiveDate1 = '',
+      this.daterangeEffectiveDate2 = '',
       this.resetForm("queryForm");
       this.handleQuery();
     },

@@ -1,4 +1,4 @@
-import { Input, DatePicker as TinyDatePicker } from '@opentiny/vue'
+import { Numeric as TinyNumeric } from '@opentiny/vue'
 // import { ElDatePicker } from 'element-ui'
 
 export const resetForm = {
@@ -152,6 +152,17 @@ export function renderInput(field) {
             ? h('el-input-number', {
                 class: 'w',
                 props: { value: row[field], type: 'number', controls: false, precision: 2 },
+                on: { 'input': (value) => (row[field] = Number(value)) }
+            })
+            : h('span', row[field])
+}
+// type: 'number', controls: false, precision: 2
+export function renderRate(field) {
+    return (h, { row }) =>
+        row.editing
+            ? h('tiny-numeric', {
+                class: 'w',
+                props: { modelValue: Number(row[field]), size: 'small', "show-left": false, controls: false, precision: 2, format: { suffix: '%', fraction: 2, rounding: 0, zeroize: true,fractionGroupSize: 0, } },
                 on: { 'input': (value) => (row[field] = Number(value)) }
             })
             : h('span', row[field])
