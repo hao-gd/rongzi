@@ -8,8 +8,8 @@
       <el-form-item label="担保合同编号" prop="contractId">
         <el-input v-model="queryParams.contractId" placeholder="请输入担保合同编号" clearable @keyup.enter.native="handleQuery" />
       </el-form-item>
-      <el-form-item label="借款人" prop="creditor">
-        <el-select filterable v-model="queryParams.creditor" placeholder="请选择借款人" clearable>
+      <el-form-item label="被担保人" prop="creditor">
+        <el-select filterable v-model="queryParams.creditor" placeholder="请选择被担保人" clearable>
           <el-option v-for="dict in dict.type.sys_1767154968256577500" :key="dict.value" :label="dict.label"
             :value="dict.value" />
         </el-select>
@@ -87,8 +87,8 @@
             </el-form-item>
           </el-col> -->
           <el-col :span="8">
-            <el-form-item label="借款人" prop="creditor">
-              <el-select filterable v-model="queryParams.creditor" placeholder="请选择借款人" clearable>
+            <el-form-item label="被担保人" prop="creditor">
+              <el-select filterable v-model="queryParams.creditor" placeholder="请选择被担保人" clearable>
                 <el-option v-for="dict in dict.type.sys_1767154968256577500" :key="dict.value" :label="dict.label"
                   :value="dict.value"></el-option>
               </el-select>
@@ -138,12 +138,12 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="担保期限起始日">
-              <el-date-picker v-model="daterangeStartDate1" :picker-options="pickerOptions3" style="width: 100%" value-format="yyyy-MM-dd" type="date" placeholder="请选择担保期限起始日"></el-date-picker>
+              <el-date-picker format='yyyy/MM/dd' v-model="daterangeStartDate1" :picker-options="pickerOptions3" style="width: 100%" value-format="yyyy-MM-dd" type="date" placeholder="请选择担保期限起始日"></el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="担保期限到期日">
-              <el-date-picker v-model="daterangeStartDate2" :picker-options="pickerOptions4" style="width: 100%" value-format="yyyy-MM-dd" type="date" placeholder="请选择担保期限到期日"></el-date-picker>
+              <el-date-picker format='yyyy/MM/dd' v-model="daterangeStartDate2" :picker-options="pickerOptions4" style="width: 100%" value-format="yyyy-MM-dd" type="date" placeholder="请选择担保期限到期日"></el-date-picker>
             </el-form-item>
           </el-col>
           
@@ -233,7 +233,7 @@
         </template>
       </el-table-column>
       <!-- 少一个担保类别 -->
-      <el-table-column show-overflow-tooltip label="借款人" align="center" prop="creditor" min-width="260">
+      <el-table-column show-overflow-tooltip label="被担保人" align="center" prop="creditor" min-width="260">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1767154968256577500" :value="scope.row.creditor" />
         </template>
@@ -313,8 +313,8 @@
         <el-form-item label="数据唯一编号" prop="scrUuid">
           <file-upload v-model="form.scrUuid" />
         </el-form-item>
-        <el-form-item label="借款人" prop="creditor">
-          <el-select filterable v-model="form.creditor" placeholder="请选择借款人">
+        <el-form-item label="被担保人" prop="creditor">
+          <el-select filterable v-model="form.creditor" placeholder="请选择被担保人">
             <el-option v-for="dict in dict.type.sys_1767154968256577500" :key="dict.value" :label="dict.label"
               :value="dict.value"></el-option>
           </el-select>
@@ -420,8 +420,8 @@
               </el-form-item>
             </el-col> -->
             <el-col :span="8">
-              <el-form-item label="借款人" prop="creditor">
-                <el-select filterable :disabled="!isEditable" v-model="form.creditor" placeholder="请选择借款人">
+              <el-form-item label="被担保人" prop="creditor">
+                <el-select filterable :disabled="!isEditable" v-model="form.creditor" placeholder="请选择被担保人">
                   <el-option v-for="dict in dict.type.sys_1767154968256577500" :key="dict.value" :label="dict.label"
                     :value="dict.value"></el-option>
                 </el-select>
@@ -471,13 +471,13 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="担保期限起始日" prop="startDate">
-                <el-date-picker :disabled="!isEditable" :picker-options="pickerOptions1" v-model="form.startDate" style="width: 240px"
+                <el-date-picker format='yyyy/MM/dd' :disabled="!isEditable" :picker-options="pickerOptions1" v-model="form.startDate" style="width: 240px"
                   value-format="yyyy-MM-dd" type="date" placeholder="担保期限起始日"></el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="担保期限到期日" prop="deadline">
-                <el-date-picker :disabled="!isEditable" :picker-options="pickerOptions2" v-model="form.deadline" style="width: 240px"
+                <el-date-picker format='yyyy/MM/dd' :disabled="!isEditable" :picker-options="pickerOptions2" v-model="form.deadline" style="width: 240px"
                   value-format="yyyy-MM-dd" type="date"  placeholder="担保期限到期日"></el-date-picker>
               </el-form-item>
             </el-col>
@@ -689,7 +689,7 @@ export default {
           { required: true, message: "数据唯一编号不能为空", trigger: "blur" }
         ],
         creditor: [
-          { required: true, message: "借款人不能为空", trigger: "change" }
+          { required: true, message: "被担保人不能为空", trigger: "change" }
         ],
         guarantor: [
           { required: true, message: "担保人不能为空", trigger: "change" }

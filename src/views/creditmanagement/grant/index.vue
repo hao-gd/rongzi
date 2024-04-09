@@ -17,8 +17,8 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="金融机构" prop="financialInstitution">
-        <el-select filterable v-model="queryParams.financialInstitution" placeholder="请选择金融机构" clearable>
+      <el-form-item label="授信机构" prop="financialInstitution">
+        <el-select filterable v-model="queryParams.financialInstitution" placeholder="请选择授信机构" clearable>
           <el-option
             v-for="dict in dict.type.sys_acceptor"
             :key="dict.value"
@@ -37,10 +37,10 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="授信详情" prop="creditDetail">
+      <el-form-item label="项目名称" prop="creditDetail">
         <el-input
           v-model="queryParams.creditDetail"
-          placeholder="请输入授信详情"
+          placeholder="请输入项目名称"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -134,15 +134,15 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="借款单位" prop="creditor">
-              <el-input v-model="queryParams.creditor" placeholder="请选择债权人名称" clearable
+              <el-input v-model="queryParams.creditor" placeholder="请选择借款单位名称" clearable
                 @keyup.enter.native="handleQuery" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="金融机构" prop="financialInstitution">
-              <el-select filterable v-model="queryParams.financialInstitution" placeholder="请选择金融机构" clearable>
+            <el-form-item label="授信机构" prop="financialInstitution">
+              <el-select multiple filterable v-model="queryParams.financialInstitution" placeholder="请选择授信机构" clearable>
                 <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
-                  :value="dict.value" />
+                  :value="dict.label" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -159,12 +159,12 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="起始日">
-              <el-date-picker v-model="daterangeStartDate" style="width: 100%" value-format="yyyy-MM-dd" type="date" placeholder="起始日"></el-date-picker>
+              <el-date-picker format='yyyy/MM/dd' v-model="daterangeStartDate" style="width: 100%" value-format="yyyy-MM-dd" type="date" placeholder="请选择起始日"></el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="到期日">
-              <el-date-picker v-model="daterangeDeadline" style="width: 100%" value-format="yyyy-MM-dd" type="date" placeholder="结束日期"></el-date-picker>
+              <el-date-picker format='yyyy/MM/dd' v-model="daterangeDeadline" style="width: 100%" value-format="yyyy-MM-dd" type="date" placeholder="请选择到期日"></el-date-picker>
             </el-form-item>
           </el-col>
         </el-row>
@@ -219,21 +219,18 @@
     <el-table v-loading="loading" :data="grantList" @selection-change="handleSelectionChange"
       :header-cell-style="header_cell_style">
       <el-table-column show-overflow-tooltip fixed="left" type="selection" min-width="50" align="center" />
-      <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
       <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" min-width="100" />
-      <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
-      <el-table-column show-overflow-tooltip label="借款人" align="center" prop="creditor" min-width="260" />
-      <el-table-column show-overflow-tooltip label="金融机构" align="center" prop="financialInstitution" min-width="260">
-        <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_acceptor" :value="scope.row.financialInstitution" />
-        </template>
-      </el-table-column>
       <el-table-column show-overflow-tooltip label="授信类型" align="center" prop="creditType" min-width="100">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1765001578994991000" :value="scope.row.creditType" />
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="授信详情" align="center" prop="creditDetail" />
+      <el-table-column show-overflow-tooltip label="借款单位" align="center" prop="creditor" min-width="260" />
+      <el-table-column show-overflow-tooltip label="授信机构" align="center" prop="financialInstitution" min-width="260">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.sys_acceptor" :value="scope.row.financialInstitution" />
+        </template>
+      </el-table-column>
       <el-table-column show-overflow-tooltip label="授信金额（万元）" align="center" prop="creditAmount" min-width="160">
         <template slot-scope="scope">
           <span>{{ formatNumberAsRMB(scope.row.creditAmount) }}</span>
@@ -249,6 +246,7 @@
           <span>{{ formatNumberAsRMB(scope.row.remainingCreditAmount) }}</span>
         </template>
       </el-table-column>
+      <el-table-column show-overflow-tooltip label="项目名称" align="center" prop="creditDetail" />
       <el-table-column show-overflow-tooltip label="起始日" align="center" prop="startDate" min-width="100">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.startDate, '{y}-{m}-{d}') }}</span>
@@ -319,10 +317,10 @@
             </el-col>
 
             <el-col :span="8">
-              <el-form-item label="金融机构" prop="financialInstitution">
-                <el-select filterable :disabled="!isEditable" v-model="form.financialInstitution" placeholder="请选择金融机构">
+              <el-form-item label="授信机构" prop="financialInstitution">
+                <el-select multiple filterable :disabled="!isEditable" v-model="form.financialInstitution" placeholder="请选择授信机构">
                   <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
-                    :value="dict.value"></el-option>
+                    :value="dict.label"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -339,8 +337,8 @@
             </el-col>
 
             <el-col :span="8">
-              <el-form-item label="授信详情" prop="creditDetail">
-                <el-input :readonly="!isEditable" v-model="form.creditDetail" placeholder="请输入授信详情" />
+              <el-form-item label="项目名称" prop="creditDetail">
+                <el-input :readonly="!isEditable" v-model="form.creditDetail" placeholder="请输入项目名称" />
               </el-form-item>
             </el-col>
 
@@ -380,13 +378,13 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="起始日" prop="startDate">
-                <el-date-picker :picker-options="pickerOptions1" :disabled="!isEditable" clearable
+                <el-date-picker format='yyyy/MM/dd' :picker-options="pickerOptions1" :disabled="!isEditable" clearable
                   v-model="form.startDate" type="date" value-format="yyyy-MM-dd" placeholder="请选择起始日"></el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="到期日" prop="deadline">
-                <el-date-picker :picker-options="pickerOptions2" :disabled="!isEditable" clearable v-model="form.deadline"
+                <el-date-picker format='yyyy/MM/dd' :picker-options="pickerOptions2" :disabled="!isEditable" clearable v-model="form.deadline"
                   type="date" value-format="yyyy-MM-dd" placeholder="请选择到期日"></el-date-picker>
               </el-form-item>
             </el-col>
@@ -544,16 +542,16 @@ export default {
           { required: true, message: "数据唯一编号不能为空", trigger: "blur" }
         ],
         creditor: [
-          { required: true, message: "债权人/借款人不能为空", trigger: "blur" }
+          { required: true, message: "借款单位不能为空", trigger: "blur" }
         ],
         financialInstitution: [
-          { required: true, message: "金融机构不能为空", trigger: "change" }
+          { required: true, message: "授信机构不能为空", trigger: "change" }
         ],
         creditType: [
           { required: true, message: "授信类型不能为空", trigger: "change" }
         ],
         creditDetail: [
-          { required: true, message: "授信详情不能为空", trigger: "blur" }
+          { required: true, message: "项目名称不能为空", trigger: "blur" }
         ],
         creditAmount: [
           { required: true, message: "授信金额不能为空", trigger: "blur" }
@@ -685,6 +683,7 @@ export default {
     /** 查询授信管理列表 */
     getList() {
       this.loading = true;
+      
       this.queryParams.params = {};
       if (null != this.daterangeStartDate && '' != this.daterangeDeadline) {
         this.queryParams.params["beginStartDate"] = this.daterangeStartDate;
@@ -695,7 +694,11 @@ export default {
         this.queryParams.params["endDeadline"] = this.daterangeDeadline;
       }
       this.queryParams['orderByColumn'] = 'id'
-      listGrant(this.queryParams).then(response => {
+      let queryParams = JSON.parse(JSON.stringify(this.queryParams));
+      if (null !== queryParams.financialInstitution) {
+        queryParams.financialInstitution = queryParams.financialInstitution.join(',')
+      }
+      listGrant(queryParams).then(response => {
         this.grantList = response.rows;
         this.total = response.total;
         this.loading = false;
@@ -808,6 +811,8 @@ export default {
             loanTermStr = loanTermStr.replace(/月$/, '');
 
             data.creditCycle = loanTermStr
+
+            data.financialInstitution = data.financialInstitution.join(',')
             this.rzaudit_data = {
               "auditId": data.id,
               "scrUuid": data.scrUuid,
@@ -848,7 +853,7 @@ export default {
             loanTermStr = loanTermStr.replace(/月$/, '');
 
             data.creditCycle = loanTermStr
-
+            data.financialInstitution = data.financialInstitution.join(',')
             data.scrUuid = generator.nextId();
             data.rzsrc2List = this.rzsrc2List;
             data.createBy = this.name;

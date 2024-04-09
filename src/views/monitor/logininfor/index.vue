@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="100px">
       <el-form-item label="登录地址" prop="ipaddr">
         <el-input
           v-model="queryParams.ipaddr"
@@ -34,16 +34,23 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="登录时间">
+      <el-form-item label="登陆开始时间">
         <el-date-picker
-          v-model="dateRange"
+        format='yyyy/MM/dd'
+          v-model="dateRange1"
           style="width: 240px"
           value-format="yyyy-MM-dd HH:mm:ss"
-          type="daterange"
-          range-separator="-"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :default-time="['00:00:00', '23:59:59']"
+          type="date" placeholder="开始日期"
+        ></el-date-picker>
+      </el-form-item>
+
+      <el-form-item label="登陆结束时间">
+        <el-date-picker
+        format='yyyy/MM/dd'
+          v-model="dateRange2"
+          style="width: 240px"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          type="date" placeholder="结束日期"
         ></el-date-picker>
       </el-form-item>
       <el-form-item>
@@ -137,6 +144,8 @@ export default {
   dicts: ['sys_common_status'],
   data() {
     return {
+      dateRange1: '',
+dateRange2: '',
       // 遮罩层
       loading: true,
       // 选中数组
@@ -174,7 +183,11 @@ export default {
     /** 查询登录日志列表 */
     getList() {
       this.loading = true;
-      list(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
+      let dataRange = []
+      if (![null, undefined, ''].includes(this.dateRange1) && ![null, undefined, ''].includes(this.dateRange2)) {
+        dataRange = [this.dateRange1, this.dateRange2]
+      }
+      list(this.addDateRange(this.queryParams, dataRange)).then(response => {
           this.list = response.rows;
           this.total = response.total;
           this.loading = false;
@@ -189,6 +202,8 @@ export default {
     /** 重置按钮操作 */
     resetQuery() {
       this.dateRange = [];
+      this.dateRange1 = '';
+      this.dateRange2 = '';
       this.resetForm("queryForm");
       this.queryParams.pageNum = 1;
       this.$refs.tables.sort(this.defaultSort.prop, this.defaultSort.order)

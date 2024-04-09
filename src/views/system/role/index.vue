@@ -20,7 +20,7 @@
         />
       </el-form-item>
       <el-form-item label="状态" prop="status">
-        <el-select
+        <el-select filterable
           v-model="queryParams.status"
           placeholder="角色状态"
           clearable
@@ -34,15 +34,23 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="创建时间">
+      <el-form-item label="创建开始时间">
         <el-date-picker
-          v-model="dateRange"
+        format='yyyy/MM/dd'
+          v-model="dateRange1"
           style="width: 240px"
           value-format="yyyy-MM-dd"
-          type="daterange"
-          range-separator="-"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
+          type="date" placeholder="开始日期"
+        ></el-date-picker>
+      </el-form-item>
+
+      <el-form-item label="创建结束时间">
+        <el-date-picker
+        format='yyyy/MM/dd'
+          v-model="dateRange2"
+          style="width: 240px"
+          value-format="yyyy-MM-dd"
+          type="date" placeholder="结束日期"
         ></el-date-picker>
       </el-form-item>
       <el-form-item>
@@ -217,7 +225,7 @@
           <el-input v-model="form.roleKey" :disabled="true" />
         </el-form-item>
         <el-form-item label="权限范围">
-          <el-select v-model="form.dataScope" @change="dataScopeSelectChange">
+          <el-select filterable v-model="form.dataScope" @change="dataScopeSelectChange">
             <el-option
               v-for="item in dataScopeOptions"
               :key="item.value"
@@ -260,6 +268,8 @@ export default {
   dicts: ['sys_normal_disable'],
   data() {
     return {
+      dateRange1: '',
+dateRange2: '',
       // 遮罩层
       loading: true,
       // 选中数组
@@ -348,7 +358,11 @@ export default {
     /** 查询角色列表 */
     getList() {
       this.loading = true;
-      listRole(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
+      let dataRange = []
+      if (![null, undefined, ''].includes(this.dateRange1) && ![null, undefined, ''].includes(this.dateRange2)) {
+        dataRange = [this.dateRange1, this.dateRange2]
+      }
+      listRole(this.addDateRange(this.queryParams, dataRange)).then(response => {
           this.roleList = response.rows;
           this.total = response.total;
           this.loading = false;
@@ -445,6 +459,8 @@ export default {
     /** 重置按钮操作 */
     resetQuery() {
       this.dateRange = [];
+      this.dateRange1 = '';
+      this.dateRange2 = '';
       this.resetForm("queryForm");
       this.handleQuery();
     },

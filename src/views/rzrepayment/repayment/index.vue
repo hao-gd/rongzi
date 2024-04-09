@@ -21,7 +21,7 @@
               <!-- <el-date-picker clearable v-model="queryParams.dueDate" type="date" value-format="yyyy-MM-dd"
                 placeholder="请选择到期日期">
               </el-date-picker> -->
-              <el-date-picker v-model="daterangeDueDate" clearable value-format="yyyy-MM-dd" type="daterange"
+              <el-date-picker format='yyyy/MM/dd' v-model="daterangeDueDate" clearable value-format="yyyy-MM-dd" type="daterange"
                 range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
             </el-form-item>
           </el-col>
@@ -262,14 +262,14 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="借款日期" prop="loanDate">
-                <el-date-picker :disabled="!isEditable" clearable v-model="form.loanDate" type="date"
+                <el-date-picker format='yyyy/MM/dd' :disabled="!isEditable" clearable v-model="form.loanDate" type="date"
                   value-format="yyyy-MM-dd" placeholder="请选择借款日期">
                 </el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="到期日期" prop="dueDate">
-                <el-date-picker :disabled="!isEditable" clearable v-model="form.dueDate" type="date"
+                <el-date-picker format='yyyy/MM/dd' :disabled="!isEditable" clearable v-model="form.dueDate" type="date"
                   value-format="yyyy-MM-dd" placeholder="请选择到期日期">
                 </el-date-picker>
               </el-form-item>

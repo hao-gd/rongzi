@@ -6,7 +6,7 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item class="no_mb" label="借款人" prop="borrowingUnit">
-                <el-select v-model="queryParams.borrowingUnit" @change="getrzloghistoryFinancing" placeholder="请选择借款人"
+                <el-select filterable v-model="queryParams.borrowingUnit" @change="getrzloghistoryFinancing" placeholder="请选择借款人"
                   clearable>
                   <el-option v-for="dict in dict.type.sys_1767154968256577500" :key="dict.value" :label="dict.label"
                     :value="dict.value" />
@@ -15,7 +15,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item class="no_mb" label="债权人" prop="financialInstitution">
-                <el-select v-model="queryParams.financialInstitution" @change="getrzloghistoryFinancing"
+                <el-select filterable v-model="queryParams.financialInstitution" @change="getrzloghistoryFinancing"
                   placeholder="请选择债权人" clearable>
                   <el-option v-for="dict in dict.type.sys_1757271666666242000" :key="dict.value" :label="dict.label"
                     :value="dict.value" />
@@ -24,7 +24,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item class="no_mb" label="融资类型" prop="financingType">
-                <el-select v-model="queryParams.financingType" @change="getrzloghistoryFinancing" placeholder="请选择融资类型">
+                <el-select filterable v-model="queryParams.financingType" @change="getrzloghistoryFinancing" placeholder="请选择融资类型">
                   <el-option v-for="dict in dict.type.sys_1759508335389835300" :key="dict.value" :label="dict.label"
                     :value="dict.value"></el-option>
                 </el-select>
@@ -32,13 +32,13 @@
             </el-col>
             <el-col :span="8" class="mt20">
               <el-form-item label="起始月" class="no_mb">
-                <el-date-picker :picker-options="pickerOptions1" @change="changeRang" v-model="daterangeLogCreateDate1"
+                <el-date-picker format='yyyy/MM' :picker-options="pickerOptions1" @change="changeRang" v-model="daterangeLogCreateDate1"
                   value-format="yyyy-MM" type="month" placeholder="请选择起始月"></el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="8" class="mt20">
               <el-form-item label="结束月" class="no_mb">
-                <el-date-picker :picker-options="pickerOptions2" @change="changeRang" v-model="daterangeLogCreateDate2"
+                <el-date-picker format='yyyy/MM' :picker-options="pickerOptions2" @change="changeRang" v-model="daterangeLogCreateDate2"
                   value-format="yyyy-MM" type="month" placeholder="请选择结束月"></el-date-picker>
               </el-form-item>
             </el-col>

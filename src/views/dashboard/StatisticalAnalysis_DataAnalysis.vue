@@ -13,8 +13,8 @@
                             </el-form-item>
                         </el-col>
                         <el-col :span="8">
-                            <el-form-item label="借款人" prop="creditor">
-                                <el-select filterable v-model="queryParams.creditor" placeholder="请选择借款人" clearable @change="getListData">
+                            <el-form-item label="被担保人" prop="creditor">
+                                <el-select filterable v-model="queryParams.creditor" placeholder="请选择被担保人" clearable @change="getListData">
                                     <el-option v-for="dict in dict.type.sys_1767154968256577500" :key="dict.value"
                                         :label="dict.label" :value="dict.value"></el-option>
                                 </el-select>

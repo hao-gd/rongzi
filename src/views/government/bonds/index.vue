@@ -283,7 +283,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="起始日" prop="loanDate">
-                 <el-date-picker clearable :disabled="!isEditable" v-model="form.loanDate" type="date" value-format="yyyy-MM-dd"
+                 <el-date-picker format='yyyy/MM/dd' clearable :disabled="!isEditable" v-model="form.loanDate" type="date" value-format="yyyy-MM-dd"
                    placeholder="请选择起始日">
                  </el-date-picker>
                </el-form-item>
@@ -291,7 +291,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="到期日" prop="dueDate">
-                <el-date-picker clearable :disabled="!isEditable" v-model="form.dueDate" type="date" value-format="yyyy-MM-dd"
+                <el-date-picker format='yyyy/MM/dd' clearable :disabled="!isEditable" v-model="form.dueDate" type="date" value-format="yyyy-MM-dd"
                   placeholder="请选择到期日">
                 </el-date-picker>
               </el-form-item>

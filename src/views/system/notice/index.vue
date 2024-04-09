@@ -18,7 +18,7 @@
         />
       </el-form-item>
       <el-form-item label="类型" prop="noticeType">
-        <el-select v-model="queryParams.noticeType" placeholder="公告类型" clearable>
+        <el-select filterable v-model="queryParams.noticeType" placeholder="公告类型" clearable>
           <el-option
             v-for="dict in dict.type.sys_notice_type"
             :key="dict.value"
@@ -133,7 +133,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="公告类型" prop="noticeType">
-              <el-select v-model="form.noticeType" placeholder="请选择公告类型">
+              <el-select filterable v-model="form.noticeType" placeholder="请选择公告类型">
                 <el-option
                   v-for="dict in dict.type.sys_notice_type"
                   :key="dict.value"

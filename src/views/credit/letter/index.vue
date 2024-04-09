@@ -17,7 +17,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="开证日期起始日">
-              <el-date-picker v-model="daterangeIssuingDate1" style="width: 100%" value-format="yyyy-MM-dd"
+              <el-date-picker format='yyyy/MM/dd' v-model="daterangeIssuingDate1" style="width: 100%" value-format="yyyy-MM-dd"
                 type="date" placeholder="请选择开证日期起始日"></el-date-picker>
             </el-form-item>
           </el-col>
@@ -26,19 +26,19 @@
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="开证日期到期日">
-              <el-date-picker v-model="daterangeIssuingDate2" style="width: 100%" value-format="yyyy-MM-dd"
+              <el-date-picker format='yyyy/MM/dd' v-model="daterangeIssuingDate2" style="width: 100%" value-format="yyyy-MM-dd"
                 type="date" placeholder="请选择开证日期到期日"></el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="有效日期起始日">
-              <el-date-picker v-model="daterangeEffectiveDate1" style="width: 100%" value-format="yyyy-MM-dd"
+              <el-date-picker format='yyyy/MM/dd' v-model="daterangeEffectiveDate1" style="width: 100%" value-format="yyyy-MM-dd"
                 type="date" placeholder="请选择有效日期起始日"></el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="有效日期到期日">
-              <el-date-picker v-model="daterangeEffectiveDate2" style="width: 100%" value-format="yyyy-MM-dd"
+              <el-date-picker format='yyyy/MM/dd' v-model="daterangeEffectiveDate2" style="width: 100%" value-format="yyyy-MM-dd"
                 type="date" placeholder="请选择有效日期到期日"></el-date-picker>
             </el-form-item>
           </el-col>
@@ -196,13 +196,13 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="开证日期" prop="issuingDate">
-                <el-date-picker :disabled="!isEditable" clearable v-model="form.issuingDate" type="date"
+                <el-date-picker format='yyyy/MM/dd' :disabled="!isEditable" clearable v-model="form.issuingDate" type="date"
                   value-format="yyyy-MM-dd" placeholder="请选择开证日期"></el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="有效日期" prop="effectiveDate">
-                <el-date-picker :disabled="!isEditable" clearable v-model="form.effectiveDate" type="date"
+                <el-date-picker format='yyyy/MM/dd' :disabled="!isEditable" clearable v-model="form.effectiveDate" type="date"
                   value-format="yyyy-MM-dd" placeholder="请选择有效日期"></el-date-picker>
               </el-form-item>
             </el-col>

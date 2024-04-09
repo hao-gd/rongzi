@@ -16,11 +16,11 @@
         </el-select>
       </el-form-item>
       <el-form-item label="起始日">
-        <el-date-picker v-model="beginTime" :picker-options="pickerOptions1" style="width: 240px" value-format="yyyy-MM-dd" type="date"
+        <el-date-picker format='yyyy/MM/dd' v-model="beginTime" :picker-options="pickerOptions1" style="width: 240px" value-format="yyyy-MM-dd" type="date"
           placeholder="起始日"></el-date-picker>
       </el-form-item>
       <el-form-item label="截止日">
-        <el-date-picker v-model="endTime" :picker-options="pickerOptions2" style="width: 240px" value-format="yyyy-MM-dd" type="date"
+        <el-date-picker format='yyyy/MM/dd' v-model="endTime" :picker-options="pickerOptions2" style="width: 240px" value-format="yyyy-MM-dd" type="date"
           placeholder="截止日"></el-date-picker>
       </el-form-item>
       <el-form-item>

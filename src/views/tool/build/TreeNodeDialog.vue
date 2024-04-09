@@ -38,7 +38,7 @@
                 placeholder="请输入选项值"
                 clearable
               >
-                <el-select
+                <el-select filterable
                   slot="append"
                   v-model="dataType"
                   :style="{width: '100px'}"

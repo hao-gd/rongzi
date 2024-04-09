@@ -18,7 +18,7 @@
         />
       </el-form-item>
       <el-form-item label="创建时间" prop="childCreateTime">
-        <el-date-picker clearable
+        <el-date-picker format='yyyy/MM/dd' clearable
           v-model="queryParams.childCreateTime"
           type="date"
           value-format="yyyy-MM-dd"
@@ -134,7 +134,7 @@
           <el-input v-model="form.childName" placeholder="请输入子信息名称" />
         </el-form-item>
         <el-form-item label="创建时间" prop="childCreateTime">
-          <el-date-picker clearable
+          <el-date-picker format='yyyy/MM/dd' clearable
             v-model="form.childCreateTime"
             type="date"
             value-format="yyyy-MM-dd"

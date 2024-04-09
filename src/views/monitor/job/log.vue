@@ -11,7 +11,7 @@
         />
       </el-form-item>
       <el-form-item label="任务组名" prop="jobGroup">
-        <el-select
+        <el-select filterable
           v-model="queryParams.jobGroup"
           placeholder="请选择任务组名"
           clearable
@@ -26,7 +26,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="执行状态" prop="status">
-        <el-select
+        <el-select filterable
           v-model="queryParams.status"
           placeholder="请选择执行状态"
           clearable
@@ -42,6 +42,7 @@
       </el-form-item>
       <el-form-item label="执行时间">
         <el-date-picker
+        format='yyyy/MM/dd'
           v-model="dateRange"
           style="width: 240px"
           value-format="yyyy-MM-dd"

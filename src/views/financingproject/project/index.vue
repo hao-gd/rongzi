@@ -19,7 +19,7 @@
           </el-col> -->
           <el-col :span="8">
             <el-form-item label="债权人" prop="financialInstitution">
-              <el-select v-model="queryParams.financialInstitution" placeholder="请选择债权人" filterable clearable>
+              <el-select filterable v-model="queryParams.financialInstitution" placeholder="请选择债权人" filterable clearable>
                 <el-option v-for="dict in dict.type.sys_1757271666666242000" :key="dict.value" :label="dict.label"
                   :value="dict.value" />
               </el-select>
@@ -27,7 +27,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="借款人" prop="borrowingUnit">
-              <el-select v-model="queryParams.borrowingUnit" placeholder="请选择借款人" filterable clearable>
+              <el-select filterable v-model="queryParams.borrowingUnit" placeholder="请选择借款人" filterable clearable>
                 <el-option v-for="dict in dict.type.sys_1767154968256577500" :key="dict.value" :label="dict.label"
                   :value="dict.value" />
               </el-select>
@@ -45,7 +45,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="融资类型" prop="financingType">
-              <el-select v-model="queryParams.financingType" placeholder="请选择融资类型" filterable clearable>
+              <el-select filterable v-model="queryParams.financingType" placeholder="请选择融资类型" filterable clearable>
                 <el-option v-for="dict in dict.type.sys_1759508335389835300" :key="dict.value" :label="dict.label"
                   :value="dict.value" />
               </el-select>
@@ -211,7 +211,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="借款人" prop="borrowingUnit">
-                <el-select :disabled="!isEditable" v-model="form.borrowingUnit" filterable placeholder="请选择借款人">
+                <el-select  :disabled="!isEditable" v-model="form.borrowingUnit" filterable placeholder="请选择借款人">
                   <el-option v-for="dict in dict.type.sys_1767154968256577500" :key="dict.value" :label="dict.label"
                     :value="dict.label"></el-option>
                 </el-select>
@@ -258,13 +258,13 @@
             </el-col> -->
             <el-col :span="8">
               <el-form-item label="放款日" prop="loanDate">
-                <el-date-picker :picker-options="pickerOptions1" :disabled="!isEditable" clearable v-model="form.loanDate"
+                <el-date-picker format='yyyy/MM/dd' :picker-options="pickerOptions1" :disabled="!isEditable" clearable v-model="form.loanDate"
                   type="date" value-format="yyyy-MM-dd" placeholder="请选择放款日" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="到期日" prop="dueDate">
-                <el-date-picker :picker-options="pickerOptions2" :disabled="!isEditable" clearable v-model="form.dueDate"
+                <el-date-picker format='yyyy/MM/dd' :picker-options="pickerOptions2" :disabled="!isEditable" clearable v-model="form.dueDate"
                   type="date" value-format="yyyy-MM-dd" placeholder="请选择到期日" />
               </el-form-item>
             </el-col>
@@ -346,7 +346,7 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="第1期开始时间" prop="firstRepaymentDate">
-                <el-date-picker :disabled="!isEditable" :picker-options="pickerOptions3" clearable
+                <el-date-picker format='yyyy/MM/dd' :disabled="!isEditable" :picker-options="pickerOptions3" clearable
                   v-model="form.firstRepaymentDate" type="date" value-format="yyyy-MM-dd" placeholder="请选择第1期开始时间">
                 </el-date-picker>
               </el-form-item>

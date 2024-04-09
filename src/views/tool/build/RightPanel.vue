@@ -12,7 +12,7 @@
         <!-- 组件属性 -->
         <el-form v-show="currentTab==='field' && showField" size="small" label-width="90px">
           <el-form-item v-if="activeData.changeTag" label="组件类型">
-            <el-select
+            <el-select filterable
               v-model="activeData.tagIcon"
               placeholder="请选择组件类型"
               :style="{width: '100%'}"
@@ -62,7 +62,7 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item v-if="activeData.justify!==undefined&&activeData.type==='flex'" label="水平排列">
-            <el-select v-model="activeData.justify" placeholder="请选择水平排列" :style="{width: '100%'}">
+            <el-select filterable v-model="activeData.justify" placeholder="请选择水平排列" :style="{width: '100%'}">
               <el-option
                 v-for="(item, index) in justifyOptions"
                 :key="index"
@@ -189,7 +189,7 @@
             v-if="activeData.type !== undefined && 'el-date-picker' === activeData.tag"
             label="时间类型"
           >
-            <el-select
+            <el-select filterable
               v-model="activeData.type"
               placeholder="请选择时间类型"
               :style="{ width: '100%' }"
@@ -207,7 +207,7 @@
             <el-input v-model="activeData.name" placeholder="请输入上传文件字段名" />
           </el-form-item>
           <el-form-item v-if="activeData.accept !== undefined" label="文件类型">
-            <el-select
+            <el-select filterable
               v-model="activeData.accept"
               placeholder="请选择文件类型"
               :style="{ width: '100%' }"
@@ -224,7 +224,7 @@
           </el-form-item>
           <el-form-item v-if="activeData.fileSize !== undefined" label="文件大小">
             <el-input v-model.number="activeData.fileSize" placeholder="请输入文件大小">
-              <el-select slot="append" v-model="activeData.sizeUnit" :style="{ width: '66px' }">
+              <el-select filterable slot="append" v-model="activeData.sizeUnit" :style="{ width: '66px' }">
                 <el-option label="KB" value="KB" />
                 <el-option label="MB" value="MB" />
                 <el-option label="GB" value="GB" />
@@ -392,7 +392,7 @@
             <el-switch v-model="activeData.border" />
           </el-form-item>
           <el-form-item v-if="activeData.tag === 'el-color-picker'" label="颜色格式">
-            <el-select
+            <el-select filterable
               v-model="activeData['color-format']"
               placeholder="请选择颜色格式"
               :style="{ width: '100%' }"

@@ -95,14 +95,14 @@
             <el-form-item label="起始日" prop="startDate">
               <!-- <el-date-picker clearable v-model="queryParams.startDate" type="date" value-format="yyyy-MM-dd"
               placeholder="请选择开始日期"></el-date-picker> -->
-              <el-date-picker clearable v-model="daterangeStartDate1" value-format="yyyy-MM-dd" type="date" placeholder="请选择起始日"></el-date-picker>
+              <el-date-picker format='yyyy/MM/dd' clearable v-model="daterangeStartDate1" value-format="yyyy-MM-dd" type="date" placeholder="请选择起始日"></el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="到期日" prop="deadline">
               <!-- <el-date-picker clearable v-model="queryParams.deadline" type="date" value-format="yyyy-MM-dd"
                 placeholder="请选择结束日期"></el-date-picker> -->
-              <el-date-picker clearable v-model="daterangeDeadline2" value-format="yyyy-MM-dd" type="date" placeholder="请选择到期日"></el-date-picker>
+              <el-date-picker format='yyyy/MM/dd' clearable v-model="daterangeDeadline2" value-format="yyyy-MM-dd" type="date" placeholder="请选择到期日"></el-date-picker>
             </el-form-item>
           </el-col>
         </el-row>
@@ -272,13 +272,13 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="开始日期" prop="startDate">
-                <el-date-picker :picker-options="pickerOptions1" :disabled="!isEditable" clearable
+                <el-date-picker format='yyyy/MM/dd' :picker-options="pickerOptions1" :disabled="!isEditable" clearable
                   v-model="form.startDate" type="date" value-format="yyyy-MM-dd" placeholder="请选择开始日期"></el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="结束日期" prop="deadline">
-                <el-date-picker :picker-options="pickerOptions2" :disabled="!isEditable" clearable v-model="form.deadline"
+                <el-date-picker format='yyyy/MM/dd' :picker-options="pickerOptions2" :disabled="!isEditable" clearable v-model="form.deadline"
                   type="date" value-format="yyyy-MM-dd" placeholder="请选择结束日期"></el-date-picker>
               </el-form-item>
             </el-col>

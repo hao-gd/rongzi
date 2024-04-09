@@ -43,13 +43,13 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="出票起始日">
-              <el-date-picker :picker-options="pickerOptions3" v-model="daterangeDraftDate1" style="width: 100%" value-format="yyyy-MM-dd" type="date"
+              <el-date-picker format='yyyy/MM/dd' :picker-options="pickerOptions3" v-model="daterangeDraftDate1" style="width: 100%" value-format="yyyy-MM-dd" type="date"
                 placeholder="请选择出票起始日"></el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="出票结束日">
-              <el-date-picker :picker-options="pickerOptions4" v-model="daterangeDraftDate2" style="width: 100%" value-format="yyyy-MM-dd" type="date"
+              <el-date-picker format='yyyy/MM/dd' :picker-options="pickerOptions4" v-model="daterangeDraftDate2" style="width: 100%" value-format="yyyy-MM-dd" type="date"
                 placeholder="请选择出票结束日"></el-date-picker>
             </el-form-item>
           </el-col>
@@ -59,14 +59,14 @@
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="汇票到期起始日">
-              <el-date-picker :picker-options="pickerOptions5" clearable v-model="daterangeDueDate1" type="date" style="width: 100%"
+              <el-date-picker format='yyyy/MM/dd' :picker-options="pickerOptions5" clearable v-model="daterangeDueDate1" type="date" style="width: 100%"
                 value-format="yyyy-MM-dd" placeholder="请选择汇票到期起始日">
               </el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="汇票到期结束日">
-              <el-date-picker :picker-options="pickerOptions6" clearable v-model="daterangeDueDate2" type="date" style="width: 100%"
+              <el-date-picker format='yyyy/MM/dd' :picker-options="pickerOptions6" clearable v-model="daterangeDueDate2" type="date" style="width: 100%"
                 value-format="yyyy-MM-dd" placeholder="请选择汇票到期结束日">
               </el-date-picker>
             </el-form-item>
@@ -236,7 +236,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="出票日期" prop="draftDate">
-                <el-date-picker :picker-options="pickerOptions1" :disabled="!isEditable" clearable
+                <el-date-picker format='yyyy/MM/dd' :picker-options="pickerOptions1" :disabled="!isEditable" clearable
                   v-model="form.draftDate" type="date" value-format="yyyy-MM-dd" placeholder="请选择出票日期">
                 </el-date-picker>
               </el-form-item>
@@ -247,7 +247,7 @@
 
             <el-col :span="8">
               <el-form-item label="到期日" prop="dueDate">
-                <el-date-picker :picker-options="pickerOptions2" :disabled="!isEditable" clearable v-model="form.dueDate"
+                <el-date-picker format='yyyy/MM/dd' :picker-options="pickerOptions2" :disabled="!isEditable" clearable v-model="form.dueDate"
                   type="date" value-format="yyyy-MM-dd" placeholder="请选择到期日">
                 </el-date-picker>
               </el-form-item>

@@ -32,13 +32,13 @@
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="起始日">
-              <el-date-picker :picker-options="pickerOptions1" v-model="daterangeRiqi1" value-format="yyyy-MM-dd"
+              <el-date-picker format='yyyy/MM/dd' :picker-options="pickerOptions1" v-model="daterangeRiqi1" value-format="yyyy-MM-dd"
                 type="date" placeholder="请选择起始日"></el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="到期日">
-              <el-date-picker :picker-options="pickerOptions2" v-model="daterangeRiqi2" value-format="yyyy-MM-dd"
+              <el-date-picker format='yyyy/MM/dd' :picker-options="pickerOptions2" v-model="daterangeRiqi2" value-format="yyyy-MM-dd"
                 type="date" placeholder="请选择到期日"></el-date-picker>
             </el-form-item>
           </el-col>
@@ -105,7 +105,7 @@
           <el-input v-model="form.qishu" placeholder="请输入期数" />
         </el-form-item>
         <el-form-item label="日期" prop="riqi">
-          <el-date-picker clearable v-model="form.riqi" type="date" value-format="yyyy-MM-dd" placeholder="请选择日期">
+          <el-date-picker format='yyyy/MM/dd' clearable v-model="form.riqi" type="date" value-format="yyyy-MM-dd" placeholder="请选择日期">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="还款金额" prop="huankuanjine">

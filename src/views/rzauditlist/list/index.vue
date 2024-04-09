@@ -166,7 +166,7 @@
           <el-input v-model="form.tableName" placeholder="请输入父级表名" />
         </el-form-item>
         <el-form-item label="审核状态：待审批、审批不通过、审批通过、已撤回" prop="auditState">
-          <el-select v-model="form.auditState" placeholder="请选择审核状态：待审批、审批不通过、审批通过、已撤回">
+          <el-select filterable v-model="form.auditState" placeholder="请选择审核状态：待审批、审批不通过、审批通过、已撤回">
             <el-option v-for="dict in dict.type.sys_1759514730105405400" :key="dict.value" :label="dict.label"
               :value="dict.value"></el-option>
           </el-select>

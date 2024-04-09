@@ -10,7 +10,7 @@
         />
       </el-form-item>
       <el-form-item label="创建时间" prop="basicDataTime">
-        <el-date-picker clearable
+        <el-date-picker format='yyyy/MM/dd' clearable
           v-model="queryParams.basicDataTime"
           type="date"
           value-format="yyyy-MM-dd"
@@ -122,7 +122,7 @@
           <el-input v-model="form.basicName" placeholder="请输入基本信息名称" />
         </el-form-item>
         <el-form-item label="创建时间" prop="basicDataTime">
-          <el-date-picker clearable
+          <el-date-picker format='yyyy/MM/dd' clearable
             v-model="form.basicDataTime"
             type="date"
             value-format="yyyy-MM-dd"

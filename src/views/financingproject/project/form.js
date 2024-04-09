@@ -171,7 +171,7 @@ export function renderDate(field) {
     return (h, { row }) =>
         row.editing
             ? h("el-date-picker", {
-                props: { value: row[field], format: 'yyyy-MM-dd', valueFormat: 'yyyy-MM-dd', type: "date" },
+                props: { value: row[field], format: 'yyyy/MM/dd', valueFormat: 'yyyy-MM-dd', type: "date" },
                 on: { 'input': (value) => (row[field] = value) }
             })
             : h('span', row[field])

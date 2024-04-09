@@ -29,7 +29,7 @@
       </el-col>
       <!--用户数据-->
       <el-col :span="20" :xs="24">
-        <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
+        <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="100px">
           <el-form-item label="用户名称" prop="userName">
             <el-input
               v-model="queryParams.userName"
@@ -49,7 +49,7 @@
             />
           </el-form-item>
           <el-form-item label="状态" prop="status">
-            <el-select
+            <el-select filterable
               v-model="queryParams.status"
               placeholder="用户状态"
               clearable
@@ -63,17 +63,27 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item label="创建时间">
-            <el-date-picker
-              v-model="dateRange"
-              style="width: 240px"
-              value-format="yyyy-MM-dd"
-              type="daterange"
-              range-separator="-"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-            ></el-date-picker>
-          </el-form-item>
+
+          <el-form-item label="创建开始时间">
+        <el-date-picker
+        format='yyyy/MM/dd'
+          v-model="dateRange1"
+          style="width: 240px"
+          value-format="yyyy-MM-dd"
+          type="date" placeholder="开始日期"
+        ></el-date-picker>
+      </el-form-item>
+
+      <el-form-item label="创建结束时间">
+        <el-date-picker
+        format='yyyy/MM/dd'
+          v-model="dateRange2"
+          style="width: 240px"
+          value-format="yyyy-MM-dd"
+          type="date" placeholder="结束日期"
+        ></el-date-picker>
+      </el-form-item>
+
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
             <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -244,7 +254,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="用户性别">
-              <el-select v-model="form.sex" placeholder="请选择性别">
+              <el-select filterable v-model="form.sex" placeholder="请选择性别">
                 <el-option
                   v-for="dict in dict.type.sys_user_sex"
                   :key="dict.value"
@@ -269,7 +279,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="岗位">
-              <el-select v-model="form.postIds" multiple placeholder="请选择岗位">
+              <el-select filterable v-model="form.postIds" multiple placeholder="请选择岗位">
                 <el-option
                   v-for="item in postOptions"
                   :key="item.postId"
@@ -282,7 +292,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="角色">
-              <el-select v-model="form.roleIds" multiple placeholder="请选择角色">
+              <el-select filterable v-model="form.roleIds" multiple placeholder="请选择角色">
                 <el-option
                   v-for="item in roleOptions"
                   :key="item.roleId"
@@ -352,6 +362,8 @@ export default {
   components: { Treeselect },
   data() {
     return {
+      dateRange1: '',
+dateRange2: '',
       // 遮罩层
       loading: true,
       // 选中数组
@@ -469,7 +481,11 @@ export default {
     /** 查询用户列表 */
     getList() {
       this.loading = true;
-      listUser(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
+      let dataRange = []
+      if (![null, undefined, ''].includes(this.dateRange1) && ![null, undefined, ''].includes(this.dateRange2)) {
+        dataRange = [this.dateRange1, this.dateRange2]
+      }
+      listUser(this.addDateRange(this.queryParams, dataRange)).then(response => {
           this.userList = response.rows;
           this.total = response.total;
           this.loading = false;
@@ -534,6 +550,8 @@ export default {
     /** 重置按钮操作 */
     resetQuery() {
       this.dateRange = [];
+      this.dateRange1 = '';
+      this.dateRange2 = '';
       this.resetForm("queryForm");
       this.queryParams.deptId = undefined;
       this.$refs.tree.setCurrentKey(null);

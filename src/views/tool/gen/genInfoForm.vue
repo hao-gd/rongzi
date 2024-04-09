@@ -4,7 +4,7 @@
       <el-col :span="12">
         <el-form-item prop="tplCategory">
           <span slot="label">生成模板</span>
-          <el-select v-model="info.tplCategory" @change="tplSelectChange">
+          <el-select filterable v-model="info.tplCategory" @change="tplSelectChange">
             <el-option label="单表（增删改查）" value="crud" />
             <el-option label="树表（增删改查）" value="tree" />
             <el-option label="主子表（增删改查）" value="sub" />
@@ -124,7 +124,7 @@
               <i class="el-icon-question"></i>
             </el-tooltip>
           </span>
-          <el-select v-model="info.treeCode" placeholder="请选择">
+          <el-select filterable v-model="info.treeCode" placeholder="请选择">
             <el-option
               v-for="(column, index) in info.columns"
               :key="index"
@@ -142,7 +142,7 @@
               <i class="el-icon-question"></i>
             </el-tooltip>
           </span>
-          <el-select v-model="info.treeParentCode" placeholder="请选择">
+          <el-select filterable v-model="info.treeParentCode" placeholder="请选择">
             <el-option
               v-for="(column, index) in info.columns"
               :key="index"
@@ -160,7 +160,7 @@
               <i class="el-icon-question"></i>
             </el-tooltip>
           </span>
-          <el-select v-model="info.treeName" placeholder="请选择">
+          <el-select filterable v-model="info.treeName" placeholder="请选择">
             <el-option
               v-for="(column, index) in info.columns"
               :key="index"
@@ -181,7 +181,7 @@
               <i class="el-icon-question"></i>
             </el-tooltip>
           </span>
-          <el-select v-model="info.subTableName" placeholder="请选择" @change="subSelectChange">
+          <el-select filterable v-model="info.subTableName" placeholder="请选择" @change="subSelectChange">
             <el-option
               v-for="(table, index) in tables"
               :key="index"
@@ -199,7 +199,7 @@
               <i class="el-icon-question"></i>
             </el-tooltip>
           </span>
-          <el-select v-model="info.subTableFkName" placeholder="请选择">
+          <el-select filterable v-model="info.subTableFkName" placeholder="请选择">
             <el-option
               v-for="(column, index) in subColumns"
               :key="index"
