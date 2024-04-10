@@ -779,6 +779,7 @@ export default {
         this.scrUuid = response.data.scrUuid;
         this.form = response.data;
         this.form.scrUuid = response.data.rzsrc2List.map(i => i.url)
+        this.form.financialInstitution = response.data.financialInstitution.split(',');
         /* end */
         this.rzsrc2List = response.data.rzsrc2List;
         this.open = true;

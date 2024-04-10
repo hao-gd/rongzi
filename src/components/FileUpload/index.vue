@@ -1,19 +1,20 @@
 <template>
   <div class="upload-file">
-    <el-upload :disabled="disabled" multiple list-type="picture-card" :action="uploadFileUrl"
+    <!-- list-type="picture-card" -->
+    <el-upload :disabled="disabled" multiple  :action="uploadFileUrl"
       :before-upload="handleBeforeUpload" :file-list="fileList" :limit="limit" :on-error="handleUploadError"
       :on-exceed="handleExceed" :on-success="handleUploadSuccess" :show-file-list="false" :headers="headers"
       class="upload-file-uploader" ref="fileUpload">
-      <i class="el-icon-plus"></i>
+      <!-- <i class="el-icon-plus"></i> -->
       <!-- 上传按钮 -->
-      <!-- <el-button size="mini" type="primary">选取文件</el-button> -->
+      <el-button size="mini" type="primary">点击上传附件</el-button>
       <!-- 上传提示 -->
-      <div class="el-upload__tip" slot="tip" v-if="showTip">
+      <!-- <div class="el-upload__tip" slot="tip" v-if="showTip">
         请上传
         <template v-if="fileSize"> 大小不超过 <b style="color: #f56c6c">{{ fileSize }}MB</b> </template>
         <template v-if="fileType"> 格式为 <b style="color: #f56c6c">{{ fileType.join("/") }}</b> </template>
         的文件
-      </div>
+      </div> -->
     </el-upload>
 
     <!-- 文件列表 -->

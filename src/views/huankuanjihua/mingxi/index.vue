@@ -229,6 +229,7 @@ export default {
     getList() {
       this.loading = true;
       this.queryParams.params = {};
+      this.queryParams['orderByColumn'] = "riqi"
       if (null != this.daterangeRiqi1 && '' != this.daterangeRiqi1) {
         this.queryParams.params["beginRiqi"] = this.daterangeRiqi1;
       }
