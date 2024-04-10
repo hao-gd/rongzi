@@ -410,7 +410,6 @@ export default {
     /* 计算合计 */
     getSummaries(param) {
       const { columns, data } = param;
-      console.log(columns)
       const sums = [];
       columns.forEach((column, index) => {
         if (index === 0) {
