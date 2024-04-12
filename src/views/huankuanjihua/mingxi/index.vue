@@ -230,6 +230,7 @@ export default {
       this.loading = true;
       this.queryParams.params = {};
       this.queryParams['orderByColumn'] = "riqi"
+      this.queryParams['isAsc'] = "asc"
       if (null != this.daterangeRiqi1 && '' != this.daterangeRiqi1) {
         this.queryParams.params["beginRiqi"] = this.daterangeRiqi1;
       }

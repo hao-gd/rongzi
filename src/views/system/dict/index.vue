@@ -16,12 +16,12 @@
         </el-select>
       </el-form-item>
       <el-form-item label="起始日">
-        <el-date-picker format='yyyy/MM/dd' v-model="beginTime" :picker-options="pickerOptions1" style="width: 240px" value-format="yyyy-MM-dd" type="date"
-          placeholder="起始日"></el-date-picker>
+        <el-date-picker format='yyyy/MM/dd' v-model="beginTime" :picker-options="pickerOptions1" style="width: 240px"
+          value-format="yyyy-MM-dd" type="date" placeholder="起始日"></el-date-picker>
       </el-form-item>
       <el-form-item label="截止日">
-        <el-date-picker format='yyyy/MM/dd' v-model="endTime" :picker-options="pickerOptions2" style="width: 240px" value-format="yyyy-MM-dd" type="date"
-          placeholder="截止日"></el-date-picker>
+        <el-date-picker format='yyyy/MM/dd' v-model="endTime" :picker-options="pickerOptions2" style="width: 240px"
+          value-format="yyyy-MM-dd" type="date" placeholder="截止日"></el-date-picker>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -33,7 +33,7 @@
     </el-alert>
     <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     <el-row :gutter="10" class="mb8">
-      <!--  <el-col :span="1.5">
+<!--      <el-col :span="1.5">
         <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
           v-hasPermi="['system:dict:add']">新增类型</el-button>
       </el-col>
@@ -127,227 +127,228 @@
 </template>
 
 <script>
-import {
-  listType,
-  getType,
-  delType,
-  addType,
-  updateType,
-  refreshCache
-} from "@/api/system/dict/type";
-import {
-  mapGetters
-} from 'vuex';
-import {
-  SnowflakeIdGenerator
-} from '@/utils/index'
-export default {
-  name: "Dict",
-  dicts: ['sys_normal_disable'],
-  data() {
-    return {
-      // 遮罩层
-      loading: true,
-      // 选中数组
-      ids: [],
-      // 非单个禁用
-      single: true,
-      // 非多个禁用
-      multiple: true,
-      // 显示搜索条件
-      showSearch: true,
-      // 总条数
-      total: 0,
-      // 字典表格数据
-      typeList: [],
-      // 弹出层标题
-      title: "",
-      // 是否显示弹出层
-      open: false,
-      // 日期范围
-      dateRange: [],
-      beginTime: '',
-      endTime: '',
-      // 查询参数
-      queryParams: {
-        pageNum: 1,
-        pageSize: 100,
-        dictName: undefined,
-        dictType: undefined,
-        status: undefined
-      },
-      // 表单参数
-      form: {},
-      // 表单校验
-      rules: {
-        dictName: [{
-          required: true,
-          message: "信息名称不能为空",
-          trigger: "blur"
-        }],
-        dictType: [{
-          required: true,
-          message: "信息类型不能为空",
-          trigger: "blur"
-        }]
-      },
-      pickerOptions1: {
-        // 禁用开始日期中，所有大于结束日期的日期
-        disabledDate: (date) => {
-          if (this.endTime) {
-            return date.getTime() > new Date(this.endTime).getTime();
+  import {
+    listType,
+    getType,
+    delType,
+    addType,
+    updateType,
+    refreshCache
+  } from "@/api/system/dict/type";
+  import {
+    mapGetters
+  } from 'vuex';
+  import {
+    SnowflakeIdGenerator
+  } from '@/utils/index'
+  export default {
+    name: "Dict",
+    dicts: ['sys_normal_disable'],
+    data() {
+      return {
+        // 遮罩层
+        loading: true,
+        // 选中数组
+        ids: [],
+        // 非单个禁用
+        single: true,
+        // 非多个禁用
+        multiple: true,
+        // 显示搜索条件
+        showSearch: true,
+        // 总条数
+        total: 0,
+        // 字典表格数据
+        typeList: [],
+        // 弹出层标题
+        title: "",
+        // 是否显示弹出层
+        open: false,
+        // 日期范围
+        dateRange: [],
+        beginTime: '',
+        endTime: '',
+        // 查询参数
+        queryParams: {
+          pageNum: 1,
+          pageSize: 100,
+          dictName: undefined,
+          dictType: undefined,
+          status: undefined
+        },
+        // 表单参数
+        form: {},
+        // 表单校验
+        rules: {
+          dictName: [{
+            required: true,
+            message: "信息名称不能为空",
+            trigger: "blur"
+          }],
+          dictType: [{
+            required: true,
+            message: "信息类型不能为空",
+            trigger: "blur"
+          }]
+        },
+        pickerOptions1: {
+          // 禁用开始日期中，所有大于结束日期的日期
+          disabledDate: (date) => {
+            if (this.endTime) {
+              return date.getTime() > new Date(this.endTime).getTime();
+            }
           }
-        }
-      },
-      pickerOptions2: {
-        // 禁用结束日期中，所有小于开始日期的日期
-        disabledDate: (date) => {
-          if (this.beginTime) {
-            // 一天的毫秒数
-            var oneDayInMilliseconds = 24 * 60 * 60 * 1000;
-            return date.getTime() < new Date(this.form.beginTime).getTime() - oneDayInMilliseconds;
+        },
+        pickerOptions2: {
+          // 禁用结束日期中，所有小于开始日期的日期
+          disabledDate: (date) => {
+            if (this.beginTime) {
+              // 一天的毫秒数
+              var oneDayInMilliseconds = 24 * 60 * 60 * 1000;
+              return date.getTime() < new Date(this.form.beginTime).getTime() - oneDayInMilliseconds;
+            }
           }
-        }
-      },
-    };
-  },
-  computed: {
-    ...mapGetters(['roles']),
-  },
-  created() {
-    this.getList();
-  },
-  methods: {
-    /** 查询字典类型列表 */
-    getList() {
-      this.loading = true;
-      let search = this.queryParams;
-      search.params = typeof (search.params) === 'object' && search.params !== null && !Array.isArray(search.params) ? search.params : {};
-
-      if (![null, undefined, ''].includes(this.beginTime) && ![null, undefined, ''].includes(this.endTime)) {
-        search.params['beginTime'] = this.beginTime;
-        search.params['endTime'] = this.endTime;
-      }
-      if (this.beginTime == '') {
-        search.params['beginTime'] = '';
-      }
-
-      if (this.endTime == '') {
-        search.params['endTime'] = '';
-      }
-
-
-
-      listType(search).then(response => {
-        this.typeList = response.rows;
-        this.total = response.total;
-        this.loading = false;
-      });
-    },
-    // 取消按钮
-    cancel() {
-      this.open = false;
-      this.reset();
-    },
-    // 表单重置
-    reset() {
-      this.form = {
-        dictId: undefined,
-        dictName: undefined,
-        dictType: undefined,
-        status: "0",
-        remark: undefined
+        },
       };
-      this.beginTime = '';
-      this.endTime = '';
-      this.resetForm("form");
     },
-    /** 搜索按钮操作 */
-    handleQuery() {
-      this.queryParams.pageNum = 1;
+    computed: {
+      ...mapGetters(['roles']),
+    },
+    created() {
       this.getList();
     },
-    /** 重置按钮操作 */
-    resetQuery() {
-      this.beginTime = '';
-      this.endTime = '';
-      this.resetForm("queryForm");
-      this.handleQuery();
-    },
-    /** 新增按钮操作 */
-    handleAdd() {
-      this.reset();
-      this.open = true;
-      this.title = "添加信息类型";
-    },
-    // 多选框选中数据
-    handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.dictId)
-      this.single = selection.length != 1
-      this.multiple = !selection.length
-    },
-    /** 修改按钮操作 */
-    handleUpdate(row) {
-      this.reset();
-      const dictId = row.dictId || this.ids
-      getType(dictId).then(response => {
-        this.form = response.data;
-        this.open = true;
-        this.title = "修改信息类型";
-      });
-    },
-    /* 跳转到信息数据录入页面 */
-    handleAddInfo(row) {
-      this.$router.push('/system/dict-data/index/' + row.dictId);
-    },
-    /** 提交按钮 */
-    submitForm: function () {
-      this.$refs["form"].validate(valid => {
-        if (valid) {
-          const generator = new SnowflakeIdGenerator();
-          this.form.dictType = this.form.dictType !== undefined ?
-            this.form.dictType :
-            'sys_' + generator.nextId()
-          console.log(this.form);
-          if (this.form.dictId != undefined) {
-            updateType(this.form).then(response => {
-              this.$modal.msgSuccess("修改成功");
-              this.open = false;
-              this.getList();
-            });
-          } else {
-            addType(this.form).then(response => {
-              this.$modal.msgSuccess("新增成功");
-              this.open = false;
-              this.getList();
-            });
-          }
+    methods: {
+      /** 查询字典类型列表 */
+      getList() {
+        this.loading = true;
+        let search = this.queryParams;
+        search.params = typeof(search.params) === 'object' && search.params !== null && !Array.isArray(search.params) ?
+          search.params : {};
+
+        if (![null, undefined, ''].includes(this.beginTime) && ![null, undefined, ''].includes(this.endTime)) {
+          search.params['beginTime'] = this.beginTime;
+          search.params['endTime'] = this.endTime;
         }
-      });
-    },
-    /** 删除按钮操作 */
-    handleDelete(row) {
-      const dictIds = row.dictId || this.ids;
-      this.$modal.confirm('是否确认删除信息编号为"' + dictIds + '"的数据项？').then(function () {
-        return delType(dictIds);
-      }).then(() => {
+        if (this.beginTime == '') {
+          search.params['beginTime'] = '';
+        }
+
+        if (this.endTime == '') {
+          search.params['endTime'] = '';
+        }
+
+
+
+        listType(search).then(response => {
+          this.typeList = response.rows;
+          this.total = response.total;
+          this.loading = false;
+        });
+      },
+      // 取消按钮
+      cancel() {
+        this.open = false;
+        this.reset();
+      },
+      // 表单重置
+      reset() {
+        this.form = {
+          dictId: undefined,
+          dictName: undefined,
+          dictType: undefined,
+          status: "0",
+          remark: undefined
+        };
+        this.beginTime = '';
+        this.endTime = '';
+        this.resetForm("form");
+      },
+      /** 搜索按钮操作 */
+      handleQuery() {
+        this.queryParams.pageNum = 1;
         this.getList();
-        this.$modal.msgSuccess("删除成功");
-      }).catch(() => { });
-    },
-    /** 导出按钮操作 */
-    handleExport() {
-      this.download('system/dict/type/export', {
-        ...this.queryParams
-      }, `type_${new Date().getTime()}.xlsx`)
-    },
-    /** 刷新缓存按钮操作 */
-    handleRefreshCache() {
-      refreshCache().then(() => {
-        this.$modal.msgSuccess("刷新成功");
-        this.$store.dispatch('dict/cleanDict');
-      });
+      },
+      /** 重置按钮操作 */
+      resetQuery() {
+        this.beginTime = '';
+        this.endTime = '';
+        this.resetForm("queryForm");
+        this.handleQuery();
+      },
+      /** 新增按钮操作 */
+      handleAdd() {
+        this.reset();
+        this.open = true;
+        this.title = "添加信息类型";
+      },
+      // 多选框选中数据
+      handleSelectionChange(selection) {
+        this.ids = selection.map(item => item.dictId)
+        this.single = selection.length != 1
+        this.multiple = !selection.length
+      },
+      /** 修改按钮操作 */
+      handleUpdate(row) {
+        this.reset();
+        const dictId = row.dictId || this.ids
+        getType(dictId).then(response => {
+          this.form = response.data;
+          this.open = true;
+          this.title = "修改信息类型";
+        });
+      },
+      /* 跳转到信息数据录入页面 */
+      handleAddInfo(row) {
+        this.$router.push('/system/dict-data/index/' + row.dictId);
+      },
+      /** 提交按钮 */
+      submitForm: function() {
+        this.$refs["form"].validate(valid => {
+          if (valid) {
+            const generator = new SnowflakeIdGenerator();
+            this.form.dictType = this.form.dictType !== undefined ?
+              this.form.dictType :
+              'sys_' + generator.nextId()
+            console.log(this.form);
+            if (this.form.dictId != undefined) {
+              updateType(this.form).then(response => {
+                this.$modal.msgSuccess("修改成功");
+                this.open = false;
+                this.getList();
+              });
+            } else {
+              addType(this.form).then(response => {
+                this.$modal.msgSuccess("新增成功");
+                this.open = false;
+                this.getList();
+              });
+            }
+          }
+        });
+      },
+      /** 删除按钮操作 */
+      handleDelete(row) {
+        const dictIds = row.dictId || this.ids;
+        this.$modal.confirm('是否确认删除信息编号为"' + dictIds + '"的数据项？').then(function() {
+          return delType(dictIds);
+        }).then(() => {
+          this.getList();
+          this.$modal.msgSuccess("删除成功");
+        }).catch(() => {});
+      },
+      /** 导出按钮操作 */
+      handleExport() {
+        this.download('system/dict/type/export', {
+          ...this.queryParams
+        }, `type_${new Date().getTime()}.xlsx`)
+      },
+      /** 刷新缓存按钮操作 */
+      handleRefreshCache() {
+        refreshCache().then(() => {
+          this.$modal.msgSuccess("刷新成功");
+          this.$store.dispatch('dict/cleanDict');
+        });
+      }
     }
-  }
-};
+  };
 </script>

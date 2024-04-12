@@ -213,12 +213,12 @@ export const hkjh_repaymentPlanClearingTableColumn = [
         width: '',
         minWidth: '100',
     },
-    {
-        label: '利率',
-        prop: 'lilv',
-        width: '',
-        minWidth: '100',
-    },
+    // {
+    //     label: '利率',
+    //     prop: 'lilv',
+    //     width: '',
+    //     minWidth: '100',
+    // },
     // {
     //     label: '备注',
     //     prop: '备注',
