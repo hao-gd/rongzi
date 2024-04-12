@@ -96,7 +96,7 @@
         </template>
       </el-table-column>
       <el-table-column label="创建人" align="center" prop="childCreatedBy" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" class-name="''">
         <template slot-scope="scope">
           <el-button
             size="mini"

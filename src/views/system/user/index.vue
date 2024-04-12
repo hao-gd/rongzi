@@ -172,7 +172,7 @@
             label="操作"
             align="center"
             width="160"
-            class-name="small-padding fixed-width"
+            class-name="''"
           >
             <template slot-scope="scope" v-if="scope.row.userId !== 1">
               <el-button

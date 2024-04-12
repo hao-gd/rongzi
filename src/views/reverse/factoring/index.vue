@@ -92,34 +92,36 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="起始日" prop="startDate">
+            <el-form-item label="起止日期" :error="error1">
               <!-- <el-date-picker clearable v-model="queryParams.startDate" type="date" value-format="yyyy-MM-dd"
               placeholder="请选择开始日期"></el-date-picker> -->
-              <el-date-picker format='yyyy/MM/dd' clearable v-model="daterangeStartDate1" value-format="yyyy-MM-dd" type="date" placeholder="请选择起始日"></el-date-picker>
+                <el-row>
+                  <el-col :span="11">
+                    <el-date-picker :picker-options="pickerOptions3" format='yyyy/MM/dd' clearable v-model="daterangeStartDate1" value-format="yyyy-MM-dd" type="date" placeholder="请选择起始日"></el-date-picker>
+                  </el-col>
+                  <el-col :span="2" class="flex fjc">-</el-col>
+                  <el-col :span="11">
+                    <el-date-picker :picker-options="pickerOptions4" format='yyyy/MM/dd' clearable v-model="daterangeDeadline2" value-format="yyyy-MM-dd" type="date" placeholder="请选择到期日"></el-date-picker>
+                  </el-col>
+                </el-row>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
-            <el-form-item label="到期日" prop="deadline">
-              <!-- <el-date-picker clearable v-model="queryParams.deadline" type="date" value-format="yyyy-MM-dd"
-                placeholder="请选择结束日期"></el-date-picker> -->
-              <el-date-picker format='yyyy/MM/dd' clearable v-model="daterangeDeadline2" value-format="yyyy-MM-dd" type="date" placeholder="请选择到期日"></el-date-picker>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="项目名称" prop="entryName">
               <el-input v-model="queryParams.entryName" placeholder="请输入项目名称" clearable
                 @keyup.enter.native="handleQuery" />
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row :gutter="20">
+         
           <el-col :span="8">
             <el-form-item label="回款账户" prop="collectionAccount">
               <el-input v-model="queryParams.collectionAccount" placeholder="请输入回款账户" clearable
                 @keyup.enter.native="handleQuery" />
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="16">
             <el-form-item class="flex" style="display: flex; justify-content: flex-end;">
               <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
               <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -153,42 +155,42 @@
 
     <el-table v-loading="loading" :data="factoringList" @selection-change="handleSelectionChange"
       :header-cell-style="header_cell_style">
-      <el-table-column checkDueReminderWithConfig fixed="left" type="selection" min-width="50" align="center" />
-      <el-table-column checkDueReminderWithConfig label="管理编号" align="center" prop="managementId" min-width="100" />
+      <el-table-column show-overflow-tooltip fixed="left" type="selection" min-width="50" align="center" />
+      <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" min-width="100" />
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" />
       <el-table-column label="审核id" align="center" prop="auditId" /> -->
-      <el-table-column checkDueReminderWithConfig label="债权人（供应商）名称" align="center" prop="creditor" min-width="260">
+      <el-table-column show-overflow-tooltip label="债权人（供应商）名称" align="center" prop="creditor" min-width="160">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1757271666666242000" :value="scope.row.creditor" />
         </template>
       </el-table-column>
-      <el-table-column checkDueReminderWithConfig label="保理商名称" align="center" prop="factor" min-width="260">
+      <el-table-column show-overflow-tooltip label="保理商名称" align="center" prop="factor" min-width="130">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1757288852172570600" :value="scope.row.factor" />
         </template>
       </el-table-column>
-      <el-table-column checkDueReminderWithConfig label="金融机构" align="center" prop="financialInstitution" min-width="260">
+      <el-table-column show-overflow-tooltip label="金融机构" align="center" prop="financialInstitution" min-width="130">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_acceptor" :value="scope.row.financialInstitution" />
         </template>
       </el-table-column>
-      <el-table-column checkDueReminderWithConfig label="放贷金额（万元）" align="center" prop="loanAmount" min-width="160">
+      <el-table-column show-overflow-tooltip label="放贷金额（万元）" align="center" prop="loanAmount" min-width="160">
         <template slot-scope="scope">
           <span>{{ formatNumberAsRMB(scope.row.loanAmount) }}</span>
         </template>
       </el-table-column>
-      <el-table-column checkDueReminderWithConfig label="开始日期" align="center" prop="startDate" min-width="100">
+      <el-table-column show-overflow-tooltip label="开始日期" align="center" prop="startDate" min-width="100">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.startDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column checkDueReminderWithConfig label="结束日期" align="center" prop="deadline" min-width="100">
+      <el-table-column show-overflow-tooltip label="结束日期" align="center" prop="deadline" min-width="100">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.deadline, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column checkDueReminderWithConfig label="项目名称" align="center" prop="entryName" />
-      <el-table-column checkDueReminderWithConfig label="到期提醒" align="center" prop="remark" min-width="100">
+      <el-table-column show-overflow-tooltip label="项目名称" align="center" prop="entryName" min-width="120" />
+      <el-table-column show-overflow-tooltip label="到期提醒" align="center" prop="remark" min-width="100">
         <template slot-scope="scope">
           <el-tag effect="plain" :hit="true" :class="checkDueReminderWithConfig(scope.row.deadline).color">
             {{ checkDueReminderWithConfig(scope.row.deadline).message }}
@@ -196,10 +198,10 @@
           <!-- <dict-tag :options="dict.type.sys_maturity" :value="scope.row.remark" /> -->
         </template>
       </el-table-column>
-      <el-table-column checkDueReminderWithConfig label="回款账户" align="center" prop="collectionAccount" min-width="260" />
-      <el-table-column checkDueReminderWithConfig label="备注" align="center" prop="comment" min-width="200" />
+      <el-table-column show-overflow-tooltip label="回款账户" align="center" prop="collectionAccount" min-width="180" />
+      <el-table-column show-overflow-tooltip label="备注" align="center" prop="comment" min-width="200" />
       <!-- <el-table-column label="ID" align="center" prop="id" /> -->
-      <el-table-column fixed="right" label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column fixed="right" label="操作" align="center" class-name="''">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="handleUpdate(scope.row)" v-hasPermi="['reverse:factoring:edit']">查
             看</el-button>
@@ -367,6 +369,24 @@ export default {
           }
         }
       },
+      pickerOptions3: {
+        // 禁用开始日期中，所有大于结束日期的日期
+        disabledDate: (date) => {
+          if (this.daterangeDeadline2) {
+            return date.getTime() > new Date(this.daterangeDeadline2).getTime();
+          }
+        }
+      },
+      pickerOptions4: {
+        // 禁用结束日期中，所有小于开始日期的日期
+        disabledDate: (date) => {
+          if (this.daterangeStartDate1) {
+            // 一天的毫秒数
+            var oneDayInMilliseconds = 24 * 60 * 60 * 1000;
+            return date.getTime() < new Date(this.daterangeStartDate1).getTime() - oneDayInMilliseconds;
+          }
+        }
+      },
       isSuccess: true,
       isTitle: true,
       isMessage: true,
@@ -470,7 +490,8 @@ export default {
         collectionAccount: [
           { required: true, message: "回款账户不能为空", trigger: "blur" }
         ],
-      }
+      },
+      error1: ''
     };
   },
   watch: {
@@ -479,7 +500,33 @@ export default {
         this.created_successfully = false;
         this.isEditable = true;
       }
-    }
+    },
+    daterangeStartDate1(n, o) {
+      if (n !== '' && n !== null) {
+        if (this.daterangeDeadline2 === '' || this.daterangeDeadline2 === null) {
+          this.error1 = '到期日不能为空';
+        } else {
+          this.error1 = ''; // 清空错误信息
+        }
+      } else if (this.daterangeDeadline2 === '' || this.daterangeDeadline2 === null) {
+        this.error1 = ''; // 两个日期都为空时，清空错误信息
+      } else {
+        this.error1 = '起始日不能为空';
+      }
+    },
+    daterangeDeadline2(n, o) {
+      if (n !== '' && n !== null) {
+        if (this.daterangeStartDate1 === '' || this.daterangeStartDate1 === null) {
+          this.error1 = '起始日不能为空';
+        } else {
+          this.error1 = ''; // 清空错误信息
+        }
+      } else if (this.daterangeStartDate1 === '' || this.daterangeStartDate1 === null) {
+        this.error1 = ''; // 两个日期都为空时，清空错误信息
+      } else {
+        this.error1 = '到期日不能为空';
+      }
+    },
   },
   computed: {
     ...mapGetters([

@@ -124,10 +124,10 @@
     </el-form> -->
     <search-panel HeaderIcon="Creditmanagement" title="授信管理">
       <el-form label-position="left" :model="queryParams" ref="queryForm" size="small" :inline="false" v-show="showSearch"
-        label-width="100px">
+        label-width="140px">
         <el-row :gutter="20">
           <el-col :span="8">
-            <el-form-item label="授信管理编号" prop="managementId">
+            <el-form-item label="管理编号" prop="managementId">
               <el-input v-model="queryParams.managementId" placeholder="请输入授信管理编号" clearable
                 @keyup.enter.native="handleQuery" />
             </el-form-item>
@@ -171,7 +171,7 @@
 
         <el-row :gutter="20">
           <el-col :span="8">
-            <el-form-item label="授信有效期" prop="creditCycle">
+            <el-form-item label="授信有效期（月）" prop="creditCycle">
               <el-input v-model="queryParams.creditCycle" placeholder="请输入授信有效期" clearable
                 @keyup.enter.native="handleQuery" />
             </el-form-item>
@@ -180,7 +180,7 @@
             <el-form-item label="授信状态" prop="creditState">
               <el-select filterable v-model="queryParams.creditState" placeholder="请选择授信状态" clearable>
                 <el-option v-for="dict in dict.type.sys_1765002034026643500" :key="dict.value" :label="dict.label"
-                  :value="dict.value" />
+                  :value="dict.label" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -225,13 +225,13 @@
           <dict-tag :options="dict.type.sys_1765001578994991000" :value="scope.row.creditType" />
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="借款单位" align="center" prop="creditor" min-width="260" />
-      <el-table-column show-overflow-tooltip label="授信机构" align="center" prop="financialInstitution" min-width="260">
+      <el-table-column show-overflow-tooltip label="借款单位" align="center" prop="creditor" min-width="120" />
+      <el-table-column show-overflow-tooltip label="授信机构" align="center" prop="financialInstitution" min-width="130">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_acceptor" :value="scope.row.financialInstitution" />
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="授信金额（万元）" align="center" prop="creditAmount" min-width="160">
+      <el-table-column show-overflow-tooltip label="授信金额（万元）" align="center" prop="creditAmount" min-width="150">
         <template slot-scope="scope">
           <span>{{ formatNumberAsRMB(scope.row.creditAmount) }}</span>
         </template>
@@ -241,7 +241,7 @@
           <span>{{ formatNumberAsRMB(scope.row.usedCreditAmount) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="授信余额（万元）" align="center" prop="remainingCreditAmount" min-width="160">
+      <el-table-column label="授信余额（万元）" align="center" prop="remainingCreditAmount" min-width="150">
         <template slot-scope="scope">
           <span>{{ formatNumberAsRMB(scope.row.remainingCreditAmount) }}</span>
         </template>
@@ -257,34 +257,35 @@
           <span>{{ parseTime(scope.row.deadline, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="授信有效期" align="center" prop="creditCycle" min-width="100">
+      <el-table-column show-overflow-tooltip label="授信有效期（月）" align="center" prop="creditCycle" min-width="140">
         <template slot-scope="scope">
           <span>{{ creditCycleFN(scope.row.startDate, scope.row.deadline) }}</span>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="授信状态" align="center" prop="creditState" min-width="80">
+      <el-table-column show-overflow-tooltip label="授信状态" align="center" prop="creditState" min-width="100">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_1765002034026643500" :value="scope.row.creditState" />
+          <svg-icon :icon-class="scope.row.creditState"></svg-icon>
+          <dict-tag style="display: inline-block;" :options="dict.type.sys_1765002034026643500" :value="scope.row.creditState" />
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="备注" align="center" prop="comment" min-width="200" />
-      <el-table-column show-overflow-tooltip label="创建人" align="center" prop="createBy" min-width="80" />
+      <el-table-column show-overflow-tooltip label="备注" align="center" prop="comment" min-width="130" />
+      <!-- <el-table-column show-overflow-tooltip label="创建人" align="center" prop="createBy" min-width="80" />
       <el-table-column show-overflow-tooltip label="创建时间" align="center" prop="createTime" min-width="100">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <!-- <el-table-column label="uuid" align="center" prop="uuid" /> -->
-      <el-table-column show-overflow-tooltip fixed="right" label="操作" align="center"
-        class-name="small-padding fixed-width">
+      <el-table-column min-width="60" header-align="center" show-overflow-tooltip fixed="right" label="操作" align="center"
+        class-name="''">
         <template slot-scope="scope">
           <!-- <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)"
             v-hasPermi="['creditmanagement:grant:edit']">修改</el-button>
           <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"
             v-hasPermi="['creditmanagement:grant:remove']">删除</el-button> -->
-
-          <el-button size="mini" type="text" @click="handleUpdate(scope.row)"
-            v-hasPermi="['creditmanagement:grant:edit']">查 看</el-button>
+            <span v-hasPermi="['creditmanagement:grant:edit']" class="f12 cp" style="color: #165DFF;"  @click="handleUpdate(scope.row)">查 看</span>
+          <!-- <el-button size="mini" type="text" @click="handleUpdate(scope.row)"
+            v-hasPermi="['creditmanagement:grant:edit']">查 看</el-button> -->
         </template>
       </el-table-column>
     </el-table>
@@ -369,7 +370,7 @@
               <el-form-item label="授信状态" prop="creditState">
                 <el-select filterable :disabled="!isEditable" v-model="form.creditState" placeholder="请选择授信状态">
                   <el-option v-for="dict in dict.type.sys_1765002034026643500" :key="dict.value" :label="dict.label"
-                    :value="dict.value"></el-option>
+                    :value="dict.label"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -390,7 +391,7 @@
             </el-col>
 
             <el-col :span="8">
-              <el-form-item label="授信有效期" prop="creditCycle">
+              <el-form-item label="授信有效期（月）" prop="creditCycle">
                 <el-input :disabled="true" :readonly="true" v-model="creditCycle" placeholder="请输入授信有效期" />
               </el-form-item>
             </el-col>

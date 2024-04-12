@@ -16,33 +16,22 @@
                 @keyup.enter.native="handleQuery" />
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <!-- <el-col :span="8">
             <el-form-item label="债券发行规模" prop="bondSize">
               <el-select filterable v-model="queryParams.bondSize" placeholder="请选择债券发行规模" clearable>
                 <el-option v-for="dict in dict.type.sys_1762824645385388000" :key="dict.value" :label="dict.label"
                   :value="dict.value" />
               </el-select>
             </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-row :gutter="20">
-          <el-col :span="8">
+          </el-col> -->
+          <!-- <el-col :span="8">
             <el-form-item label="债券利率" prop="rate">
               <el-select filterable v-model="queryParams.rate" placeholder="请选择利率" clearable>
                 <el-option v-for="dict in dict.type.sys_1762824761903153200" :key="dict.value" :label="dict.label"
                   :value="dict.value" />
               </el-select>
             </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="债券发行期限" prop="bondDuration">
-              <el-select filterable v-model="queryParams.bondDuration" placeholder="请选择债券发行期限" clearable>
-                <el-option v-for="dict in dict.type.sys_1762824852571422700" :key="dict.value" :label="dict.label"
-                  :value="dict.value" />
-              </el-select>
-            </el-form-item>
-          </el-col>
+          </el-col> -->
           <el-col :span="8">
             <el-form-item label="偿还方式" prop="repaymentMethod">
               <el-select filterable v-model="queryParams.repaymentMethod" placeholder="请选择偿还方式" clearable>
@@ -54,13 +43,30 @@
         </el-row>
 
         <el-row :gutter="20">
-          <el-col :span="8">
+          
+          <!-- <el-col :span="8">
+            <el-form-item label="债券发行期限" prop="bondDuration">
+              <el-select filterable v-model="queryParams.bondDuration" placeholder="请选择债券发行期限" clearable>
+                <el-option v-for="dict in dict.type.sys_1762824852571422700" :key="dict.value" :label="dict.label"
+                  :value="dict.value" />
+              </el-select>
+            </el-form-item>
+          </el-col> -->
+          <!-- <el-col :span="8">
+            <el-form-item label="偿还方式" prop="repaymentMethod">
+              <el-select filterable v-model="queryParams.repaymentMethod" placeholder="请选择偿还方式" clearable>
+                <el-option v-for="dict in dict.type.sys_1759533864251818000" :key="dict.value" :label="dict.label"
+                  :value="dict.value" />
+              </el-select>
+            </el-form-item>
+          </el-col> -->
+          <!-- <el-col :span="8">
             <el-form-item label="累计到账金额（万元）" prop="accumulatedAmountReceived">
               <el-input-number class="w" :controls="false" :precision="2"
                 v-model.trim="queryParams.accumulatedAmountReceived" placeholder="请输入累计到账金额" clearable
                 @keyup.enter.native="handleQuery" />
             </el-form-item>
-          </el-col>
+          </el-col> -->
           <el-col :span="8">
             <el-form-item label="发行主体" prop="issuingEntity">
               <el-select filterable v-model="queryParams.issuingEntity" placeholder="请选择发行主体" clearable>
@@ -69,13 +75,14 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="16">
             <el-form-item class="flex" style="display: flex; justify-content: flex-end;">
               <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">查 询</el-button>
               <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重 置</el-button>
             </el-form-item>
           </el-col>
         </el-row>
+
       </el-form>
     </search-panel>
 
@@ -108,20 +115,23 @@
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
       <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" min-width="100" />
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
-      <el-table-column show-overflow-tooltip label="债券名称" align="center" prop="bondName" min-width="260" />
-      <el-table-column show-overflow-tooltip label="债券发行规模（万元）" align="center" prop="bondSize" min-width="160">
+      <el-table-column show-overflow-tooltip label="债券名称" align="center" prop="bondName" min-width="130" />
+      <el-table-column show-overflow-tooltip label="规模（万元）" align="center" prop="bondSize" min-width="120">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_1762824645385388000" :value="scope.row.bondSize" />
+          <!-- <dict-tag :options="dict.type.sys_1762824645385388000" :value="scope.row.bondSize" /> -->
+          {{ formatNumberAsRMB(scope.row.bondSize) }}
         </template>
       </el-table-column>
       <el-table-column show-overflow-tooltip label="利率" align="center" prop="rate" min-width="80">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_1762824761903153200" :value="scope.row.rate" />
+          <!-- <dict-tag :options="dict.type.sys_1762824761903153200" :value="scope.row.rate" /> -->
+          <span>{{ appendUnit(scope.row.rate, '%') }}</span>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="债券发行期限" align="center" prop="bondDuration" min-width="120">
+      <el-table-column show-overflow-tooltip label="期限（月）" align="center" prop="bondDuration" min-width="100">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1762824852571422700" :value="scope.row.bondDuration" />
+          <!-- <span>{{ creditCycleFN(scope.row.loanDate, scope.row.dueDate) }}</span> -->
         </template>
       </el-table-column>
       <el-table-column show-overflow-tooltip label="偿还方式" align="center" prop="repaymentMethod" min-width="80">
@@ -141,18 +151,18 @@
         </template>
       </el-table-column>
 
-      <el-table-column show-overflow-tooltip min-width="160" label="已还金额（万元）" align="center" prop="repaidAmount">
+      <el-table-column show-overflow-tooltip min-width="140" label="已还金额（万元）" align="center" prop="repaidAmount">
         <template slot-scope="scope">
           <span>{{ formatNumberAsRMB(scope.row.repaidAmount) }}</span>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip min-width="160" label="待还金额（万元）" align="center" prop="remainingAmount">
+      <el-table-column show-overflow-tooltip min-width="140" label="待还金额（万元）" align="center" prop="remainingAmount">
         <template slot-scope="scope">
           <span>{{ formatNumberAsRMB(scope.row.remainingAmount) }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column show-overflow-tooltip label="发行主体" align="center" prop="issuingEntity" min-width="260">
+      <el-table-column show-overflow-tooltip label="发行主体" align="center" prop="issuingEntity" min-width="130">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1762824996528324600" :value="scope.row.issuingEntity" />
         </template>
@@ -177,7 +187,7 @@
       </el-table-column> -->
       <!-- <el-table-column label="uuid" align="center" prop="uuid" /> -->
       <el-table-column show-overflow-tooltip fixed="right" label="操作" align="center"
-        class-name="small-padding fixed-width">
+        class-name="''">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="handleUpdate(scope.row)" v-hasPermi="['government:bonds:edit']">查
             看</el-button>
@@ -216,11 +226,13 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="债券发行规模" prop="bondSize">
-                <el-select filterable :disabled="!isEditable" v-model="form.bondSize" placeholder="请选择债券发行规模">
+              <el-form-item label="规模（万元）" prop="bondSize">
+                <!-- <el-select filterable :disabled="!isEditable" v-model="form.bondSize" placeholder="请选择债券发行规模">
                   <el-option v-for="dict in dict.type.sys_1762824645385388000" :key="dict.value" :label="dict.label"
                     :value="dict.value"></el-option>
-                </el-select>
+                </el-select> -->
+                <el-input-number :disabled="!isEditable" class="w" :controls="false" :precision="2" :readonly="!isEditable" type="number"
+                  v-model.trim="form.bondSize" placeholder="请输入规模（万元）" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -228,18 +240,21 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="债券利率" prop="rate">
-                <el-select filterable :disabled="!isEditable" v-model="form.rate" placeholder="请选择利率">
+                <!-- <el-select filterable :disabled="!isEditable" v-model="form.rate" placeholder="请选择利率">
                   <el-option v-for="dict in dict.type.sys_1762824761903153200" :key="dict.value" :label="dict.label"
                     :value="dict.value"></el-option>
-                </el-select>
+                </el-select> -->
+                <el-input :readonly="!isEditable" v-model="rate" placeholder="请输入利率" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="债券发行期限" prop="bondDuration">
-                <el-select filterable :disabled="!isEditable" v-model="form.bondDuration" placeholder="请选择债券发行期限">
+              <el-form-item label="债券发行期限（月）" prop="bondDuration">
+                <!-- <el-select filterable :disabled="!isEditable" v-model="form.bondDuration" placeholder="请选择债券发行期限">
                   <el-option v-for="dict in dict.type.sys_1762824852571422700" :key="dict.value" :label="dict.label"
                     :value="dict.value"></el-option>
-                </el-select>
+                </el-select> -->
+                <!-- <el-input-number class="w" :controls="false" v-model="form.bondDuration" :precision="2" placeholder="请输入债券发行期限"></el-input-number> -->
+                <el-input :disabled="true" :readonly="true" v-model="creditCycle" placeholder="请输入借款期限" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -465,7 +480,7 @@
           }],
           bondSize: [{
             required: true,
-            message: "债券发行规模不能为空",
+            message: "规模不能为空",
             trigger: "change"
           }],
           rate: [{
@@ -513,7 +528,8 @@
             message: "政府专项债管理编号不能为空",
             trigger: "blur"
           }]
-        }
+        },
+        isAutoCalculated: false
       };
     },
     watch: {
@@ -522,9 +538,52 @@
           this.created_successfully = false;
           this.isEditable = true;
         }
-      }
+      },
+      // 观察开始和结束日期的变化，自动重新计算天数
+      'form.loanDate': function(newVal, oldVal) {
+        if (newVal !== oldVal) {
+          this.calculateLoanTerm();
+        }
+      },
+      'form.dueDate': function(newVal, oldVal) {
+        if (newVal !== oldVal) {
+          this.calculateLoanTerm();
+        }
+      },
     },
     computed: {
+      /* 计算周期，开始时间减去结束时间 */
+      creditCycle: {
+        get() {
+          // 如果是自动计算的，直接返回计算结果加"天"，否则返回当前值
+          if (this.isAutoCalculated) {
+            return this.form.bondDuration ? `${this.form.bondDuration}月` : '';
+          } else {
+            return this.form.bondDuration ? `${this.form.bondDuration}月` : '';
+          }
+        },
+        set(value) {
+          this.isAutoCalculated = false; // 用户手动输入，更改标志状态
+          if (typeof value === 'string' && value.includes('月')) {
+            this.form.bondDuration = parseInt(value.replace('月', ''), 10);
+          } else if (!isNaN(value)) {
+            this.form.bondDuration = parseInt(value, 10);
+          }
+        }
+      },
+      rate: {
+        get() {
+          if (this.form.rate) {
+            // 当读取值时，添加百分号
+            return this.form.rate + (this.form.rate ? '%' : '');
+          } else {
+            return this.form.rate;
+          }
+        },
+        set(value) {
+          this.form.rate = value.replace(/%/g, '');
+        }
+      },
       remainingCreditAmount() {
         // 确保值为数值类型，避免NaN
         const creditAmount = Number(this.form.approvedAmount) || 0;
@@ -547,6 +606,19 @@
       this.isEditable = true;
     },
     methods: {
+      calculateLoanTerm() {
+        if (this.form.loanDate && this.form.dueDate) {
+          const start = moment(this.form.loanDate);
+          const end = moment(this.form.dueDate);
+
+          // const days = end.diff(start, 'days') + 1; // 直接计算天数，并加1表示至少一天
+          let creditCycle = moment(end).diff(moment(start), 'month', true)
+          // return (creditCycle).toFixed(2);
+
+          this.form.bondDuration = (creditCycle).toFixed(2);
+          this.isAutoCalculated = true; // 标记为自动计算
+        }
+      },
       /* 创建成功关闭弹窗 */
       closeDialog() {
         this.open = false;
@@ -649,7 +721,8 @@
           response.data.accumulatedAmountReceived = Number(response.data.accumulatedAmountReceived) / 10000;
           response.data.repaidAmount = Number(response.data.repaidAmount) / 10000;
           response.data.remainingAmount = Number(response.data.remainingAmount) / 10000;
-
+          response.data.bondSize = Number(response.data.bondSize) / 10000;
+          
           this.scrUuid = response.data.scrUuid;
           this.form = response.data;
           this.form.scrUuid = response.data.rzsrc2List.map(i => i.url)
@@ -673,9 +746,17 @@
             data.accumulatedAmountReceived = data.accumulatedAmountReceived * 10000;
             data.repaidAmount = data.repaidAmount * 10000;
             data.remainingAmount = data.remainingAmount * 10000;
+            data.bondSize = data.bondSize * 10000;
 
             if (this.form.id != null) {
               data.scrUuid = Number(this.scrUuid);
+
+              // 计算周期，开始时间减去结束时间
+              let loanTermStr = data.bondDuration.toString();
+              loanTermStr = loanTermStr.replace(/月$/, '');
+
+              data.bondDuration = loanTermStr
+
               this.rzaudit_data = {
                 "auditId": data.id,
                 "scrUuid": data.scrUuid,
@@ -702,6 +783,12 @@
               data.rzsrc2List = this.rzsrc2List;
 
               data.createBy = this.name;
+
+              // 计算周期，开始时间减去结束时间
+              let loanTermStr = data.bondDuration.toString();
+              loanTermStr = loanTermStr.replace(/月$/, '');
+
+              data.bondDuration = loanTermStr
 
               // start
               const uuid = String(generator.nextId())

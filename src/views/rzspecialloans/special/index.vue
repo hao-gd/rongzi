@@ -25,7 +25,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="债权人" prop="payee">
+            <el-form-item label="出借人" prop="payee">
               <el-select filterable v-model="queryParams.payee" placeholder="请选择债权人" clearable>
                 <el-option v-for="dict in dict.type.sys_1757271666666242000" :key="dict.value" :label="dict.label"
                   :value="dict.value" />
@@ -111,12 +111,12 @@
       <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" min-width="100" />
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
 
-      <el-table-column show-overflow-tooltip label="借款人" align="center" prop="borrower" min-width="260">
+      <el-table-column show-overflow-tooltip label="借款人" align="center" prop="borrower" min-width="130">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1767154968256577500" :value="scope.row.borrower" />
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="债权人" align="center" prop="payee" min-width="260">
+      <el-table-column show-overflow-tooltip label="出借人" align="center" prop="payee" min-width="130">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1757271666666242000" :value="scope.row.payee" />
         </template>
@@ -172,7 +172,7 @@
       <!-- <el-table-column label="备注" align="center" prop="comment" />
       <el-table-column label="uuid" align="center" prop="uuid" /> -->
       <el-table-column show-overflow-tooltip fixed="right" label="操作" align="center"
-        class-name="small-padding fixed-width">
+        class-name="''">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="handleUpdate(scope.row)"
             v-hasPermi="['rzspecialloans:special:edit']">查 看</el-button>

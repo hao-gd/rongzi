@@ -69,7 +69,7 @@ export default {
     },
     // 当前项目的管理编号
     managementId: {
-      type: String,
+      type: [String, Number],
       default: ""
     },
     disabled: {

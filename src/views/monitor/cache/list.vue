@@ -44,7 +44,7 @@
               label="操作"
               width="60"
               align="center"
-              class-name="small-padding fixed-width"
+              class-name="''"
             >
               <template slot-scope="scope">
                 <el-button
@@ -94,7 +94,7 @@
               label="操作"
               width="60"
               align="center"
-              class-name="small-padding fixed-width"
+              class-name="''"
             >
               <template slot-scope="scope">
                 <el-button

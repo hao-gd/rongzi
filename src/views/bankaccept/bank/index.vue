@@ -127,17 +127,17 @@
       <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" min-width="100" />
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
       <!-- <el-table-column label="审核id" align="center" prop="auditId" /> -->
-      <el-table-column show-overflow-tooltip label="出票人" align="center" min-width="260" prop="drawer">
+      <el-table-column show-overflow-tooltip label="出票人" align="center" min-width="130" prop="drawer">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_drawer" :value="scope.row.drawer" />
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="收票人" min-width="260" align="center" prop="payee">
+      <el-table-column show-overflow-tooltip label="收票人" min-width="130" align="center" prop="payee">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1754491769220759600" :value="scope.row.payee" />
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="承兑人(金融机构)" min-width="260" align="center" prop="financialInstitution">
+      <el-table-column show-overflow-tooltip label="承兑人(金融机构)" min-width="160" align="center" prop="financialInstitution">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_acceptor" :value="scope.row.financialInstitution" />
         </template>
@@ -166,10 +166,10 @@
         </template>
       </el-table-column>
       <el-table-column show-overflow-tooltip label="承兑协议编号" min-width="180" align="center" prop="acceptAgreementId" />
-      <el-table-column show-overflow-tooltip label="项目名称" align="center" min-width="180" prop="entryName" />
+      <el-table-column show-overflow-tooltip label="项目名称" align="center" min-width="160" prop="entryName" />
       <el-table-column show-overflow-tooltip label="备注" align="center" min-width="200" prop="comment" />
       <!-- <el-table-column label="ID" align="center" prop="id" /> -->
-      <el-table-column fixed="right" label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column fixed="right" label="操作" align="center" class-name="''">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="handleUpdate(scope.row)" v-hasPermi="['bankaccept:bank:edit']">查
             看</el-button>

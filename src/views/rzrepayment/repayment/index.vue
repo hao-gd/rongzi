@@ -155,7 +155,7 @@
       <el-table-column show-overflow-tooltip label="还款账户" align="center" prop="repaymentAccount" />
       <!-- <el-table-column show-overflow-tooltip label="uuid" align="center" prop="uuid" /> -->
       <el-table-column show-overflow-tooltip fixed="right" label="操作" align="center"
-        class-name="small-padding fixed-width">
+        class-name="''">
         <template slot-scope="scope">
 
           <el-button size="mini" type="text" @click="handleUpdate(scope.row)"

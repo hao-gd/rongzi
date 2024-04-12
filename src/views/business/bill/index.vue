@@ -112,12 +112,12 @@
       <el-table-column show-overflow-tooltip label="管理编号" align="center" min-width="100" prop="managementId" />
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
       <!-- <el-table-column label="审核id" align="center" prop="auditId" /> -->
-      <el-table-column show-overflow-tooltip label="付款人" align="center" min-width="260" prop="payer">
+      <el-table-column show-overflow-tooltip label="付款人" align="center" min-width="130" prop="payer">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1757235323403763700" :value="scope.row.payer" />
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="收款人" align="center" prop="payee" min-width="260">
+      <el-table-column show-overflow-tooltip label="收款人" align="center" prop="payee" min-width="130">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1757235466651828200" :value="scope.row.payee" />
         </template>
@@ -153,7 +153,7 @@
       </el-table-column>
       <el-table-column show-overflow-tooltip label="备注" align="center" prop="comment" min-width="200" />
       <!-- <el-table-column label="ID" align="center" prop="id" /> -->
-      <el-table-column fixed="right" label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column fixed="right" label="操作" align="center" class-name="''">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="handleUpdate(scope.row)" v-hasPermi="['business:bill:edit']">查
             看</el-button>

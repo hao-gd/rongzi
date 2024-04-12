@@ -126,7 +126,7 @@
           {{ extractAndCleanFileName(scope.row.url) }}
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip fixed="right" label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column show-overflow-tooltip fixed="right" label="操作" align="center" class-name="''">
         <template slot-scope="scope">
           <!-- <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)"
             v-hasPermi="['appendix:atta:edit']">修改</el-button>

@@ -77,7 +77,7 @@
           <span>{{ parseTime(scope.row.createTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="操作" align="center" width="200" class-name="small-padding fixed-width">
+      <el-table-column fixed="right" label="操作" align="center" width="200" class-name="''">
         <template slot-scope="scope">
           <!-- <router-link :to="'/system/dict-data/index/' + scope.row.dictId" class="link-type">
             录入数据

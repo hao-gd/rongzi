@@ -117,17 +117,17 @@
           <span>{{ formatNumberAsRMB(scope.row.loanAmount) }}</span>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="借款人" align="center" prop="borrower" min-width="260">
+      <el-table-column show-overflow-tooltip label="借款人" align="center" prop="borrower" min-width="130">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1767154968256577500" :value="scope.row.borrower" />
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="债权人" align="center" prop="payee" min-width="260">
+      <el-table-column show-overflow-tooltip label="债权人" align="center" prop="payee" min-width="130">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1757271666666242000" :value="scope.row.payee" />
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="转借人" align="center" prop="sublessee" min-width="260">
+      <el-table-column show-overflow-tooltip label="转借人" align="center" prop="sublessee" min-width="130">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1770296780093653000" :value="scope.row.sublessee" />
         </template>
@@ -165,7 +165,7 @@
       </el-table-column>
       <el-table-column show-overflow-tooltip label="备注" align="center" prop="comment" min-width="200" />
       <!-- <el-table-column label="uuid" align="center" prop="uuid" /> -->
-      <el-table-column fixed="right" label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column fixed="right" label="操作" align="center" class-name="''">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="handleUpdate(scope.row)"
             v-hasPermi="['rzinternalborrowing:borrowing:edit']">查 看</el-button>

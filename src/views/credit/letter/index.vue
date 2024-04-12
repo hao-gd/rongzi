@@ -1,7 +1,8 @@
 <template>
   <div class="app-container">
     <search-panel HeaderIcon="credit" title="信用证">
-      <el-form label-position="left" :model="queryParams" ref="queryForm" size="small" :inline="false" v-show="showSearch" label-width="120px">
+      <el-form label-position="left" :model="queryParams" ref="queryForm" size="small" :inline="false" v-show="showSearch"
+        label-width="120px" :rules="searchRules">
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="管理编号" prop="managementId">
@@ -16,34 +17,38 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="开证日期起始日">
-              <el-date-picker format='yyyy/MM/dd' v-model="daterangeIssuingDate1" style="width: 100%" value-format="yyyy-MM-dd"
-                type="date" placeholder="请选择开证日期起始日"></el-date-picker>
+            <el-form-item label="开证起止日期" :error="error1">
+              <el-row>
+                <el-col :span="11">
+                  <el-date-picker :picker-options="pickerOptions3" format='yyyy/MM/dd' v-model="daterangeIssuingDate1"
+                    style="width: 100%" value-format="yyyy-MM-dd" type="date" placeholder="开证起始日"></el-date-picker>
+                </el-col>
+                <el-col :span="2" class="flex fjc">-</el-col>
+                <el-col :span="11">
+                  <el-date-picker :picker-options="pickerOptions4" format='yyyy/MM/dd' v-model="daterangeIssuingDate2"
+                    style="width: 100%" value-format="yyyy-MM-dd" type="date" placeholder="开证到期日"></el-date-picker>
+                </el-col>
+              </el-row>
             </el-form-item>
           </el-col>
-          
+
         </el-row>
         <el-row :gutter="20">
           <el-col :span="8">
-            <el-form-item label="开证日期到期日">
-              <el-date-picker format='yyyy/MM/dd' v-model="daterangeIssuingDate2" style="width: 100%" value-format="yyyy-MM-dd"
-                type="date" placeholder="请选择开证日期到期日"></el-date-picker>
+            <el-form-item label="有效起止日期" :error="error2">
+              <el-row>
+                <el-col :span="11">
+                  <el-date-picker :picker-options="pickerOptions5" format='yyyy/MM/dd' v-model="daterangeEffectiveDate1"
+                    style="width: 100%" value-format="yyyy-MM-dd" type="date" placeholder="有效起始日"></el-date-picker>
+                </el-col>
+                <el-col :span="2" class="flex fjc">-</el-col>
+                <el-col :span="11">
+                  <el-date-picker :picker-options="pickerOptions6" format='yyyy/MM/dd' v-model="daterangeEffectiveDate2"
+                    style="width: 100%" value-format="yyyy-MM-dd" type="date" placeholder="有效到期日"></el-date-picker>
+                </el-col>
+              </el-row>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
-            <el-form-item label="有效日期起始日">
-              <el-date-picker format='yyyy/MM/dd' v-model="daterangeEffectiveDate1" style="width: 100%" value-format="yyyy-MM-dd"
-                type="date" placeholder="请选择有效日期起始日"></el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="有效日期到期日">
-              <el-date-picker format='yyyy/MM/dd' v-model="daterangeEffectiveDate2" style="width: 100%" value-format="yyyy-MM-dd"
-                type="date" placeholder="请选择有效日期到期日"></el-date-picker>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="开证申请人" prop="applicant">
               <el-select filterable v-model="queryParams.applicant" placeholder="请选择开证申请人" clearable>
@@ -60,6 +65,9 @@
               </el-select>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row :gutter="20">
+
           <el-col :span="8">
             <el-form-item label="金融机构" prop="financialInstitution">
               <el-select filterable v-model="queryParams.financialInstitution" placeholder="请选择金融机构" clearable>
@@ -68,9 +76,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row :gutter="20">
-          <el-col :span="24">
+          <el-col :span="16">
             <el-form-item style="display: flex; justify-content: flex-end;">
               <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">查 询</el-button>
               <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重 置</el-button>
@@ -104,11 +110,11 @@
     <el-table v-loading="loading" :data="letterList" @selection-change="handleSelectionChange"
       :header-cell-style="header_cell_style">
       <el-table-column show-overflow-tooltip fixed="left" type="selection" min-width="50" align="center" />
-      <el-table-column show-overflow-tooltip label="管理编号" align="center"  min-width="100" prop="managementId" />
+      <el-table-column show-overflow-tooltip label="管理编号" align="center" min-width="100" prop="managementId" />
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
       <!-- <el-table-column label="审核id" align="center" prop="auditId" /> -->
-      <el-table-column show-overflow-tooltip label="信用证号码" align="center" prop="creditNumber"  min-width="180"/>
-      <el-table-column show-overflow-tooltip label="开证金额" align="center" prop="issuingAmount"  min-width="160">
+      <el-table-column show-overflow-tooltip label="信用证号码" align="center" prop="creditNumber" min-width="160" />
+      <el-table-column show-overflow-tooltip label="开证金额（万元）" align="center" prop="issuingAmount" min-width="160">
         <template slot-scope="scope">
           <span>{{ formatNumberAsRMB(scope.row.issuingAmount) }}</span>
         </template>
@@ -131,12 +137,12 @@
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="开证申请人" align="center" prop="applicant" min-width="260">
+      <el-table-column show-overflow-tooltip label="开证申请人" align="center" prop="applicant" min-width="130">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1757265915323351000" :value="scope.row.applicant" />
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="收益人" align="center" prop="beneficiary" min-width="260">
+      <el-table-column show-overflow-tooltip label="收益人" align="center" prop="beneficiary" min-width="130">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1757265828501258200" :value="scope.row.beneficiary" />
         </template>
@@ -148,7 +154,7 @@
       </el-table-column>
       <el-table-column show-overflow-tooltip label="备注" align="center" prop="comment" min-width="200" />
       <!-- <el-table-column label="ID" align="center" prop="id" /> -->
-      <el-table-column fixed="right" label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column fixed="right" label="操作" align="center" class-name="''">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="handleUpdate(scope.row)" v-hasPermi="['credit:letter:edit']">查
             看</el-button>
@@ -189,21 +195,23 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="开证金额（万元）" prop="issuingAmount">
-                <el-input-number :disabled="!isEditable" class="w" :controls="false" :precision="2" :readonly="!isEditable" type="number" v-model.trim="form.issuingAmount" placeholder="请输入开证金额" />
+                <el-input-number :disabled="!isEditable" class="w" :controls="false" :precision="2"
+                  :readonly="!isEditable" type="number" v-model.trim="form.issuingAmount" placeholder="请输入开证金额" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="开证日期" prop="issuingDate">
-                <el-date-picker format='yyyy/MM/dd' :disabled="!isEditable" clearable v-model="form.issuingDate" type="date"
-                  value-format="yyyy-MM-dd" placeholder="请选择开证日期"></el-date-picker>
+                <el-date-picker :picker-options="pickerOptions1" format='yyyy/MM/dd' :disabled="!isEditable" clearable
+                  v-model="form.issuingDate" type="date" value-format="yyyy-MM-dd" placeholder="请选择开证日期"></el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="有效日期" prop="effectiveDate">
-                <el-date-picker format='yyyy/MM/dd' :disabled="!isEditable" clearable v-model="form.effectiveDate" type="date"
-                  value-format="yyyy-MM-dd" placeholder="请选择有效日期"></el-date-picker>
+                <el-date-picker :picker-options="pickerOptions2" format='yyyy/MM/dd' :disabled="!isEditable" clearable
+                  v-model="form.effectiveDate" type="date" value-format="yyyy-MM-dd"
+                  placeholder="请选择有效日期"></el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -237,8 +245,8 @@
           <el-row :gutter="20">
             <el-col :span="24">
               <el-form-item label="备注" prop="comment">
-                <el-input :readonly="!isEditable" v-model="form.comment" show-word-limit maxlength="200" type="textarea" :rows="4"
-                  placeholder="请输入备注信息，最多不超过200字" />
+                <el-input :readonly="!isEditable" v-model="form.comment" show-word-limit maxlength="200" type="textarea"
+                  :rows="4" placeholder="请输入备注信息，最多不超过200字" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -333,10 +341,10 @@ export default {
       // 创建人时间范围
       // daterangeIssuingDate: [],
       daterangeIssuingDate1: '',
-daterangeIssuingDate2: '',
+      daterangeIssuingDate2: '',
       // 创建人时间范围
       daterangeEffectiveDate1: '',
-daterangeEffectiveDate2: '',
+      daterangeEffectiveDate2: '',
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -354,6 +362,7 @@ daterangeEffectiveDate2: '',
         financialInstitution: null,
         comment: null,
       },
+      searchRules: {},
       // 表单参数
       form: {},
       /* str 需要添加的 */
@@ -391,7 +400,63 @@ daterangeEffectiveDate2: '',
         financialInstitution: [
           { required: true, message: "金融机构不能为空", trigger: "change" }
         ],
-      }
+      },
+      pickerOptions1: {
+        // 禁用开始日期中，所有大于结束日期的日期
+        disabledDate: (date) => {
+          if (this.form.effectiveDate) {
+            return date.getTime() > new Date(this.form.effectiveDate).getTime();
+          }
+        }
+      },
+      pickerOptions2: {
+        // 禁用结束日期中，所有小于开始日期的日期
+        disabledDate: (date) => {
+          if (this.form.issuingDate) {
+            // 一天的毫秒数
+            var oneDayInMilliseconds = 24 * 60 * 60 * 1000;
+            return date.getTime() < new Date(this.form.issuingDate).getTime() - oneDayInMilliseconds;
+          }
+        }
+      },
+      pickerOptions3: {
+        // 禁用开始日期中，所有大于结束日期的日期
+        disabledDate: (date) => {
+          if (this.daterangeIssuingDate2) {
+            return date.getTime() > new Date(this.daterangeIssuingDate2).getTime();
+          }
+        }
+      },
+      pickerOptions4: {
+        // 禁用结束日期中，所有小于开始日期的日期
+        disabledDate: (date) => {
+          if (this.daterangeIssuingDate1) {
+            // 一天的毫秒数
+            var oneDayInMilliseconds = 24 * 60 * 60 * 1000;
+            return date.getTime() < new Date(this.daterangeIssuingDate1).getTime() - oneDayInMilliseconds;
+          }
+        }
+      },
+      pickerOptions5: {
+        // 禁用开始日期中，所有大于结束日期的日期
+        disabledDate: (date) => {
+          if (this.daterangeEffectiveDate2) {
+            return date.getTime() > new Date(this.daterangeEffectiveDate2).getTime();
+          }
+        }
+      },
+      pickerOptions6: {
+        // 禁用结束日期中，所有小于开始日期的日期
+        disabledDate: (date) => {
+          if (this.daterangeEffectiveDate1) {
+            // 一天的毫秒数
+            var oneDayInMilliseconds = 24 * 60 * 60 * 1000;
+            return date.getTime() < new Date(this.daterangeEffectiveDate1).getTime() - oneDayInMilliseconds;
+          }
+        }
+      },
+      error1: '',
+      error2: ''
     };
   },
   watch: {
@@ -399,6 +464,59 @@ daterangeEffectiveDate2: '',
       if (n == false) {
         this.created_successfully = false;
         this.isEditable = true;
+      }
+    },
+    daterangeIssuingDate1(n, o) {
+      if (n !== '' && n !== null) {
+        if (this.daterangeIssuingDate2 === '' || this.daterangeIssuingDate2 === null) {
+          this.error1 = '开证到期日不能为空';
+        } else {
+          this.error1 = ''; // 清空错误信息
+        }
+      } else if (this.daterangeIssuingDate2 === '' || this.daterangeIssuingDate2 === null) {
+        this.error1 = ''; // 两个日期都为空时，清空错误信息
+      } else {
+        this.error1 = '开证起始日不能为空';
+      }
+    },
+    daterangeIssuingDate2(n, o) {
+      if (n !== '' && n !== null) {
+        if (this.daterangeIssuingDate1 === '' || this.daterangeIssuingDate1 === null) {
+          this.error1 = '开证起始日不能为空';
+        } else {
+          this.error1 = ''; // 清空错误信息
+        }
+      } else if (this.daterangeIssuingDate1 === '' || this.daterangeIssuingDate1 === null) {
+        this.error1 = ''; // 两个日期都为空时，清空错误信息
+      } else {
+        this.error1 = '开证到期日不能为空';
+      }
+    },
+
+    daterangeEffectiveDate1(n, o) {
+      if (n !== '' && n !== null) {
+        if (this.daterangeEffectiveDate2 === '' || this.daterangeEffectiveDate2 === null) {
+          this.error2 = '有效到期日不能为空';
+        } else {
+          this.error2 = ''; // 清空错误信息
+        }
+      } else if (this.daterangeEffectiveDate2 === '' || this.daterangeEffectiveDate2 === null) {
+        this.error2 = ''; // 两个日期都为空时，清空错误信息
+      } else {
+        this.error2 = '有效起始日不能为空';
+      }
+    },
+    daterangeEffectiveDate2(n, o) {
+      if (n !== '' && n !== null) {
+        if (this.daterangeEffectiveDate1 === '' || this.daterangeEffectiveDate1 === null) {
+          this.error2 = '有效起始日不能为空';
+        } else {
+          this.error2 = ''; // 清空错误信息
+        }
+      } else if (this.daterangeEffectiveDate1 === '' || this.daterangeEffectiveDate1 === null) {
+        this.error2 = ''; // 两个日期都为空时，清空错误信息
+      } else {
+        this.error2 = '有效到期日不能为空';
       }
     }
   },
@@ -484,11 +602,11 @@ daterangeEffectiveDate2: '',
     /** 重置按钮操作 */
     resetQuery() {
       this.daterangeIssuingDate1 = '',
-      this.daterangeIssuingDate2 = '',
-      // 创建人时间范围
-      this.daterangeEffectiveDate1 = '',
-      this.daterangeEffectiveDate2 = '',
-      this.resetForm("queryForm");
+        this.daterangeIssuingDate2 = '',
+        // 创建人时间范围
+        this.daterangeEffectiveDate1 = '',
+        this.daterangeEffectiveDate2 = '',
+        this.resetForm("queryForm");
       this.handleQuery();
     },
     // 多选框选中数据
@@ -623,43 +741,43 @@ daterangeEffectiveDate2: '',
 
       const h = this.$createElement;
       this.$msgbox({
-          title: '提示',
-          message: h('div', null, [
-            h('el-divider', {
-              class: {
-                "no_mt": true,
-                "mb20": true
-              },
-              attrs: {"data-role": 'el-divider'}
-            }, ''),
-            h('p', {
-              class: 'tc w mb20',
-              style: {
-                'font-size': '24px',
-                'color': '#000000',
-                'font-weight': 'bold'
-              }
-            }, '确定删除选中的信用证吗？'),
-          ]),
-          showCancelButton: true,
-          cancelButtonText: '取消',
-          confirmButtonText: '确定',
-          cancelButtonClass: "btn-custom-cancel",
-          customClass: 'custom-msgbox',
-          beforeClose: (action, instance, done) => {
-            if (action === 'confirm') {
-              delLetter(ids).then(res => {
-                done();
-              });
-            } else {
-              done();
+        title: '提示',
+        message: h('div', null, [
+          h('el-divider', {
+            class: {
+              "no_mt": true,
+              "mb20": true
+            },
+            attrs: { "data-role": 'el-divider' }
+          }, ''),
+          h('p', {
+            class: 'tc w mb20',
+            style: {
+              'font-size': '24px',
+              'color': '#000000',
+              'font-weight': 'bold'
             }
+          }, '确定删除选中的信用证吗？'),
+        ]),
+        showCancelButton: true,
+        cancelButtonText: '取消',
+        confirmButtonText: '确定',
+        cancelButtonClass: "btn-custom-cancel",
+        customClass: 'custom-msgbox',
+        beforeClose: (action, instance, done) => {
+          if (action === 'confirm') {
+            delLetter(ids).then(res => {
+              done();
+            });
+          } else {
+            done();
           }
-        }).then(action => {
-          this.cancel();
-          this.getList();
-          this.$modal.msgSuccess("删除成功");
-        });
+        }
+      }).then(action => {
+        this.cancel();
+        this.getList();
+        this.$modal.msgSuccess("删除成功");
+      });
     },
     /** 附件表序号 */
     rowrzsrc2Index({ row, rowIndex }) {

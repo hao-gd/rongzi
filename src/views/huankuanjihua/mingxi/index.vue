@@ -14,7 +14,7 @@
             <el-form-item label="借款人" prop="borrowingUnit">
               <el-select v-model="queryParams.borrowingUnit" placeholder="请选择借款人" clearable filterable>
                 <el-option v-for="dict in dict.type.sys_1767154968256577500" :key="dict.value" :label="dict.label"
-                  :value="dict.value" />
+                  :value="dict.label" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -22,7 +22,7 @@
             <el-form-item label="债权人" prop="financialInstitution">
               <el-select v-model="queryParams.financialInstitution" placeholder="请选择债权人" clearable filterable>
                 <el-option v-for="dict in dict.type.sys_1757271666666242000" :key="dict.value" :label="dict.label"
-                  :value="dict.value" />
+                  :value="dict.label" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -82,7 +82,7 @@
       <el-table-column show-overflow-tooltip label="偿还本金" align="center" prop="changhuanben" min-width="160" />
       <el-table-column show-overflow-tooltip label="支付利息" align="center" prop="zhifulixi" min-width="160" />
       <el-table-column show-overflow-tooltip label="本金剩余" align="center" prop="benjinshengyu" min-width="160" />
-      <!-- <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <!-- <el-table-column label="操作" align="center" class-name="''">
         <template slot-scope="scope">
           <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)"
             v-hasPermi="['huankuanjihua:mingxi:edit']">修改</el-button>

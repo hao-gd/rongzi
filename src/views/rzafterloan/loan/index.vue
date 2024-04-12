@@ -2,7 +2,7 @@
   <div class="app-container">
     <search-panel HeaderIcon="Post-loan" title="贷后管理">
       <el-form :model="queryParams" label-position="left" ref="queryForm" size="small" :inline="false" v-show="showSearch"
-        label-width="100px">
+        label-width="120px">
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="管理编号" prop="managementId">
@@ -29,7 +29,7 @@
         </el-row>
         <el-row :gutter="20">
           <el-col :span="8">
-            <el-form-item label="借款期限" prop="loanTerm">
+            <el-form-item label="借款期限（月）" prop="loanTerm">
               <el-input v-model="queryParams.loanTerm" placeholder="请输入借款期限" clearable
                 @keyup.enter.native="handleQuery" />
             </el-form-item>
@@ -84,7 +84,7 @@
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
       <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" />
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
-      <el-table-column show-overflow-tooltip label="金融机构" align="center" prop="financialInstitution" min-width="260">
+      <el-table-column show-overflow-tooltip label="金融机构" align="center" prop="financialInstitution" min-width="130">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_acceptor" :value="scope.row.financialInstitution" />
         </template>
@@ -94,7 +94,7 @@
           <span>{{ formatNumberAsRMB(scope.row.loanAmount) }}</span>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="借款单位" align="center" prop="borrowingUnit" min-width="260">
+      <el-table-column show-overflow-tooltip label="借款单位" align="center" prop="borrowingUnit" min-width="130">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1759464239669444600" :value="scope.row.borrowingUnit" />
         </template>
@@ -103,7 +103,7 @@
       <el-table-column show-overflow-tooltip label="量化目标" align="center" prop="quantitativeGoals" min-width="100" />
       <el-table-column show-overflow-tooltip label="当前实现" align="center" prop="currentImplementation" min-width="100" />
       <el-table-column show-overflow-tooltip label="剩余实现" align="center" prop="remainingQuantity" min-width="100" />
-      <el-table-column show-overflow-tooltip label="借款期限" align="center" prop="loanTerm" min-width="100">
+      <el-table-column show-overflow-tooltip label="借款期限（月）" align="center" prop="loanTerm" min-width="140">
         <template slot-scope="scope">
           <span>{{ creditCycleFN(scope.row.startDate, scope.row.deadline) }}</span>
         </template>
@@ -119,8 +119,8 @@
       <!-- <el-table-column label="进度说明" align="center" prop="progressDescription" /> -->
       <el-table-column show-overflow-tooltip label="备注" align="center" prop="comment" min-width="200" />
       <!-- <el-table-column label="uuid" align="center" prop="uuid" /> -->
-      <el-table-column show-overflow-tooltip label="操作" fixed="right" align="center"
-        class-name="small-padding fixed-width">
+      <el-table-column show-overflow-tooltip label="操作" fixed="right" header-align="center" align="center"
+        class-name="''">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="handleUpdate(scope.row)" v-hasPermi="['rzafterloan:loan:edit']">查
             看</el-button>
@@ -209,28 +209,20 @@
                 </el-input> -->
               </el-form-item>
             </el-col>
-            <el-col :span="8">
-              <el-form-item label="贷后状态跟踪" prop="afterLoanState">
-                <el-select filterable :disabled="!isEditable" v-model="form.afterLoanState" placeholder="请选择贷后状态跟踪">
-                  <el-option v-for="dict in dict.type.sys_1759464706814247000" :key="dict.value" :label="dict.label"
-                    :value="dict.value"></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
+            
             <el-col :span="8">
               <el-form-item label="量化内容" prop="quantitativeContent">
                 <el-input :readonly="!isEditable" v-model.trim="form.quantitativeContent" placeholder="请输入量化内容" />
               </el-form-item>
             </el-col>
-
-          </el-row>
-          <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="量化目标（数量）" prop="quantitativeGoals">
                 <el-input :readonly="!isEditable" type="number" v-model.trim="form.quantitativeGoals"
                   placeholder="请输入量化目标" />
               </el-form-item>
             </el-col>
+          </el-row>
+          <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="当前实现（数量）" prop="currentImplementation">
                 <el-input :readonly="!isEditable" type="number" v-model.trim="form.currentImplementation"
@@ -243,6 +235,14 @@
               </el-form-item>
             </el-col>
             <!-- <el-col :span="8"></el-col> -->
+            <el-col :span="8">
+              <el-form-item label="贷后状态跟踪" prop="afterLoanState">
+                <el-select filterable :disabled="true" v-model="form.afterLoanState" placeholder="请选择贷后状态跟踪">
+                  <el-option v-for="dict in dict.type.sys_1759464706814247000" :key="dict.value" :label="dict.label"
+                    :value="dict.label"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
           </el-row>
           <!-- 备注 -->
           <el-form-item label="进度说明" prop="progressDescription">
@@ -447,7 +447,14 @@ export default {
       if (newVal !== oldVal) {
         this.calculateLoanTerm();
       }
-    }
+    },
+    'form.remainingQuantity'(n, o) {
+        if (n === 0) {
+          this.form.afterLoanState = '已完结'
+        } else {
+          this.form.afterLoanState = '未完结'
+        }
+      }
   },
   computed: {
     ...mapGetters([
@@ -467,15 +474,15 @@ export default {
       get() {
         // 如果是自动计算的，直接返回计算结果加"天"，否则返回当前值
         if (this.isAutoCalculated) {
-          return this.form.loanTerm ? `${this.form.loanTerm}天` : '';
+          return this.form.loanTerm ? `${this.form.loanTerm}月` : '';
         } else {
-          return this.form.loanTerm ? `${this.form.loanTerm}天` : '';
+          return this.form.loanTerm ? `${this.form.loanTerm}月` : '';
         }
       },
       set(value) {
         this.isAutoCalculated = false; // 用户手动输入，更改标志状态
-        if (typeof value === 'string' && value.includes('天')) {
-          this.form.loanTerm = parseInt(value.replace('天', ''), 10);
+        if (typeof value === 'string' && value.includes('月')) {
+          this.form.loanTerm = parseInt(value.replace('月', ''), 10);
         } else if (!isNaN(value)) {
           this.form.loanTerm = parseInt(value, 10);
         }
@@ -494,12 +501,14 @@ export default {
         const start = moment(this.form.startDate);
         const end = moment(this.form.deadline);
 
-        const days = end.diff(start, 'days') + 1; // 直接计算天数，并加1表示至少一天
+          // const days = end.diff(start, 'days') + 1; // 直接计算天数，并加1表示至少一天
+          let creditCycle = moment(end).diff(moment(start), 'month', true)
+          // return (creditCycle).toFixed(2);
 
-        this.form.loanTerm = days;
-        this.isAutoCalculated = true; // 标记为自动计算
-      }
-    },
+          this.form.loanTerm = (creditCycle).toFixed(2);
+          this.isAutoCalculated = true; // 标记为自动计算
+        }
+      },
     /* 创建成功关闭弹窗 */
     closeDialog() {
       this.open = false;

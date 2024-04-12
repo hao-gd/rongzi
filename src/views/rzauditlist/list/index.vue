@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="app-container">
     <!-- <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="审核id" prop="auditId">
         <el-input
@@ -95,8 +95,8 @@
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row> -->
 
-    <div class="list-content flex">
-      <div class="list-table">
+    <!-- <div class="list-content flex">
+      <div class="list-table"> -->
         <p class="f16 mb20" style="color: #1D2129;">提交的申请</p>
         <el-row :gutter="10" class="mb8" type="flex" justify="end">
           <el-col :span="1.5">
@@ -127,7 +127,7 @@
                 :value="scope.row.auditState" />
             </template>
           </el-table-column>
-          <el-table-column fixed="right" label="操作" align="center" class-name="small-padding fixed-width">
+          <el-table-column fixed="right" label="操作" align="center" class-name="''">
             <template slot-scope="scope">
               <el-button v-if="scope.row.auditState == '1759514891045044200'" size="mini" type="text"
                 @click="handleUpdate(scope.row)" v-hasPermi="['rzauditlist:list:edit']">撤
@@ -146,9 +146,9 @@
 
         <pagination v-show="total > 0" :total="total" :page.sync="queryParams.pageNum"
           :limit.sync="queryParams.pageSize" @pagination="getList" />
-      </div>
+      <!-- </div> -->
       <!-- <div class="list-message"></div> -->
-    </div>
+    <!-- </div> -->
 
     <!-- 添加或修改审核项目对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>

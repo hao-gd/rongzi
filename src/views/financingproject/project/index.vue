@@ -99,12 +99,12 @@
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
       <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" min-width="100" />
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
-      <el-table-column show-overflow-tooltip label="借款人" align="center" prop="borrowingUnit" min-width="260">
+      <el-table-column show-overflow-tooltip label="借款人" align="center" prop="borrowingUnit" min-width="130">
         <!-- <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1767154968256577500" :value="scope.row.borrowingUnit" />
         </template> -->
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="债权人" align="center" prop="financialInstitution" min-width="260">
+      <el-table-column show-overflow-tooltip label="债权人" align="center" prop="financialInstitution" min-width="130">
         <!-- <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1757271666666242000" :value="scope.row.financialInstitution" />
         </template> -->
@@ -179,7 +179,7 @@
       <!-- <el-table-column show-overflow-tooltip label="备注" align="center" prop="comment" min-width="120" /> -->
       <!-- <el-table-column label="uuid" align="center" prop="uuid" /> -->
       <el-table-column show-overflow-tooltip fixed="right" label="操作" align="center"
-        class-name="small-padding fixed-width">
+        class-name="''">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="handleUpdate(scope.row)"
             v-hasPermi="['financingproject:project:edit']">查 看</el-button>

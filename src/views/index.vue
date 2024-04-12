@@ -733,9 +733,9 @@ export default {
 }
 
 .card-title {
-  font-size: 16px;
+  font-size: 24px;
   color: #FFFFFF;
-  line-height: 16px;
+  line-height: 24px;
   margin-bottom: 23px;
 }
 
