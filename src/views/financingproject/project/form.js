@@ -149,10 +149,10 @@ export const rules = {
 export function renderInput(field) {
     return (h, { row }) =>
         row.editing
-            ? h('el-input-number', {
+            ? h('tiny-numeric', {
                 class: 'w',
-                props: { value: row[field], type: 'number', controls: false, precision: 2 },
-                on: { 'input': (value) => (row[field] = Number(value)) }
+                props: { modelValue: Number(row[field]), size: 'small', "show-left": false, controls: false, precision: 2, format: {fraction: 2, rounding: 0, zeroize: true,fractionGroupSize: 0, } },
+                on: { 'change': (value) => (row[field] = Number(value)) }
             })
             : h('span', row[field])
 }
@@ -163,7 +163,7 @@ export function renderRate(field) {
             ? h('tiny-numeric', {
                 class: 'w',
                 props: { modelValue: Number(row[field]), size: 'small', "show-left": false, controls: false, precision: 2, format: { suffix: '%', fraction: 2, rounding: 0, zeroize: true,fractionGroupSize: 0, } },
-                on: { 'input': (value) => (row[field] = Number(value)) }
+                on: { 'change': (value) => (row[field] = Number(value)) }
             })
             : h('span', row[field])
 }

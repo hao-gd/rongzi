@@ -37,7 +37,7 @@
           </div>
         </div>
 
-        <tiny-grid align="center" ref="bjch" :data="bjch" max-height="300" :optimization="optimizationData">
+        <tiny-grid align="center" ref="bjch" :data="bjch" max-height="300">
           <tiny-grid-column type="index" width="60" title="序号"></tiny-grid-column>
           <tiny-grid-column field="createdDate" title="日期" :renderer="renderDate('date')"></tiny-grid-column>
           <tiny-grid-column field="amount" title="偿还本金" :renderer="renderInput('amount')"></tiny-grid-column>
@@ -82,6 +82,8 @@
     </el-row>
 
     <div class="flex fje mb20">
+      <el-checkbox style="margin-right: 30px;align-self:flex-end" v-model="huanbenjintongshihuanlixi">还本金的同时还利息
+      </el-checkbox>
       <el-button v-if="bjch || lvbg || lvbg" type="primary" class="reset-total-btn" @click="handleGenerate">
         生成还款计划明细</el-button>
     </div>
@@ -186,6 +188,7 @@
           "到期还本": 0,
         },
         repaymentPlanTable: [],
+        huanbenjintongshihuanlixi: false
       }
     },
     watch: {
@@ -377,8 +380,8 @@
           this.handleGenerate_()
           this.$modal.msgSuccess("已生成!");
 
-        }).catch(() => {
-
+        }).catch((e) => {
+    
           this.$modal.msgError("已取消");
 
         });
@@ -388,6 +391,7 @@
         this.generateLxData();
         this.repaymentPlanTable = [];
         //timeline要保证事件加入的顺序是按照,提取本金,偿还本金,利息偿还,利率变更,这样即使同一天发生了所有的事件,生成的还款明细才不会出错
+
         let datas = [
           ...addEventsToTimeline('提取本金', this.zjbj, e => e),
           ...addEventsToTimeline('偿还本金', this.bjch, e => e),
@@ -399,7 +403,7 @@
         datas = sortTimeLineByDate(datas)
         // console.log("datas1", JSON.stringify(datas));
         // console.log("datas2", datas);
-        this.repaymentPlanTable = generateRepaymentPlan(datas)
+        this.repaymentPlanTable = generateRepaymentPlan(datas, this.huanbenjintongshihuanlixi)
 
         this.repaymentPlanTable.forEach((plan) => {
           plan.borrowingUnit = this.form.borrowingUnit

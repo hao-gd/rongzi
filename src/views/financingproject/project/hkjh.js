@@ -57,14 +57,12 @@ export function sortTimeLineByDate(timeline) {
     }
   });
 }
-export function generateRepaymentPlan(timeline) {
+export function generateRepaymentPlan(timeline, huanbenjintongshihuanlixi) {
   let principal = 0;
   let rate = 0;
   let lastDate = null;
   let interestAccrued = 0;
   let days = 0;
-
-  let changhuanjine = 0;
 
   let changhuanindex = 0;
 
@@ -99,43 +97,36 @@ export function generateRepaymentPlan(timeline) {
             "lilv": rate + "%",
           })
 
-          // console.log({
-          // 	"期数": changhuanindex,
-          // 	"日期": currentDate.format("YYYY-MM-DD"),
-          // 	"还款金额": 0,
-          // 	"偿还本金": 0,
-          // 	"支付利息": 0,
-          // 	"本金剩余": event.amount,
-          // 	"利率": 0,
-          // 	"备注": ""
-          // });
         }
         principal += event.amount;
         break;
       case '偿还本金':
         principal -= event.amount;
-        changhuanjine += event.amount
-
+        let changhuanjine = event.amount
         changhuanindex += 1;
-        zuizhongjihua.push({
-          "qishu": changhuanindex,
-          "riqi": currentDate.format("YYYY-MM-DD"),
-          "huankuanjine": (changhuanjine).toFixed(2),
-          "changhuanben": (changhuanjine).toFixed(2),
-          "zhifulixi": (0).toFixed(2),
-          "benjinshengyu": (principal).toFixed(2),
-          "lilv": rate + "%",
-        })
-        // console.log({
-        // 	"期数": changhuanindex,
-        // 	"日期": currentDate.format("YYYY-MM-DD"),
-        // 	"还款金额": changhuanjine,
-        // 	"偿还本金": changhuanjine,
-        // 	"支付利息": 0,
-        // 	"本金剩余": principal,
-        // 	"利率": rate,
-        // 	"备注": ""
-        // });
+        if (huanbenjintongshihuanlixi == true) {
+          zuizhongjihua.push({
+            "qishu": changhuanindex,
+            "riqi": currentDate.format("YYYY-MM-DD"),
+            "huankuanjine": (changhuanjine + interestAccrued).toFixed(2),
+            "changhuanben": (changhuanjine).toFixed(2),
+            "zhifulixi": (interestAccrued).toFixed(2),
+            "benjinshengyu": (principal).toFixed(2),
+            "lilv": rate + "%",
+          })
+          // 本期利息结清,重新计息
+          interestAccrued = 0;
+        } else {
+          zuizhongjihua.push({
+            "qishu": changhuanindex,
+            "riqi": currentDate.format("YYYY-MM-DD"),
+            "huankuanjine": (changhuanjine).toFixed(2),
+            "changhuanben": (changhuanjine).toFixed(2),
+            "zhifulixi": (0).toFixed(2),
+            "benjinshengyu": (principal).toFixed(2),
+            "lilv": rate + "%",
+          })
+        }
 
         break;
       case '利率变更':
@@ -146,7 +137,9 @@ export function generateRepaymentPlan(timeline) {
         if (currentDate.format("YYYY-MM-DD") == last_data.riqi) {
 
           last_data["huankuanjine"] = (interestAccrued + Number(last_data["huankuanjine"])).toFixed(2)
-          last_data["zhifulixi"] = (interestAccrued).toFixed(2)
+
+          //如果勾选了还款同时还利息,那最后一期的时候,还了本金会同时写入利息信息,需要从原信息获取
+          last_data["zhifulixi"] = (interestAccrued + Number(last_data["zhifulixi"])).toFixed(2)
 
           //利息偿还是同一时间的最后一个事件,所以同一天发生所有时间但是,在这个事件发生时,本金已经还了,也已经加了,所以在这里重新取最新的本金剩余等数据
           last_data["benjinshengyu"] = (principal).toFixed(2)
@@ -165,18 +158,8 @@ export function generateRepaymentPlan(timeline) {
             "lilv": rate + "%",
           })
         }
-        // console.log({
-        // 	"期数": changhuanindex,
-        // 	"日期": currentDate.format("YYYY-MM-DD"),
-        // 	"还款金额": (interestAccrued).toFixed(2),
-        // 	"偿还本金": changhuanjine,
-        // 	"支付利息": (interestAccrued).toFixed(2),
-        // 	"本金剩余": principal,
-        // 	"利率": rate,
-        // 	"备注": ""
-        // });
+        // 本期利息结清,重新计息
         interestAccrued = 0;
-        changhuanjine = 0;
         break;
     }
 

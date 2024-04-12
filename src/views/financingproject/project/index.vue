@@ -347,7 +347,8 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="第1期开始时间" prop="firstRepaymentDate">
-                <el-date-picker format='yyyy/MM/dd' :disabled="!isEditable" :picker-options="pickerOptions3" clearable
+                <!-- :picker-options="pickerOptions3" -->
+                <el-date-picker format='yyyy/MM/dd' :disabled="!isEditable" clearable  :picker-options="pickerOptions3"
                   v-model="form.firstRepaymentDate" type="date" value-format="yyyy-MM-dd" placeholder="请选择第1期开始时间">
                 </el-date-picker>
               </el-form-item>
@@ -528,7 +529,8 @@
         },
         pickerOptions3: {
           disabledDate: (date) => {
-            const start = new Date(this.form.loanDate).getTime();
+            var oneDayInMilliseconds = 24 * 60 * 60 * 1000;
+            const start = new Date(this.form.loanDate).getTime()- oneDayInMilliseconds;
             const end = new Date(this.form.dueDate).getTime();
             // 禁用不在开始和结束日期范围内的所有日期
             return date.getTime() < start || date.getTime() > end;
