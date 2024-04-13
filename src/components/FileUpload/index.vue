@@ -7,7 +7,7 @@
       class="upload-file-uploader" ref="fileUpload">
       <!-- <i class="el-icon-plus"></i> -->
       <!-- 上传按钮 -->
-      <el-button size="mini" type="primary">点击上传附件</el-button>
+      <el-button size="mini"  :disabled="disabled" type="primary">点击上传附件</el-button>
       <!-- 上传提示 -->
       <!-- <div class="el-upload__tip" slot="tip" v-if="showTip">
         请上传
@@ -24,7 +24,7 @@
           <span class="el-icon-document"> {{ getFileName(file.name) }} </span>
         </el-link>
         <div class="ele-upload-list__item-content-action">
-          <el-link :underline="false" @click="handleDelete(index)" type="danger">删除</el-link>
+          <el-link  :disabled="disabled" :underline="false" @click="handleDelete(index)" type="danger">删除</el-link>
         </div>
       </li>
     </transition-group>

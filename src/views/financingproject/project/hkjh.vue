@@ -81,14 +81,21 @@
       <el-button icon="el-icon-refresh" size="mini" @click="init('年利率信息输入区')">初始化</el-button>
     </el-row>
 
-    <div class="flex fje mb20">
-      <el-checkbox style="margin-right: 30px;align-self:flex-end" v-model="huanbenjintongshihuanlixi">还本金的同时还利息
-      </el-checkbox>
-      <el-button v-if="bjch || lvbg || lvbg" type="primary" class="reset-total-btn" @click="handleGenerate">
-        生成还款计划明细</el-button>
+    <!-- <div class="flex fje mb20"> -->
+    <div style="display: flex;justify-content: space-between;margin-top: 20px;">
+
+      <el-button style="align-self:flex-end" type="info" plain icon="el-icon-upload2" size="mini" @click="handleImport">
+        导入还款计划明细</el-button>
+
+      <div style="display: flex;">
+        <el-checkbox style="margin-right: 30px;align-self:flex-end" v-model="huanbenjintongshihuanlixi">还本金的同时还利息
+        </el-checkbox>
+        <el-button v-if="bjch || lvbg || lvbg" type="primary" @click="handleGenerate">
+          生成还款计划明细</el-button>
+      </div>
     </div>
 
-    <el-row v-if="repaymentPlanTable.length !== 0" class="mb20">
+    <el-row v-if="repaymentPlanTable.length !== 0" class="mb20 mt20">
       <el-divider class="no_mt mb20"></el-divider>
 
       <h2 class="tc 20 mb10">还款计划清单页面</h2>
@@ -98,6 +105,26 @@
         </el-table-column>
       </el-table>
     </el-row>
+
+    <!-- 用户导入对话框 -->
+    <el-dialog :title="upload.title" :visible.sync="upload.open" destroy-on-close width="400px" append-to-body>
+      <el-upload ref="upload" :limit="1" accept=".xlsx, .xls" action="#" :auto-upload="false"
+        :on-change="uploadOnChange" drag>
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+        <div class="el-upload__tip text-center" slot="tip">
+          <span>仅允许导入xls、xlsx格式文件。</span>
+          <el-link :href="`${upload.template_excel}`" type="primary" :underline="false" target="_blank"
+            style="font-size:12px;vertical-align: baseline;">下载模板</el-link>
+
+        </div>
+      </el-upload>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitFileForm">确 定 使 用</el-button>
+        <el-button @click="upload.open = false">取 消</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 <script>
@@ -118,6 +145,8 @@
     renderRate,
     hkjh_repaymentPlanClearingTableColumn
   } from './form'
+  const xlsx = require("xlsx");
+  const moment = require('moment');
   export default {
     name: 'hkjhPanel',
     components: {
@@ -188,7 +217,13 @@
           "到期还本": 0,
         },
         repaymentPlanTable: [],
-        huanbenjintongshihuanlixi: false
+        huanbenjintongshihuanlixi: false,
+        upload: {
+          open: false,
+          template_excel: process.env.VUE_APP_BASE_API + '/profile/upload/2024/04/13/还款明细模板.xlsx'
+        },
+        temp_header: {},
+        excel_data: {}
       }
     },
     watch: {
@@ -236,6 +271,12 @@
         deep: true,
         immediate: true
       },
+    },
+    beforeMount() {
+      this.temp_header = this.hkjh_repaymentPlanClearingTableColumn.reduce((acc, e) => {
+        acc[e.label] = e.prop;
+        return acc;
+      }, {});
     },
     methods: {
       init(type) {
@@ -381,7 +422,7 @@
           this.$modal.msgSuccess("已生成!");
 
         }).catch((e) => {
-    
+
           this.$modal.msgError("已取消");
 
         });
@@ -401,11 +442,12 @@
           ...addEventsToTimeline('利率变更', this.lvbg, e => e)
         ];
         datas = sortTimeLineByDate(datas)
-        // console.log("datas1", JSON.stringify(datas));
         // console.log("datas2", datas);
         this.repaymentPlanTable = generateRepaymentPlan(datas, this.huanbenjintongshihuanlixi)
+        console.log("datas1", JSON.stringify(this.repaymentPlanTable));
 
         this.repaymentPlanTable.forEach((plan) => {
+          //添加借款信息
           plan.borrowingUnit = this.form.borrowingUnit
           plan.financialInstitution = this.form.financialInstitution
         });
@@ -460,7 +502,121 @@
         });
 
         return sums;
-      }
+      },
+      /** 导入按钮操作 */
+      handleImport() {
+        this.upload.title = "导入还款计划明细";
+        this.upload.open = true;
+      },
+
+      // 提交上传文件
+      submitFileForm() {
+        // 遍历excel_data中的每个对象
+        const keys = Object.keys(this.temp_header);
+        const newObjectList = this.excel_data.map(item => {
+          const newObj = {};
+          for (let i = 0; i < keys.length; i++) {
+            let key = keys[i]
+            if (key in item) {
+              if (key == "日期") {
+                newObj[this.temp_header[key]] = moment(item[key]).format('YYYY-MM-DD');
+              } else if (key == "期数") {
+                newObj[this.temp_header[key]] = item[key];
+              } else {
+                newObj[this.temp_header[key]] = (item[key]).toFixed(2);
+              }
+            }
+          }
+          return newObj;
+        });
+
+        this.huankuanmingxiFromExcel(newObjectList)
+        this.upload.open = false;
+      },
+      async uploadOnChange(file) {
+        /**
+         * 1. 使用原生api去读取好的文件
+         * */
+        // console.log("原始上传的文件", file);
+        // 读取文件不是立马能够读取到的，所以是异步的，使用Promise
+        let dataBinary = await new Promise((resolve) => {
+          // Web API构造函数FileReader，可实例化对象，去调用其身上方法，去读取解析文件信息
+          let reader = new FileReader(); // https://developer.mozilla.org/zh-CN/docs/Web/API/FileReader
+          // console.log("实例化对象有各种方法", reader);
+          reader.readAsBinaryString(file.raw); // 读取raw的File文件
+          reader.onload = (ev) => {
+            // console.log("文件解析流程进度事件", ev);
+            resolve(ev.target.result); // 将解析好的结果扔出去，以供使用
+          };
+        });
+        // console.log("读取出的流文件", dataBinary);
+
+        /**
+         * 2. 使用xlsx插件去解析已经读取好的二进制excel流文件
+         * */
+        let workBook = xlsx.read(dataBinary, {
+          type: "binary",
+          cellDates: true
+        });
+        // excel中有很多的sheet，这里取了第一个sheet：workBook.SheetNames[0]
+        let firstWorkSheet = workBook.Sheets[workBook.SheetNames[0]];
+        // 分为第一行的数据，和第一行下方的数据
+        const header = this.getHeaderRow(firstWorkSheet);
+        // console.log("读取的excel表头数据（第一行）", header);
+        // 使用for循环
+
+        const keys = Object.keys(this.temp_header);
+
+        for (let i = 0; i < header.length; i++) {
+          if (header[i] != keys[i]) {
+            this.$msgbox({
+              title: '严重错误',
+              message: '您传入的数据表,与模板不一致,请使用模板重新上传!',
+              confirmButtonText: '确定',
+              cancelButtonClass: "btn-custom-cancel",
+              customClass: 'custom-msgbox',
+            }).then(() => {
+
+            }).catch((e) => {
+
+            });
+            this.upload.open = false;
+            return
+          }
+        }
+
+        this.excel_data = xlsx.utils.sheet_to_json(firstWorkSheet);
+        console.log("读取所有excel数据", this.excel_data);
+      },
+      getHeaderRow(sheet) {
+        const headers = []; // 定义数组，用于存放解析好的数据
+        const range = xlsx.utils.decode_range(sheet["!ref"]); // 读取sheet的单元格数据
+        let C;
+        const R = range.s.r;
+        /* start in the first row */
+        for (C = range.s.c; C <= range.e.c; ++C) {
+          /* walk every column in the range */
+          const cell = sheet[xlsx.utils.encode_cell({
+            c: C,
+            r: R
+          })];
+          /* find the cell in the first row */
+          let hdr = "UNKNOWN " + C; // <-- replace with your desired default
+          if (cell && cell.t) hdr = xlsx.utils.format_cell(cell);
+          headers.push(hdr);
+        }
+        return headers; // 经过上方一波操作遍历，得到最终的第一行头数据
+      },
+
+      huankuanmingxiFromExcel(newObjectList) {
+        this.repaymentPlanTable = newObjectList
+        this.repaymentPlanTable.forEach((plan) => {
+          //添加借款信息
+          plan.borrowingUnit = this.form.borrowingUnit
+          plan.financialInstitution = this.form.financialInstitution
+        });
+      },
+
     }
   }
 </script>
