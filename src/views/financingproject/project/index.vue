@@ -178,8 +178,7 @@
 
       <!-- <el-table-column show-overflow-tooltip label="备注" align="center" prop="comment" min-width="120" /> -->
       <!-- <el-table-column label="uuid" align="center" prop="uuid" /> -->
-      <el-table-column show-overflow-tooltip fixed="right" label="操作" align="center"
-        class-name="''">
+      <el-table-column show-overflow-tooltip fixed="right" label="操作" align="center" class-name="''">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="handleUpdate(scope.row)"
             v-hasPermi="['financingproject:project:edit']">查 看</el-button>
@@ -348,7 +347,7 @@
             <el-col :span="8">
               <el-form-item label="第1期开始时间" prop="firstRepaymentDate">
                 <!-- :picker-options="pickerOptions3" -->
-                <el-date-picker format='yyyy/MM/dd' :disabled="!isEditable" clearable  :picker-options="pickerOptions3"
+                <el-date-picker format='yyyy/MM/dd' :disabled="!isEditable" clearable :picker-options="pickerOptions3"
                   v-model="form.firstRepaymentDate" type="date" value-format="yyyy-MM-dd" placeholder="请选择第1期开始时间">
                 </el-date-picker>
               </el-form-item>
@@ -530,7 +529,7 @@
         pickerOptions3: {
           disabledDate: (date) => {
             var oneDayInMilliseconds = 24 * 60 * 60 * 1000;
-            const start = new Date(this.form.loanDate).getTime()- oneDayInMilliseconds;
+            const start = new Date(this.form.loanDate).getTime() - oneDayInMilliseconds;
             const end = new Date(this.form.dueDate).getTime();
             // 禁用不在开始和结束日期范围内的所有日期
             return date.getTime() < start || date.getTime() > end;
@@ -570,8 +569,7 @@
         'name', 'avatar'
       ]),
       remainingCreditAmount: {
-        set(val) {
-        },
+        set(val) {},
         get() {
           // 确保值为数值类型，避免NaN
           const creditAmount = Number(this.form.financingAmount) || 0;
@@ -756,12 +754,15 @@
         this.$refs["form"].validate(valid => {
           if (valid) {
 
-            this.form.tiqubenjin = JSON.stringify(this.$refs.hkjhPanel.zjbj);
-            this.form.changhuanbenjin = JSON.stringify(this.$refs.hkjhPanel.bjch);
-            this.form.lilvbiangeng = JSON.stringify(this.$refs.hkjhPanel.lvbg);
-            this.form.lixichanghuan = JSON.stringify(this.$refs.hkjhPanel.lixichanghuanArray);
-
-            this.form.huankuanmingxi2List = this.$refs.hkjhPanel.repaymentPlanTable
+            if (this.form.hasRepaymentPlan == "有") {
+              this.form.tiqubenjin = JSON.stringify(this.$refs.hkjhPanel.zjbj);
+              this.form.changhuanbenjin = JSON.stringify(this.$refs.hkjhPanel.bjch);
+              this.form.lilvbiangeng = JSON.stringify(this.$refs.hkjhPanel.lvbg);
+              this.form.lixichanghuan = JSON.stringify(this.$refs.hkjhPanel.lixichanghuanArray);
+              this.form.huankuanmingxi2List = this.$refs.hkjhPanel.repaymentPlanTable
+            } else {
+              this.form.huankuanmingxi2List = []
+            }
 
             const data = JSON.parse(JSON.stringify(this.form))
             this.form.rzsrc2List = this.rzsrc2List;

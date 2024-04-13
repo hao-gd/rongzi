@@ -4,11 +4,11 @@
         <el-form-item label="审核编号" prop="id">
           <el-input v-model="queryParams.id" placeholder="请输入审核编号" clearable @keyup.enter.native="handleQuery" />
         </el-form-item>
-  
+
         <el-form-item label="创建人" prop="createBy">
           <el-input v-model="queryParams.createBy" placeholder="请输入创建人" clearable @keyup.enter.native="handleQuery" />
         </el-form-item>
-  
+
         <el-form-item label="审核状态：待审批、审批不通过、审批通过、已撤回" prop="auditState">
           <el-select v-model="queryParams.auditState" placeholder="请选择审核状态：待审批、审批不通过、审批通过、已撤回" clearable>
             <el-option v-for="dict in dict.type.sys_1759514730105405400" :key="dict.value" :label="dict.label"
@@ -20,7 +20,7 @@
           <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
         </el-form-item>
       </el-form>
-  
+
       <el-row :gutter="10" class="mb8">
         <el-col :span="1.5">
           <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
@@ -43,61 +43,63 @@
 
     <!-- <div class="list-content flex">
       <div class="list-table"> -->
-        <p class="f16 mb20" style="color: #1D2129;">提交的申请</p>
-        <el-row :gutter="10" class="mb8" type="flex" justify="end">
-          <el-col :span="1.5">
-            <el-button icon="el-icon-refresh" size="mini" @click="getList">刷新</el-button>
-          </el-col>
-        </el-row>
-        <el-table width="100%" v-loading="loading" :data="listList" @selection-change="handleSelectionChange"
-          :header-cell-style="header_cell_style">
-          <el-table-column show-overflow-tooltip fixed="left" type="selection" width="55" align="center" />
-          <el-table-column show-overflow-tooltip label="序号" type="index" width="55" align="center" />
-          <el-table-column show-overflow-tooltip label="审核编号" prop="id" width="100" align="center" />
-          <el-table-column show-overflow-tooltip width="140" header-align="center" label="提交的事项" align="center" prop="tableName">
-            <template slot-scope="scope">
-              {{ precautions_obj[scope.row.tableName] }}
-            </template>
-          </el-table-column>
-          <el-table-column show-overflow-tooltip width="160" header-align="center" label="提交时间" align="center" prop="createTime" />
-          <el-table-column show-overflow-tooltip width="140" header-align="center" label="上传人" align="center" prop="createBy" />
-          <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
-          <!-- <el-table-column label="审核id" align="center" prop="auditId" /> -->
-          <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
-          <!-- <el-table-column label="创建人" align="center" prop="createBy" /> -->
-          <!-- <el-table-column label="数据json文件" align="center" prop="dataJson" /> -->
-          <!-- <el-table-column label="父级表名" align="center" prop="tableName" /> -->
-          <el-table-column  header-align="center" show-overflow-tooltip label="审批进度" align="center" prop="auditState">
-            <template slot-scope="scope">
-              <svg-icon class="mr5" :icon-class="scope.row.auditState"></svg-icon>
-              <dict-tag style="display: inline-block;" :options="dict.type.sys_1759514730105405400"
-                :value="scope.row.auditState" />
-            </template>
-          </el-table-column>
-          <el-table-column fixed="right" width="140" header-align="center" label="操作" align="center" class-name="''">
-            <template slot-scope="scope">
-              <el-button v-if="scope.row.auditState == '1759514891045044200'" size="mini" type="text"
-                @click="pass(scope.row)" v-hasPermi="['rzauditlist:list:edit']">同 意</el-button>
-              <el-link v-if="scope.row.auditState == '1759514891045044200'" class="ml10" :underline="false"
-                type="danger" @click="no_pass(scope.row)">拒 绝</el-link>
+    <p class="f16 mb20" style="color: #1D2129;">提交的申请</p>
+    <el-row :gutter="10" class="mb8" type="flex" justify="end">
+      <el-col :span="1.5">
+        <el-button icon="el-icon-refresh" size="mini" @click="getList">刷新</el-button>
+      </el-col>
+    </el-row>
+    <el-table width="100%" v-loading="loading" :data="listList" @selection-change="handleSelectionChange"
+      :header-cell-style="header_cell_style">
+      <el-table-column show-overflow-tooltip fixed="left" type="selection" width="55" align="center" />
+      <el-table-column show-overflow-tooltip label="序号" type="index" width="55" align="center" />
+      <el-table-column show-overflow-tooltip label="审核编号" prop="id" width="100" align="center" />
+      <el-table-column show-overflow-tooltip header-align="center" label="提交的事项" align="center" prop="tableName">
+        <template slot-scope="scope">
+          {{ precautions_obj[scope.row.tableName] }}
+        </template>
+      </el-table-column>
+      <el-table-column show-overflow-tooltip width="160" header-align="center" label="提交时间" align="center"
+        prop="createTime" />
+      <el-table-column show-overflow-tooltip width="140" header-align="center" label="上传人" align="center"
+        prop="createBy" />
+      <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
+      <!-- <el-table-column label="审核id" align="center" prop="auditId" /> -->
+      <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
+      <!-- <el-table-column label="创建人" align="center" prop="createBy" /> -->
+      <!-- <el-table-column label="数据json文件" align="center" prop="dataJson" /> -->
+      <!-- <el-table-column label="父级表名" align="center" prop="tableName" /> -->
+      <el-table-column header-align="center"  width="140" show-overflow-tooltip label="审批进度" align="center" prop="auditState">
+        <template slot-scope="scope">
+            <svg-icon class="mr5" :icon-class="scope.row.auditState"></svg-icon>
+            <dict-tag style="display: inline-block;" :options="dict.type.sys_1759514730105405400"
+              :value="scope.row.auditState" />
+        </template>
+      </el-table-column>
+      <el-table-column fixed="right" width="140" header-align="center" label="操作" align="center" class-name="''">
+        <template slot-scope="scope">
+          <el-button v-if="scope.row.auditState == '1759514891045044200'" size="mini" type="text"
+            @click="pass(scope.row)" v-hasPermi="['rzauditlist:list:edit']">同 意</el-button>
+          <el-link v-if="scope.row.auditState == '1759514891045044200'" class="ml10" :underline="false" type="danger"
+            @click="no_pass(scope.row)">拒 绝</el-link>
 
 
-              <span v-if="scope.row.auditState !== '1759514891045044200'">
-                审批完成
-              </span>
-              <!-- <el-button size="mini" type="text" @click="pass(scope.row)"
+          <span v-if="scope.row.auditState !== '1759514891045044200'">
+            审批完成
+          </span>
+          <!-- <el-button size="mini" type="text" @click="pass(scope.row)"
                                   v-hasPermi="['rzauditlist:list:edit']">审批通过</el-button> -->
 
-              <!-- <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"
+          <!-- <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"
                     v-hasPermi="['rzauditlist:list:remove']">删除</el-button> -->
-            </template>
-          </el-table-column>
-        </el-table>
+        </template>
+      </el-table-column>
+    </el-table>
 
-        <pagination v-show="total > 0" :total="total" :page.sync="queryParams.pageNum"
-          :limit.sync="queryParams.pageSize" @pagination="getList" />
-      <!-- </div> -->
-      <!-- <div class="list-message"></div> -->
+    <pagination v-show="total > 0" :total="total" :page.sync="queryParams.pageNum" :limit.sync="queryParams.pageSize"
+      @pagination="getList" />
+    <!-- </div> -->
+    <!-- <div class="list-message"></div> -->
     <!-- </div> -->
 
     <!-- 添加或修改审核项目对话框 -->
@@ -343,7 +345,7 @@
         const func_ = this.form.auditId != null ?
           this.update_precautions_obj_fun[this.form.tableName] :
           this.precautions_obj_fun[this.form.tableName];
-          console.log(this.form);
+        console.log(this.form);
         if (func_ == undefined) {
           this.$modal.msgError("数据有问题，请联系管理员");
           return;

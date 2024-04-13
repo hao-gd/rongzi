@@ -113,21 +113,21 @@
               {{ precautions_obj[scope.row.tableName] }}
             </template>
           </el-table-column>
-          <el-table-column label="提交时间" align="center" prop="createTime" />
+          <el-table-column label="提交时间"  width="160"  align="center" prop="createTime" />
           <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
           <!-- <el-table-column label="审核id" align="center" prop="auditId" /> -->
           <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
           <!-- <el-table-column label="创建人" align="center" prop="createBy" /> -->
           <!-- <el-table-column label="数据json文件" align="center" prop="dataJson" /> -->
           <!-- <el-table-column label="父级表名" align="center" prop="tableName" /> -->
-          <el-table-column show-overflow-tooltip label="审批进度" align="center" prop="auditState">
+          <el-table-column show-overflow-tooltip  width="140" label="审批进度" align="center" prop="auditState">
             <template slot-scope="scope">
               <svg-icon :icon-class="scope.row.auditState"></svg-icon>
               <dict-tag style="display: inline-block;" :options="dict.type.sys_1759514730105405400"
                 :value="scope.row.auditState" />
             </template>
           </el-table-column>
-          <el-table-column fixed="right" label="操作" align="center" class-name="''">
+          <el-table-column fixed="right" width="140" label="操作" align="center" class-name="''">
             <template slot-scope="scope">
               <el-button v-if="scope.row.auditState == '1759514891045044200'" size="mini" type="text"
                 @click="handleUpdate(scope.row)" v-hasPermi="['rzauditlist:list:edit']">撤
