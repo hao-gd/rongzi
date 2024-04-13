@@ -240,15 +240,20 @@
           this.queryParams.params["endRiqi"] = this.daterangeRiqi2;
         }
         listMingxi(this.queryParams).then(response => {
-          
+
           // response.data.total_huankuanjine
           // response.data.total_changhuanben
           // response.data.total_zhifulixi
+          if ("data" in response) {
+            //防止没有数据的时候报错
+            let tableDataInfo = response.data.tableDataInfo
+            this.mingxiList = tableDataInfo.rows;
+            this.total = tableDataInfo.total;
+          } else {
+            this.mingxiList = []
+            this.total = 0
+          }
 
-          let tableDataInfo = response.data.tableDataInfo
-
-          this.mingxiList = tableDataInfo.rows;
-          this.total = tableDataInfo.total;
           this.loading = false;
         });
       },
