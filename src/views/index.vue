@@ -3,26 +3,6 @@
     <div class="app-container">
       <search-panel title="融资快报" :isIcon="false">
 
-
-        <!-- <div slot="search">
-          <el-form label-position="left" label-width="80px">
-            <el-row :gutter="20">
-              <el-col :span="12">
-                <el-form-item label="时间选择" class="no_mb">
-                  <el-date-picker v-model="year" type="year" placeholder="请选择年度">
-                  </el-date-picker>
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item label="时间选择" class="no_mb">
-                  <el-date-picker type="month" v-model="month" placeholder="请选择月份">
-                  </el-date-picker>
-                </el-form-item>
-              </el-col>
-            </el-row>
-          </el-form>
-        </div> -->
-
         <div class="tr unit">
           单位（万元）
         </div>
@@ -33,7 +13,7 @@
             <el-row>
               <el-col v-for="(value, key, index) in creditData" :key="index" :span="24" style="background: #fff;"
                 class="card-panel">
-                <div class="card-content pt40 pb30 pl20" :class="'card-content-bg' + 1">
+                <div class="card-content pt50 pb30 pl20" :class="'card-content-bg' + 1">
                   <div>
                     <div class="card-title">{{ key }}</div>
 
@@ -50,17 +30,17 @@
 
                   </div>
 
-                  <div class="card-various-amounts flex">
+                  <div class="card-various-amounts">
                     <div class="flex" v-for="(valuec, keyc, indexc) in value" :key="indexc">
                       <el-tooltip v-if="keyc !== 'bgID'" content="42467000" placement="top" effect="light">
                         <div slot="content">
-                          <p class="various-amounts-title mb5">{{ keyc }}</p>
+                          <p class="various-amounts-title mb3">{{ keyc }}</p>
                           <count-to class="various-amounts-amount" :start-val='0' :end-val='valuec / 10000'
                             :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
                             :useEasing="true"></count-to>
                         </div>
                         <div class="mb15">
-                          <p class="various-amounts-title mb5">{{ keyc }}</p>
+                          <p class="various-amounts-title mb3">{{ keyc }}</p>
                           <count-to class="various-amounts-amount" :start-val='0' :end-val='valuec / 10000'
                             :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
                             :useEasing="true"></count-to>
@@ -77,7 +57,7 @@
               <el-col v-for="(value, key, index) in rzjeData" :key="index" :span="24" style="background: #fff;"
                 class="card-panel">
                 <div class="card-content pl20" :class="'card-content-bg' + 4">
-                  <div class="pt40">
+                  <div class="pt50">
                     <div class="card-title">{{ key }}</div>
 
                     <el-tooltip placement="top" effect="light">
@@ -93,17 +73,17 @@
 
                   </div>
 
-                  <div class="card-various-amounts flex">
-                    <div class="mt15" v-for="(valuec, keyc, indexc) in value" :key="indexc">
+                  <div class="card-various-amounts" style="display: grid;align-items: center;">
+                    <div  v-for="(valuec, keyc, indexc) in value" :key="indexc">
                       <el-tooltip v-if="keyc !== 'bgID'" content="42467000" placement="top" effect="light">
                         <div slot="content">
-                          <p class="various-amounts-title mb5">{{ keyc }}</p>
+                          <p class="various-amounts-title mb3">{{ keyc }}</p>
                           <count-to class="various-amounts-amount" :start-val='0' :end-val='valuec / 10000'
                             :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
                             :useEasing="true"></count-to>
                         </div>
                         <div>
-                          <p class="various-amounts-title mb5">{{ keyc }}</p>
+                          <p class="various-amounts-title mb3">{{ keyc }}</p>
                           <count-to class="various-amounts-amount" :start-val='0' :end-val='valuec / 10000'
                             :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
                             :useEasing="true"></count-to>
@@ -120,7 +100,7 @@
             <el-row>
               <el-col v-for="(value, key, index) in dbData" :key="index" :span="24" style="background: #fff;"
                 class="card-panel">
-                <div class="card-content pt40 pb30 pl20" :class="'card-content-bg' + 7">
+                <div class="card-content pt50 pb30 pl20" :class="'card-content-bg' + 7">
                   <div>
                     <div class="card-title">{{ key }}</div>
 
@@ -141,13 +121,13 @@
                     <div class="flex" v-for="(valuec, keyc, indexc) in value" :key="indexc">
                       <el-tooltip v-if="keyc !== 'bgID'" content="42467000" placement="top" effect="light">
                         <div slot="content">
-                          <p class="various-amounts-title mb5">{{ keyc }}</p>
+                          <p class="various-amounts-title mb3">{{ keyc }}</p>
                           <count-to class="various-amounts-amount" :start-val='0' :end-val='valuec' :duration='1000'
                             :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay="true" :useEasing="true">
                           </count-to>
                         </div>
                         <div class="mb15">
-                          <p class="various-amounts-title mb5">{{ keyc }}</p>
+                          <p class="various-amounts-title mb3">{{ keyc }}</p>
                           <count-to class="various-amounts-amount" :start-val='0' :end-val='valuec' :duration='1000'
                             :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay="true" :useEasing="true">
                           </count-to>
@@ -164,15 +144,15 @@
             <el-row>
               <el-col v-if="Object.keys(currentMonthData).length !== 0" :span="24" style="background: #fff;"
                 class="card-panel">
-                <div class="card-content pt40 pb30 pl20" :class="'card-content-bg' + 5">
-                  <div class="w">
+                <div class="card-content pl20" :class="'card-content-bg' + 5">
+                  <!-- <div class="w">
                     <div class="card-title">本月还款计划</div>
 
                     <el-row :gutter="10">
                       <el-col :span="17">
                         <el-tooltip placement="top" effect="light">
                           <div slot="content">
-                            <p class="various-amounts-title mb5">本金（利息）</p>
+                            <p class="various-amounts-title mb3">本金（利息）</p>
                             <count-to class="various-amounts-amount dlb mr10" :start-val='0'
                               :end-val='currentMonthData.totalPrincipal / 10000' :duration='1000' :decimals='2'
                               :separator="','" :prefix="''" :suffix="''" :autoplay="true" :useEasing="true"></count-to>
@@ -181,7 +161,7 @@
                               :separator="','" :prefix="'('" :suffix="')'" :autoplay="true" :useEasing="true"></count-to>
                           </div>
                           <div class="various-amounts-amount w">
-                            <p class="various-amounts-title mb5">本金（利息）</p>
+                            <p class="various-amounts-title mb3">本金（利息）</p>
                             <count-to class="various-amounts-amount dlb mr10" :start-val='0'
                               :end-val='currentMonthData.totalPrincipal / 10000' :duration='1000' :decimals='2'
                               :separator="','" :prefix="''" :suffix="''" :autoplay="true" :useEasing="true"></count-to>
@@ -196,7 +176,7 @@
                       <el-col :span="7">
                         <el-tooltip placement="top" effect="light">
                           <div slot="content">
-                            <p class="various-amounts-title mb5">已还（未还）</p>
+                            <p class="various-amounts-title mb3">已还（未还）</p>
                             <count-to class="various-amounts-amount dlb mr10" :start-val='0'
                               :end-val='(currentMonthData.totalPaidInterest + currentMonthData.totalPaidPrincipal) / 10000'
                               :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
@@ -209,7 +189,7 @@
                           </div>
 
                           <div class="various-amounts-amount w" style="margin-left: -5px;">
-                            <p class="various-amounts-title mb5">已还（未还）</p>
+                            <p class="various-amounts-title mb3">已还（未还）</p>
                             <count-to class="various-amounts-amount dlb mr10" :start-val='0'
                               :end-val='(currentMonthData.totalPaidInterest + currentMonthData.totalPaidPrincipal) / 10000'
                               :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
@@ -223,13 +203,102 @@
                         </el-tooltip>
                       </el-col>
                     </el-row>
+                  </div> -->
+                
+                  <div class="pt50">
+                    <div class="card-title">本月还款计划</div>
+
+                    <el-tooltip placement="top" effect="light">
+                      <P slot="content">
+                        <count-to class="amounts-font cp" :start-val='0' :end-val="currentMonthData.totalPrincipal +
+currentMonthData.totalInterest / 10000"
+                        :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                        :useEasing="true"></count-to>
+                      </P>
+                      <count-to class="card-amount amounts-font cp" :start-val='0' :end-val="currentMonthData.totalPrincipal +
+currentMonthData.totalInterest / 10000"
+                        :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                        :useEasing="true"></count-to>
+                    </el-tooltip>
+
                   </div>
+
+                  <div class="card-various-amounts" style="display: grid;align-items: center; padding: 6px 0;">
+                   <div class="">
+                      <el-tooltip content="42467000" placement="top" effect="light">
+                        <div slot="content">
+                          <p class="various-amounts-title mb3">本金</p>
+                          <count-to class="various-amounts-amount" :start-val='0' :end-val='currentMonthData.totalPrincipal / 10000'
+                            :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                            :useEasing="true"></count-to>
+                        </div>
+                        <div>
+                          <p class="various-amounts-title mb3">本金</p>
+                          <count-to class="various-amounts-amount" :start-val='0' :end-val='currentMonthData.totalPrincipal / 10000'
+                            :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                            :useEasing="true"></count-to>
+                        </div>
+                      </el-tooltip>
+                    </div>
+
+                    <div class="">
+                      <el-tooltip content="42467000" placement="top" effect="light">
+                        <div slot="content">
+                          <p class="various-amounts-title mb3">利息</p>
+                          <count-to class="various-amounts-amount" :start-val='0' :end-val='currentMonthData.totalInterest / 10000'
+                            :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                            :useEasing="true"></count-to>
+                        </div>
+                        <div>
+                          <p class="various-amounts-title mb3">利息</p>
+                          <count-to class="various-amounts-amount" :start-val='0' :end-val='currentMonthData.totalInterest / 10000'
+                            :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                            :useEasing="true"></count-to>
+                        </div>
+                      </el-tooltip>
+                    </div>
+
+                    <div class="">
+                      <el-tooltip content="42467000" placement="top" effect="light">
+                        <div slot="content">
+                          <p class="various-amounts-title mb3">已还</p>
+                          <count-to class="various-amounts-amount" :start-val='0' :end-val='(currentMonthData.totalPaidInterest + currentMonthData.totalPaidPrincipal) / 10000'
+                            :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                            :useEasing="true"></count-to>
+                        </div>
+                        <div>
+                          <p class="various-amounts-title mb3">已还</p>
+                          <count-to class="various-amounts-amount" :start-val='0' :end-val='(currentMonthData.totalPaidInterest + currentMonthData.totalPaidPrincipal) / 10000'
+                            :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                            :useEasing="true"></count-to>
+                        </div>
+                      </el-tooltip>
+                    </div>
+
+                    <div class="">
+                      <el-tooltip content="42467000" placement="top" effect="light">
+                        <div slot="content">
+                          <p class="various-amounts-title mb3">未还</p>
+                          <count-to class="various-amounts-amount" :start-val='0' :end-val='(currentMonthData.totalUnpaidInterest + currentMonthData.totalUnpaidPrincipal) / 10000'
+                            :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                            :useEasing="true"></count-to>
+                        </div>
+                        <div>
+                          <p class="various-amounts-title mb3">未还</p>
+                          <count-to class="various-amounts-amount" :start-val='0' :end-val='(currentMonthData.totalUnpaidInterest + currentMonthData.totalUnpaidPrincipal) / 10000'
+                            :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
+                            :useEasing="true"></count-to>
+                        </div>
+                      </el-tooltip>
+                    </div>
+                  </div>
+                
                 </div>
               </el-col>
 
               <el-col :span="24" style="background: #fff;"
                 class="card-panel">
-                <div class="card-content pl20 pb30 pt40" :class="'card-content-bg' + 5">
+                <div class="card-content pl20 pb30 pt50" :class="'card-content-bg' + 5">
                   <div>
                     <div class="card-title">下月还款计划</div>
 
@@ -250,13 +319,13 @@
                     <div class="mb15">
                       <el-tooltip content="42467000" placement="top" effect="light">
                         <div slot="content">
-                          <p class="various-amounts-title mb5">本金</p>
+                          <p class="various-amounts-title mb3">本金</p>
                           <count-to class="various-amounts-amount" :start-val='0'
                             :end-val='NextMonthData.totalPrincipal / 10000' :duration='1000' :decimals='2'
                             :separator="','" :prefix="''" :suffix="''" :autoplay="true" :useEasing="true"></count-to>
                         </div>
                         <div>
-                          <p class="various-amounts-title mb5">本金</p>
+                          <p class="various-amounts-title mb3">本金</p>
                           <count-to class="various-amounts-amount" :start-val='0'
                             :end-val='NextMonthData.totalPrincipal / 10000' :duration='1000' :decimals='2'
                             :separator="','" :prefix="''" :suffix="''" :autoplay="true" :useEasing="true"></count-to>
@@ -267,13 +336,13 @@
                     <div class="mb15">
                       <el-tooltip content="42467000" placement="top" effect="light">
                         <div slot="content">
-                          <p class="various-amounts-title mb5">利息</p>
+                          <p class="various-amounts-title mb3">利息</p>
                           <count-to class="various-amounts-amount" :start-val='0'
                             :end-val='NextMonthData.totalInterest / 10000' :duration='1000' :decimals='2' :separator="','"
                             :prefix="''" :suffix="''" :autoplay="true" :useEasing="true"></count-to>
                         </div>
                         <div>
-                          <p class="various-amounts-title mb5">利息</p>
+                          <p class="various-amounts-title mb3">利息</p>
                           <count-to class="various-amounts-amount" :start-val='0'
                             :end-val='NextMonthData.totalInterest / 10000' :duration='1000' :decimals='2' :separator="','"
                             :prefix="''" :suffix="''" :autoplay="true" :useEasing="true"></count-to>
@@ -680,8 +749,8 @@ export default {
 }
 
 .card-panel {
-  height: 150px;
-  min-height: 150px;
+  height: 160px;
+  min-height: 160px;
   box-sizing: border-box;
 
   >div {
