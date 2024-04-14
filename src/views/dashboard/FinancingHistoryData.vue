@@ -6,8 +6,8 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item class="no_mb" label="借款人" prop="borrowingUnit">
-                <el-select filterable v-model="queryParams.borrowingUnit" @change="getrzloghistoryFinancing" placeholder="请选择借款人"
-                  clearable>
+                <el-select filterable v-model="queryParams.borrowingUnit" @change="getrzloghistoryFinancing"
+                  placeholder="请选择借款人" clearable>
                   <el-option v-for="dict in dict.type.sys_1767154968256577500" :key="dict.value" :label="dict.label"
                     :value="dict.value" />
                 </el-select>
@@ -24,22 +24,28 @@
             </el-col>
             <el-col :span="8">
               <el-form-item class="no_mb" label="融资类型" prop="financingType">
-                <el-select filterable v-model="queryParams.financingType" @change="getrzloghistoryFinancing" placeholder="请选择融资类型">
+                <el-select filterable v-model="queryParams.financingType" @change="getrzloghistoryFinancing"
+                  placeholder="请选择融资类型">
                   <el-option v-for="dict in dict.type.sys_1759508335389835300" :key="dict.value" :label="dict.label"
                     :value="dict.value"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="8" class="mt20">
-              <el-form-item label="起始月" class="no_mb">
-                <el-date-picker format='yyyy/MM' :picker-options="pickerOptions1" @change="changeRang" v-model="daterangeLogCreateDate1"
-                  value-format="yyyy-MM" type="month" placeholder="请选择起始月"></el-date-picker>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8" class="mt20">
-              <el-form-item label="结束月" class="no_mb">
-                <el-date-picker format='yyyy/MM' :picker-options="pickerOptions2" @change="changeRang" v-model="daterangeLogCreateDate2"
-                  value-format="yyyy-MM" type="month" placeholder="请选择结束月"></el-date-picker>
+              <el-form-item label="起止月" class="no_mb" :error="error1">
+                <el-row>
+                  <el-col :span="11">
+                    <el-date-picker format='yyyy/MM' :picker-options="pickerOptions1" @change="changeRang"
+                      v-model="daterangeLogCreateDate1" value-format="yyyy-MM" type="month"
+                      placeholder="请选择起始月"></el-date-picker>
+                  </el-col>
+                  <el-col :span="2" class="flex fjc">-</el-col>
+                  <el-col :span="11">
+                    <el-date-picker format='yyyy/MM' :picker-options="pickerOptions2" @change="changeRang"
+                      v-model="daterangeLogCreateDate2" value-format="yyyy-MM" type="month"
+                      placeholder="请选择结束月"></el-date-picker>
+                  </el-col>
+                </el-row>
               </el-form-item>
             </el-col>
           </el-row>
@@ -295,9 +301,37 @@ export default {
             return time.getTime() <= startMonthDate.getTime();
           }
         }
-      }
-
+      },
+      error1: ''
     }
+  },
+  watch: {
+    daterangeLogCreateDate1(n, o) {
+      if (n !== '' && n !== null) {
+        if (this.daterangeLogCreateDate2 === '' || this.daterangeLogCreateDate2 === null) {
+          this.error1 = '结束月不能为空';
+        } else {
+          this.error1 = ''; // 清空错误信息
+        }
+      } else if (this.daterangeLogCreateDate2 === '' || this.daterangeLogCreateDate2 === null) {
+        this.error1 = ''; // 两个日期都为空时，清空错误信息
+      } else {
+        this.error1 = '起始月不能为空';
+      }
+    },
+    daterangeLogCreateDate2(n, o) {
+      if (n !== '' && n !== null) {
+        if (this.daterangeLogCreateDate1 === '' || this.daterangeLogCreateDate1 === null) {
+          this.error1 = '起始月不能为空';
+        } else {
+          this.error1 = ''; // 清空错误信息
+        }
+      } else if (this.daterangeLogCreateDate1 === '' || this.daterangeLogCreateDate1 === null) {
+        this.error1 = ''; // 两个日期都为空时，清空错误信息
+      } else {
+        this.error1 = '结束月不能为空';
+      }
+    },
   },
   created() {
     this.option.xAxis.data = this.generateMonthsMap();
@@ -523,5 +557,4 @@ export default {
   line-height: 22px;
   height: 22px;
   font-weight: bold;
-}
-</style>
+}</style>

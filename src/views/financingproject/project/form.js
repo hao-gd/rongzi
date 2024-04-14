@@ -34,7 +34,9 @@ export const resetForm = {
     changhuanbenjin: null,
     lilvbiangeng: null,
     lixichanghuan: null,
-    huankuanmingxi2List: null
+    huankuanmingxi2List: null,
+    baozhengjin: null,
+    shouxufei: null,
 }
 
 export const queryParams = {
@@ -65,6 +67,8 @@ export const queryParams = {
     rateType: null,
     firstRepaymentDate: null,
     hasRepaymentPlan: null,
+    baozhengjin: null,
+    shouxufei: null,
 }
 
 export const rules = {
@@ -143,6 +147,12 @@ export const rules = {
     lixichanghuan: [
         { required: true, message: "利息偿还不能为空", trigger: "blur" }
     ],
+    baozhengjin: [
+        { required: true, message: "保证金不能为空", trigger: "blur" }
+      ],
+      shouxufei: [
+        { required: true, message: "手续费不能为空", trigger: "blur" }
+      ],
 }
 
 // 生成 还款计划的edit 组件

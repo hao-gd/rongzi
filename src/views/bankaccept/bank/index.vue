@@ -42,15 +42,37 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="出票起始日">
-              <el-date-picker format='yyyy/MM/dd' :picker-options="pickerOptions3" v-model="daterangeDraftDate1" style="width: 100%" value-format="yyyy-MM-dd" type="date"
-                placeholder="请选择出票起始日"></el-date-picker>
+            <el-form-item label="出票起止日" :error="error1">
+              <el-row>
+                <el-col :span="11">
+                  <el-date-picker format='yyyy/MM/dd' :picker-options="pickerOptions3" v-model="daterangeDraftDate1"
+                    style="width: 100%" value-format="yyyy-MM-dd" type="date" placeholder="请选择出票起始日"></el-date-picker>
+                </el-col>
+                <el-col :span="2" class="flex fjc">-</el-col>
+                <el-col :span="11">
+                  <el-date-picker format='yyyy/MM/dd' :picker-options="pickerOptions4" v-model="daterangeDraftDate2"
+                    style="width: 100%" value-format="yyyy-MM-dd" type="date" placeholder="请选择出票到期日"></el-date-picker>
+                </el-col>
+              </el-row>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="出票结束日">
-              <el-date-picker format='yyyy/MM/dd' :picker-options="pickerOptions4" v-model="daterangeDraftDate2" style="width: 100%" value-format="yyyy-MM-dd" type="date"
-                placeholder="请选择出票结束日"></el-date-picker>
+            <el-form-item label="汇票到期起止日" :erorr="error2">
+              <el-row>
+                <el-col :span="11">
+                  <el-date-picker format='yyyy/MM/dd' :picker-options="pickerOptions5" clearable
+                    v-model="daterangeDueDate1" type="date" style="width: 100%" value-format="yyyy-MM-dd"
+                    placeholder="请选择汇票到期起始日">
+                  </el-date-picker>
+                </el-col>
+                <el-col :span="2" class="flex fjc">-</el-col>
+                <el-col :span="11">
+                  <el-date-picker format='yyyy/MM/dd' :picker-options="pickerOptions6" clearable
+                    v-model="daterangeDueDate2" type="date" style="width: 100%" value-format="yyyy-MM-dd"
+                    placeholder="请选择汇票到期日">
+                  </el-date-picker>
+                </el-col>
+              </el-row>
             </el-form-item>
           </el-col>
         </el-row>
@@ -58,29 +80,11 @@
         <!-- 第三组表单项 -->
         <el-row :gutter="20">
           <el-col :span="8">
-            <el-form-item label="汇票到期起始日">
-              <el-date-picker format='yyyy/MM/dd' :picker-options="pickerOptions5" clearable v-model="daterangeDueDate1" type="date" style="width: 100%"
-                value-format="yyyy-MM-dd" placeholder="请选择汇票到期起始日">
-              </el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="汇票到期结束日">
-              <el-date-picker format='yyyy/MM/dd' :picker-options="pickerOptions6" clearable v-model="daterangeDueDate2" type="date" style="width: 100%"
-                value-format="yyyy-MM-dd" placeholder="请选择汇票到期结束日">
-              </el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
             <el-form-item label="项目名称" prop="entryName">
               <el-input v-model="queryParams.entryName" placeholder="请输入项目名称" clearable
                 @keyup.enter.native="handleQuery"></el-input>
             </el-form-item>
           </el-col>
-          
-        </el-row>
-
-        <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="到期提醒">
               <el-select filterable v-model="queryParams.remark" clearable placeholder="请选择到期提醒" @change="handleSelect">
@@ -89,7 +93,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="16">
+          <el-col :span="8">
             <el-form-item class="flex" style="display: flex; justify-content: flex-end;">
               <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">查 询</el-button>
               <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -247,8 +251,8 @@
 
             <el-col :span="8">
               <el-form-item label="到期日" prop="dueDate">
-                <el-date-picker format='yyyy/MM/dd' :picker-options="pickerOptions2" :disabled="!isEditable" clearable v-model="form.dueDate"
-                  type="date" value-format="yyyy-MM-dd" placeholder="请选择到期日">
+                <el-date-picker format='yyyy/MM/dd' :picker-options="pickerOptions2" :disabled="!isEditable" clearable
+                  v-model="form.dueDate" type="date" value-format="yyyy-MM-dd" placeholder="请选择到期日">
                 </el-date-picker>
               </el-form-item>
             </el-col>
@@ -493,6 +497,8 @@ export default {
           }
         }
       },
+      error1: '',
+      error2: ''
     };
   },
   watch: {
@@ -501,7 +507,60 @@ export default {
         this.created_successfully = false;
         this.isEditable = true;
       }
-    }
+    },
+    daterangeDraftDate1(n, o) {
+      if (n !== '' && n !== null) {
+        if (this.daterangeDraftDate2 === '' || this.daterangeDraftDate2 === null) {
+          this.error1 = '出票到期日不能为空';
+        } else {
+          this.error1 = ''; // 清空错误信息
+        }
+      } else if (this.daterangeDraftDate2 === '' || this.daterangeDraftDate2 === null) {
+        this.error1 = ''; // 两个日期都为空时，清空错误信息
+      } else {
+        this.error1 = '出票起始日不能为空';
+      }
+    },
+    daterangeDraftDate2(n, o) {
+      if (n !== '' && n !== null) {
+        if (this.daterangeDraftDate1 === '' || this.daterangeDraftDate1 === null) {
+          this.error1 = '出票起始日不能为空';
+        } else {
+          this.error1 = ''; // 清空错误信息
+        }
+      } else if (this.daterangeDraftDate1 === '' || this.daterangeDraftDate1 === null) {
+        this.error1 = ''; // 两个日期都为空时，清空错误信息
+      } else {
+        this.error1 = '出票到期日不能为空';
+      }
+    },
+
+    daterangeDueDate1(n, o) {
+      if (n !== '' && n !== null) {
+        if (this.daterangeDueDate2 === '' || this.daterangeDueDate2 === null) {
+          this.error2 = '汇票到期日不能为空';
+        } else {
+          this.error2 = ''; // 清空错误信息
+        }
+      } else if (this.daterangeDueDate2 === '' || this.daterangeDueDate2 === null) {
+        this.error2 = ''; // 两个日期都为空时，清空错误信息
+      } else {
+        this.error2 = '汇票起始日不能为空';
+      }
+    },
+    daterangeDueDate2(n, o) {
+      if (n !== '' && n !== null) {
+        if (this.daterangeDueDate1 === '' || this.daterangeDueDate1 === null) {
+          this.error2 = '汇票起始日不能为空';
+        } else {
+          this.error2 = ''; // 清空错误信息
+        }
+      } else if (this.daterangeDueDate1 === '' || this.daterangeDueDate1 === null) {
+        this.error2 = ''; // 两个日期都为空时，清空错误信息
+      } else {
+        this.error2 = '汇票到期日不能为空';
+      }
+    },
   },
   computed: {
     ...mapGetters([

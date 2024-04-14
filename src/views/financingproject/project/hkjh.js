@@ -93,7 +93,7 @@ export function generateRepaymentPlan(timeline, huanbenjintongshihuanlixi) {
             "huankuanjine": (0).toFixed(2),
             "changhuanben": (0).toFixed(2),
             "zhifulixi": (0).toFixed(2),
-            "benjinshengyu": (event.amount).toFixed(2),
+            "benjinshengyu": (Number(event.amount)).toFixed(2),
             "lilv": rate + "%",
           })
 

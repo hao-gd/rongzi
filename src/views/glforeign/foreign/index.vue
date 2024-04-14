@@ -121,7 +121,7 @@
         <el-row :gutter="20">
           <!-- Second row -->
 
-          
+
           <el-col :span="8">
             <el-form-item label="业务类型" prop="businessType">
               <el-select filterable v-model="queryParams.businessType" placeholder="请选择业务类型" clearable>
@@ -147,15 +147,20 @@
         <el-row :gutter="20">
           <!-- Third row -->
 
-          
+
           <el-col :span="8">
-            <el-form-item label="担保期限起始日">
-              <el-date-picker format='yyyy/MM/dd' v-model="daterangeStartDate1" :picker-options="pickerOptions3" style="width: 100%" value-format="yyyy-MM-dd" placeholder="请选择担保期限起始日" type="date"></el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="担保期限到期日">
-              <el-date-picker format='yyyy/MM/dd' v-model="daterangeStartDate2" :picker-options="pickerOptions4" style="width: 100%" value-format="yyyy-MM-dd" placeholder="请选择担保期限到期日" type="date"></el-date-picker>
+            <el-form-item label="担保期限起止日" :error="error1">
+              <el-row>
+                <el-col :span="11">
+                  <el-date-picker format='yyyy/MM/dd' v-model="daterangeStartDate1" :picker-options="pickerOptions3"
+                    style="width: 100%" value-format="yyyy-MM-dd" placeholder="请选择起始日" type="date"></el-date-picker>
+                </el-col>
+                <el-col :span="2" class="flex fjc">-</el-col>
+                <el-col :span="11">
+                  <el-date-picker format='yyyy/MM/dd' v-model="daterangeStartDate2" :picker-options="pickerOptions4"
+                    style="width: 100%" value-format="yyyy-MM-dd" placeholder="请选择到期日" type="date"></el-date-picker>
+                </el-col>
+              </el-row>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -166,11 +171,6 @@
               </el-select>
             </el-form-item>
           </el-col>
-        </el-row>
-
-        <el-row :gutter="20">
-          <!-- Fourth row -->
-          
           <el-col :span="8">
             <el-form-item label="是否上征信" prop="isCreditInvestigation">
               <el-select filterable v-model="queryParams.isCreditInvestigation" placeholder="请选择是否上征信" clearable>
@@ -179,17 +179,18 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <!-- <el-col :span="8">
-            <el-form-item label="创建人" prop="createBy">
-              <el-input v-model="queryParams.createBy" placeholder="请输入创建人" clearable @keyup.enter.native="handleQuery" />
+        </el-row>
+        
+        <el-row :gutter="20">
+          <el-col :span="8">
+            <el-form-item label="担保状态" prop="danbaozhuangtai">
+              <el-select filterable v-model="queryParams.danbaozhuangtai" placeholder="请选择担保状态" clearable>
+                <el-option v-for="dict in dict.type.sys_1778612529468014600" :key="dict.value" :label="dict.label"
+                  :value="dict.label" />
+              </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
-            <el-form-item label="创建时间">
-              <el-date-picker v-model="daterangeCreateTime" style="width: 240px" value-format="yyyy-MM-dd"
-                type="daterange" range-separator="-" start-placeholder="起始日" end-placeholder="到期日"></el-date-picker>
-            </el-form-item>
-          </el-col> -->
+
           <el-col :span="16">
             <el-form-item class="flex" style="display: flex; justify-content: flex-end;">
               <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">查 询</el-button>
@@ -229,22 +230,22 @@
       <!-- <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" min-width="100"/> -->
       <!-- <el-table-column label="担保合同编号" align="center" prop="contractId" /> -->
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
-      <el-table-column show-overflow-tooltip label="担保人" align="center" prop="guarantor"  min-width="130">
+      <el-table-column show-overflow-tooltip label="担保人" align="center" prop="guarantor" min-width="130">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1767155091485229000" :value="scope.row.guarantor" />
         </template>
       </el-table-column>
       <!-- <el-table-column show-overflow-tooltip label="担保类别" align="center" prop="guarantor" min-width="100"> -->
-        <!-- <template slot-scope="scope">
+      <!-- <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1767155091485229000" :value="scope.row.guarantor" />
         </template> -->
       <!-- </el-table-column> -->
-      <el-table-column show-overflow-tooltip label="被担保人" align="center" prop="creditor"  min-width="130">
+      <el-table-column show-overflow-tooltip label="被担保人" align="center" prop="creditor" min-width="130">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1767154968256577500" :value="scope.row.creditor" />
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="债权人" align="center" prop="financialInstitution"  min-width="130">
+      <el-table-column show-overflow-tooltip label="债权人" align="center" prop="financialInstitution" min-width="130">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1757271666666242000" :value="scope.row.financialInstitution" />
         </template>
@@ -284,6 +285,12 @@
           <dict-tag :options="dict.type.sys_1767156259322069000" :value="scope.row.isCreditInvestigation" />
         </template>
       </el-table-column>
+      <el-table-column show-overflow-tooltip label="担保状态" align="center" prop="danbaozhuangtai" min-width="100">
+        <template slot-scope="scope">
+          <svg-icon :icon-class="scope.row.danbaozhuangtai"></svg-icon>
+          <dict-tag style="display: inline-block;" :options="dict.type.sys_1778612529468014600" :value="scope.row.danbaozhuangtai"/>
+        </template>
+      </el-table-column>
       <el-table-column show-overflow-tooltip label="备注" align="center" prop="comment" min-width="130" />
       <!-- <el-table-column label="创建人" align="center" prop="createBy" />
       <el-table-column label="创建时间" align="center" prop="createTime" width="180">
@@ -291,8 +298,7 @@
           <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column> -->
-      <el-table-column show-overflow-tooltip label="操作" fixed="right" align="center"
-        class-name="''">
+      <el-table-column show-overflow-tooltip label="操作" fixed="right" align="center" class-name="''">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="handleUpdate(scope.row)" v-hasPermi="['glforeign:foreign:edit']">查
             看</el-button>
@@ -457,7 +463,7 @@
           <!-- 第二行 -->
           <el-row :gutter="20">
 
-            
+
             <el-col :span="8">
               <el-form-item label="业务类型" prop="businessType">
                 <el-select filterable :disabled="!isEditable" v-model="form.businessType" placeholder="请选择业务类型">
@@ -468,14 +474,14 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="担保金额（万元）" prop="guaranteeAmount">
-                <el-input-number :disabled="!isEditable" class="w" :controls="false" :precision="2" :readonly="!isEditable" type="number"
-                  v-model.trim="form.guaranteeAmount" placeholder="请输入担保金额" />
+                <el-input-number :disabled="!isEditable" class="w" :controls="false" :precision="2"
+                  :readonly="!isEditable" type="number" v-model.trim="form.guaranteeAmount" placeholder="请输入担保金额" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="担保余额（万元）" prop="guaranteeBalance">
-                <el-input-number :disabled="!isEditable" class="w" :controls="false" :precision="2" :readonly="!isEditable" type="number"
-                  v-model.trim="form.guaranteeBalance" placeholder="请输入担保余额" />
+                <el-input-number :disabled="!isEditable" class="w" :controls="false" :precision="2"
+                  :readonly="!isEditable" type="number" v-model.trim="form.guaranteeBalance" placeholder="请输入担保余额" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -483,17 +489,19 @@
           <!-- 第三行 -->
           <el-row :gutter="20">
 
-            
+
             <el-col :span="8">
               <el-form-item label="担保期限起始日" prop="startDate">
-                <el-date-picker format='yyyy/MM/dd' :disabled="!isEditable" :picker-options="pickerOptions1" v-model="form.startDate" style="width: 100%"
-                  value-format="yyyy-MM-dd" type="date" placeholder="担保期限起始日"></el-date-picker>
+                <el-date-picker format='yyyy/MM/dd' :disabled="!isEditable" :picker-options="pickerOptions1"
+                  v-model="form.startDate" style="width: 100%" value-format="yyyy-MM-dd" type="date"
+                  placeholder="担保期限起始日"></el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="担保期限到期日" prop="deadline">
-                <el-date-picker format='yyyy/MM/dd' :disabled="!isEditable" :picker-options="pickerOptions2" v-model="form.deadline" style="width: 100%"
-                  value-format="yyyy-MM-dd" type="date" placeholder="担保期限到期日"></el-date-picker>
+                <el-date-picker format='yyyy/MM/dd' :disabled="!isEditable" :picker-options="pickerOptions2"
+                  v-model="form.deadline" style="width: 100%" value-format="yyyy-MM-dd" type="date"
+                  placeholder="担保期限到期日"></el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -508,12 +516,20 @@
 
           <!-- 第四行 -->
           <el-row :gutter="20">
-            
+
             <el-col :span="8">
               <el-form-item label="是否上征信" prop="isCreditInvestigation">
                 <el-select filterable :disabled="!isEditable" v-model="form.isCreditInvestigation" placeholder="请选择是否上征信">
                   <el-option v-for="dict in dict.type.sys_1767156259322069000" :key="dict.value" :label="dict.label"
                     :value="dict.value"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="担保状态" prop="danbaozhuangtai">
+                <el-select filterable :disabled="!isEditable" v-model="form.danbaozhuangtai" placeholder="请选择担保状态" clearable>
+                  <el-option v-for="dict in dict.type.sys_1778612529468014600" :key="dict.value" :label="dict.label"
+                    :value="dict.label" />
                 </el-select>
               </el-form-item>
             </el-col>
@@ -568,7 +584,7 @@ import { checkDueReminderWithConfig } from '@/utils/expirationreminder';
 import { reminderConfig } from '@/config/expirationreminder'
 export default {
   name: "Foreign",
-  dicts: ['sys_1767156259322069000', 'sys_1767154968256577500', 'sys_1767155091485229000', 'sys_1757271666666242000', 'sys_1767155302261588000', 'sys_1767155825266131000'],
+  dicts: ["sys_1778612529468014600", 'sys_1767156259322069000', 'sys_1767154968256577500', 'sys_1767155091485229000', 'sys_1757271666666242000', 'sys_1767155302261588000', 'sys_1767155825266131000'],
   components: {
     CreateSuccess,
     SearchPanel
@@ -678,7 +694,8 @@ export default {
         comment: null,
         createTime: null,
         createBy: null,
-        uuid: null
+        uuid: null,
+        danbaozhuangtai: null,
       },
       // 表单参数
       form: {},
@@ -696,7 +713,7 @@ export default {
           { required: true, message: "担保合同编号不能为空", trigger: "blur" }
         ],
         scrUuid: [
-          { required: true, message: "数据唯一编号不能为空", trigger: "blur" }
+          { required: true, message: "附件不能为空", trigger: "blur" }
         ],
         creditor: [
           { required: true, message: "被担保人不能为空", trigger: "change" }
@@ -736,8 +753,12 @@ export default {
         ],
         uuid: [
           { required: true, message: "uuid不能为空", trigger: "blur" }
-        ]
-      }
+        ],
+        danbaozhuangtai: [
+          { required: true, message: "担保状态不能为空", trigger: "change" }
+        ],
+      },
+      error1: ''
     };
   },
   watch: {
@@ -746,7 +767,33 @@ export default {
         this.created_successfully = false;
         this.isEditable = true;
       }
-    }
+    },
+    daterangeStartDate1(n, o) {
+      if (n !== '' && n !== null) {
+        if (this.daterangeStartDate2 === '' || this.daterangeStartDate2 === null) {
+          this.error1 = '担保到期日不能为空';
+        } else {
+          this.error1 = ''; // 清空错误信息
+        }
+      } else if (this.daterangeStartDate2 === '' || this.daterangeStartDate2 === null) {
+        this.error1 = ''; // 两个日期都为空时，清空错误信息
+      } else {
+        this.error1 = '担保起始日不能为空';
+      }
+    },
+    daterangeStartDate2(n, o) {
+      if (n !== '' && n !== null) {
+        if (this.daterangeStartDate1 === '' || this.daterangeStartDate1 === null) {
+          this.error1 = '担保起始日不能为空';
+        } else {
+          this.error1 = ''; // 清空错误信息
+        }
+      } else if (this.daterangeStartDate1 === '' || this.daterangeStartDate1 === null) {
+        this.error1 = ''; // 两个日期都为空时，清空错误信息
+      } else {
+        this.error1 = '担保到期日不能为空';
+      }
+    },
   },
   computed: {
     ...mapGetters([
@@ -869,7 +916,8 @@ export default {
         createBy: null,
         updateTime: null,
         updateBy: null,
-        uuid: null
+        uuid: null,
+        danbaozhuangtai: null,
       };
       this.rzsrc2List = [];
       this.resetForm("form");

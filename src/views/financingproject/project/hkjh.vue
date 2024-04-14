@@ -351,13 +351,12 @@
         if (this.form.principalRepaymentMethod === '到期还本') {
           const data = JSON.parse(JSON.stringify(this.record));
           data.date = this.form.dueDate;
-          data.amount = (Number(this.form.financingAmount) * 10000).toFixed(2);
+          data.amount = Number(this.form.financingAmount) * 10000;
           formattedArray = [data]
           // this.addRow('bjch', data)
         } else {
           let benjinzengjia = getDatesBasedOnStartDate(this.form.loanDate, this.form.dueDate, this.bjKeyMap[this.form
             .principalRepaymentMethod]);
-          //console.log(benjinzengjia);
           // 转换为指定的对象数组格式
           formattedArray = benjinzengjia.map(date => ({
             date: date,
@@ -422,7 +421,7 @@
           this.$modal.msgSuccess("已生成!");
 
         }).catch((e) => {
-
+          console.log(e);
           this.$modal.msgError("已取消");
 
         });

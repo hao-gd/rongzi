@@ -31,18 +31,22 @@
         <!-- Row 2 -->
         <el-row :gutter="20">
           <el-col :span="8">
-            <el-form-item label="起始日">
-              <el-date-picker format='yyyy/MM/dd' :picker-options="pickerOptions1" v-model="daterangeRiqi1"
-                value-format="yyyy-MM-dd" type="date" placeholder="请选择起始日"></el-date-picker>
+            <el-form-item label="起止日" :error="error1">
+              <el-row>
+                <el-col :span="11">
+                  <el-date-picker format='yyyy/MM/dd' :picker-options="pickerOptions1" v-model="daterangeRiqi1"
+                    value-format="yyyy-MM-dd" type="date" placeholder="请选择起始日"></el-date-picker>
+                </el-col>
+                <el-col :span="2" class="flex fjc">-</el-col>
+                <el-col :span="11">
+                  <el-date-picker format='yyyy/MM/dd' :picker-options="pickerOptions2" v-model="daterangeRiqi2"
+                    value-format="yyyy-MM-dd" type="date" placeholder="请选择到期日"></el-date-picker>
+                </el-col>
+              </el-row>
+
             </el-form-item>
           </el-col>
-          <el-col :span="8">
-            <el-form-item label="到期日">
-              <el-date-picker format='yyyy/MM/dd' :picker-options="pickerOptions2" v-model="daterangeRiqi2"
-                value-format="yyyy-MM-dd" type="date" placeholder="请选择到期日"></el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
+          <el-col :span="16">
             <!-- Buttons can be placed anywhere, here is an example -->
             <el-form-item class="flex" style="display: flex; justify-content: flex-end;">
               <el-button type="primary" icon="el-icon-search" @click="handleQuery">搜 索</el-button>
@@ -63,8 +67,8 @@
       </el-col>
     </el-row>
 
-    <el-table v-loading="loading" :data="mingxiList" @selection-change="handleSelectionChange"
-      :header-cell-style="header_cell_style">
+    <el-table :summary-method="getSummaries" show-summary v-loading="loading" :data="mingxiList"
+      @selection-change="handleSelectionChange" :header-cell-style="header_cell_style">
       <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managerId" />
       <el-table-column label="期数" align="center" prop="qishu" min-width="80" />
       <el-table-column label="还款日期" align="center" prop="riqi" min-width="100" />
@@ -134,223 +138,277 @@
 </template>
 
 <script>
-  import {
-    listMingxi,
-    getMingxi,
-    delMingxi,
-    addMingxi,
-    updateMingxi
-  } from "@/api/huankuanjihua/mingxi";
-  import SearchPanel from '@/components/SearchPanel/index.vue'
+import {
+  listMingxi,
+  getMingxi,
+  delMingxi,
+  addMingxi,
+  updateMingxi
+} from "@/api/huankuanjihua/mingxi";
+import SearchPanel from '@/components/SearchPanel/index.vue'
 
-  export default {
-    name: "Mingxi",
-    dicts: ['sys_1767154968256577500', 'sys_1757271666666242000'],
-    components: {
-      SearchPanel
+export default {
+  name: "Mingxi",
+  dicts: ['sys_1767154968256577500', 'sys_1757271666666242000'],
+  components: {
+    SearchPanel
+  },
+  data() {
+    return {
+      pickerOptions1: {
+        // 禁用开始日期中，所有大于结束日期的日期
+        disabledDate: (date) => {
+          if (this.daterangeRiqi2) {
+            return date.getTime() > new Date(this.daterangeRiqi2).getTime();
+          }
+        }
+      },
+      pickerOptions2: {
+        // 禁用结束日期中，所有小于开始日期的日期
+        disabledDate: (date) => {
+          if (this.daterangeRiqi1) {
+            // 一天的毫秒数
+            var oneDayInMilliseconds = 24 * 60 * 60 * 1000;
+            return date.getTime() < new Date(this.daterangeRiqi1).getTime() - oneDayInMilliseconds;
+          }
+        }
+      },
+      header_cell_style: {
+        backgroundColor: '#f2f4f5',
+        color: '#000000',
+        fontSize: '14px',
+        fontWeight: 'bold',
+      },
+      // 遮罩层
+      loading: true,
+      // 选中数组
+      ids: [],
+      // 非单个禁用
+      single: true,
+      // 非多个禁用
+      multiple: true,
+      // 显示搜索条件
+      showSearch: true,
+      // 总条数
+      total: 0,
+      // 还款计划明细表格数据
+      mingxiList: [],
+      // 弹出层标题
+      title: "",
+      // 是否显示弹出层
+      open: false,
+      // 备注时间范围
+      daterangeRiqi1: '',
+      daterangeRiqi2: '',
+      // 查询参数
+      queryParams: {
+        pageNum: 1,
+        pageSize: 100,
+        managerId: null,
+        borrowingUnit: null,
+        financialInstitution: null,
+        qishu: null,
+        riqi: null,
+        huankuanjine: null,
+        changhuanben: null,
+        zhifulixi: null,
+        benjinshengyu: null,
+        lilv: null,
+        comment: null,
+        createTime: null,
+        createBy: null,
+        updateTime: null,
+        updateBy: null
+      },
+      // 表单参数
+      form: {},
+      // 表单校验
+      rules: {},
+      error1: '',
+      zongjia: {
+        total_huankuanjine: 0,
+        total_changhuanben: 0,
+        total_zhifulixi: 0,
+      }
+    };
+  },
+  watch: {
+    daterangeRiqi1(n, o) {
+      if (n !== '' && n !== null) {
+        if (this.daterangeRiqi2 === '' || this.daterangeRiqi2 === null) {
+          this.error1 = '到期日不能为空';
+        } else {
+          this.error1 = ''; // 清空错误信息
+        }
+      } else if (this.daterangeRiqi2 === '' || this.daterangeRiqi2 === null) {
+        this.error1 = ''; // 两个日期都为空时，清空错误信息
+      } else {
+        this.error1 = '起始日不能为空';
+      }
     },
-    data() {
-      return {
-        pickerOptions1: {
-          // 禁用开始日期中，所有大于结束日期的日期
-          disabledDate: (date) => {
-            if (this.daterangeRiqi2) {
-              return date.getTime() > new Date(this.daterangeRiqi2).getTime();
-            }
-          }
-        },
-        pickerOptions2: {
-          // 禁用结束日期中，所有小于开始日期的日期
-          disabledDate: (date) => {
-            if (this.daterangeRiqi1) {
-              // 一天的毫秒数
-              var oneDayInMilliseconds = 24 * 60 * 60 * 1000;
-              return date.getTime() < new Date(this.daterangeRiqi1).getTime() - oneDayInMilliseconds;
-            }
-          }
-        },
-        header_cell_style: {
-          backgroundColor: '#f2f4f5',
-          color: '#000000',
-          fontSize: '14px',
-          fontWeight: 'bold',
-        },
-        // 遮罩层
-        loading: true,
-        // 选中数组
-        ids: [],
-        // 非单个禁用
-        single: true,
-        // 非多个禁用
-        multiple: true,
-        // 显示搜索条件
-        showSearch: true,
-        // 总条数
-        total: 0,
-        // 还款计划明细表格数据
-        mingxiList: [],
-        // 弹出层标题
-        title: "",
-        // 是否显示弹出层
-        open: false,
-        // 备注时间范围
-        daterangeRiqi1: '',
-        daterangeRiqi2: '',
-        // 查询参数
-        queryParams: {
-          pageNum: 1,
-          pageSize: 100,
-          managerId: null,
-          borrowingUnit: null,
-          financialInstitution: null,
-          qishu: null,
-          riqi: null,
-          huankuanjine: null,
-          changhuanben: null,
-          zhifulixi: null,
-          benjinshengyu: null,
-          lilv: null,
-          comment: null,
-          createTime: null,
-          createBy: null,
-          updateTime: null,
-          updateBy: null
-        },
-        // 表单参数
-        form: {},
-        // 表单校验
-        rules: {}
+    daterangeRiqi2(n, o) {
+      if (n !== '' && n !== null) {
+        if (this.daterangeRiqi1 === '' || this.daterangeRiqi1 === null) {
+          this.error1 = '起始日不能为空';
+        } else {
+          this.error1 = ''; // 清空错误信息
+        }
+      } else if (this.daterangeRiqi1 === '' || this.daterangeRiqi1 === null) {
+        this.error1 = ''; // 两个日期都为空时，清空错误信息
+      } else {
+        this.error1 = '到期日不能为空';
+      }
+    },
+  },
+  created() {
+    this.getList();
+  },
+  methods: {
+    /** 查询还款计划明细列表 */
+    getList() {
+      this.loading = true;
+      this.queryParams.params = {};
+      this.queryParams['orderByColumn'] = "riqi"
+      this.queryParams['isAsc'] = "asc"
+      if (null != this.daterangeRiqi1 && '' != this.daterangeRiqi1) {
+        this.queryParams.params["beginRiqi"] = this.daterangeRiqi1;
+      }
+
+      if ('' != this.daterangeRiqi2 && null != this.daterangeRiqi2) {
+        this.queryParams.params["endRiqi"] = this.daterangeRiqi2;
+      }
+      listMingxi(this.queryParams).then(response => {
+
+        // response.data.total_huankuanjine
+        // response.data.total_changhuanben
+        // response.data.total_zhifulixi
+        if ("data" in response) {
+          //防止没有数据的时候报错
+          let tableDataInfo = response.data.tableDataInfo
+          this.mingxiList = tableDataInfo.rows;
+          this.total = tableDataInfo.total;
+          this.zongjia = response.data
+        } else {
+          this.mingxiList = []
+          this.total = 0
+        }
+
+        this.loading = false;
+      });
+    },
+    // 取消按钮
+    cancel() {
+      this.open = false;
+      this.reset();
+    },
+    // 表单重置
+    reset() {
+      this.form = {
+        id: null,
+        managerId: null,
+        qishu: null,
+        riqi: null,
+        huankuanjine: null,
+        changhuanben: null,
+        zhifulixi: null,
+        benjinshengyu: null,
+        comment: null,
+        createTime: null,
+        createBy: null,
+        updateTime: null,
+        updateBy: null
       };
+      this.resetForm("form");
     },
-    created() {
+    /** 搜索按钮操作 */
+    handleQuery() {
+      this.queryParams.pageNum = 1;
       this.getList();
     },
-    methods: {
-      /** 查询还款计划明细列表 */
-      getList() {
-        this.loading = true;
-        this.queryParams.params = {};
-        this.queryParams['orderByColumn'] = "riqi"
-        this.queryParams['isAsc'] = "asc"
-        if (null != this.daterangeRiqi1 && '' != this.daterangeRiqi1) {
-          this.queryParams.params["beginRiqi"] = this.daterangeRiqi1;
-        }
-
-        if ('' != this.daterangeRiqi2 && null != this.daterangeRiqi2) {
-          this.queryParams.params["endRiqi"] = this.daterangeRiqi2;
-        }
-        listMingxi(this.queryParams).then(response => {
-
-          // response.data.total_huankuanjine
-          // response.data.total_changhuanben
-          // response.data.total_zhifulixi
-          if ("data" in response) {
-            //防止没有数据的时候报错
-            let tableDataInfo = response.data.tableDataInfo
-            this.mingxiList = tableDataInfo.rows;
-            this.total = tableDataInfo.total;
-          } else {
-            this.mingxiList = []
-            this.total = 0
-          }
-
-          this.loading = false;
-        });
-      },
-      // 取消按钮
-      cancel() {
-        this.open = false;
-        this.reset();
-      },
-      // 表单重置
-      reset() {
-        this.form = {
-          id: null,
-          managerId: null,
-          qishu: null,
-          riqi: null,
-          huankuanjine: null,
-          changhuanben: null,
-          zhifulixi: null,
-          benjinshengyu: null,
-          comment: null,
-          createTime: null,
-          createBy: null,
-          updateTime: null,
-          updateBy: null
-        };
-        this.resetForm("form");
-      },
-      /** 搜索按钮操作 */
-      handleQuery() {
-        this.queryParams.pageNum = 1;
-        this.getList();
-      },
-      /** 重置按钮操作 */
-      resetQuery() {
-        this.daterangeRiqi1 = '';
-        this.daterangeRiqi2 = '';
-        this.resetForm("queryForm");
-        this.handleQuery();
-      },
-      // 多选框选中数据
-      handleSelectionChange(selection) {
-        this.ids = selection.map(item => item.id)
-        this.single = selection.length !== 1
-        this.multiple = !selection.length
-      },
-      /** 新增按钮操作 */
-      handleAdd() {
-        this.reset();
+    /** 重置按钮操作 */
+    resetQuery() {
+      this.daterangeRiqi1 = '';
+      this.daterangeRiqi2 = '';
+      this.resetForm("queryForm");
+      this.handleQuery();
+    },
+    // 多选框选中数据
+    handleSelectionChange(selection) {
+      this.ids = selection.map(item => item.id)
+      this.single = selection.length !== 1
+      this.multiple = !selection.length
+    },
+    /** 新增按钮操作 */
+    handleAdd() {
+      this.reset();
+      this.open = true;
+      this.title = "添加还款计划明细";
+    },
+    /** 修改按钮操作 */
+    handleUpdate(row) {
+      this.reset();
+      const id = row.id || this.ids
+      getMingxi(id).then(response => {
+        this.form = response.data;
         this.open = true;
-        this.title = "添加还款计划明细";
-      },
-      /** 修改按钮操作 */
-      handleUpdate(row) {
-        this.reset();
-        const id = row.id || this.ids
-        getMingxi(id).then(response => {
-          this.form = response.data;
-          this.open = true;
-          this.title = "修改还款计划明细";
-        });
-      },
-      /** 提交按钮 */
-      submitForm() {
-        this.$refs["form"].validate(valid => {
-          if (valid) {
-            if (this.form.id != null) {
-              updateMingxi(this.form).then(response => {
-                this.$modal.msgSuccess("修改成功");
-                this.open = false;
-                this.getList();
-              });
-            } else {
-              addMingxi(this.form).then(response => {
-                this.$modal.msgSuccess("新增成功");
-                this.open = false;
-                this.getList();
-              });
-            }
+        this.title = "修改还款计划明细";
+      });
+    },
+    /** 提交按钮 */
+    submitForm() {
+      this.$refs["form"].validate(valid => {
+        if (valid) {
+          if (this.form.id != null) {
+            updateMingxi(this.form).then(response => {
+              this.$modal.msgSuccess("修改成功");
+              this.open = false;
+              this.getList();
+            });
+          } else {
+            addMingxi(this.form).then(response => {
+              this.$modal.msgSuccess("新增成功");
+              this.open = false;
+              this.getList();
+            });
           }
-        });
-      },
-      /** 删除按钮操作 */
-      handleDelete(row) {
-        const ids = row.id || this.ids;
-        this.$modal.confirm('是否确认删除还款计划明细编号为"' + ids + '"的数据项？').then(function() {
-          return delMingxi(ids);
-        }).then(() => {
-          this.getList();
-          this.$modal.msgSuccess("删除成功");
-        }).catch(() => {});
-      },
-      /** 导出按钮操作 */
-      handleExport() {
-        this.download('huankuanjihua/mingxi/export', {
-          ...this.queryParams
-        }, `mingxi_${new Date().getTime()}.xlsx`)
-      }
+        }
+      });
+    },
+    /** 删除按钮操作 */
+    handleDelete(row) {
+      const ids = row.id || this.ids;
+      this.$modal.confirm('是否确认删除还款计划明细编号为"' + ids + '"的数据项？').then(function () {
+        return delMingxi(ids);
+      }).then(() => {
+        this.getList();
+        this.$modal.msgSuccess("删除成功");
+      }).catch(() => { });
+    },
+    /** 导出按钮操作 */
+    handleExport() {
+      this.download('huankuanjihua/mingxi/export', {
+        ...this.queryParams
+      }, `mingxi_${new Date().getTime()}.xlsx`)
+    },
+    getSummaries(param) {
+      const { columns, data } = param;
+      const sums = [];
+      columns.forEach((column, index) => {
+        if (index === 0) {
+          sums[index] = '合计';
+          return;
+        } else if (column.label.includes('还款金额')) {
+          sums[index] = (this.zongjia.total_huankuanjine).toFixed(2);
+        } else if (column.label.includes('偿还本金')) {
+          sums[index] = (this.zongjia.total_changhuanben).toFixed(2);
+        } else if (column.label.includes('支付利息')) {
+          sums[index] = (this.zongjia.total_zhifulixi).toFixed(2);
+        } else {
+          sums[index] = '/';
+        }
+      });
+      return sums;
     }
-  };
+  }
+};
 </script>

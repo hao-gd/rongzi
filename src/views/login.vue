@@ -168,8 +168,8 @@ export default {
   align-items: center;
   height: 100%;
   background-image: url("../assets/images/bj.png");
-  // background-size: cover;
-  background-size:  100%;
+  background-size: cover;
+  // background-size:  100%;
   background-repeat: no-repeat;
   background-position: -20%;
   background-position: center bottom;

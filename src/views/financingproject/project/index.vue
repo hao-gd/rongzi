@@ -19,18 +19,18 @@
           </el-col> -->
           <el-col :span="8">
             <el-form-item label="债权人" prop="financialInstitution">
-              <el-select filterable v-model="queryParams.financialInstitution" placeholder="请选择债权人" filterable
+              <el-select filterable v-model="queryParams.financialInstitution" placeholder="请选择债权人"
                 clearable>
                 <el-option v-for="dict in dict.type.sys_1757271666666242000" :key="dict.value" :label="dict.label"
-                  :value="dict.value" />
+                  :value="dict.label" />
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="借款人" prop="borrowingUnit">
-              <el-select filterable v-model="queryParams.borrowingUnit" placeholder="请选择借款人" filterable clearable>
+              <el-select filterable v-model="queryParams.borrowingUnit" placeholder="请选择借款人" clearable>
                 <el-option v-for="dict in dict.type.sys_1767154968256577500" :key="dict.value" :label="dict.label"
-                  :value="dict.value" />
+                  :value="dict.label" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -46,7 +46,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="融资类型" prop="financingType">
-              <el-select filterable v-model="queryParams.financingType" placeholder="请选择融资类型" filterable clearable>
+              <el-select filterable v-model="queryParams.financingType" placeholder="请选择融资类型" clearable>
                 <el-option v-for="dict in dict.type.sys_1759508335389835300" :key="dict.value" :label="dict.label"
                   :value="dict.value" />
               </el-select>
@@ -99,12 +99,12 @@
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
       <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" min-width="100" />
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
-      <el-table-column show-overflow-tooltip label="借款人" align="center" prop="borrowingUnit" min-width="130">
+      <el-table-column show-overflow-tooltip label="借款人" align="center" prop="borrowingUnit" min-width="125">
         <!-- <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1767154968256577500" :value="scope.row.borrowingUnit" />
         </template> -->
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="债权人" align="center" prop="financialInstitution" min-width="130">
+      <el-table-column show-overflow-tooltip label="债权人" align="center" prop="financialInstitution" min-width="125">
         <!-- <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1757271666666242000" :value="scope.row.financialInstitution" />
         </template> -->
@@ -114,12 +114,22 @@
           <dict-tag :options="dict.type.sys_1759508335389835300" :value="scope.row.financingType" />
         </template> -->
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="融资金额（万元）" align="center" prop="financingAmount" width="150">
+      <el-table-column show-overflow-tooltip label="融资金额（万元）" align="center" prop="financingAmount" width="140">
         <template slot-scope="scope">
           <span>{{ formatNumberAsRMB(scope.row.financingAmount) }}</span>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="期限（月）" align="center" prop="loanTerm" min-width="120">
+      <el-table-column show-overflow-tooltip label="保证金（万元）" align="center" prop="baozhengjin" width="130">
+        <template slot-scope="scope">
+          <span>{{ formatNumberAsRMB(scope.row.baozhengjin) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column show-overflow-tooltip label="手续费（万元）" align="center" prop="shouxufei" width="130">
+        <template slot-scope="scope">
+          <span>{{ formatNumberAsRMB(scope.row.shouxufei) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column show-overflow-tooltip label="期限（月）" align="center" prop="loanTerm" min-width="100">
         <template slot-scope="scope">
           <span>{{ creditCycleFN(scope.row.loanDate, scope.row.dueDate) }}</span>
         </template>
@@ -302,6 +312,18 @@
           </el-row>
 
           <el-row :gutter="20">
+            <el-col :span="8">
+              <el-form-item label="保证金（万元）" prop="baozhengjin">
+                <el-input-number :disabled="!isEditable" class="w" :controls="false" :precision="2"
+                   :readonly="!isEditable" v-model="form.baozhengjin" placeholder="请输入保证金" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="手续费（万元）" prop="shouxufei">
+                <el-input-number :disabled="!isEditable" class="w" :controls="false" :precision="2"
+                   :readonly="!isEditable" v-model="form.shouxufei" placeholder="请输入手续费" />
+              </el-form-item>
+            </el-col>
             <el-col :span="8">
               <el-form-item label="债务状态" prop="loanState">
                 <el-select :disabled="true" v-model="form.loanState" filterable placeholder="请选择债务状态">
@@ -732,6 +754,8 @@
           response.data.financingAmount = Number(response.data.financingAmount) / 10000;
           response.data.repaidAmount = Number(response.data.repaidAmount) / 10000;
           response.data.remainingAmount = Number(response.data.remainingAmount) / 10000;
+          response.data.baozhengjin = Number(response.data.baozhengjin) / 10000;
+          response.data.shouxufei = Number(response.data.shouxufei) / 10000;
 
           this.scrUuid = response.data.scrUuid;
           this.form = response.data;
@@ -772,6 +796,8 @@
             data.financingAmount = data.financingAmount * 10000;
             data.repaidAmount = data.repaidAmount * 10000;
             data.remainingAmount = data.remainingAmount * 10000;
+            data.baozhengjin = data.baozhengjin * 10000;
+            data.shouxufei = data.shouxufei * 10000;
 
             //取消下列自动计算，因为本金偿还可能都是提前输入好的，所以当前剩余的本金是跟时间有关系的，除非能根据当前时间实时刷新这个数据
             // 取利率列表最后一个作为当前利率
