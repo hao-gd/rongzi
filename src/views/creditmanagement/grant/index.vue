@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
     <search-panel HeaderIcon="Creditmanagement" title="授信管理">
-      <el-form label-position="left" :model="queryParams" ref="queryForm" size="small" :inline="false" v-show="showSearch"
-        label-width="140px">
+      <el-form label-position="left" :model="queryParams" ref="queryForm" size="small" :inline="false"
+        v-show="showSearch" label-width="140px">
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="管理编号" prop="managementId">
@@ -39,13 +39,13 @@
             <el-form-item label="起止日" :error="error1">
               <el-row>
                 <el-col :span="11">
-                  <el-date-picker :picker-options="pickerOptions3" format='yyyy/MM/dd' v-model="daterangeStartDate" style="width: 100%"
-                    value-format="yyyy-MM-dd" type="date" placeholder="请选择起始日"></el-date-picker>
+                  <el-date-picker :picker-options="pickerOptions3" format='yyyy/MM/dd' v-model="daterangeStartDate"
+                    style="width: 100%" value-format="yyyy-MM-dd" type="date" placeholder="请选择起始日"></el-date-picker>
                 </el-col>
                 <el-col :span="2" class="flex fjc">-</el-col>
                 <el-col :span="11">
-                  <el-date-picker :picker-options="pickerOptions4" format='yyyy/MM/dd' v-model="daterangeDeadline" style="width: 100%"
-                    value-format="yyyy-MM-dd" type="date" placeholder="请选择到期日"></el-date-picker>
+                  <el-date-picker :picker-options="pickerOptions4" format='yyyy/MM/dd' v-model="daterangeDeadline"
+                    style="width: 100%" value-format="yyyy-MM-dd" type="date" placeholder="请选择到期日"></el-date-picker>
                 </el-col>
               </el-row>
             </el-form-item>
@@ -160,8 +160,8 @@
         </template>
       </el-table-column> -->
       <!-- <el-table-column label="uuid" align="center" prop="uuid" /> -->
-      <el-table-column min-width="60" header-align="center" show-overflow-tooltip fixed="right" label="操作" align="center"
-        class-name="''">
+      <el-table-column min-width="60" header-align="center" show-overflow-tooltip fixed="right" label="操作"
+        align="center" class-name="''">
         <template slot-scope="scope">
           <!-- <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)"
             v-hasPermi="['creditmanagement:grant:edit']">修改</el-button>
@@ -305,8 +305,9 @@
         </div>
       </div>
       <div v-else class="flex">
-        <CreateSuccess @close-dialog="closeDialog" @create-again="create_again" :isSuccess="isSuccess" :isTitle="isTitle"
-          :isMessage="isMessage" :title="ctitle" :isEdit="isEdit" @confirm="handleaddList" @cancel="cancel">
+        <CreateSuccess @close-dialog="closeDialog" @create-again="create_again" :isSuccess="isSuccess"
+          :isTitle="isTitle" :isMessage="isMessage" :title="ctitle" :isEdit="isEdit" @confirm="handleaddList"
+          @cancel="cancel">
         </CreateSuccess>
       </div>
     </el-dialog>
@@ -314,620 +315,680 @@
 </template>
 
 <script>
-import { listGrant, getGrant, delGrant, addGrant, updateGrant } from "@/api/creditmanagement/grant";
-import { SnowflakeIdGenerator } from '@/utils/index'
-import { listList, getList, delList, addList, updateList } from "@/api/rzauditlist/list";
-import { mapGetters } from 'vuex';
-import moment from 'moment'
-import CreateSuccess from '@/components/createSuccess/index.vue'
-import SearchPanel from '@/components/SearchPanel/index.vue'
-import { checkDueReminderWithConfig } from '@/utils/expirationreminder';
-import { reminderConfig } from '@/config/expirationreminder'
+  import {
+    listGrant,
+    getGrant,
+    delGrant,
+    addGrant,
+    updateGrant
+  } from "@/api/creditmanagement/grant";
+  import {
+    SnowflakeIdGenerator
+  } from '@/utils/index'
+  import {
+    listList,
+    getList,
+    delList,
+    addList,
+    updateList
+  } from "@/api/rzauditlist/list";
+  import {
+    mapGetters
+  } from 'vuex';
+  import moment from 'moment'
+  import CreateSuccess from '@/components/createSuccess/index.vue'
+  import SearchPanel from '@/components/SearchPanel/index.vue'
+  import {
+    checkDueReminderWithConfig
+  } from '@/utils/expirationreminder';
+  import {
+    reminderConfig
+  } from '@/config/expirationreminder'
 
-export default {
-  name: "Grant",
-  dicts: ['sys_1765001578994991000', 'sys_1765002034026643500', 'sys_acceptor'],
-  components: {
-    CreateSuccess,
-    SearchPanel
-  },
-  data() {
-    return {
-      pickerOptions1: {
-        // 禁用开始日期中，所有大于结束日期的日期
-        disabledDate: (date) => {
-          if (this.form.deadline) {
-            return date.getTime() > new Date(this.form.deadline).getTime();
+  export default {
+    name: "Grant",
+    dicts: ['sys_1765001578994991000', 'sys_1765002034026643500', 'sys_acceptor'],
+    components: {
+      CreateSuccess,
+      SearchPanel
+    },
+    data() {
+      return {
+        pickerOptions1: {
+          // 禁用开始日期中，所有大于结束日期的日期
+          disabledDate: (date) => {
+            if (this.form.deadline) {
+              return date.getTime() > new Date(this.form.deadline).getTime();
+            }
           }
-        }
-      },
-      pickerOptions2: {
-        // 禁用结束日期中，所有小于开始日期的日期
-        disabledDate: (date) => {
-          if (this.form.startDate) {
-            // 一天的毫秒数
-            var oneDayInMilliseconds = 24 * 60 * 60 * 1000;
-            return date.getTime() < new Date(this.form.startDate).getTime() - oneDayInMilliseconds;
+        },
+        pickerOptions2: {
+          // 禁用结束日期中，所有小于开始日期的日期
+          disabledDate: (date) => {
+            if (this.form.startDate) {
+              // 一天的毫秒数
+              var oneDayInMilliseconds = 24 * 60 * 60 * 1000;
+              return date.getTime() < new Date(this.form.startDate).getTime() - oneDayInMilliseconds;
+            }
           }
-        }
-      },
-      pickerOptions3: {
-        // 禁用开始日期中，所有大于结束日期的日期
-        disabledDate: (date) => {
-          if (this.daterangeStartDate) {
-            return date.getTime() > new Date(this.daterangeStartDate).getTime();
+        },
+        pickerOptions3: {
+          // 禁用开始日期中，所有大于结束日期的日期
+          disabledDate: (date) => {
+            if (this.daterangeStartDate) {
+              return date.getTime() > new Date(this.daterangeStartDate).getTime();
+            }
           }
-        }
-      },
-      pickerOptions4: {
-        // 禁用结束日期中，所有小于开始日期的日期
-        disabledDate: (date) => {
-          if (this.daterangeDeadline) {
-            // 一天的毫秒数
-            var oneDayInMilliseconds = 24 * 60 * 60 * 1000;
-            return date.getTime() < new Date(this.daterangeDeadline).getTime() - oneDayInMilliseconds;
+        },
+        pickerOptions4: {
+          // 禁用结束日期中，所有小于开始日期的日期
+          disabledDate: (date) => {
+            if (this.daterangeDeadline) {
+              // 一天的毫秒数
+              var oneDayInMilliseconds = 24 * 60 * 60 * 1000;
+              return date.getTime() < new Date(this.daterangeDeadline).getTime() - oneDayInMilliseconds;
+            }
           }
-        }
-      },
-      isSuccess: true,
-      isTitle: true,
-      isMessage: true,
-      ctitle: '',
-      isEdit: false,
-      rzaudit_data: null,
+        },
+        isSuccess: true,
+        isTitle: true,
+        isMessage: true,
+        ctitle: '',
+        isEdit: false,
+        rzaudit_data: null,
 
-      reminderConfig: reminderConfig.slice(1),
-      checkDueReminderWithConfig: checkDueReminderWithConfig,
-      created_successfully: false,
-      isEditable: false,
-      header_cell_style: {
-        backgroundColor: '#f2f4f5',
-        color: '#000000',
-        fontSize: '14px',
-        fontWeight: 'bold',
-      },
-      // 遮罩层
-      loading: true,
-      // 选中数组
-      ids: [],
-      // 子表选中数据
-      checkedrzsrc2: [],
-      // 非单个禁用
-      single: true,
-      // 非多个禁用
-      multiple: true,
-      // 显示搜索条件
-      showSearch: true,
-      // 总条数
-      total: 0,
-      // 授信管理表格数据
-      grantList: [],
-      // 附件表表格数据
-      rzsrc2List: [],
-      // 弹出层标题
-      title: "",
-      // 是否显示弹出层
-      open: false,
-      // 创建人时间范围
-      daterangeStartDate: '',
-      // 创建人时间范围
-      daterangeDeadline: '',
-      // 查询参数
-      queryParams: {
-        pageNum: 1,
-        pageSize: 100,
-        managementId: null,
+        reminderConfig: reminderConfig.slice(1),
+        checkDueReminderWithConfig: checkDueReminderWithConfig,
+        created_successfully: false,
+        isEditable: false,
+        header_cell_style: {
+          backgroundColor: '#f2f4f5',
+          color: '#000000',
+          fontSize: '14px',
+          fontWeight: 'bold',
+        },
+        // 遮罩层
+        loading: true,
+        // 选中数组
+        ids: [],
+        // 子表选中数据
+        checkedrzsrc2: [],
+        // 非单个禁用
+        single: true,
+        // 非多个禁用
+        multiple: true,
+        // 显示搜索条件
+        showSearch: true,
+        // 总条数
+        total: 0,
+        // 授信管理表格数据
+        grantList: [],
+        // 附件表表格数据
+        rzsrc2List: [],
+        // 弹出层标题
+        title: "",
+        // 是否显示弹出层
+        open: false,
+        // 创建人时间范围
+        daterangeStartDate: '',
+        // 创建人时间范围
+        daterangeDeadline: '',
+        // 查询参数
+        queryParams: {
+          pageNum: 1,
+          pageSize: 100,
+          managementId: null,
+          scrUuid: null,
+          creditor: null,
+          financialInstitution: null,
+          creditType: null,
+          creditDetail: null,
+          creditAmount: null,
+          usedCreditAmount: null,
+          remainingCreditAmount: null,
+          startDate: null,
+          deadline: null,
+          creditCycle: null,
+          creditState: null,
+          comment: null,
+          uuid: null
+        },
+        // 表单参数
+        form: {},
+        /* str 需要添加的 */
         scrUuid: null,
-        creditor: null,
-        financialInstitution: null,
-        creditType: null,
-        creditDetail: null,
-        creditAmount: null,
-        usedCreditAmount: null,
-        remainingCreditAmount: null,
-        startDate: null,
-        deadline: null,
-        creditCycle: null,
-        creditState: null,
-        comment: null,
-        uuid: null
-      },
-      // 表单参数
-      form: {},
-      /* str 需要添加的 */
-      scrUuid: null,
-      /* end */
+        /* end */
 
-      // 表单校验
-      rules: {
-        managementId: [
-          { required: true, message: "授信管理管理编号不能为空", trigger: "blur" }
-        ],
-        scrUuid: [
-          { required: true, message: "数据唯一编号不能为空", trigger: "blur" }
-        ],
-        creditor: [
-          { required: true, message: "借款单位不能为空", trigger: "blur" }
-        ],
-        financialInstitution: [
-          { required: true, message: "授信机构不能为空", trigger: "change" }
-        ],
-        creditType: [
-          { required: true, message: "授信类型不能为空", trigger: "change" }
-        ],
-        creditDetail: [
-          { required: true, message: "项目名称不能为空", trigger: "blur" }
-        ],
-        creditAmount: [
-          { required: true, message: "授信金额不能为空", trigger: "blur" }
-        ],
-        usedCreditAmount: [
-          { required: true, message: "已用授信金额不能为空", trigger: "blur" }
-        ],
-        remainingCreditAmount: [
-          { required: true, message: "剩余授信金额不能为空", trigger: "blur" }
-        ],
-        startDate: [
-          { required: true, message: "起始日不能为空", trigger: "blur" }
-        ],
-        deadline: [
-          { required: true, message: "到期日不能为空", trigger: "blur" }
-        ],
-        creditCycle: [
-          { required: true, message: "授信有效期不能为空", trigger: "blur" }
-        ],
-        creditState: [
-          { required: true, message: "授信状态不能为空", trigger: "change" }
-        ],
-        createTime: [
-          { required: true, message: "创建时间不能为空", trigger: "blur" }
-        ],
-        createBy: [
-          { required: true, message: "创建人不能为空", trigger: "blur" }
-        ],
-        uuid: [
-          { required: true, message: "uuid不能为空", trigger: "blur" }
-        ]
-      },
-      isAutoCalculated: false, // 是否自动计算的标志
-      error1: ''
-    };
-  },
-  watch: {
-    open(n, o) {
-      if (n == false) {
-        this.created_successfully = false;
-        this.isEditable = true;
-      }
-    },
-    // 观察开始和结束日期的变化，自动重新计算天数
-    'form.startDate': function (newVal, oldVal) {
-      if (newVal !== oldVal) {
-        this.calculateLoanTerm();
-      }
-    },
-    'form.deadline': function (newVal, oldVal) {
-      if (newVal !== oldVal) {
-        this.calculateLoanTerm();
-      }
-    },
-daterangeStartDate(n, o) {
-      if (n !== '' && n !== null) {
-        if (this.daterangeDeadline === '' || this.daterangeDeadline === null) {
-          this.error1 = '到期日不能为空';
-        } else {
-          this.error1 = ''; // 清空错误信息
-        }
-      } else if (this.daterangeDeadline === '' || this.daterangeDeadline === null) {
-        this.error1 = ''; // 两个日期都为空时，清空错误信息
-      } else {
-        this.error1 = '起始日不能为空';
-      }
-    },
-    daterangeDeadline(n, o) {
-      if (n !== '' && n !== null) {
-        if (this.daterangeStartDate === '' || this.daterangeStartDate === null) {
-          this.error1 = '起始日不能为空';
-        } else {
-          this.error1 = ''; // 清空错误信息
-        }
-      } else if (this.daterangeStartDate === '' || this.daterangeStartDate === null) {
-        this.error1 = ''; // 两个日期都为空时，清空错误信息
-      } else {
-        this.error1 = '到期日不能为空';
-      }
-    },
-  },
-  computed: {
-    ...mapGetters([
-      'name', 'avatar'
-    ]),
-    remainingCreditAmount() {
-      // 确保值为数值类型，避免NaN
-      const creditAmount = Number(this.form.creditAmount) || 0;
-      const usedCreditAmount = Number(this.form.usedCreditAmount) || 0;
-
-      const residue = creditAmount - usedCreditAmount;
-      this.form.remainingCreditAmount = residue;
-      return residue;
-    },
-    /* 计算周期，开始时间减去结束时间 */
-    creditCycle: {
-      get() {
-        // 如果是自动计算的，直接返回计算结果加"天"，否则返回当前值
-        if (this.isAutoCalculated) {
-          return this.form.creditCycle ? `${this.form.creditCycle}月` : '';
-        } else {
-          return this.form.creditCycle ? `${this.form.creditCycle}月` : '';
-        }
-      },
-      set(value) {
-        this.isAutoCalculated = false; // 用户手动输入，更改标志状态
-        if (typeof value === 'string' && value.includes('月')) {
-          this.form.creditCycle = parseInt(value.replace('月', ''), 10);
-        } else if (!isNaN(value)) {
-          this.form.creditCycle = parseInt(value, 10);
-        }
-      }
-    }
-  },
-  created() {
-    this.getList();
-    this.created_successfully = false;
-    this.isEditable = true;
-  },
-  methods: {
-    calculateLoanTerm() {
-      if (this.form.startDate && this.form.deadline) {
-        const start = moment(this.form.startDate);
-        const end = moment(this.form.deadline);
-
-        // const days = end.diff(start, 'days') + 1; // 直接计算天数，并加1表示至少一天
-        let creditCycle = moment(end).diff(moment(start), 'month', true)
-
-        this.form.creditCycle = (creditCycle).toFixed(2);
-        this.isAutoCalculated = true; // 标记为自动计算
-      }
-    },
-    /* 到期提醒选择 */
-    handleSelect(val) {
-      if (val) {
-        let start = moment().format("YYYY-MM-DD");
-        let end = moment().add(val, 'days').format("YYYY-MM-DD");
-        this.daterangeDueDate = [start, end]
-      } else {
-        this.daterangeDueDate = []
-      }
-    },
-    /* 创建成功关闭弹窗 */
-    closeDialog() {
-      this.open = false;
-      this.created_successfully = false;
-    },
-    /* 再次创建 */
-    create_again() {
-      this.reset();
-      this.created_successfully = false;
-    },
-    toggleEdit() {
-      this.isEditable = !this.isEditable;
-    },
-    /** 查询授信管理列表 */
-    getList() {
-      this.loading = true;
-
-      this.queryParams.params = {};
-      if (null != this.daterangeStartDate && '' != this.daterangeDeadline) {
-        this.queryParams.params["beginStartDate"] = this.daterangeStartDate;
-        this.queryParams.params["endStartDate"] = this.daterangeDeadline;
-      }
-      if (null != this.daterangeDeadline && '' != this.daterangeDeadline) {
-        this.queryParams.params["beginDeadline"] = this.daterangeStartDate;
-        this.queryParams.params["endDeadline"] = this.daterangeDeadline;
-      }
-      this.queryParams['orderByColumn'] = 'id'
-      let queryParams = JSON.parse(JSON.stringify(this.queryParams));
-      if (null !== queryParams.financialInstitution) {
-        queryParams.financialInstitution = queryParams.financialInstitution.join(',')
-      }
-      listGrant(queryParams).then(response => {
-        this.grantList = response.rows;
-        this.total = response.total;
-        this.loading = false;
-      });
-    },
-    // 取消按钮
-    cancel() {
-      this.open = false;
-      this.reset();
-    },
-    // 表单重置
-    reset() {
-      this.form = {
-        id: null,
-        managementId: null,
-        scrUuid: null,
-        creditor: null,
-        financialInstitution: null,
-        creditType: null,
-        creditDetail: null,
-        creditAmount: null,
-        usedCreditAmount: null,
-        remainingCreditAmount: null,
-        startDate: null,
-        deadline: null,
-        creditCycle: null,
-        creditState: null,
-        comment: null,
-        createTime: null,
-        createBy: null,
-        updateTime: null,
-        updateBy: null,
-        uuid: null
+        // 表单校验
+        rules: {
+          managementId: [{
+            required: true,
+            message: "授信管理管理编号不能为空",
+            trigger: "blur"
+          }],
+          scrUuid: [{
+            required: true,
+            message: "数据唯一编号不能为空",
+            trigger: "blur"
+          }],
+          creditor: [{
+            required: true,
+            message: "借款单位不能为空",
+            trigger: "blur"
+          }],
+          financialInstitution: [{
+            required: true,
+            message: "授信机构不能为空",
+            trigger: "change"
+          }],
+          creditType: [{
+            required: true,
+            message: "授信类型不能为空",
+            trigger: "change"
+          }],
+          creditDetail: [{
+            required: true,
+            message: "项目名称不能为空",
+            trigger: "blur"
+          }],
+          creditAmount: [{
+            required: true,
+            message: "授信金额不能为空",
+            trigger: "blur"
+          }],
+          usedCreditAmount: [{
+            required: true,
+            message: "已用授信金额不能为空",
+            trigger: "blur"
+          }],
+          remainingCreditAmount: [{
+            required: true,
+            message: "剩余授信金额不能为空",
+            trigger: "blur"
+          }],
+          startDate: [{
+            required: true,
+            message: "起始日不能为空",
+            trigger: "blur"
+          }],
+          deadline: [{
+            required: true,
+            message: "到期日不能为空",
+            trigger: "blur"
+          }],
+          creditCycle: [{
+            required: true,
+            message: "授信有效期不能为空",
+            trigger: "blur"
+          }],
+          creditState: [{
+            required: true,
+            message: "授信状态不能为空",
+            trigger: "change"
+          }],
+          createTime: [{
+            required: true,
+            message: "创建时间不能为空",
+            trigger: "blur"
+          }],
+          createBy: [{
+            required: true,
+            message: "创建人不能为空",
+            trigger: "blur"
+          }],
+          uuid: [{
+            required: true,
+            message: "uuid不能为空",
+            trigger: "blur"
+          }]
+        },
+        isAutoCalculated: false, // 是否自动计算的标志
+        error1: ''
       };
-      this.rzsrc2List = [];
-      this.resetForm("form");
     },
-    /** 搜索按钮操作 */
-    handleQuery() {
-      this.queryParams.pageNum = 1;
+    watch: {
+      open(n, o) {
+        if (n == false) {
+          this.created_successfully = false;
+          this.isEditable = true;
+        }
+      },
+      // 观察开始和结束日期的变化，自动重新计算天数
+      'form.startDate': function(newVal, oldVal) {
+        if (newVal !== oldVal) {
+          this.calculateLoanTerm();
+        }
+      },
+      'form.deadline': function(newVal, oldVal) {
+        if (newVal !== oldVal) {
+          this.calculateLoanTerm();
+        }
+      },
+      daterangeStartDate(n, o) {
+        if (n !== '' && n !== null) {
+          if (this.daterangeDeadline === '' || this.daterangeDeadline === null) {
+            this.error1 = '到期日不能为空';
+          } else {
+            this.error1 = ''; // 清空错误信息
+          }
+        } else if (this.daterangeDeadline === '' || this.daterangeDeadline === null) {
+          this.error1 = ''; // 两个日期都为空时，清空错误信息
+        } else {
+          this.error1 = '起始日不能为空';
+        }
+      },
+      daterangeDeadline(n, o) {
+        if (n !== '' && n !== null) {
+          if (this.daterangeStartDate === '' || this.daterangeStartDate === null) {
+            this.error1 = '起始日不能为空';
+          } else {
+            this.error1 = ''; // 清空错误信息
+          }
+        } else if (this.daterangeStartDate === '' || this.daterangeStartDate === null) {
+          this.error1 = ''; // 两个日期都为空时，清空错误信息
+        } else {
+          this.error1 = '到期日不能为空';
+        }
+      },
+    },
+    computed: {
+      ...mapGetters([
+        'name', 'avatar'
+      ]),
+      remainingCreditAmount: {
+        set(val) {},
+        get() {
+          // 确保值为数值类型，避免NaN
+          const creditAmount = Number(this.form.creditAmount) || 0;
+          const usedCreditAmount = Number(this.form.usedCreditAmount) || 0;
+
+          const residue = creditAmount - usedCreditAmount;
+          this.form.remainingCreditAmount = residue;
+          return residue;
+        }
+      },
+      /* 计算周期，开始时间减去结束时间 */
+      creditCycle: {
+        get() {
+          // 如果是自动计算的，直接返回计算结果加"天"，否则返回当前值
+          if (this.isAutoCalculated) {
+            return this.form.creditCycle ? `${this.form.creditCycle}月` : '';
+          } else {
+            return this.form.creditCycle ? `${this.form.creditCycle}月` : '';
+          }
+        },
+        set(value) {
+          this.isAutoCalculated = false; // 用户手动输入，更改标志状态
+          if (typeof value === 'string' && value.includes('月')) {
+            this.form.creditCycle = parseInt(value.replace('月', ''), 10);
+          } else if (!isNaN(value)) {
+            this.form.creditCycle = parseInt(value, 10);
+          }
+        }
+      }
+    },
+    created() {
       this.getList();
-    },
-    /** 重置按钮操作 */
-    resetQuery() {
-      this.daterangeStartDate = '';
-      this.daterangeDeadline = '';
-      this.resetForm("queryForm");
-      this.handleQuery();
-    },
-    // 多选框选中数据
-    handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.id)
-      this.single = selection.length !== 1
-      this.multiple = !selection.length
-    },
-    /** 新增按钮操作 */
-    handleAdd() {
-      this.reset();
       this.created_successfully = false;
       this.isEditable = true;
-      this.open = true;
-      this.title = "添加授信管理";
     },
-    /** 修改按钮操作 */
-    handleUpdate(row) {
-      this.isEditable = false;
-      this.reset();
-      const id = row.id || this.ids
-      getGrant(id).then(response => {
-        /* str 需要赋值粘贴到的 */
-        response.data.rzsrc2List.forEach(i => {
-          i.id = null;
-        })
-        // 金额需要 / 10000
-        response.data.creditAmount = Number(response.data.creditAmount) / 10000;
-        response.data.usedCreditAmount = Number(response.data.usedCreditAmount) / 10000;
-        response.data.remainingCreditAmount = Number(response.data.remainingCreditAmount) / 10000;
-        this.scrUuid = response.data.scrUuid;
-        this.form = response.data;
-        this.form.scrUuid = response.data.rzsrc2List.map(i => i.url)
-        this.form.financialInstitution = response.data.financialInstitution.split(',');
-        /* end */
-        this.rzsrc2List = response.data.rzsrc2List;
-        this.open = true;
-        this.title = "修改授信管理";
-      });
-    },
-    /** 提交按钮 */
-    submitForm() {
-      this.$refs["form"].validate(valid => {
-        if (valid) {
-          const data = JSON.parse(JSON.stringify(this.form))
-          this.form.rzsrc2List = this.rzsrc2List;
-          this.rzaudit_data = null;
-          // 金额需要 * 10000
-          data.creditAmount = Number(data.creditAmount) * 10000;
-          data.usedCreditAmount = Number(data.usedCreditAmount) * 10000;
-          data.remainingCreditAmount = Number(data.remainingCreditAmount) * 10000;
-          if (this.form.id != null) {
-            // updateGrant(this.form).then(response => {
-            //   this.$modal.msgSuccess("修改成功");
-            //   this.open = false;
-            //   this.getList();
-            // });
-            data.scrUuid = Number(this.scrUuid);
-            // 计算周期，开始时间减去结束时间
-            // let creditCycle = moment(data.deadline).diff(moment(data.startDate), 'days');
-            // data.creditCycle = creditCycle === 0 ? 1 : creditCycle;
+    methods: {
+      calculateLoanTerm() {
+        if (this.form.startDate && this.form.deadline) {
+          const start = moment(this.form.startDate);
+          const end = moment(this.form.deadline);
 
-            let loanTermStr = data.creditCycle.toString();
-            loanTermStr = loanTermStr.replace(/月$/, '');
+          // const days = end.diff(start, 'days') + 1; // 直接计算天数，并加1表示至少一天
+          let creditCycle = moment(end).diff(moment(start), 'month', true)
 
-            data.creditCycle = loanTermStr
-
-            data.financialInstitution = data.financialInstitution.join(',')
-            this.rzaudit_data = {
-              "auditId": data.id,
-              "scrUuid": data.scrUuid,
-              "createBy": this.name,
-              "createTime": null,
-              "dataJson": JSON.stringify(data),
-              "tableName": "rz_credit_management",
-              "auditState": "1759514891045044200",
-              "uuid": data.uuid
-            }
-            if (this.title === '修改授信管理' && this.created_successfully === false && this.isEditable === true) {
-              this.created_successfully = true;
-              this.isSuccess = false;
-              this.isTitle = true;
-              this.isMessage = false;
-              this.ctitle = '确定修改授信管理信息吗？';
-              this.isEdit = true;
-              return;
-            }
-          } else {
-            // addGrant(this.form).then(response => {
-            //   this.$modal.msgSuccess("新增成功");
-            //   this.open = false;
-            //   this.getList();
-            // });
-            // 生成一个 uuid
-            const generator = new SnowflakeIdGenerator();
-
-            // start
-            const uuid = String(generator.nextId())
-            data.uuid = uuid;
-            // end
-
-            // 计算周期，开始时间减去结束时间
-            // let creditCycle = moment(data.deadline).diff(moment(data.startDate), 'days');
-            // data.creditCycle = creditCycle === 0 ? 1 : creditCycle;
-            let loanTermStr = data.creditCycle.toString();
-            loanTermStr = loanTermStr.replace(/月$/, '');
-
-            data.creditCycle = loanTermStr
-            data.financialInstitution = data.financialInstitution.join(',')
-            data.scrUuid = generator.nextId();
-            data.rzsrc2List = this.rzsrc2List;
-            data.createBy = this.name;
-            this.rzaudit_data = {
-              "id": null,
-              "auditId": null,
-              "scrUuid": data.scrUuid,
-              "createBy": this.name,
-              "createTime": null,
-              "dataJson": JSON.stringify(data),
-              "tableName": "rz_credit_management",
-              "auditState": "1759514891045044200",
-              "uuid": uuid,
-              "managementId": data.managementId
-            }
-          }
-          this.handleaddList();
+          this.form.creditCycle = (creditCycle).toFixed(2);
+          this.isAutoCalculated = true; // 标记为自动计算
         }
-      });
-    },
-    async handleaddList() {
-      // 检验上一个数据步骤有没有审批通过
-      await this.inspectionPendingReview(this.rzaudit_data)
-
-      addList(this.rzaudit_data).then(res => {
-        this.created_successfully = true;
-        if (this.title === '修改授信管理' && this.isEditable) {
-          this.isSuccess = true;
-          this.isTitle = true;
-          this.isMessage = true;
-          this.ctitle = this.isEdit ? '修改提交成功' : '提交成功';
-          this.isEdit = false;
+      },
+      /* 到期提醒选择 */
+      handleSelect(val) {
+        if (val) {
+          let start = moment().format("YYYY-MM-DD");
+          let end = moment().add(val, 'days').format("YYYY-MM-DD");
+          this.daterangeDueDate = [start, end]
         } else {
-          this.ctitle = '提交成功';
-          this.isMessage = true;
-          this.isEdit = false;
+          this.daterangeDueDate = []
         }
-      })
-    },
-    /** 删除按钮操作 */
-    handleDelete(row) {
-      // const ids = row.id || this.ids;
-      // this.$modal.confirm('是否确认删除授信管理编号为"' + ids + '"的数据项？').then(function () {
-      //   return delGrant(ids);
-      // }).then(() => {
-      //   this.getList();
-      //   this.$modal.msgSuccess("删除成功");
-      // }).catch(() => { });
-      const h = this.$createElement;
-      this.$msgbox({
-        title: '提示',
-        message: h('div', null, [
-          h('el-divider', {
-            class: {
-              "no_mt": true,
-              "mb20": true
-            },
-            attrs: { "data-role": 'el-divider' }
-          }, ''),
-          h('p', {
-            class: 'tc w mb20',
-            style: {
-              'font-size': '24px',
-              'color': '#000000',
-              'font-weight': 'bold'
-            }
-          }, '确定删除选中的授信管理吗？'),
-        ]),
-        showCancelButton: true,
-        cancelButtonText: '取消',
-        confirmButtonText: '确定',
-        cancelButtonClass: "btn-custom-cancel",
-        customClass: 'custom-msgbox',
-        beforeClose: (action, instance, done) => {
-          if (action === 'confirm') {
-            delGrant(ids).then(res => {
-              done();
-            });
-          } else {
-            done();
-          }
+      },
+      /* 创建成功关闭弹窗 */
+      closeDialog() {
+        this.open = false;
+        this.created_successfully = false;
+      },
+      /* 再次创建 */
+      create_again() {
+        this.reset();
+        this.created_successfully = false;
+      },
+      toggleEdit() {
+        this.isEditable = !this.isEditable;
+      },
+      /** 查询授信管理列表 */
+      getList() {
+        this.loading = true;
+
+        this.queryParams.params = {};
+        if (null != this.daterangeStartDate && '' != this.daterangeDeadline) {
+          this.queryParams.params["beginStartDate"] = this.daterangeStartDate;
+          this.queryParams.params["endStartDate"] = this.daterangeDeadline;
         }
-      }).then(action => {
-        this.cancel();
-        this.getList();
-        this.$modal.msgSuccess("删除成功");
-      });
-    },
-    /** 附件表序号 */
-    rowrzsrc2Index({ row, rowIndex }) {
-      row.index = rowIndex + 1;
-    },
-    /** 附件表添加按钮操作 */
-    handleAddrzsrc2() {
-      let obj = {};
-      obj.url = "";
-      obj.projectManagementId = "";
-      obj.type = "rz_credit_management";
-      this.rzsrc2List.push(obj);
-    },
-    /** 附件表删除按钮操作 */
-    handleDeleterzsrc2() {
-      if (this.checkedrzsrc2.length == 0) {
-        this.$modal.msgError("请先选择要删除的附件表数据");
-      } else {
-        const rzsrc2List = this.rzsrc2List;
-        const checkedrzsrc2 = this.checkedrzsrc2;
-        this.rzsrc2List = rzsrc2List.filter(function (item) {
-          return checkedrzsrc2.indexOf(item.index) == -1
+        if (null != this.daterangeDeadline && '' != this.daterangeDeadline) {
+          this.queryParams.params["beginDeadline"] = this.daterangeStartDate;
+          this.queryParams.params["endDeadline"] = this.daterangeDeadline;
+        }
+        this.queryParams['orderByColumn'] = 'id'
+        let queryParams = JSON.parse(JSON.stringify(this.queryParams));
+        if (null !== queryParams.financialInstitution) {
+          queryParams.financialInstitution = queryParams.financialInstitution.join(',')
+        }
+        listGrant(queryParams).then(response => {
+          this.grantList = response.rows;
+          this.total = response.total;
+          this.loading = false;
         });
-      }
-    },
-    /** 复选框选中数据 */
-    handlerzsrc2SelectionChange(selection) {
-      this.checkedrzsrc2 = selection.map(item => item.index)
-    },
-    /** 导出按钮操作 */
-    handleExport() {
-      this.download('creditmanagement/grant/export', {
-        ...this.queryParams
-      }, `grant_${new Date().getTime()}.xlsx`)
-    },
-    /* 上传完成的回调 */
-    upload_completed(url_string) {
-      const url_list = url_string.split(',')
-      url_list.forEach(url_i => {
-        let obj = {
-          url: url_i,
-          projectManagementId: this.form.managementId,
-          type: "rz_credit_management",
-          createBy: this.name,
-          createTime: moment().format("YYYY-MM-DD HH:mm:ss"),
+      },
+      // 取消按钮
+      cancel() {
+        this.open = false;
+        this.reset();
+      },
+      // 表单重置
+      reset() {
+        this.form = {
+          id: null,
+          managementId: null,
+          scrUuid: null,
+          creditor: null,
+          financialInstitution: null,
+          creditType: null,
+          creditDetail: null,
+          creditAmount: null,
+          usedCreditAmount: null,
+          remainingCreditAmount: null,
+          startDate: null,
+          deadline: null,
+          creditCycle: null,
+          creditState: null,
+          comment: null,
+          createTime: null,
+          createBy: null,
+          updateTime: null,
+          updateBy: null,
+          uuid: null
         };
+        this.rzsrc2List = [];
+        this.resetForm("form");
+      },
+      /** 搜索按钮操作 */
+      handleQuery() {
+        this.queryParams.pageNum = 1;
+        this.getList();
+      },
+      /** 重置按钮操作 */
+      resetQuery() {
+        this.daterangeStartDate = '';
+        this.daterangeDeadline = '';
+        this.resetForm("queryForm");
+        this.handleQuery();
+      },
+      // 多选框选中数据
+      handleSelectionChange(selection) {
+        this.ids = selection.map(item => item.id)
+        this.single = selection.length !== 1
+        this.multiple = !selection.length
+      },
+      /** 新增按钮操作 */
+      handleAdd() {
+        this.reset();
+        this.created_successfully = false;
+        this.isEditable = true;
+        this.open = true;
+        this.title = "添加授信管理";
+      },
+      /** 修改按钮操作 */
+      handleUpdate(row) {
+        this.isEditable = false;
+        this.reset();
+        const id = row.id || this.ids
+        getGrant(id).then(response => {
+          /* str 需要赋值粘贴到的 */
+          response.data.rzsrc2List.forEach(i => {
+            i.id = null;
+          })
+          // 金额需要 / 10000
+          response.data.creditAmount = Number(response.data.creditAmount) / 10000;
+          response.data.usedCreditAmount = Number(response.data.usedCreditAmount) / 10000;
+          response.data.remainingCreditAmount = Number(response.data.remainingCreditAmount) / 10000;
+          this.scrUuid = response.data.scrUuid;
+          this.form = response.data;
+          this.form.scrUuid = response.data.rzsrc2List.map(i => i.url)
+          this.form.financialInstitution = response.data.financialInstitution.split(',');
+          /* end */
+          this.rzsrc2List = response.data.rzsrc2List;
+          this.open = true;
+          this.title = "修改授信管理";
+        });
+      },
+      /** 提交按钮 */
+      submitForm() {
+        this.$refs["form"].validate(valid => {
+          if (valid) {
+            const data = JSON.parse(JSON.stringify(this.form))
+            this.form.rzsrc2List = this.rzsrc2List;
+            this.rzaudit_data = null;
+            // 金额需要 * 10000
+            data.creditAmount = Number(data.creditAmount) * 10000;
+            data.usedCreditAmount = Number(data.usedCreditAmount) * 10000;
+            data.remainingCreditAmount = Number(data.remainingCreditAmount) * 10000;
+            if (this.form.id != null) {
+              // updateGrant(this.form).then(response => {
+              //   this.$modal.msgSuccess("修改成功");
+              //   this.open = false;
+              //   this.getList();
+              // });
+              data.scrUuid = Number(this.scrUuid);
+              // 计算周期，开始时间减去结束时间
+              // let creditCycle = moment(data.deadline).diff(moment(data.startDate), 'days');
+              // data.creditCycle = creditCycle === 0 ? 1 : creditCycle;
 
-        // 检查this.rzsrc2List中是否已经存在具有相同url的对象
-        if (!this.rzsrc2List.some(item => item.url === obj.url)) {
-          this.rzsrc2List.push(obj);
+              let loanTermStr = data.creditCycle.toString();
+              loanTermStr = loanTermStr.replace(/月$/, '');
+
+              data.creditCycle = loanTermStr
+
+              data.financialInstitution = data.financialInstitution.join(',')
+              this.rzaudit_data = {
+                "auditId": data.id,
+                "scrUuid": data.scrUuid,
+                "createBy": this.name,
+                "createTime": null,
+                "dataJson": JSON.stringify(data),
+                "tableName": "rz_credit_management",
+                "auditState": "1759514891045044200",
+                "uuid": data.uuid
+              }
+              if (this.title === '修改授信管理' && this.created_successfully === false && this.isEditable === true) {
+                this.created_successfully = true;
+                this.isSuccess = false;
+                this.isTitle = true;
+                this.isMessage = false;
+                this.ctitle = '确定修改授信管理信息吗？';
+                this.isEdit = true;
+                return;
+              }
+            } else {
+              // addGrant(this.form).then(response => {
+              //   this.$modal.msgSuccess("新增成功");
+              //   this.open = false;
+              //   this.getList();
+              // });
+              // 生成一个 uuid
+              const generator = new SnowflakeIdGenerator();
+
+              // start
+              const uuid = String(generator.nextId())
+              data.uuid = uuid;
+              // end
+
+              // 计算周期，开始时间减去结束时间
+              // let creditCycle = moment(data.deadline).diff(moment(data.startDate), 'days');
+              // data.creditCycle = creditCycle === 0 ? 1 : creditCycle;
+              let loanTermStr = data.creditCycle.toString();
+              loanTermStr = loanTermStr.replace(/月$/, '');
+
+              data.creditCycle = loanTermStr
+              data.financialInstitution = data.financialInstitution.join(',')
+              data.scrUuid = generator.nextId();
+              data.rzsrc2List = this.rzsrc2List;
+              data.createBy = this.name;
+              this.rzaudit_data = {
+                "id": null,
+                "auditId": null,
+                "scrUuid": data.scrUuid,
+                "createBy": this.name,
+                "createTime": null,
+                "dataJson": JSON.stringify(data),
+                "tableName": "rz_credit_management",
+                "auditState": "1759514891045044200",
+                "uuid": uuid,
+                "managementId": data.managementId
+              }
+            }
+            this.handleaddList();
+          }
+        });
+      },
+      async handleaddList() {
+        // 检验上一个数据步骤有没有审批通过
+        await this.inspectionPendingReview(this.rzaudit_data)
+
+        addList(this.rzaudit_data).then(res => {
+          this.created_successfully = true;
+          if (this.title === '修改授信管理' && this.isEditable) {
+            this.isSuccess = true;
+            this.isTitle = true;
+            this.isMessage = true;
+            this.ctitle = this.isEdit ? '修改提交成功' : '提交成功';
+            this.isEdit = false;
+          } else {
+            this.ctitle = '提交成功';
+            this.isMessage = true;
+            this.isEdit = false;
+          }
+        })
+      },
+      /** 删除按钮操作 */
+      handleDelete(row) {
+        // const ids = row.id || this.ids;
+        // this.$modal.confirm('是否确认删除授信管理编号为"' + ids + '"的数据项？').then(function () {
+        //   return delGrant(ids);
+        // }).then(() => {
+        //   this.getList();
+        //   this.$modal.msgSuccess("删除成功");
+        // }).catch(() => { });
+        const h = this.$createElement;
+        this.$msgbox({
+          title: '提示',
+          message: h('div', null, [
+            h('el-divider', {
+              class: {
+                "no_mt": true,
+                "mb20": true
+              },
+              attrs: {
+                "data-role": 'el-divider'
+              }
+            }, ''),
+            h('p', {
+              class: 'tc w mb20',
+              style: {
+                'font-size': '24px',
+                'color': '#000000',
+                'font-weight': 'bold'
+              }
+            }, '确定删除选中的授信管理吗？'),
+          ]),
+          showCancelButton: true,
+          cancelButtonText: '取消',
+          confirmButtonText: '确定',
+          cancelButtonClass: "btn-custom-cancel",
+          customClass: 'custom-msgbox',
+          beforeClose: (action, instance, done) => {
+            if (action === 'confirm') {
+              delGrant(ids).then(res => {
+                done();
+              });
+            } else {
+              done();
+            }
+          }
+        }).then(action => {
+          this.cancel();
+          this.getList();
+          this.$modal.msgSuccess("删除成功");
+        });
+      },
+      /** 附件表序号 */
+      rowrzsrc2Index({
+        row,
+        rowIndex
+      }) {
+        row.index = rowIndex + 1;
+      },
+      /** 附件表添加按钮操作 */
+      handleAddrzsrc2() {
+        let obj = {};
+        obj.url = "";
+        obj.projectManagementId = "";
+        obj.type = "rz_credit_management";
+        this.rzsrc2List.push(obj);
+      },
+      /** 附件表删除按钮操作 */
+      handleDeleterzsrc2() {
+        if (this.checkedrzsrc2.length == 0) {
+          this.$modal.msgError("请先选择要删除的附件表数据");
+        } else {
+          const rzsrc2List = this.rzsrc2List;
+          const checkedrzsrc2 = this.checkedrzsrc2;
+          this.rzsrc2List = rzsrc2List.filter(function(item) {
+            return checkedrzsrc2.indexOf(item.index) == -1
+          });
         }
-      });
+      },
+      /** 复选框选中数据 */
+      handlerzsrc2SelectionChange(selection) {
+        this.checkedrzsrc2 = selection.map(item => item.index)
+      },
+      /** 导出按钮操作 */
+      handleExport() {
+        this.download('creditmanagement/grant/export', {
+          ...this.queryParams
+        }, `grant_${new Date().getTime()}.xlsx`)
+      },
+      /* 上传完成的回调 */
+      upload_completed(url_string) {
+        const url_list = url_string.split(',')
+        url_list.forEach(url_i => {
+          let obj = {
+            url: url_i,
+            projectManagementId: this.form.managementId,
+            type: "rz_credit_management",
+            createBy: this.name,
+            createTime: moment().format("YYYY-MM-DD HH:mm:ss"),
+          };
 
+          // 检查this.rzsrc2List中是否已经存在具有相同url的对象
+          if (!this.rzsrc2List.some(item => item.url === obj.url)) {
+            this.rzsrc2List.push(obj);
+          }
+        });
+
+      }
     }
-  }
-};
+  };
 </script>

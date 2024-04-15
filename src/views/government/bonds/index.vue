@@ -43,7 +43,7 @@
         </el-row>
 
         <el-row :gutter="20">
-          
+
           <!-- <el-col :span="8">
             <el-form-item label="债券发行期限" prop="bondDuration">
               <el-select filterable v-model="queryParams.bondDuration" placeholder="请选择债券发行期限" clearable>
@@ -584,14 +584,16 @@
           this.form.rate = value.replace(/%/g, '');
         }
       },
-      remainingCreditAmount() {
+      remainingCreditAmount: {
+        set(val) {},
+        get() {
         // 确保值为数值类型，避免NaN
         const creditAmount = Number(this.form.approvedAmount) || 0;
         const usedCreditAmount = Number(this.form.repaidAmount) || 0;
 
         const residue = creditAmount - usedCreditAmount;
         this.form.remainingAmount = residue;
-        return residue;
+        return residue;}
       },
       ...mapGetters([
         'name', 'avatar'
@@ -722,7 +724,7 @@
           response.data.repaidAmount = Number(response.data.repaidAmount) / 10000;
           response.data.remainingAmount = Number(response.data.remainingAmount) / 10000;
           response.data.bondSize = Number(response.data.bondSize) / 10000;
-          
+
           this.scrUuid = response.data.scrUuid;
           this.form = response.data;
           this.form.scrUuid = response.data.rzsrc2List.map(i => i.url)
