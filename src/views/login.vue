@@ -167,7 +167,7 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100%;
-  background-image: url("../assets/images/bj.png");
+  background-image: url("../assets/images/bj.jpg");
   background-size: cover;
   // background-size:  100%;
   background-repeat: no-repeat;
