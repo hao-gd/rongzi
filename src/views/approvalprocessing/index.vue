@@ -321,7 +321,7 @@
         // });
         const response = await getList(id);
         this.form = response.data;
-        console.log(this.form);
+        // console.log(this.form);
         this.form.auditState = "1759514942710481000";
         updateList(this.form).then(response => {
           this.$modal.msgSuccess("修改成功");
@@ -345,7 +345,7 @@
         const func_ = this.form.auditId != null ?
           this.update_precautions_obj_fun[this.form.tableName] :
           this.precautions_obj_fun[this.form.tableName];
-        console.log(this.form);
+        // console.log(this.form);
         if (func_ == undefined) {
           this.$modal.msgError("数据有问题，请联系管理员");
           return;
@@ -432,7 +432,7 @@
         // });
         const response = await getList(id);
         this.form = response.data;
-        console.log(this.form);
+        // console.log(this.form);
         this.form.auditState = "1759515068883533800";
         updateList(this.form).then(response => {
           this.$modal.msgSuccess("修改成功");

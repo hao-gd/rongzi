@@ -338,7 +338,7 @@
         this.zjbj = []
         const data = JSON.parse(JSON.stringify(this.record));
         data.date = this.form.loanDate;
-        data.amount = (this.form.financingAmount * 10000).toFixed(2)
+        data.amount = Number(this.form.financingAmount) * 10000
         this.$set(this, "zjbj", JSON.parse(JSON.stringify([data])))
       },
 
@@ -443,7 +443,7 @@
         datas = sortTimeLineByDate(datas)
         // console.log("datas2", datas);
         this.repaymentPlanTable = generateRepaymentPlan(datas, this.huanbenjintongshihuanlixi)
-        console.log("datas1", JSON.stringify(this.repaymentPlanTable));
+        // console.log("datas1", JSON.stringify(this.repaymentPlanTable));
 
         this.repaymentPlanTable.forEach((plan) => {
           //添加借款信息
@@ -585,7 +585,7 @@
         }
 
         this.excel_data = xlsx.utils.sheet_to_json(firstWorkSheet);
-        console.log("读取所有excel数据", this.excel_data);
+        // console.log("读取所有excel数据", this.excel_data);
       },
       getHeaderRow(sheet) {
         const headers = []; // 定义数组，用于存放解析好的数据
