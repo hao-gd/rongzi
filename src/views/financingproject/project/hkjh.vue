@@ -83,9 +83,14 @@
 
     <!-- <div class="flex fje mb20"> -->
     <div style="display: flex;justify-content: space-between;margin-top: 20px;">
-
-      <el-button style="align-self:flex-end" type="info" plain icon="el-icon-upload2" size="mini" @click="handleImport">
-        导入还款计划明细</el-button>
+      <div style="display: flex;">
+        <el-button style="align-self:flex-end" type="info" plain icon="el-icon-upload2" size="mini"
+          @click="handleImport">
+          导入还款计划明细</el-button>
+        <el-button style="align-self:flex-end" type="warning" plain icon="el-icon-download" size="mini"
+          @click="exportToExcel">导出还款计划明细</el-button>
+      </div>
+      <!-- <el-button type="warning" plain icon="el-icon-download" size="mini" @click="exportToExcel">导 出</el-button> -->
 
       <div style="display: flex;">
         <el-checkbox style="margin-right: 30px;align-self:flex-end" v-model="huanbenjintongshihuanlixi">还本金的同时还利息
@@ -98,8 +103,9 @@
     <el-row v-if="repaymentPlanTable.length !== 0" class="mb20 mt20">
       <el-divider class="no_mt mb20"></el-divider>
 
-      <h2 class="tc 20 mb10">还款计划清单页面</h2>
-      <el-table show-summary :summary-method="getSummaries" border :data="repaymentPlanTable" style="width: 100%">
+      <h2 class="tc 20 mb10">还款计划明细</h2>
+      <el-table ref="tableRef" show-summary :summary-method="getSummaries" border :data="repaymentPlanTable"
+        style="width: 100%">
         <el-table-column v-for="(item, index) in hkjh_repaymentPlanClearingTableColumn" :key="index" :prop="item.prop"
           :label="item.label" :width="item.width" :min-width="item.minWidth" align="center" header-align="center">
         </el-table-column>
@@ -614,6 +620,53 @@
           plan.borrowingUnit = this.form.borrowingUnit
           plan.financialInstitution = this.form.financialInstitution
         });
+      },
+      //导出Excel
+      exportToExcel() {
+        //第二种方式
+
+        // 获取表格数据
+        const tableData = this.repaymentPlanTable;
+
+        // 构建 Excel 文件内容
+        let excelContent = `<html><head><meta charset="UTF-8"></head><body><table border="1">`;
+
+        // 添加表头
+        excelContent += '<tr>';
+        for (const column of this.$refs.tableRef.columns) {
+          if (column.property) {
+            excelContent += `<th>${column.label}</th>`;
+          }
+        }
+        excelContent += '</tr>';
+
+        // 添加表格数据
+        for (const row of tableData) {
+          excelContent += '<tr>';
+          for (const column of this.$refs.tableRef.columns) {
+            if (column.property) {
+              excelContent += `<td>${row[column.property]}</td>`;
+            }
+          }
+          excelContent += '</tr>';
+        }
+
+        // 构建完整的 Excel 文件内容
+        excelContent += '</table></body></html>';
+        // console.log(excelContent);
+        // 创建 Blob 对象
+        const blob = new Blob([excelContent], {
+          type: 'application/vnd.ms-excel'
+        });
+
+        // 创建链接并触发下载
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = '还款计划明细.xlsx'; // 设置默认文件名
+        link.style.display = "none";
+        document.body.appendChild(link);
+        link.click();
+        window.URL.revokeObjectURL(link.href);
       },
 
     }

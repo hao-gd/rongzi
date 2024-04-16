@@ -19,8 +19,7 @@
           </el-col> -->
           <el-col :span="8">
             <el-form-item label="债权人" prop="financialInstitution">
-              <el-select filterable v-model="queryParams.financialInstitution" placeholder="请选择债权人"
-                clearable>
+              <el-select filterable v-model="queryParams.financialInstitution" placeholder="请选择债权人" clearable>
                 <el-option v-for="dict in dict.type.sys_1757271666666242000" :key="dict.value" :label="dict.label"
                   :value="dict.label" />
               </el-select>
@@ -200,7 +199,8 @@
       @pagination="getList" />
 
     <!-- 添加或修改融资项目对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="80%" append-to-body>
+    <el-dialog :title="title" :visible.sync="open" width="80%" append-to-body :before-close="before_close"
+      :close-on-press-escape="false" :close-on-click-modal="false">
       <el-alert title="所有修改都需要提交审核，同一项目只能同时提交一个待审核" type="warning" center effect="dark">
       </el-alert>
       <el-divider class="no_mt mb20"></el-divider>
@@ -315,13 +315,13 @@
             <el-col :span="8">
               <el-form-item label="保证金（万元）" prop="baozhengjin">
                 <el-input-number :disabled="!isEditable" class="w" :controls="false" :precision="2"
-                   :readonly="!isEditable" v-model="form.baozhengjin" placeholder="请输入保证金" />
+                  :readonly="!isEditable" v-model="form.baozhengjin" placeholder="请输入保证金" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="手续费（万元）" prop="shouxufei">
                 <el-input-number :disabled="!isEditable" class="w" :controls="false" :precision="2"
-                   :readonly="!isEditable" v-model="form.shouxufei" placeholder="请输入手续费" />
+                  :readonly="!isEditable" v-model="form.shouxufei" placeholder="请输入手续费" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -419,7 +419,7 @@
 
         <div slot="footer" class="dialog-footer" style="display: flex; justify-content: center;">
           <el-button type="primary" @click="submitForm">提交审核</el-button>
-          <el-button @click="cancel">取 消</el-button>
+          <el-button @click="before_close">取 消</el-button>
         </div>
       </div>
       <div v-else class="flex">
@@ -697,14 +697,33 @@
           }
         })
       },
+
       // 取消按钮
+      before_close() {
+        this.$msgbox({
+          title: '重要提示',
+          message: '要舍弃当前更改吗?所有更改都将丢失',
+          showCancelButton: true,
+          cancelButtonText: '取消',
+          confirmButtonText: '确定',
+          cancelButtonClass: "btn-custom-cancel",
+          customClass: 'custom-msgbox',
+        }).then(() => {
+          this.cancel()
+        }).catch((e) => {
+          // console.log(e);
+        });
+
+      },
       cancel() {
+
         if (this.$refs.hkjhPanel) {
           this.$refs.hkjhPanel.clearHkjhList();
         }
         this.open = false;
         this.created_successfully = false;
         this.reset();
+
       },
       // 表单重置
       reset() {
