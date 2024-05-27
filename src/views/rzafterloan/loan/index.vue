@@ -385,7 +385,7 @@ export default {
           { required: true, message: "贷后项目管理编号不能为空", trigger: "blur" }
         ],
         scrUuid: [
-          { required: true, message: "数据唯一编号不能为空", trigger: "blur" }
+          { required: false, message: "附件不能为空", trigger: "blur" }
         ],
         financialInstitution: [
           { required: true, message: "金融机构不能为空", trigger: "change" }

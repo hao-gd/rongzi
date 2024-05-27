@@ -52,21 +52,26 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item class="flex" style="display: flex; justify-content: flex-end;">
-              <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">查 询</el-button>
-              <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重 置</el-button>
+            <el-form-item label="债务状态" prop="loanState">
+              <el-select  v-model="queryParams.loanState" filterable clearable placeholder="请选择债务状态">
+                  <el-option v-for="dict in dict.type.sys_1759509599150407700" :key="dict.value" :label="dict.label"
+                    :value="dict.label"></el-option>
+                </el-select>
             </el-form-item>
           </el-col>
+          
         </el-row>
 
-        <!-- <el-row :gutter="20">
+        
+
+        <el-row :gutter="20">
           <el-col :span="24">
             <el-form-item class="flex" style="display: flex; justify-content: flex-end;">
               <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">查 询</el-button>
               <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重 置</el-button>
             </el-form-item>
           </el-col>
-        </el-row> -->
+        </el-row>
       </el-form>
     </search-panel>
 
@@ -92,9 +97,9 @@
       <!-- <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar> -->
     </el-row>
 
-    <el-table v-loading="loading" :data="projectList" @selection-change="handleSelectionChange"
+    <el-table :summary-method="getSummaries" show-summary v-loading="loading" :data="projectList" @selection-change="handleSelectionChange"
       :header-cell-style="header_cell_style">
-      <el-table-column show-overflow-tooltip fixed="left" type="selection" width="50" align="center" />
+      <el-table-column show-overflow-tooltip fixed="left" type="selection" width="60" align="center" />
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
       <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" min-width="100" />
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
@@ -557,7 +562,13 @@
             return date.getTime() < start || date.getTime() > end;
           }
         },
-        EchoHuankuanmingxi2List: []
+        EchoHuankuanmingxi2List: [],
+        zongjia: {
+          total_financingAmount: 0,
+          total_baozhengjin: 0,
+          total_shouxufei: 0,
+          total_remainingAmount: 0,
+        }
       };
     },
     watch: {
@@ -1010,6 +1021,31 @@
           }
         });
 
+      },
+      getSummaries(param) {
+        const {
+          columns,
+          data
+        } = param;
+        const sums = [];
+        columns.forEach((column, index) => {
+          console.log(column);
+          if (index === 0) {
+            sums[index] = '合计';
+            return;
+          } else if (column.label.includes('融资金额（万元）')) {
+            sums[index] =  (this.zongjia.total_financingAmount).toFixed(2);
+          } else if (column.label.includes('保证金（万元）')) {
+            sums[index] = (this.zongjia.total_baozhengjin).toFixed(2);
+          } else if (column.label.includes('手续费（万元）')) {
+            sums[index] = (this.zongjia.total_shouxufei).toFixed(2);
+          } else if (column.label.includes('融资余额（万元）')) {
+            sums[index] = (this.zongjia.total_remainingAmount).toFixed(2);
+          } else {
+            sums[index] = '/';
+          }
+        });
+        return sums;
       }
     }
   };

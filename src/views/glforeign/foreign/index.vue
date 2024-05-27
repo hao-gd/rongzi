@@ -713,7 +713,7 @@ export default {
           { required: true, message: "担保合同编号不能为空", trigger: "blur" }
         ],
         scrUuid: [
-          { required: true, message: "附件不能为空", trigger: "blur" }
+          { required: false, message: "附件不能为空", trigger: "blur" }
         ],
         creditor: [
           { required: true, message: "被担保人不能为空", trigger: "change" }

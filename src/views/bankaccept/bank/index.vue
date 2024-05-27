@@ -427,7 +427,7 @@ export default {
           { required: true, message: "银行承兑管理编号不能为空", trigger: "blur" }
         ],
         scrUuid: [
-          { required: true, message: "数据唯一编号不能为空", trigger: "blur" }
+          { required: false, message: "附件不能为空", trigger: "blur" }
         ],
         auditId: [
           { required: true, message: "审核id不能为空", trigger: "blur" }

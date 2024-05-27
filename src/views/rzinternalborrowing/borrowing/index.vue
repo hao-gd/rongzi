@@ -436,7 +436,7 @@ export default {
           { required: true, message: "内部借款管理编号不能为空", trigger: "blur" }
         ],
         scrUuid: [
-          { required: true, message: "数据唯一编号不能为空", trigger: "blur" }
+          { required: false, message: "附件不能为空", trigger: "blur" }
         ],
         loanAmount: [
           { required: true, message: "借款金额不能为空", trigger: "blur" }

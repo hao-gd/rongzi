@@ -467,8 +467,8 @@
             trigger: "blur"
           }],
           scrUuid: [{
-            required: true,
-            message: "数据唯一编号不能为空",
+            required: false,
+            message: "附件不能为空",
             trigger: "blur"
           }],
           creditor: [{

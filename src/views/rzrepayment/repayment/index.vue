@@ -413,7 +413,7 @@ export default {
           { required: true, message: "还款计划管理编号不能为空", trigger: "blur" }
         ],
         scrUuid: [
-          { required: true, message: "数据唯一编号不能为空", trigger: "blur" }
+          { required: false, message: "附件不能为空", trigger: "blur" }
         ],
         borrowingUnit: [
           { required: true, message: "借款单位不能为空", trigger: "change" }
