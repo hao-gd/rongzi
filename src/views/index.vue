@@ -691,12 +691,22 @@ export default {
     // 获取当月和下个月还款计划
     async getCardData4() {
       try {
+        const yesterday = moment().subtract(1,'days').format('YYYY-MM-DD');
         const currentMonth = moment().format('YYYY-MM');
         const NextMonth = moment().add(1, 'months').format('YYYY-MM');;
 
+
+        const currentDateData = await getRepaymentPlanByDate(yesterday);
+        if (currentDateData.code === 200 && 'data' in currentDateData) {
+          // 还款计划查询本月前一天的已还和未还
+          this.currentMonthData = currentDateData.data;
+        }
+
         const currentMonthData = await getRepaymentPlan(currentMonth);
         if (currentMonthData.code === 200 && 'data' in currentMonthData) {
-          this.currentMonthData = currentMonthData.data;
+          // 还款计划查询本月所有本金和利息，和上个接口使用同一个变量进行处理
+          this.currentMonthData.totalInterest = currentMonthData.data.totalInterest;
+          this.currentMonthData.totalPrincipal = currentMonthData.data.totalPrincipal;
         }
         const NextMonthData = await getNextRepaymentPlan(NextMonth);
         if (NextMonthData.code === 200 && 'data' in NextMonthData) {
