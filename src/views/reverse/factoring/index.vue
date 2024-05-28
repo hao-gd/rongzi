@@ -153,9 +153,9 @@
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar> -->
     </el-row>
 
-    <el-table v-loading="loading" :data="factoringList" @selection-change="handleSelectionChange"
+    <el-table :summary-method="(param) => getSummaries(param, totalKeys)" show-summary v-loading="loading" :data="factoringList" @selection-change="handleSelectionChange"
       :header-cell-style="header_cell_style">
-      <el-table-column show-overflow-tooltip fixed="left" type="selection" min-width="50" align="center" />
+      <el-table-column show-overflow-tooltip fixed="left" type="selection" min-width="60" width="60" align="center" />
       <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" min-width="100" />
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" />
       <el-table-column label="审核id" align="center" prop="auditId" /> -->
@@ -491,7 +491,10 @@ export default {
           { required: true, message: "回款账户不能为空", trigger: "blur" }
         ],
       },
-      error1: ''
+      error1: '',
+      totalKeys: [
+        '放贷金额（万元）',
+      ]
     };
   },
   watch: {

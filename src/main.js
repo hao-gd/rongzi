@@ -19,7 +19,8 @@ import './assets/icons' // icon
 import './permission' // permission control
 import { getDicts } from "@/api/system/dict/data";
 import { getConfigKey } from "@/api/system/config";
-import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, handleTree, formatNumberAsRMB, creditCycleFN, appendUnit, amountLimitMethod } from "@/utils/senye";
+import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, handleTree, 
+  formatNumberAsRMB, creditCycleFN, appendUnit, amountLimitMethod, getSummaries } from "@/utils/senye";
 // 我的一下业务代码校验
 import { inspectionPendingReview } from '@/utils/myjs.js'
 // 分页组件
@@ -63,6 +64,7 @@ Vue.prototype.creditCycleFN = creditCycleFN
 Vue.prototype.appendUnit = appendUnit
 Vue.prototype.amountLimitMethod = amountLimitMethod
 Vue.prototype.inspectionPendingReview = inspectionPendingReview
+Vue.prototype.getSummaries = getSummaries
 
 // 全局组件挂载
 Vue.component('DictTag', DictTag)

@@ -106,9 +106,10 @@
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar> -->
     </el-row>
 
-    <el-table v-loading="loading" :data="borrowingList" @selection-change="handleSelectionChange"
+    <el-table :summary-method="(param) => getSummaries(param, totalKeys)" show-summary
+       v-loading="loading" :data="borrowingList" @selection-change="handleSelectionChange"
       :header-cell-style="header_cell_style">
-      <el-table-column show-overflow-tooltip fixed="left" type="selection" width="50" align="center" />
+      <el-table-column show-overflow-tooltip fixed="left" type="selection" width="60" align="center" />
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
       <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" min-width="100" />
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
@@ -474,6 +475,9 @@ export default {
         ]
       },
       isAutoCalculated: false, // 是否自动计算的标志
+      totalKeys: [
+        '借款金额（万元）',
+      ]
     };
   },
   watch: {
