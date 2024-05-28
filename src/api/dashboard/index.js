@@ -59,6 +59,14 @@ export function getRepaymentPlan(query) {
   })
 }
 
+// 本月还款计划按天查询,传 日期查询 查询范围  =日期当月 且 <=日期当天
+export function getRepaymentPlanByDate(query) {
+  return request({
+    url: `/huankuanjihua/mingxi/financialSummaryByDate/${query}`,
+    method: 'get',
+  })
+}
+
 // 下月还款计划
 export function getNextRepaymentPlan(query) {
   return request({
