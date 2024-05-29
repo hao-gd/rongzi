@@ -53,16 +53,16 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="债务状态" prop="loanState">
-              <el-select  v-model="queryParams.loanState" filterable clearable placeholder="请选择债务状态">
-                  <el-option v-for="dict in dict.type.sys_1759509599150407700" :key="dict.value" :label="dict.label"
-                    :value="dict.label"></el-option>
-                </el-select>
+              <el-select v-model="queryParams.loanState" filterable clearable placeholder="请选择债务状态">
+                <el-option v-for="dict in dict.type.sys_1759509599150407700" :key="dict.value" :label="dict.label"
+                  :value="dict.label"></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
-          
+
         </el-row>
 
-        
+
 
         <el-row :gutter="20">
           <el-col :span="24">
@@ -97,8 +97,8 @@
       <!-- <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar> -->
     </el-row>
 
-    <el-table :summary-method="getSummaries" show-summary v-loading="loading" :data="projectList" @selection-change="handleSelectionChange"
-      :header-cell-style="header_cell_style">
+    <el-table :summary-method="getSummaries" show-summary v-loading="loading" :data="projectList"
+      @selection-change="handleSelectionChange" :header-cell-style="header_cell_style">
       <el-table-column show-overflow-tooltip fixed="left" type="selection" width="60" align="center" />
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
       <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" min-width="100" />
@@ -118,12 +118,27 @@
           <dict-tag :options="dict.type.sys_1759508335389835300" :value="scope.row.financingType" />
         </template> -->
       </el-table-column>
+
+      <el-table-column label="贷款用途" align="center" prop="daikuanyongtu" />
+      <!-- <el-table-column label="担保措施" align="center" prop="danbaocuoshi" /> -->
+  <!--    <el-table-column label="授信金额" align="center" prop="shouxinjine" width="140">
+        <template slot-scope="scope">
+          <span>{{ formatNumberAsRMB(scope.row.shouxinjine) }}</span>
+        </template>
+      </el-table-column> -->
+
       <el-table-column show-overflow-tooltip label="融资金额（万元）" align="center" prop="financingAmount" width="140">
         <template slot-scope="scope">
           <span>{{ formatNumberAsRMB(scope.row.financingAmount) }}</span>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="保证金（万元）" align="center" prop="baozhengjin" width="130">
+      <el-table-column label="融资余额（万元）" align="center" prop="remainingAmount" width="150">
+        <template slot-scope="scope">
+          <span>{{ formatNumberAsRMB(scope.row.remainingAmount) }}</span>
+        </template>
+      </el-table-column>
+
+      <!--      <el-table-column show-overflow-tooltip label="保证金（万元）" align="center" prop="baozhengjin" width="130">
         <template slot-scope="scope">
           <span>{{ formatNumberAsRMB(scope.row.baozhengjin) }}</span>
         </template>
@@ -132,7 +147,7 @@
         <template slot-scope="scope">
           <span>{{ formatNumberAsRMB(scope.row.shouxufei) }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column show-overflow-tooltip label="期限（月）" align="center" prop="loanTerm" min-width="100">
         <template slot-scope="scope">
           <span>{{ creditCycleFN(scope.row.loanDate, scope.row.dueDate) }}</span>
@@ -169,11 +184,7 @@
 
 
 
-      <el-table-column label="融资余额（万元）" align="center" prop="remainingAmount" width="150">
-        <template slot-scope="scope">
-          <span>{{ formatNumberAsRMB(scope.row.remainingAmount) }}</span>
-        </template>
-      </el-table-column>
+
       <el-table-column show-overflow-tooltip label="债务状态" align="center" prop="loanState" width="100">
         <template slot-scope="scope">
           <svg-icon class="mr5" :icon-class="scope.row.loanState"></svg-icon>
@@ -183,11 +194,9 @@
           <!-- <dict-tag :options="dict.type.sys_1759509599150407700" :value="scope.row.loanState" /> -->
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="还款计划" align="center" prop="hasRepaymentPlan" min-width="80">
-        <!-- <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_1759508335389835300" :value="scope.row.financingType" />
-        </template> -->
-      </el-table-column>
+      <!--      <el-table-column show-overflow-tooltip label="还款计划" align="center" prop="hasRepaymentPlan" min-width="80">
+
+      </el-table-column> -->
 
 
       <!-- <el-table-column show-overflow-tooltip label="备注" align="center" prop="comment" min-width="120" /> -->
@@ -251,17 +260,47 @@
                 </el-select>
               </el-form-item>
             </el-col>
+
+            <el-col :span="8">
+              <el-form-item label="贷款用途" prop="daikuanyongtu">
+                <el-input
+                 :readonly="!isEditable"
+                 type="textarea"
+                 maxlength="10"
+                 show-word-limit
+                 v-model="form.daikuanyongtu" placeholder="请输入贷款用途" />
+              </el-form-item>
+            </el-col>
+
+            <el-col :span="8">
+              <el-form-item label="担保措施" prop="danbaocuoshi">
+                <el-input
+                 :readonly="!isEditable"
+                   type="textarea"
+                   maxlength="30"
+                   show-word-limit
+                 v-model="form.danbaocuoshi" placeholder="请输入担保措施" />
+              </el-form-item>
+            </el-col>
+
+            <el-col :span="8">
+              <el-form-item label="授信金额" prop="shouxinjine">
+                <el-input-number class="w" :controls="false" :precision="2" :disabled="!isEditable"
+                  :readonly="!isEditable" type="number" v-model.trim="form.shouxinjine" placeholder="请输入授信金额" />
+              </el-form-item>
+            </el-col>
+
             <el-col :span="8">
               <el-form-item label="融资金额（万元）" prop="financingAmount">
                 <el-input-number class="w" :controls="false" :precision="2" :disabled="!isEditable"
                   :readonly="!isEditable" type="number" v-model.trim="form.financingAmount" placeholder="请输入融资金额" />
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <!-- <el-col :span="8">
               <el-form-item label="资金用途" prop="contractId">
                 <el-input :readonly="!isEditable" v-model="form.contractId" placeholder="请输入资金用途" />
               </el-form-item>
-            </el-col>
+            </el-col> -->
           </el-row>
 
           <el-row :gutter="20">
@@ -337,6 +376,26 @@
                 </el-select>
               </el-form-item>
             </el-col>
+
+          </el-row>
+
+          <el-row :gutter="20">
+            <el-col :span="8">
+              <el-form-item label="还贷账户名称" prop="hdzhanghumingcheng">
+                <el-input v-model="form.hdzhanghumingcheng" placeholder="请输入还贷账户名称" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="还贷账号" prop="hdzhanghao">
+                <el-input v-model="form.hdzhanghao" placeholder="请输入还贷账号" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="还贷开户行" prop="hdkaihuhang">
+                <el-input v-model="form.hdkaihuhang" placeholder="请输入还贷开户行" />
+              </el-form-item>
+            </el-col>
+
           </el-row>
 
           <el-divider class="no_mt mb20"></el-divider>
@@ -1034,7 +1093,7 @@
             sums[index] = '合计';
             return;
           } else if (column.label.includes('融资金额（万元）')) {
-            sums[index] =  (this.zongjia.total_financingAmount).toFixed(2);
+            sums[index] = (this.zongjia.total_financingAmount).toFixed(2);
           } else if (column.label.includes('保证金（万元）')) {
             sums[index] = (this.zongjia.total_baozhengjin).toFixed(2);
           } else if (column.label.includes('手续费（万元）')) {

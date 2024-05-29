@@ -209,6 +209,16 @@ export const rules = {
     message: "手续费不能为空",
     trigger: "blur"
   }],
+  danbaocuoshi: [{
+    required: true,
+    message: "担保措施不能为空",
+    trigger: "blur"
+  }],
+  daikuanyongtu: [{
+    required: true,
+    message: "贷款用途不能为空",
+    trigger: "blur"
+  }],
 }
 
 // 生成 还款计划的edit 组件

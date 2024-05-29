@@ -82,9 +82,11 @@
           <dict-tag :options="dict.type.sys_1757271666666242000" :value="scope.row.financialInstitution" />
         </template>
       </el-table-column>
+       <el-table-column label="贷款用途" align="center" prop="daikuanyongtu" />
       <el-table-column show-overflow-tooltip label="还款金额" align="center" prop="huankuanjine" min-width="160" />
       <el-table-column show-overflow-tooltip label="偿还本金" align="center" prop="changhuanben" min-width="160" />
       <el-table-column show-overflow-tooltip label="支付利息" align="center" prop="zhifulixi" min-width="160" />
+      <el-table-column label="手续费" align="center" prop="shouxufei" />
       <el-table-column show-overflow-tooltip label="本金剩余" align="center" prop="benjinshengyu" min-width="160" />
       <!-- <el-table-column label="操作" align="center" class-name="''">
         <template slot-scope="scope">
