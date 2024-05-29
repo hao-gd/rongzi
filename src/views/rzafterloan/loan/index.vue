@@ -14,7 +14,7 @@
             <el-form-item label="金融机构" prop="financialInstitution">
               <el-select filterable v-model="queryParams.financialInstitution" placeholder="请选择金融机构" clearable>
                 <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
-                  :value="dict.value" />
+                  :value="dict.label" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -22,7 +22,7 @@
             <el-form-item label="借款单位" prop="borrowingUnit">
               <el-select filterable v-model="queryParams.borrowingUnit" placeholder="请选择借款单位" clearable>
                 <el-option v-for="dict in dict.type.sys_1759464239669444600" :key="dict.value" :label="dict.label"
-                  :value="dict.value" />
+                  :value="dict.label" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -38,7 +38,7 @@
             <el-form-item label="贷后状态跟踪" prop="afterLoanState">
               <el-select filterable v-model="queryParams.afterLoanState" placeholder="请选择贷后状态跟踪" clearable>
                 <el-option v-for="dict in dict.type.sys_1759464706814247000" :key="dict.value" :label="dict.label"
-                  :value="dict.value" />
+                  :value="dict.label" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -60,6 +60,10 @@
     <el-divider class="mt20 mb20"></el-divider>
     <el-row type="flex" :gutter="10" class="mb8" justify="end">
       <el-col :span="1.5">
+        <el-button type="warning" plain icon="el-icon-download" size="mini" @click="handleExport"
+          v-hasPermi="['rzafterloan:loan:export']">导出</el-button>
+      </el-col>
+      <el-col :span="1.5">
         <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
           v-hasPermi="['rzafterloan:loan:add']">新 建</el-button>
       </el-col>
@@ -71,16 +75,13 @@
         <el-button type="danger" plain icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete"
           v-hasPermi="['rzafterloan:loan:remove']">删 除</el-button>
       </el-col>
-      <!-- <el-col :span="1.5">
-        <el-button type="warning" plain icon="el-icon-download" size="mini" @click="handleExport"
-          v-hasPermi="['rzafterloan:loan:export']">导出</el-button>
-      </el-col>
+      <!-- 
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar> -->
     </el-row>
 
-    <el-table v-loading="loading" :data="loanList" @selection-change="handleSelectionChange"
+    <el-table :summary-method="(param) => getSummaries(param, totalKeys)" show-summary v-loading="loading" :data="loanList" @selection-change="handleSelectionChange"
       :header-cell-style="header_cell_style">
-      <el-table-column show-overflow-tooltip fixed="left" type="selection" width="50" align="center" />
+      <el-table-column show-overflow-tooltip fixed="left" type="selection" width="60" align="center" />
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
       <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" />
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
@@ -159,7 +160,7 @@
               <el-form-item label="金融机构" prop="financialInstitution">
                 <el-select filterable :disabled="!isEditable" v-model="form.financialInstitution" placeholder="请选择金融机构">
                   <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
-                    :value="dict.value"></el-option>
+                    :value="dict.label"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -176,7 +177,7 @@
               <el-form-item label="借款单位" prop="borrowingUnit">
                 <el-select filterable :disabled="!isEditable" v-model="form.borrowingUnit" placeholder="请选择借款单位">
                   <el-option v-for="dict in dict.type.sys_1759464239669444600" :key="dict.value" :label="dict.label"
-                    :value="dict.value"></el-option>
+                    :value="dict.label"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -428,6 +429,9 @@ export default {
         ],
       },
       isAutoCalculated: false, // 是否自动计算的标志
+      totalKeys: [
+        "借款金额（万元）"
+      ]
     };
   },
   watch: {

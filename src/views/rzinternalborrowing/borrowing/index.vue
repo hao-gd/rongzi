@@ -21,7 +21,7 @@
             <el-form-item label="借款人" prop="borrower">
               <el-select filterable v-model="queryParams.borrower" placeholder="请选择借款人" clearable>
                 <el-option v-for="dict in dict.type.sys_1767154968256577500" :key="dict.value" :label="dict.label"
-                  :value="dict.value" />
+                  :value="dict.label" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -32,7 +32,7 @@
             <el-form-item label="债权人" prop="payee">
               <el-select filterable v-model="queryParams.payee" placeholder="请选择债权人" clearable>
                 <el-option v-for="dict in dict.type.sys_1757271666666242000" :key="dict.value" :label="dict.label"
-                  :value="dict.value" />
+                  :value="dict.label" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -60,7 +60,7 @@
             <el-form-item label="还款方式" prop="repaymentMethod">
               <el-select filterable v-model="queryParams.repaymentMethod" placeholder="请选择还款方式" clearable>
                 <el-option v-for="dict in dict.type.sys_1759501742422098000" :key="dict.value" :label="dict.label"
-                  :value="dict.value" />
+                  :value="dict.label" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -68,7 +68,7 @@
             <el-form-item label="借款用途" prop="loanUse">
               <el-select filterable v-model="queryParams.loanUse" placeholder="请选择借款用途" clearable>
                 <el-option v-for="dict in dict.type.sys_1759501814702538800" :key="dict.value" :label="dict.label"
-                  :value="dict.value" />
+                  :value="dict.label" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -88,6 +88,10 @@
     <el-divider class="mt20 mb20"></el-divider>
     <el-row type="flex" :gutter="10" class="mb8" justify="end">
       <el-col :span="1.5">
+        <el-button type="warning" plain icon="el-icon-download" size="mini" @click="handleExport"
+          v-hasPermi="['rzinternalborrowing:borrowing:export']">导 出</el-button>
+      </el-col>
+      <el-col :span="1.5">
         <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
           v-hasPermi="['rzinternalborrowing:borrowing:add']">新 建</el-button>
       </el-col>
@@ -99,10 +103,7 @@
         <el-button type="danger" plain icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete"
           v-hasPermi="['rzinternalborrowing:borrowing:remove']">删 除</el-button>
       </el-col>
-      <!-- <el-col :span="1.5">
-        <el-button type="warning" plain icon="el-icon-download" size="mini" @click="handleExport"
-          v-hasPermi="['rzinternalborrowing:borrowing:export']">导出</el-button>
-      </el-col>
+      <!-- 
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar> -->
     </el-row>
 
@@ -208,7 +209,7 @@
               <el-form-item label="借款人" prop="borrower">
                 <el-select filterable :disabled="!isEditable" v-model="form.borrower" placeholder="请选择借款人">
                   <el-option v-for="dict in dict.type.sys_1767154968256577500" :key="dict.value" :label="dict.label"
-                    :value="dict.value"></el-option>
+                    :value="dict.label"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -219,7 +220,7 @@
               <el-form-item label="债权人" prop="payee">
                 <el-select filterable :disabled="!isEditable" v-model="form.payee" placeholder="请选择债权人">
                   <el-option v-for="dict in dict.type.sys_1757271666666242000" :key="dict.value" :label="dict.label"
-                    :value="dict.value"></el-option>
+                    :value="dict.label"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -228,7 +229,7 @@
               <el-form-item label="转借人" prop="sublessee">
                 <el-select filterable :disabled="!isEditable" v-model="form.sublessee" placeholder="请选择转借人">
                   <el-option v-for="dict in dict.type.sys_1770296780093653000" :key="dict.value" :label="dict.label"
-                    :value="dict.value"></el-option>
+                    :value="dict.label"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -273,7 +274,7 @@
               <el-form-item label="还款方式" prop="repaymentMethod">
                 <el-select filterable :disabled="!isEditable" v-model="form.repaymentMethod" placeholder="请选择还款方式">
                   <el-option v-for="dict in dict.type.sys_1759501742422098000" :key="dict.value" :label="dict.label"
-                    :value="dict.value"></el-option>
+                    :value="dict.label"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -281,7 +282,7 @@
               <el-form-item label="借款用途" prop="loanUse">
                 <el-select filterable :disabled="!isEditable" v-model="form.loanUse" placeholder="请选择借款用途">
                   <el-option v-for="dict in dict.type.sys_1759501814702538800" :key="dict.value" :label="dict.label"
-                    :value="dict.value"></el-option>
+                    :value="dict.label"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>

@@ -53,7 +53,7 @@
             <el-form-item label="开证申请人" prop="applicant">
               <el-select filterable v-model="queryParams.applicant" placeholder="请选择开证申请人" clearable>
                 <el-option v-for="dict in dict.type.sys_1757265915323351000" :key="dict.value" :label="dict.label"
-                  :value="dict.value" />
+                  :value="dict.label" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -61,7 +61,7 @@
             <el-form-item label="收益人" prop="beneficiary">
               <el-select filterable v-model="queryParams.beneficiary" placeholder="请选择收益人" clearable>
                 <el-option v-for="dict in dict.type.sys_1757265828501258200" :key="dict.value" :label="dict.label"
-                  :value="dict.value" />
+                  :value="dict.label" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -72,7 +72,7 @@
             <el-form-item label="金融机构" prop="financialInstitution">
               <el-select filterable v-model="queryParams.financialInstitution" placeholder="请选择金融机构" clearable>
                 <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
-                  :value="dict.value" />
+                  :value="dict.label" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -89,6 +89,10 @@
     <el-divider class="mt20 mb20"></el-divider>
     <el-row type="flex" :gutter="10" class="mb8" justify="end">
       <el-col :span="1.5">
+        <el-button type="warning" plain icon="el-icon-download" size="mini" @click="handleExport"
+          v-hasPermi="['credit:letter:export']">导 出</el-button>
+      </el-col>
+      <el-col :span="1.5">
         <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
           v-hasPermi="['credit:letter:add']">新 建</el-button>
       </el-col>
@@ -100,10 +104,7 @@
         <el-button type="danger" plain icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete"
           v-hasPermi="['credit:letter:remove']">删除</el-button>
       </el-col>
-      <!-- <el-col :span="1.5">
-        <el-button type="warning" plain icon="el-icon-download" size="mini" @click="handleExport"
-          v-hasPermi="['credit:letter:export']">导出</el-button>
-      </el-col>
+      <!-- 
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar> -->
     </el-row>
 
@@ -218,7 +219,7 @@
               <el-form-item label="开证申请人" prop="applicant">
                 <el-select filterable :disabled="!isEditable" v-model="form.applicant" placeholder="请选择开证申请人">
                   <el-option v-for="dict in dict.type.sys_1757265915323351000" :key="dict.value" :label="dict.label"
-                    :value="dict.value"></el-option>
+                    :value="dict.label"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -228,7 +229,7 @@
               <el-form-item label="收益人" prop="beneficiary">
                 <el-select filterable :disabled="!isEditable" v-model="form.beneficiary" placeholder="请选择收益人">
                   <el-option v-for="dict in dict.type.sys_1757265828501258200" :key="dict.value" :label="dict.label"
-                    :value="dict.value"></el-option>
+                    :value="dict.label"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -236,7 +237,7 @@
               <el-form-item label="金融机构" prop="financialInstitution">
                 <el-select filterable :disabled="!isEditable" v-model="form.financialInstitution" placeholder="请选择金融机构">
                   <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
-                    :value="dict.value"></el-option>
+                    :value="dict.label"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
