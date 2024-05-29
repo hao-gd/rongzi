@@ -10,7 +10,7 @@
       </el-form-item>
       <el-form-item label="债权人" prop="creditor">
         <el-select filterable v-model="queryParams.creditor" placeholder="请选择债权人" clearable>
-          <el-option v-for="dict in dict.type.sys_1757271666666242000" :key="dict.value" :label="dict.label"
+          <el-option v-for="dict in dict.type.sys_1795741368925028400" :key="dict.value" :label="dict.label"
             :value="dict.value" />
         </el-select>
       </el-form-item>
@@ -66,9 +66,9 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="债权人名称" prop="creditor">
-              <el-select filterable v-model="queryParams.creditor" placeholder="请选择债权人（供应商）名称" clearable>
-                <el-option v-for="dict in dict.type.sys_1757271666666242000" :key="dict.value" :label="dict.label"
+            <el-form-item label="供应商名称" prop="creditor">
+              <el-select filterable v-model="queryParams.creditor" placeholder="请选择供应商名称" clearable>
+                <el-option v-for="dict in dict.type.sys_1795741368925028400" :key="dict.value" :label="dict.label"
                   :value="dict.label" />
               </el-select>
             </el-form-item>
@@ -160,9 +160,9 @@
       <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" min-width="100" />
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" />
       <el-table-column label="审核id" align="center" prop="auditId" /> -->
-      <el-table-column show-overflow-tooltip label="债权人（供应商）名称" align="center" prop="creditor" min-width="160">
+      <el-table-column show-overflow-tooltip label="供应商名称" align="center" prop="creditor" min-width="160">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_1757271666666242000" :value="scope.row.creditor" />
+          <dict-tag :options="dict.type.sys_1795741368925028400" :value="scope.row.creditor" />
         </template>
       </el-table-column>
       <el-table-column show-overflow-tooltip label="保理商名称" align="center" prop="factor" min-width="130">
@@ -235,9 +235,9 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="债权人（供应商）名称" prop="creditor">
+              <el-form-item label="供应商名称" prop="creditor">
                 <el-select filterable :disabled="!isEditable" v-model="form.creditor" placeholder="请选择债权人">
-                  <el-option v-for="dict in dict.type.sys_1757271666666242000" :key="dict.value" :label="dict.label"
+                  <el-option v-for="dict in dict.type.sys_1795741368925028400" :key="dict.value" :label="dict.label"
                     :value="dict.label"></el-option>
                 </el-select>
               </el-form-item>
@@ -345,7 +345,7 @@ import { checkDueReminderWithConfig } from '@/utils/expirationreminder';
 import { reminderConfig } from '@/config/expirationreminder'
 export default {
   name: "Factoring",
-  dicts: ['sys_acceptor', 'sys_1757288852172570600', 'sys_1757271666666242000'],
+  dicts: ['sys_acceptor', 'sys_1757288852172570600', 'sys_1795741368925028400'],
   components: {
     CreateSuccess,
     SearchPanel

@@ -33,11 +33,11 @@
     </el-alert>
     <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     <el-row :gutter="10" class="mb8">
-<!--      <el-col :span="1.5">
+    <el-col :span="1.5">
         <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
           v-hasPermi="['system:dict:add']">新增类型</el-button>
       </el-col>
-      <el-col :span="1.5">
+    <!--    <el-col :span="1.5">
         <el-button type="success" plain icon="el-icon-edit" size="mini" :disabled="single" @click="handleUpdate"
           v-hasPermi="['system:dict:edit']">修改</el-button>
       </el-col>
@@ -86,9 +86,9 @@
           <div>
             <el-button size="mini" type="text" icon="el-icon-plus" @click="handleAddInfo(scope.row)"
               v-hasPermi="['system:dict:edit']">添加数据</el-button>
-            <!--   <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)"
+               <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)"
               v-hasPermi="['system:dict:edit']">修改</el-button>
-            <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"
+           <!-- <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"
               v-hasPermi="['system:dict:remove']">删除</el-button> -->
           </div>
         </template>
