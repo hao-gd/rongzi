@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
     <search-panel HeaderIcon="special" title="专项借款">
-      <el-form :model="queryParams" label-position="left" ref="queryForm" size="small" :inline="false"
-        v-show="showSearch" label-width="130px">
+      <el-form :model="queryParams" label-position="left" ref="queryForm" size="small" :inline="false" v-show="showSearch"
+        label-width="130px">
         <el-row :gutter="20">
           <!-- <el-col :span="8">
             <el-form-item label="管理编号" prop="managementId">
@@ -13,8 +13,7 @@
           <el-col :span="8">
             <el-form-item label="借款金额（万元）" prop="loanAmount">
               <el-input-number class="w" :controls="false" :precision="2" type="number"
-                v-model.trim="queryParams.loanAmount" placeholder="请输入借款金额" clearable
-                @keyup.enter.native="handleQuery" />
+                v-model.trim="queryParams.loanAmount" placeholder="请输入借款金额" clearable @keyup.enter.native="handleQuery" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -105,9 +104,9 @@
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar> -->
     </el-row>
 
-    <el-table v-loading="loading" :data="specialList" @selection-change="handleSelectionChange"
-      :header-cell-style="header_cell_style">
-      <el-table-column show-overflow-tooltip fixed="left" type="selection" width="50" align="center" />
+    <el-table :summary-method="(param) => getSummaries(param, totalKeys)" show-summary v-loading="loading"
+      :data="specialList" @selection-change="handleSelectionChange" :header-cell-style="header_cell_style">
+      <el-table-column show-overflow-tooltip fixed="left" type="selection" width="60" align="center" />
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
       <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" min-width="100" />
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
@@ -245,8 +244,8 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="起始日" prop="loanDate">
-                <el-date-picker format='yyyy/MM/dd' :disabled="!isEditable" clearable v-model="form.loanDate"
-                  type="date" value-format="yyyy-MM-dd" placeholder="请选择起始日"></el-date-picker>
+                <el-date-picker format='yyyy/MM/dd' :disabled="!isEditable" clearable v-model="form.loanDate" type="date"
+                  value-format="yyyy-MM-dd" placeholder="请选择起始日"></el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -322,9 +321,8 @@
         </div>
       </div>
       <div v-else>
-        <CreateSuccess @close-dialog="closeDialog" @create-again="create_again" :isSuccess="isSuccess"
-          :isTitle="isTitle" :isMessage="isMessage" :title="ctitle" :isEdit="isEdit" @confirm="handleaddList"
-          @cancel="cancel">
+        <CreateSuccess @close-dialog="closeDialog" @create-again="create_again" :isSuccess="isSuccess" :isTitle="isTitle"
+          :isMessage="isMessage" :title="ctitle" :isEdit="isEdit" @confirm="handleaddList" @cancel="cancel">
         </CreateSuccess>
       </div>
     </el-dialog>
@@ -332,595 +330,599 @@
 </template>
 
 <script>
-  import {
-    listSpecial,
-    getSpecial,
-    delSpecial,
-    addSpecial,
-    updateSpecial
-  } from "@/api/rzspecialloans/special";
+import {
+  listSpecial,
+  getSpecial,
+  delSpecial,
+  addSpecial,
+  updateSpecial
+} from "@/api/rzspecialloans/special";
 
-  import {
-    SnowflakeIdGenerator
-  } from '@/utils/index'
-  import {
-    listList,
-    getList,
-    delList,
-    addList,
-    updateList
-  } from "@/api/rzauditlist/list";
-  import {
-    mapGetters
-  } from 'vuex';
-  import moment from 'moment'
-  import CreateSuccess from '@/components/createSuccess/index.vue'
-  import SearchPanel from '@/components/SearchPanel/index.vue'
-  export default {
-    name: "Special",
-    dicts: ['sys_1759501742422098000', 'sys_1757271666666242000', 'sys_1767154968256577500', 'sys_1767155302261588000'],
-    components: {
-      CreateSuccess,
-      SearchPanel
-    },
-    data() {
-      return {
+import {
+  SnowflakeIdGenerator
+} from '@/utils/index'
+import {
+  listList,
+  getList,
+  delList,
+  addList,
+  updateList
+} from "@/api/rzauditlist/list";
+import {
+  mapGetters
+} from 'vuex';
+import moment from 'moment'
+import CreateSuccess from '@/components/createSuccess/index.vue'
+import SearchPanel from '@/components/SearchPanel/index.vue'
+export default {
+  name: "Special",
+  dicts: ['sys_1759501742422098000', 'sys_1757271666666242000', 'sys_1767154968256577500', 'sys_1767155302261588000'],
+  components: {
+    CreateSuccess,
+    SearchPanel
+  },
+  data() {
+    return {
+      totalKeys: [
+        '借款金额（万元）',
+        '已还金额（万元）',
+        '余额（万元）',
+      ],
+      isSuccess: true,
+      isTitle: true,
+      isMessage: true,
+      ctitle: '',
+      isEdit: false,
+      rzaudit_data: null,
 
-        isSuccess: true,
-        isTitle: true,
-        isMessage: true,
-        ctitle: '',
-        isEdit: false,
-        rzaudit_data: null,
-
-        created_successfully: true,
-        isEditable: false,
-        header_cell_style: {
-          backgroundColor: '#f2f4f5',
-          color: '#000000',
-          fontSize: '14px',
-          fontWeight: 'bold',
-        },
-        // 遮罩层
-        loading: true,
-        // 选中数组
-        ids: [],
-        // 子表选中数据
-        checkedrzsrc2: [],
-        // 非单个禁用
-        single: true,
-        // 非多个禁用
-        multiple: true,
-        // 显示搜索条件
-        showSearch: true,
-        // 总条数
-        total: 0,
-        // 专项借款表格数据
-        specialList: [],
-        // 附件表表格数据
-        rzsrc2List: [],
-        // 弹出层标题
-        title: "",
-        // 是否显示弹出层
-        open: false,
-        // 创建人时间范围
-        daterangeLoanDate: [],
-        // 创建人时间范围
-        daterangeDueDate: [],
-        // 查询参数
-        queryParams: {
-          pageNum: 1,
-          pageSize: 100,
-          managementId: null,
-          scrUuid: null,
-          loanAmount: null,
-          borrower: null,
-
-          payee: null,
-          loanDate: null,
-          dueDate: null,
-          loanTerm: null,
-          rate: null,
-          contractId: null,
-          repaymentMethod: null,
-          loanUse: null,
-          comment: null,
-          uuid: null
-        },
-
-        /* str 需要添加的 */
+      created_successfully: true,
+      isEditable: false,
+      header_cell_style: {
+        backgroundColor: '#f2f4f5',
+        color: '#000000',
+        fontSize: '14px',
+        fontWeight: 'bold',
+      },
+      // 遮罩层
+      loading: true,
+      // 选中数组
+      ids: [],
+      // 子表选中数据
+      checkedrzsrc2: [],
+      // 非单个禁用
+      single: true,
+      // 非多个禁用
+      multiple: true,
+      // 显示搜索条件
+      showSearch: true,
+      // 总条数
+      total: 0,
+      // 专项借款表格数据
+      specialList: [],
+      // 附件表表格数据
+      rzsrc2List: [],
+      // 弹出层标题
+      title: "",
+      // 是否显示弹出层
+      open: false,
+      // 创建人时间范围
+      daterangeLoanDate: [],
+      // 创建人时间范围
+      daterangeDueDate: [],
+      // 查询参数
+      queryParams: {
+        pageNum: 1,
+        pageSize: 100,
+        managementId: null,
         scrUuid: null,
-        /* end */
+        loanAmount: null,
+        borrower: null,
 
-        // 表单参数
-        form: {},
-        // 表单校验
-        isAutoCalculated: false, // 是否自动计算的标志
-        rules: {
-          managementId: [{
-            required: true,
-            message: "管理编号不能为空",
-            trigger: "blur"
-          }],
-          scrUuid: [{
-            required: false,
-            message: "附件不能为空",
-            trigger: "blur"
-          }],
-          loanAmount: [{
-            required: true,
-            message: "借款金额不能为空",
-            trigger: "blur"
-          }],
-          repaidAmount: [{
-            required: true,
-            message: "已还金额不能为空",
-            trigger: "blur"
-          }],
-          balance: [{
-            required: true,
-            message: "余额不能为空",
-            trigger: "blur"
-          }],
-          borrower: [{
-            required: true,
-            message: "借款人不能为空",
-            trigger: "change"
-          }],
+        payee: null,
+        loanDate: null,
+        dueDate: null,
+        loanTerm: null,
+        rate: null,
+        contractId: null,
+        repaymentMethod: null,
+        loanUse: null,
+        comment: null,
+        uuid: null
+      },
 
-          payee: [{
-            required: true,
-            message: "出借人不能为空",
-            trigger: "change"
-          }],
-          loanDate: [{
-            required: true,
-            message: "起始日不能为空",
-            trigger: "blur"
-          }],
-          dueDate: [{
-            required: true,
-            message: "到期日不能为空",
-            trigger: "blur"
-          }],
-          loanTerm: [{
-            required: true,
-            message: "借款期限不能为空",
-            trigger: "blur"
-          }],
-          rate: [{
-            required: true,
-            message: "利率不能为空",
-            trigger: "blur"
-          }],
-          contractId: [{
-            required: true,
-            message: "合同编号不能为空",
-            trigger: "blur"
-          }],
-          repaymentMethod: [{
-            required: true,
-            message: "还款方式：先息后本不能为空",
-            trigger: "change"
-          }],
-          loanUse: [{
-            required: true,
-            message: "业务类型：保交楼、城中村改造不能为空",
-            trigger: "change"
-          }],
-        }
-      };
-    },
-    watch: {
-      // 观察开始和结束日期的变化，自动重新计算天数
-      'form.loanDate': function(newVal, oldVal) {
-        if (newVal !== oldVal) {
-          this.calculateLoanTerm();
-        }
-      },
-      'form.dueDate': function(newVal, oldVal) {
-        if (newVal !== oldVal) {
-          this.calculateLoanTerm();
-        }
-      },
-      open(n, o) {
-        if (n == false) {
-          this.created_successfully = false;
-          this.isEditable = true;
-        }
+      /* str 需要添加的 */
+      scrUuid: null,
+      /* end */
+
+      // 表单参数
+      form: {},
+      // 表单校验
+      isAutoCalculated: false, // 是否自动计算的标志
+      rules: {
+        managementId: [{
+          required: true,
+          message: "管理编号不能为空",
+          trigger: "blur"
+        }],
+        scrUuid: [{
+          required: false,
+          message: "附件不能为空",
+          trigger: "blur"
+        }],
+        loanAmount: [{
+          required: true,
+          message: "借款金额不能为空",
+          trigger: "blur"
+        }],
+        repaidAmount: [{
+          required: true,
+          message: "已还金额不能为空",
+          trigger: "blur"
+        }],
+        balance: [{
+          required: true,
+          message: "余额不能为空",
+          trigger: "blur"
+        }],
+        borrower: [{
+          required: true,
+          message: "借款人不能为空",
+          trigger: "change"
+        }],
+
+        payee: [{
+          required: true,
+          message: "出借人不能为空",
+          trigger: "change"
+        }],
+        loanDate: [{
+          required: true,
+          message: "起始日不能为空",
+          trigger: "blur"
+        }],
+        dueDate: [{
+          required: true,
+          message: "到期日不能为空",
+          trigger: "blur"
+        }],
+        loanTerm: [{
+          required: true,
+          message: "借款期限不能为空",
+          trigger: "blur"
+        }],
+        rate: [{
+          required: true,
+          message: "利率不能为空",
+          trigger: "blur"
+        }],
+        contractId: [{
+          required: true,
+          message: "合同编号不能为空",
+          trigger: "blur"
+        }],
+        repaymentMethod: [{
+          required: true,
+          message: "还款方式：先息后本不能为空",
+          trigger: "change"
+        }],
+        loanUse: [{
+          required: true,
+          message: "业务类型：保交楼、城中村改造不能为空",
+          trigger: "change"
+        }]
+      }
+    };
+  },
+  watch: {
+    // 观察开始和结束日期的变化，自动重新计算天数
+    'form.loanDate': function (newVal, oldVal) {
+      if (newVal !== oldVal) {
+        this.calculateLoanTerm();
       }
     },
-    computed: {
-      remainingCreditAmount: {
-        set(val) {},
-          get() {
-            // 确保值为数值类型，避免NaN
-            const creditAmount = Number(this.form.loanAmount) || 0;
-            const usedCreditAmount = Number(this.form.repaidAmount) || 0;
-
-            const residue = creditAmount - usedCreditAmount;
-            this.form.balance = residue;
-            return residue;
-          }
-      },
-      ...mapGetters([
-        'name', 'avatar'
-      ]),
-      /* 计算周期，开始时间减去结束时间 */
-      creditCycle: {
-        get() {
-          // 如果是自动计算的，直接返回计算结果加"天"，否则返回当前值
-          if (this.isAutoCalculated) {
-            return this.form.loanTerm ? `${this.form.loanTerm}月` : '';
-          } else {
-            return this.form.loanTerm ? `${this.form.loanTerm}月` : '';
-          }
-        },
-        set(value) {
-          this.isAutoCalculated = false; // 用户手动输入，更改标志状态
-          if (typeof value === 'string' && value.includes('月')) {
-            this.form.loanTerm = parseInt(value.replace('月', ''), 10);
-          } else if (!isNaN(value)) {
-            this.form.loanTerm = parseInt(value, 10);
-          }
-        }
-      },
-      rate: {
-        get() {
-          if (this.form.rate) {
-            // 当读取值时，添加百分号
-            return this.form.rate + (this.form.rate ? '%' : '');
-          } else {
-            return this.form.rate;
-          }
-        },
-        set(value) {
-          this.form.rate = value.replace(/%/g, '');
-        }
-      },
+    'form.dueDate': function (newVal, oldVal) {
+      if (newVal !== oldVal) {
+        this.calculateLoanTerm();
+      }
     },
-    created() {
-      this.getList();
-      this.created_successfully = false;
-      this.isEditable = true;
-    },
-    methods: {
-      calculateLoanTerm() {
-        if (this.form.loanDate && this.form.dueDate) {
-          const start = moment(this.form.loanDate);
-          const end = moment(this.form.dueDate);
-
-          let creditCycle = moment(end).diff(moment(start), 'month', true)
-          this.form.loanTerm = (creditCycle).toFixed(2);
-          console.log(this.form.loanTerm);
-        }
-      },
-      /* 创建成功关闭弹窗 */
-      closeDialog() {
-        this.open = false;
-        this.created_successfully = false;
-      },
-      /* 再次创建 */
-      create_again() {
-        this.reset();
-        this.created_successfully = false;
-      },
-      toggleEdit() {
-        this.isEditable = !this.isEditable;
-      },
-      /** 查询专项借款列表 */
-      getList() {
-        this.loading = true;
-        this.queryParams.params = {};
-        if (null != this.daterangeLoanDate && '' != this.daterangeLoanDate) {
-          this.queryParams.params["beginLoanDate"] = this.daterangeLoanDate[0];
-          this.queryParams.params["endLoanDate"] = this.daterangeLoanDate[1];
-        }
-        if (null != this.daterangeDueDate && '' != this.daterangeDueDate) {
-          this.queryParams.params["beginDueDate"] = this.daterangeDueDate[0];
-          this.queryParams.params["endDueDate"] = this.daterangeDueDate[1];
-        }
-        this.queryParams['orderByColumn'] = 'id'
-
-        let search = JSON.parse(JSON.stringify(this.queryParams))
-        if (![null, '', undefined].includes(search.loanAmount)) {
-          search.loanAmount = Number(search.loanAmount) * 10000
-        }
-
-        listSpecial(search).then(response => {
-          this.specialList = response.rows;
-          this.total = response.total;
-          this.loading = false;
-        });
-      },
-      // 取消按钮
-      cancel() {
-        this.open = false;
-        this.created_successfully = false;
-        this.reset();
-      },
-      // 表单重置
-      reset() {
-        this.form = {
-          id: null,
-          scrUuid: null,
-          loanAmount: null,
-          repaidAmount: null,
-          balance: null,
-          borrower: null,
-          payee: null,
-          loanTerm: null,
-          rate: null,
-          contractId: null,
-          repaymentMethod: null,
-          loanUse: null,
-          comment: null,
-          createTime: null,
-          createBy: null,
-          updateTime: null,
-          updateBy: null,
-          uuid: null,
-          managementId: null,
-          loanDate: null,
-          dueDate: null
-        };
-        this.rzsrc2List = [];
-        this.resetForm("form");
-      },
-      /** 搜索按钮操作 */
-      handleQuery() {
-        this.queryParams.pageNum = 1;
-        this.getList();
-      },
-      /** 重置按钮操作 */
-      resetQuery() {
-        this.daterangeLoanDate = [];
-        this.daterangeDueDate = [];
-        this.resetForm("queryForm");
-        this.handleQuery();
-      },
-      // 多选框选中数据
-      handleSelectionChange(selection) {
-        this.ids = selection.map(item => item.id)
-        this.single = selection.length !== 1
-        this.multiple = !selection.length
-      },
-      /** 新增按钮操作 */
-      handleAdd() {
-        this.reset();
+    open(n, o) {
+      if (n == false) {
         this.created_successfully = false;
         this.isEditable = true;
-        this.open = true;
-        this.title = "添加专项借款";
-      },
-      /** 修改按钮操作 */
-      handleUpdate(row) {
-        this.isEditable = false;
-        this.reset();
-        const id = row.id || this.ids
-        getSpecial(id).then(response => {
-          /* str 需要赋值粘贴到的 */
-          response.data.rzsrc2List.forEach(i => {
-            i.id = null;
-          })
-
-          // 金额数据 / 10000
-          response.data.loanAmount = Number(response.data.loanAmount) / 10000;
-          response.data.repaidAmount = Number(response.data.repaidAmount) / 10000;
-          response.data.balance = Number(response.data.balance) / 10000;
-
-          this.scrUuid = response.data.scrUuid;
-          this.form = response.data;
-          this.form.scrUuid = response.data.rzsrc2List.map(i => i.url)
-          /* end */
-          this.rzsrc2List = response.data.rzsrc2List;
-          this.open = true;
-          this.title = "修改专项借款";
-        });
-      },
-      /** 提交按钮 */
-      submitForm() {
-        this.$refs["form"].validate(valid => {
-          if (valid) {
-            const data = JSON.parse(JSON.stringify(this.form))
-            this.form.rzsrc2List = this.rzsrc2List;
-            this.rzaudit_data = null;
-
-            // 金额数据 * 10000
-            data.loanAmount = data.loanAmount * 10000;
-            data.repaidAmount = data.repaidAmount * 10000;
-            data.balance = data.balance * 10000;
-
-            if (this.form.id != null) {
-              data.scrUuid = Number(this.scrUuid);
-              // 计算周期，开始时间减去结束时间
-              let loanTermStr = data.loanTerm.toString();
-              loanTermStr = loanTermStr.replace(/月$/, '');
-
-              data.loanTerm = loanTermStr
-              data.rate = data.rate.replace(/%/g, ''); // 替换掉所有的百分号
-              this.rzaudit_data = {
-                "auditId": data.id,
-                "scrUuid": data.scrUuid,
-                "createBy": this.name,
-                "createTime": null,
-                "dataJson": JSON.stringify(data),
-                "tableName": "rz_special_loans",
-                "auditState": "1759514891045044200",
-                "uuid": data.uuid
-              }
-              if (this.title === '修改专项借款' && this.created_successfully === false && this.isEditable === true) {
-                this.created_successfully = true;
-                this.isSuccess = false;
-                this.isTitle = true;
-                this.isMessage = false;
-                this.ctitle = '确定修改专项借款信息吗？';
-                this.isEdit = true;
-                return;
-              }
-            } else {
-              // 生成一个 uuid
-              const generator = new SnowflakeIdGenerator();
-              data.scrUuid = generator.nextId();
-              data.rzsrc2List = this.rzsrc2List;
-
-              data.createBy = this.name;
-              // start
-              const uuid = String(generator.nextId())
-              data.uuid = uuid;
-
-
-              // 计算周期，开始时间减去结束时间
-              let loanTermStr = data.loanTerm.toString();
-              loanTermStr = loanTermStr.replace(/月$/, '');
-
-              data.loanTerm = loanTermStr
-              // end
-              data.rate = data.rate.replace(/%/g, ''); // 替换掉所有的百分号
-              this.rzaudit_data = {
-                "id": null,
-                "auditId": null,
-                "scrUuid": data.scrUuid,
-                "createBy": this.name,
-                "createTime": null,
-                "dataJson": JSON.stringify(data),
-                "tableName": "rz_special_loans",
-                "auditState": "1759514891045044200",
-                "uuid": uuid,
-                "managementId": data.managementId
-              }
-            }
-            this.handleaddList();
-          }
-        });
-      },
-      async handleaddList() {
-        // 检验上一个数据步骤有没有审批通过
-        await this.inspectionPendingReview(this.rzaudit_data)
-        addList(this.rzaudit_data).then(res => {
-          this.created_successfully = true;
-          if (this.title === '修改专项借款' && this.isEditable) {
-            this.isSuccess = true;
-            this.isTitle = true;
-            this.isMessage = true;
-            this.ctitle = this.isEdit ? '修改提交成功' : '提交成功';
-            this.isEdit = false;
-          } else {
-            this.ctitle = '提交成功';
-            this.isMessage = true;
-            this.isEdit = false;
-          }
-        })
-      },
-      /** 删除按钮操作 */
-      handleDelete(row) {
-        const ids = row.id || this.ids;
-        // this.$modal.confirm('是否确认删除专项借款编号为"' + ids + '"的数据项？').then(function () {
-        //   return delSpecial(ids);
-        // }).then(() => {
-        //   this.cancel();
-        //   this.getList();
-        //   this.$modal.msgSuccess("删除成功");
-        // }).catch(() => { });
-
-        const h = this.$createElement;
-        this.$msgbox({
-          title: '提示',
-          message: h('div', null, [
-            h('el-divider', {
-              class: {
-                "no_mt": true,
-                "mb20": true
-              },
-              attrs: {
-                "data-role": 'el-divider'
-              }
-            }, ''),
-            h('p', {
-              class: 'tc w mb20',
-              style: {
-                'font-size': '24px',
-                'color': '#000000',
-                'font-weight': 'bold'
-              }
-            }, '确定删除选中的专项借款吗？'),
-          ]),
-          showCancelButton: true,
-          cancelButtonText: '取消',
-          confirmButtonText: '确定',
-          cancelButtonClass: "btn-custom-cancel",
-          customClass: 'custom-msgbox',
-          beforeClose: (action, instance, done) => {
-            if (action === 'confirm') {
-              delSpecial(ids).then(res => {
-                done();
-              });
-            } else {
-              done();
-            }
-          }
-        }).then(action => {
-          this.cancel();
-          this.getList();
-          this.$modal.msgSuccess("删除成功");
-        });
-      },
-      /** 附件表序号 */
-      rowrzsrc2Index({
-        row,
-        rowIndex
-      }) {
-        row.index = rowIndex + 1;
-      },
-      /** 附件表添加按钮操作 */
-      handleAddrzsrc2() {
-        let obj = {};
-        obj.url = "";
-        obj.projectManagementId = "";
-        obj.type = "rz_special_loans";
-        this.rzsrc2List.push(obj);
-      },
-      /** 附件表删除按钮操作 */
-      handleDeleterzsrc2() {
-        if (this.checkedrzsrc2.length == 0) {
-          this.$modal.msgError("请先选择要删除的附件表数据");
-        } else {
-          const rzsrc2List = this.rzsrc2List;
-          const checkedrzsrc2 = this.checkedrzsrc2;
-          this.rzsrc2List = rzsrc2List.filter(function(item) {
-            return checkedrzsrc2.indexOf(item.index) == -1
-          });
-        }
-      },
-      /** 复选框选中数据 */
-      handlerzsrc2SelectionChange(selection) {
-        this.checkedrzsrc2 = selection.map(item => item.index)
-      },
-      /** 导出按钮操作 */
-      handleExport() {
-        this.download('rzspecialloans/special/export', {
-          ...this.queryParams
-        }, `special_${new Date().getTime()}.xlsx`)
-      },
-      /* 上传完成的回调 */
-      upload_completed(url_string) {
-        const url_list = url_string.split(',')
-        url_list.forEach(url_i => {
-          let obj = {
-            url: url_i,
-            projectManagementId: this.form.managementId,
-            type: "rz_special_loans",
-            createBy: this.name,
-            createTime: moment().format("YYYY-MM-DD HH:mm:ss"),
-          };
-
-          // 检查this.rzsrc2List中是否已经存在具有相同url的对象
-          if (!this.rzsrc2List.some(item => item.url === obj.url)) {
-            this.rzsrc2List.push(obj);
-          }
-        });
-
       }
     }
-  };
+  },
+  computed: {
+    remainingCreditAmount: {
+      set(val) { },
+      get() {
+        // 确保值为数值类型，避免NaN
+        const creditAmount = Number(this.form.loanAmount) || 0;
+        const usedCreditAmount = Number(this.form.repaidAmount) || 0;
+
+        const residue = creditAmount - usedCreditAmount;
+        this.form.balance = residue;
+        return residue;
+      }
+    },
+    ...mapGetters([
+      'name', 'avatar'
+    ]),
+    /* 计算周期，开始时间减去结束时间 */
+    creditCycle: {
+      get() {
+        // 如果是自动计算的，直接返回计算结果加"天"，否则返回当前值
+        if (this.isAutoCalculated) {
+          return this.form.loanTerm ? `${this.form.loanTerm}月` : '';
+        } else {
+          return this.form.loanTerm ? `${this.form.loanTerm}月` : '';
+        }
+      },
+      set(value) {
+        this.isAutoCalculated = false; // 用户手动输入，更改标志状态
+        if (typeof value === 'string' && value.includes('月')) {
+          this.form.loanTerm = parseInt(value.replace('月', ''), 10);
+        } else if (!isNaN(value)) {
+          this.form.loanTerm = parseInt(value, 10);
+        }
+      }
+    },
+    rate: {
+      get() {
+        if (this.form.rate) {
+          // 当读取值时，添加百分号
+          return this.form.rate + (this.form.rate ? '%' : '');
+        } else {
+          return this.form.rate;
+        }
+      },
+      set(value) {
+        this.form.rate = value.replace(/%/g, '');
+      }
+    },
+  },
+  created() {
+    this.getList();
+    this.created_successfully = false;
+    this.isEditable = true;
+  },
+  methods: {
+    calculateLoanTerm() {
+      if (this.form.loanDate && this.form.dueDate) {
+        const start = moment(this.form.loanDate);
+        const end = moment(this.form.dueDate);
+
+        let creditCycle = moment(end).diff(moment(start), 'month', true)
+        this.form.loanTerm = (creditCycle).toFixed(2);
+        console.log(this.form.loanTerm);
+      }
+    },
+    /* 创建成功关闭弹窗 */
+    closeDialog() {
+      this.open = false;
+      this.created_successfully = false;
+    },
+    /* 再次创建 */
+    create_again() {
+      this.reset();
+      this.created_successfully = false;
+    },
+    toggleEdit() {
+      this.isEditable = !this.isEditable;
+    },
+    /** 查询专项借款列表 */
+    getList() {
+      this.loading = true;
+      this.queryParams.params = {};
+      if (null != this.daterangeLoanDate && '' != this.daterangeLoanDate) {
+        this.queryParams.params["beginLoanDate"] = this.daterangeLoanDate[0];
+        this.queryParams.params["endLoanDate"] = this.daterangeLoanDate[1];
+      }
+      if (null != this.daterangeDueDate && '' != this.daterangeDueDate) {
+        this.queryParams.params["beginDueDate"] = this.daterangeDueDate[0];
+        this.queryParams.params["endDueDate"] = this.daterangeDueDate[1];
+      }
+      this.queryParams['orderByColumn'] = 'id'
+
+      let search = JSON.parse(JSON.stringify(this.queryParams))
+      if (![null, '', undefined].includes(search.loanAmount)) {
+        search.loanAmount = Number(search.loanAmount) * 10000
+      }
+
+      listSpecial(search).then(response => {
+        this.specialList = response.rows;
+        this.total = response.total;
+        this.loading = false;
+      });
+    },
+    // 取消按钮
+    cancel() {
+      this.open = false;
+      this.created_successfully = false;
+      this.reset();
+    },
+    // 表单重置
+    reset() {
+      this.form = {
+        id: null,
+        scrUuid: null,
+        loanAmount: null,
+        repaidAmount: null,
+        balance: null,
+        borrower: null,
+        payee: null,
+        loanTerm: null,
+        rate: null,
+        contractId: null,
+        repaymentMethod: null,
+        loanUse: null,
+        comment: null,
+        createTime: null,
+        createBy: null,
+        updateTime: null,
+        updateBy: null,
+        uuid: null,
+        managementId: null,
+        loanDate: null,
+        dueDate: null
+      };
+      this.rzsrc2List = [];
+      this.resetForm("form");
+    },
+    /** 搜索按钮操作 */
+    handleQuery() {
+      this.queryParams.pageNum = 1;
+      this.getList();
+    },
+    /** 重置按钮操作 */
+    resetQuery() {
+      this.daterangeLoanDate = [];
+      this.daterangeDueDate = [];
+      this.resetForm("queryForm");
+      this.handleQuery();
+    },
+    // 多选框选中数据
+    handleSelectionChange(selection) {
+      this.ids = selection.map(item => item.id)
+      this.single = selection.length !== 1
+      this.multiple = !selection.length
+    },
+    /** 新增按钮操作 */
+    handleAdd() {
+      this.reset();
+      this.created_successfully = false;
+      this.isEditable = true;
+      this.open = true;
+      this.title = "添加专项借款";
+    },
+    /** 修改按钮操作 */
+    handleUpdate(row) {
+      this.isEditable = false;
+      this.reset();
+      const id = row.id || this.ids
+      getSpecial(id).then(response => {
+        /* str 需要赋值粘贴到的 */
+        response.data.rzsrc2List.forEach(i => {
+          i.id = null;
+        })
+
+        // 金额数据 / 10000
+        response.data.loanAmount = Number(response.data.loanAmount) / 10000;
+        response.data.repaidAmount = Number(response.data.repaidAmount) / 10000;
+        response.data.balance = Number(response.data.balance) / 10000;
+
+        this.scrUuid = response.data.scrUuid;
+        this.form = response.data;
+        this.form.scrUuid = response.data.rzsrc2List.map(i => i.url)
+        /* end */
+        this.rzsrc2List = response.data.rzsrc2List;
+        this.open = true;
+        this.title = "修改专项借款";
+      });
+    },
+    /** 提交按钮 */
+    submitForm() {
+      this.$refs["form"].validate(valid => {
+        if (valid) {
+          const data = JSON.parse(JSON.stringify(this.form))
+          this.form.rzsrc2List = this.rzsrc2List;
+          this.rzaudit_data = null;
+
+          // 金额数据 * 10000
+          data.loanAmount = data.loanAmount * 10000;
+          data.repaidAmount = data.repaidAmount * 10000;
+          data.balance = data.balance * 10000;
+
+          if (this.form.id != null) {
+            data.scrUuid = Number(this.scrUuid);
+            // 计算周期，开始时间减去结束时间
+            let loanTermStr = data.loanTerm.toString();
+            loanTermStr = loanTermStr.replace(/月$/, '');
+
+            data.loanTerm = loanTermStr
+            data.rate = data.rate.replace(/%/g, ''); // 替换掉所有的百分号
+            this.rzaudit_data = {
+              "auditId": data.id,
+              "scrUuid": data.scrUuid,
+              "createBy": this.name,
+              "createTime": null,
+              "dataJson": JSON.stringify(data),
+              "tableName": "rz_special_loans",
+              "auditState": "1759514891045044200",
+              "uuid": data.uuid
+            }
+            if (this.title === '修改专项借款' && this.created_successfully === false && this.isEditable === true) {
+              this.created_successfully = true;
+              this.isSuccess = false;
+              this.isTitle = true;
+              this.isMessage = false;
+              this.ctitle = '确定修改专项借款信息吗？';
+              this.isEdit = true;
+              return;
+            }
+          } else {
+            // 生成一个 uuid
+            const generator = new SnowflakeIdGenerator();
+            data.scrUuid = generator.nextId();
+            data.rzsrc2List = this.rzsrc2List;
+
+            data.createBy = this.name;
+            // start
+            const uuid = String(generator.nextId())
+            data.uuid = uuid;
+
+
+            // 计算周期，开始时间减去结束时间
+            let loanTermStr = data.loanTerm.toString();
+            loanTermStr = loanTermStr.replace(/月$/, '');
+
+            data.loanTerm = loanTermStr
+            // end
+            data.rate = data.rate.replace(/%/g, ''); // 替换掉所有的百分号
+            this.rzaudit_data = {
+              "id": null,
+              "auditId": null,
+              "scrUuid": data.scrUuid,
+              "createBy": this.name,
+              "createTime": null,
+              "dataJson": JSON.stringify(data),
+              "tableName": "rz_special_loans",
+              "auditState": "1759514891045044200",
+              "uuid": uuid,
+              "managementId": data.managementId
+            }
+          }
+          this.handleaddList();
+        }
+      });
+    },
+    async handleaddList() {
+      // 检验上一个数据步骤有没有审批通过
+      await this.inspectionPendingReview(this.rzaudit_data)
+      addList(this.rzaudit_data).then(res => {
+        this.created_successfully = true;
+        if (this.title === '修改专项借款' && this.isEditable) {
+          this.isSuccess = true;
+          this.isTitle = true;
+          this.isMessage = true;
+          this.ctitle = this.isEdit ? '修改提交成功' : '提交成功';
+          this.isEdit = false;
+        } else {
+          this.ctitle = '提交成功';
+          this.isMessage = true;
+          this.isEdit = false;
+        }
+      })
+    },
+    /** 删除按钮操作 */
+    handleDelete(row) {
+      const ids = row.id || this.ids;
+      // this.$modal.confirm('是否确认删除专项借款编号为"' + ids + '"的数据项？').then(function () {
+      //   return delSpecial(ids);
+      // }).then(() => {
+      //   this.cancel();
+      //   this.getList();
+      //   this.$modal.msgSuccess("删除成功");
+      // }).catch(() => { });
+
+      const h = this.$createElement;
+      this.$msgbox({
+        title: '提示',
+        message: h('div', null, [
+          h('el-divider', {
+            class: {
+              "no_mt": true,
+              "mb20": true
+            },
+            attrs: {
+              "data-role": 'el-divider'
+            }
+          }, ''),
+          h('p', {
+            class: 'tc w mb20',
+            style: {
+              'font-size': '24px',
+              'color': '#000000',
+              'font-weight': 'bold'
+            }
+          }, '确定删除选中的专项借款吗？'),
+        ]),
+        showCancelButton: true,
+        cancelButtonText: '取消',
+        confirmButtonText: '确定',
+        cancelButtonClass: "btn-custom-cancel",
+        customClass: 'custom-msgbox',
+        beforeClose: (action, instance, done) => {
+          if (action === 'confirm') {
+            delSpecial(ids).then(res => {
+              done();
+            });
+          } else {
+            done();
+          }
+        }
+      }).then(action => {
+        this.cancel();
+        this.getList();
+        this.$modal.msgSuccess("删除成功");
+      });
+    },
+    /** 附件表序号 */
+    rowrzsrc2Index({
+      row,
+      rowIndex
+    }) {
+      row.index = rowIndex + 1;
+    },
+    /** 附件表添加按钮操作 */
+    handleAddrzsrc2() {
+      let obj = {};
+      obj.url = "";
+      obj.projectManagementId = "";
+      obj.type = "rz_special_loans";
+      this.rzsrc2List.push(obj);
+    },
+    /** 附件表删除按钮操作 */
+    handleDeleterzsrc2() {
+      if (this.checkedrzsrc2.length == 0) {
+        this.$modal.msgError("请先选择要删除的附件表数据");
+      } else {
+        const rzsrc2List = this.rzsrc2List;
+        const checkedrzsrc2 = this.checkedrzsrc2;
+        this.rzsrc2List = rzsrc2List.filter(function (item) {
+          return checkedrzsrc2.indexOf(item.index) == -1
+        });
+      }
+    },
+    /** 复选框选中数据 */
+    handlerzsrc2SelectionChange(selection) {
+      this.checkedrzsrc2 = selection.map(item => item.index)
+    },
+    /** 导出按钮操作 */
+    handleExport() {
+      this.download('rzspecialloans/special/export', {
+        ...this.queryParams
+      }, `special_${new Date().getTime()}.xlsx`)
+    },
+    /* 上传完成的回调 */
+    upload_completed(url_string) {
+      const url_list = url_string.split(',')
+      url_list.forEach(url_i => {
+        let obj = {
+          url: url_i,
+          projectManagementId: this.form.managementId,
+          type: "rz_special_loans",
+          createBy: this.name,
+          createTime: moment().format("YYYY-MM-DD HH:mm:ss"),
+        };
+
+        // 检查this.rzsrc2List中是否已经存在具有相同url的对象
+        if (!this.rzsrc2List.some(item => item.url === obj.url)) {
+          this.rzsrc2List.push(obj);
+        }
+      });
+
+    }
+  }
+};
 </script>

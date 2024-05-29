@@ -109,9 +109,10 @@
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar> -->
     </el-row>
 
-    <el-table v-loading="loading" :data="bondsList" @selection-change="handleSelectionChange"
+    <el-table :summary-method="(param) => getSummaries(param, totalKeys)" show-summary
+       v-loading="loading" :data="bondsList" @selection-change="handleSelectionChange"
       :header-cell-style="header_cell_style">
-      <el-table-column show-overflow-tooltip fixed="left" type="selection" min-width="50" align="center" />
+      <el-table-column show-overflow-tooltip fixed="left" type="selection" width="60" min-width="60" align="center" />
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
       <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" min-width="100" />
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
@@ -529,7 +530,14 @@
             trigger: "blur"
           }]
         },
-        isAutoCalculated: false
+        isAutoCalculated: false,
+        totalKeys: [
+          '规模（万元）',
+          '专项批复金额（万元）',
+          '累计到账金额（万元）',
+          '已还金额（万元）',
+          '待还金额（万元）',
+        ]
       };
     },
     watch: {

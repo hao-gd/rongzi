@@ -274,7 +274,7 @@ export function creditCycleFN(startDate, deadline) {
     //   creditCycle += `${creditCycle ? ' ' : ''}${days}天`;
     // }
     // return days + '天';
-    let creditCycle = moment(deadline).diff(moment(startDate),'month',true)
+    let creditCycle = moment(deadline).diff(moment(startDate), 'month', true)
     return (creditCycle).toFixed(2);
   }
 
@@ -322,4 +322,40 @@ export function amountLimitMethod(e) {
     e.target.value = e.target.value.slice(0, dotIndex + 2);
   }
   // e.target.value = (e.target.value.match(/^\d*(\.?\d{1,2})/g)[0]) || ''
+}
+
+// 合计
+export function getSummaries(param, specifiedLabels) {
+  const { columns, data } = param;
+  const sums = [];
+
+  // 定义需要计算合计的列标签
+  columns.forEach((column, index) => {
+    if (index === 0) {
+      sums[index] = '合计';
+      return;
+    }
+
+    // 检查当前列是否在指定的标签数组中
+    if (specifiedLabels.includes(column.label)) {
+      const values = data.map(item => Number(item[column.property]));
+      if (!values.every(value => isNaN(value))) {
+        const sum = values.reduce((prev, curr) => {
+          const value = Number(curr);
+          if (!isNaN(value)) {
+            return prev + curr;
+          } else {
+            return prev;
+          }
+        }, 0);
+        sums[index] = formatNumberAsRMB(sum);
+      } else {
+        sums[index] = (0).toFixed(2); // 如果所有值都是 NaN，合计为 0
+      }
+    } else {
+      sums[index] = '/'; // 其他列展示为 /
+    }
+  });
+
+  return sums;
 }
