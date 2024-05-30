@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
     <!-- <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="反向保理管理编号" prop="managementId">
-        <el-input v-model="queryParams.managementId" placeholder="请输入反向保理管理编号" clearable
+      <el-form-item label="管理编号" prop="managementId">
+        <el-input v-model="queryParams.managementId" placeholder="请输入管理编号" clearable
           @keyup.enter.native="handleQuery" />
       </el-form-item>
       <el-form-item label="审核id" prop="auditId">
@@ -14,8 +14,8 @@
             :value="dict.value" />
         </el-select>
       </el-form-item>
-      <el-form-item label="保理商" prop="factor">
-        <el-select filterable v-model="queryParams.factor" placeholder="请选择保理商" clearable>
+      <el-form-item label="保理企业" prop="factor">
+        <el-select filterable v-model="queryParams.factor" placeholder="请选择保理企业" clearable>
           <el-option v-for="dict in dict.type.sys_1757288852172570600" :key="dict.value" :label="dict.label"
             :value="dict.value" />
         </el-select>
@@ -46,8 +46,8 @@
           <el-option v-for="dict in dict.type.sys_maturity" :key="dict.value" :label="dict.label" :value="dict.value" />
         </el-select>
       </el-form-item>
-      <el-form-item label="回款账户" prop="collectionAccount">
-        <el-input v-model="queryParams.collectionAccount" placeholder="请输入回款账户" clearable
+      <el-form-item label="回款账户名称" prop="collectionAccount">
+        <el-input v-model="queryParams.collectionAccount" placeholder="请输入回款账户名称" clearable
           @keyup.enter.native="handleQuery" />
       </el-form-item>
       <el-form-item>
@@ -61,7 +61,7 @@
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="管理编号" prop="managementId">
-              <el-input v-model="queryParams.managementId" placeholder="请输入反向保理管理编号" clearable
+              <el-input v-model="queryParams.managementId" placeholder="请输入管理编号" clearable
                 @keyup.enter.native="handleQuery" />
             </el-form-item>
           </el-col>
@@ -74,8 +74,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="保理商" prop="factor">
-              <el-select filterable v-model="queryParams.factor" placeholder="请选择保理商" clearable>
+            <el-form-item label="保理企业" prop="factor">
+              <el-select filterable v-model="queryParams.factor" placeholder="请选择保理企业" clearable>
                 <el-option v-for="dict in dict.type.sys_1757288852172570600" :key="dict.value" :label="dict.label"
                   :value="dict.label" />
               </el-select>
@@ -95,15 +95,19 @@
             <el-form-item label="起止日期" :error="error1">
               <!-- <el-date-picker clearable v-model="queryParams.startDate" type="date" value-format="yyyy-MM-dd"
               placeholder="请选择开始日期"></el-date-picker> -->
-                <el-row>
-                  <el-col :span="11">
-                    <el-date-picker :picker-options="pickerOptions3" format='yyyy/MM/dd' clearable v-model="daterangeStartDate1" value-format="yyyy-MM-dd" type="date" placeholder="请选择起始日"></el-date-picker>
-                  </el-col>
-                  <el-col :span="2" class="flex fjc">-</el-col>
-                  <el-col :span="11">
-                    <el-date-picker :picker-options="pickerOptions4" format='yyyy/MM/dd' clearable v-model="daterangeDeadline2" value-format="yyyy-MM-dd" type="date" placeholder="请选择到期日"></el-date-picker>
-                  </el-col>
-                </el-row>
+              <el-row>
+                <el-col :span="11">
+                  <el-date-picker :picker-options="pickerOptions3" format='yyyy/MM/dd' clearable
+                    v-model="daterangeStartDate1" value-format="yyyy-MM-dd" type="date"
+                    placeholder="请选择起始日"></el-date-picker>
+                </el-col>
+                <el-col :span="2" class="flex fjc">-</el-col>
+                <el-col :span="11">
+                  <el-date-picker :picker-options="pickerOptions4" format='yyyy/MM/dd' clearable
+                    v-model="daterangeDeadline2" value-format="yyyy-MM-dd" type="date"
+                    placeholder="请选择到期日"></el-date-picker>
+                </el-col>
+              </el-row>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -114,20 +118,39 @@
           </el-col>
         </el-row>
         <el-row :gutter="20">
-         
+
           <el-col :span="8">
-            <el-form-item label="回款账户" prop="collectionAccount">
-              <el-input v-model="queryParams.collectionAccount" placeholder="请输入回款账户" clearable
+            <el-form-item label="回款账户名称" prop="collectionAccount">
+              <el-input v-model="queryParams.collectionAccount" placeholder="请输入回款账户名称" clearable
                 @keyup.enter.native="handleQuery" />
             </el-form-item>
           </el-col>
-          <el-col :span="16">
+          <!-- <el-col :span="8">
+            <el-form-item label="账号" prop="account">
+              <el-input v-model="queryParams.account" placeholder="请输入账号" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="开户行" prop="bank">
+              <el-input v-model="queryParams.bank" placeholder="请输入开户行" />
+            </el-form-item>
+          </el-col> -->
+          <el-col :span="26">
             <el-form-item class="flex" style="display: flex; justify-content: flex-end;">
               <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
               <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
             </el-form-item>
           </el-col>
         </el-row>
+
+        <!-- <el-row :gutter="20">
+          <el-col :span="24">
+            <el-form-item class="flex" style="display: flex; justify-content: flex-end;">
+              <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+              <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+            </el-form-item>
+          </el-col>
+        </el-row> -->
       </el-form>
     </search-panel>
 
@@ -154,8 +177,8 @@
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar> -->
     </el-row>
 
-    <el-table :summary-method="(param) => getSummaries(param, totalKeys)" show-summary v-loading="loading" :data="factoringList" @selection-change="handleSelectionChange"
-      :header-cell-style="header_cell_style">
+    <el-table :summary-method="(param) => getSummaries(param, totalKeys)" show-summary v-loading="loading"
+      :data="factoringList" @selection-change="handleSelectionChange" :header-cell-style="header_cell_style">
       <el-table-column show-overflow-tooltip fixed="left" type="selection" min-width="60" width="60" align="center" />
       <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" min-width="100" />
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" />
@@ -165,7 +188,7 @@
           <dict-tag :options="dict.type.sys_1795741368925028400" :value="scope.row.creditor" />
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="保理商名称" align="center" prop="factor" min-width="130">
+      <el-table-column show-overflow-tooltip label="保理企业" align="center" prop="factor" min-width="130">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1757288852172570600" :value="scope.row.factor" />
         </template>
@@ -199,7 +222,9 @@
           <!-- <dict-tag :options="dict.type.sys_maturity" :value="scope.row.remark" /> -->
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="回款账户" align="center" prop="collectionAccount" min-width="180" />
+      <!-- <el-table-column show-overflow-tooltip label="回款账户名称" align="center" prop="collectionAccount" min-width="180" />
+      <el-table-column show-overflow-tooltip label="账号" align="center" prop="account" />
+      <el-table-column show-overflow-tooltip label="开户行" align="center" prop="bank" /> -->
       <el-table-column show-overflow-tooltip label="备注" align="center" prop="comment" min-width="200" />
       <!-- <el-table-column label="ID" align="center" prop="id" /> -->
       <el-table-column fixed="right" label="操作" align="center" class-name="''">
@@ -231,7 +256,7 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="管理编号" prop="managementId">
-                <el-input :readonly="title === '修改反向保理'" v-model="form.managementId" placeholder="请输入反向保理管理编号" />
+                <el-input :readonly="title === '修改反向保理'" v-model="form.managementId" placeholder="请输入管理编号" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -243,8 +268,8 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="保理商名称" prop="factor">
-                <el-select filterable :disabled="!isEditable" v-model="form.factor" placeholder="请选择保理商">
+              <el-form-item label="保理企业" prop="factor">
+                <el-select filterable :disabled="!isEditable" v-model="form.factor" placeholder="请选择保理企业">
                   <el-option v-for="dict in dict.type.sys_1757288852172570600" :key="dict.value" :label="dict.label"
                     :value="dict.label"></el-option>
                 </el-select>
@@ -262,8 +287,8 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="放贷金额（万元）" prop="loanAmount">
-                <el-input-number :disabled="!isEditable" class="w" :controls="false" :precision="2" :readonly="!isEditable" type="number"
-                  v-model.trim="form.loanAmount" placeholder="请输入放贷金额" />
+                <el-input-number :disabled="!isEditable" class="w" :controls="false" :precision="2"
+                  :readonly="!isEditable" type="number" v-model.trim="form.loanAmount" placeholder="请输入放贷金额" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -281,13 +306,26 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="结束日期" prop="deadline">
-                <el-date-picker format='yyyy/MM/dd' :picker-options="pickerOptions2" :disabled="!isEditable" clearable v-model="form.deadline"
-                  type="date" value-format="yyyy-MM-dd" placeholder="请选择结束日期"></el-date-picker>
+                <el-date-picker format='yyyy/MM/dd' :picker-options="pickerOptions2" :disabled="!isEditable" clearable
+                  v-model="form.deadline" type="date" value-format="yyyy-MM-dd" placeholder="请选择结束日期"></el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="回款账户" prop="collectionAccount">
-                <el-input :readonly="!isEditable" v-model="form.collectionAccount" placeholder="请输入回款账户" />
+              <el-form-item label="回款账户名称" prop="collectionAccount">
+                <el-input :readonly="!isEditable" v-model="form.collectionAccount" placeholder="请输入回款账户名称" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <el-row :gutter="20">
+            <el-col :span="8">
+              <el-form-item label="账号" prop="account">
+                <el-input :readonly="!isEditable" v-model="form.account" placeholder="请输入账号" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="开户行" prop="bank">
+                <el-input :readonly="!isEditable" v-model="form.bank" placeholder="请输入开户行" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -450,6 +488,8 @@ export default {
         remark: null,
         collectionAccount: null,
         comment: null,
+        account: null,
+        bank: null
       },
       /* str 需要添加的 */
       scrUuid: null,
@@ -459,7 +499,7 @@ export default {
       // 表单校验
       rules: {
         managementId: [
-          { required: true, message: "反向保理管理编号不能为空", trigger: "blur" }
+          { required: true, message: "管理编号不能为空", trigger: "blur" }
         ],
         scrUuid: [
           { required: false, message: "附件不能为空", trigger: "blur" }
@@ -471,7 +511,7 @@ export default {
           { required: true, message: "债权人不能为空", trigger: "change" }
         ],
         factor: [
-          { required: true, message: "保理商不能为空", trigger: "change" }
+          { required: true, message: "保理企业不能为空", trigger: "change" }
         ],
         financialInstitution: [
           { required: true, message: "金融机构不能为空", trigger: "change" }
@@ -489,7 +529,7 @@ export default {
           { required: true, message: "项目名称不能为空", trigger: "blur" }
         ],
         collectionAccount: [
-          { required: true, message: "回款账户不能为空", trigger: "blur" }
+          { required: true, message: "回款账户名称不能为空", trigger: "blur" }
         ],
       },
       error1: '',
@@ -594,6 +634,7 @@ export default {
     // 表单重置
     reset() {
       this.form = {
+        id: null,
         managementId: null,
         scrUuid: null,
         auditId: null,
@@ -611,7 +652,9 @@ export default {
         createBy: null,
         updateTime: null,
         updateBy: null,
-        id: null
+        uuid: null,
+        account: null,
+        bank: null
       };
       this.rzsrc2List = [];
       this.resetForm("form");
