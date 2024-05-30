@@ -19,7 +19,7 @@
             <el-form-item label="被担保人" prop="creditor">
               <el-select filterable v-model="queryParams.creditor" placeholder="请选择被担保人" clearable>
                 <el-option v-for="dict in dict.type.sys_1767154968256577500" :key="dict.value" :label="dict.label"
-                  :value="dict.value"></el-option>
+                  :value="dict.label"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -27,7 +27,7 @@
             <el-form-item label="担保人" prop="guarantor">
               <el-select filterable v-model="queryParams.guarantor" placeholder="请选择担保人" clearable>
                 <el-option v-for="dict in dict.type.sys_1767155091485229000" :key="dict.value" :label="dict.label"
-                  :value="dict.value"></el-option>
+                  :value="dict.label"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -35,7 +35,7 @@
             <el-form-item label="债权人" prop="financialInstitution">
               <el-select filterable v-model="queryParams.financialInstitution" placeholder="请选择债权人" clearable>
                 <el-option v-for="dict in dict.type.sys_1757271666666242000" :key="dict.value" :label="dict.label"
-                  :value="dict.value"></el-option>
+                  :value="dict.label"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -47,7 +47,7 @@
             <el-form-item label="业务类型" prop="businessType">
               <el-select filterable v-model="queryParams.businessType" placeholder="请选择业务类型" clearable>
                 <el-option v-for="dict in dict.type.sys_1767155302261588000" :key="dict.value" :label="dict.label"
-                  :value="dict.value"></el-option>
+                  :value="dict.label"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -89,7 +89,7 @@
             <el-form-item label="保证方式" prop="guaranteeMethod">
               <el-select filterable v-model="queryParams.guaranteeMethod" placeholder="请选择保证方式" clearable>
                 <el-option v-for="dict in dict.type.sys_1767155825266131000" :key="dict.value" :label="dict.label"
-                  :value="dict.value"></el-option>
+                  :value="dict.label"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -97,7 +97,7 @@
             <el-form-item label="是否上征信" prop="isCreditInvestigation">
               <el-select filterable v-model="queryParams.isCreditInvestigation" placeholder="请选择是否上征信" clearable>
                 <el-option v-for="dict in dict.type.sys_1767156259322069000" :key="dict.value" :label="dict.label"
-                  :value="dict.value"></el-option>
+                  :value="dict.label"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -136,6 +136,10 @@
     <el-divider class="mt20 mb20"></el-divider>
     <el-row type="flex" :gutter="10" class="mb8" justify="end">
       <el-col :span="1.5">
+        <el-button type="warning" plain icon="el-icon-download" size="mini" @click="handleExport"
+          v-hasPermi="['glinternal:internal:export']">导 出</el-button>
+      </el-col>
+      <el-col :span="1.5">
         <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
           v-hasPermi="['glinternal:internal:add']">新 建</el-button>
       </el-col>
@@ -147,16 +151,13 @@
         <el-button type="danger" plain icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete"
           v-hasPermi="['glinternal:internal:remove']">删 除</el-button>
       </el-col>
-      <!-- <el-col :span="1.5">
-        <el-button type="warning" plain icon="el-icon-download" size="mini" @click="handleExport"
-          v-hasPermi="['glinternal:internal:export']">导出</el-button>
-      </el-col>
+      <!-- 
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar> -->
     </el-row>
 
-    <el-table v-loading="loading" :data="internalList" @selection-change="handleSelectionChange"
-      :header-cell-style="header_cell_style">
-      <el-table-column show-overflow-tooltip fixed="left" type="selection" width="50" align="center" />
+    <el-table :summary-method="(param) => getSummaries(param, totalKeys)" show-summary v-loading="loading"
+      :data="internalList" @selection-change="handleSelectionChange" :header-cell-style="header_cell_style">
+      <el-table-column show-overflow-tooltip fixed="left" type="selection" width="60" align="center" />
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
       <!-- <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" min-width="100"/> -->
       <!-- <el-table-column show-overflow-tooltip label="担保合同编号" align="center" prop="contractId" width="180" /> -->
@@ -215,7 +216,8 @@
       <el-table-column show-overflow-tooltip label="担保状态" align="center" prop="danbaozhuangtai" min-width="100">
         <template slot-scope="scope">
           <svg-icon :icon-class="scope.row.danbaozhuangtai"></svg-icon>
-          <dict-tag style="display: inline-block;" :options="dict.type.sys_1778612529468014600" :value="scope.row.danbaozhuangtai"/>
+          <dict-tag style="display: inline-block;" :options="dict.type.sys_1778612529468014600"
+            :value="scope.row.danbaozhuangtai" />
         </template>
       </el-table-column>
       <el-table-column show-overflow-tooltip label="备注" align="center" prop="comment" min-width="130" />
@@ -266,7 +268,7 @@
               <el-form-item label="被担保人" prop="creditor">
                 <el-select filterable :disabled="!isEditable" v-model="form.creditor" placeholder="请选择被担保人">
                   <el-option v-for="dict in dict.type.sys_1767154968256577500" :key="dict.value" :label="dict.label"
-                    :value="dict.value"></el-option>
+                    :value="dict.label"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -274,7 +276,7 @@
               <el-form-item label="担保人" prop="guarantor">
                 <el-select filterable :disabled="!isEditable" v-model="form.guarantor" placeholder="请选择担保人">
                   <el-option v-for="dict in dict.type.sys_1767155091485229000" :key="dict.value" :label="dict.label"
-                    :value="dict.value"></el-option>
+                    :value="dict.label"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -282,7 +284,7 @@
               <el-form-item label="债权人" prop="financialInstitution">
                 <el-select filterable :disabled="!isEditable" v-model="form.financialInstitution" placeholder="请选择债权人">
                   <el-option v-for="dict in dict.type.sys_1757271666666242000" :key="dict.value" :label="dict.label"
-                    :value="dict.value"></el-option>
+                    :value="dict.label"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -294,7 +296,7 @@
               <el-form-item label="业务类型" prop="businessType">
                 <el-select filterable :disabled="!isEditable" v-model="form.businessType" placeholder="请选择业务类型">
                   <el-option v-for="dict in dict.type.sys_1767155302261588000" :key="dict.value" :label="dict.label"
-                    :value="dict.value"></el-option>
+                    :value="dict.label"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -332,7 +334,7 @@
               <el-form-item label="保证方式" prop="guaranteeMethod">
                 <el-select filterable :disabled="!isEditable" v-model="form.guaranteeMethod" placeholder="请选择保证方式">
                   <el-option v-for="dict in dict.type.sys_1767155825266131000" :key="dict.value" :label="dict.label"
-                    :value="dict.value"></el-option>
+                    :value="dict.label"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -344,13 +346,14 @@
               <el-form-item label="是否上征信" prop="isCreditInvestigation">
                 <el-select filterable :disabled="!isEditable" v-model="form.isCreditInvestigation" placeholder="请选择是否上征信">
                   <el-option v-for="dict in dict.type.sys_1767156259322069000" :key="dict.value" :label="dict.label"
-                    :value="dict.value"></el-option>
+                    :value="dict.label"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="担保状态" prop="danbaozhuangtai">
-                <el-select filterable :disabled="!isEditable" v-model="form.danbaozhuangtai" placeholder="请选择担保状态" clearable>
+                <el-select filterable :disabled="!isEditable" v-model="form.danbaozhuangtai" placeholder="请选择担保状态"
+                  clearable>
                   <el-option v-for="dict in dict.type.sys_1778612529468014600" :key="dict.value" :label="dict.label"
                     :value="dict.label" />
                 </el-select>
@@ -641,7 +644,11 @@ export default {
           { required: true, message: "担保状态不能为空", trigger: "change" }
         ],
       },
-      error1: ''
+      error1: '',
+      totalKeys: [
+        '担保金额（万元）',
+        '担保余额（万元）',
+      ]
     };
   },
   watch: {

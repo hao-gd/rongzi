@@ -15,7 +15,7 @@
             <el-form-item label="付款人" prop="payer">
               <el-select filterable v-model="queryParams.payer" placeholder="请选择付款人" clearable>
                 <el-option v-for="dict in dict.type.sys_1757235323403763700" :key="dict.value" :label="dict.label"
-                  :value="dict.value" />
+                  :value="dict.label" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -23,7 +23,7 @@
             <el-form-item label="收款人" prop="payee">
               <el-select filterable v-model="queryParams.payee" placeholder="请选择收款人" clearable>
                 <el-option v-for="dict in dict.type.sys_1757235466651828200" :key="dict.value" :label="dict.label"
-                  :value="dict.value" />
+                  :value="dict.label" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -71,7 +71,7 @@
             <el-form-item label="金融机构" prop="financialInstitution">
               <el-select filterable v-model="queryParams.financialInstitution" placeholder="请选择金融机构" clearable>
                 <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
-                  :value="dict.value" />
+                  :value="dict.label" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -88,6 +88,10 @@
     <el-divider class="mt20 mb20"></el-divider>
     <el-row :gutter="10" class="mb8" type="flex" justify="end">
       <el-col :span="1.5">
+        <el-button type="warning" plain icon="el-icon-download" size="mini" @click="handleExport"
+          v-hasPermi="['business:bill:export']">导 出</el-button>
+      </el-col>
+      <el-col :span="1.5">
         <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
           v-hasPermi="['business:bill:add']">新 建</el-button>
       </el-col>
@@ -99,16 +103,13 @@
         <el-button type="danger" plain icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete"
           v-hasPermi="['business:bill:remove']">删 除</el-button>
       </el-col>
-      <!-- <el-col :span="1.5">
-        <el-button type="warning" plain icon="el-icon-download" size="mini" @click="handleExport"
-          v-hasPermi="['business:bill:export']">导出</el-button>
-      </el-col>
+      <!-- 
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar> -->
     </el-row>
 
-    <el-table v-loading="loading" :data="billList" @selection-change="handleSelectionChange"
+    <el-table :summary-method="(param) => getSummaries(param, totalKeys)" show-summary v-loading="loading" :data="billList" @selection-change="handleSelectionChange"
       :header-cell-style="header_cell_style">
-      <el-table-column show-overflow-tooltip fixed="left" type="selection" min-width="50" align="center" />
+      <el-table-column show-overflow-tooltip fixed="left" type="selection" min-width="60" width="60" align="center" />
       <el-table-column show-overflow-tooltip label="管理编号" align="center" min-width="100" prop="managementId" />
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
       <!-- <el-table-column label="审核id" align="center" prop="auditId" /> -->
@@ -193,7 +194,7 @@
               <el-form-item label="付款人" prop="payer">
                 <el-select filterable :disabled="!isEditable" v-model="form.payer" placeholder="请选择付款人">
                   <el-option v-for="dict in dict.type.sys_1757235323403763700" :key="dict.value" :label="dict.label"
-                    :value="dict.value"></el-option>
+                    :value="dict.label"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -201,7 +202,7 @@
               <el-form-item label="收款人" prop="payee">
                 <el-select filterable :disabled="!isEditable" v-model="form.payee" placeholder="请选择收款人">
                   <el-option v-for="dict in dict.type.sys_1757235466651828200" :key="dict.value" :label="dict.label"
-                    :value="dict.value"></el-option>
+                    :value="dict.label"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -236,7 +237,7 @@
               <el-form-item label="金融机构" prop="financialInstitution">
                 <el-select filterable :disabled="!isEditable" v-model="form.financialInstitution" placeholder="请选择金融机构">
                   <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
-                    :value="dict.value"></el-option>
+                    :value="dict.label"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -493,7 +494,10 @@ export default {
         }
       },
       error1: '',
-      error2: ''
+      error2: '',
+      totalKeys: [
+        "出票金额（万元）"
+      ]
     };
   },
   watch: {

@@ -36,7 +36,7 @@
             <el-form-item label="偿还方式" prop="repaymentMethod">
               <el-select filterable v-model="queryParams.repaymentMethod" placeholder="请选择偿还方式" clearable>
                 <el-option v-for="dict in dict.type.sys_1759533864251818000" :key="dict.value" :label="dict.label"
-                  :value="dict.value" />
+                  :value="dict.label" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -71,7 +71,7 @@
             <el-form-item label="发行主体" prop="issuingEntity">
               <el-select filterable v-model="queryParams.issuingEntity" placeholder="请选择发行主体" clearable>
                 <el-option v-for="dict in dict.type.sys_1762824996528324600" :key="dict.value" :label="dict.label"
-                  :value="dict.value" />
+                  :value="dict.label" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -91,6 +91,10 @@
     <el-divider class="mt20 mb20"></el-divider>
     <el-row type="flex" :gutter="10" class="mb8" justify="end">
       <el-col :span="1.5">
+        <el-button type="warning" plain icon="el-icon-download" size="mini" @click="handleExport"
+          v-hasPermi="['government:bonds:export']">导 出</el-button>
+      </el-col>
+      <el-col :span="1.5">
         <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
           v-hasPermi="['government:bonds:add']">新 建</el-button>
       </el-col>
@@ -102,10 +106,7 @@
         <el-button type="danger" plain icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete"
           v-hasPermi="['government:bonds:remove']">删 除</el-button>
       </el-col>
-      <!-- <el-col :span="1.5">
-        <el-button type="warning" plain icon="el-icon-download" size="mini" @click="handleExport"
-          v-hasPermi="['government:bonds:export']">导出</el-button>
-      </el-col>
+      <!-- 
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar> -->
     </el-row>
 
@@ -262,7 +263,7 @@
               <el-form-item label="偿还方式" prop="repaymentMethod">
                 <el-select filterable :disabled="!isEditable" v-model="form.repaymentMethod" placeholder="请选择偿还方式：先息后本">
                   <el-option v-for="dict in dict.type.sys_1759533864251818000" :key="dict.value" :label="dict.label"
-                    :value="dict.value"></el-option>
+                    :value="dict.label"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -316,7 +317,7 @@
               <el-form-item label="发行主体" prop="issuingEntity">
                 <el-select filterable :disabled="!isEditable" v-model="form.issuingEntity" placeholder="请选择发行主体">
                   <el-option v-for="dict in dict.type.sys_1762824996528324600" :key="dict.value" :label="dict.label"
-                    :value="dict.value"></el-option>
+                    :value="dict.label"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>

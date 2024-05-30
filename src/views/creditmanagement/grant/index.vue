@@ -31,7 +31,7 @@
             <el-form-item label="授信类型" prop="creditType">
               <el-select filterable v-model="queryParams.creditType" placeholder="请选择授信类型" clearable>
                 <el-option v-for="dict in dict.type.sys_1765001578994991000" :key="dict.value" :label="dict.label"
-                  :value="dict.value" />
+                  :value="dict.label" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -81,6 +81,10 @@
     <el-divider class="mt20 mb20"></el-divider>
     <el-row type="flex" :gutter="10" class="mb8" justify="end">
       <el-col :span="1.5">
+        <el-button type="warning" plain icon="el-icon-download" size="mini" @click="handleExport"
+          v-hasPermi="['creditmanagement:grant:export']">导 出</el-button>
+      </el-col>
+      <el-col :span="1.5">
         <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
           v-hasPermi="['creditmanagement:grant:add']">新 建</el-button>
       </el-col>
@@ -92,16 +96,12 @@
         <el-button type="danger" plain icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete"
           v-hasPermi="['creditmanagement:grant:remove']">删 除</el-button>
       </el-col>
-      <!-- <el-col :span="1.5">
-        <el-button type="warning" plain icon="el-icon-download" size="mini" @click="handleExport"
-          v-hasPermi="['creditmanagement:grant:export']">导出</el-button>
-      </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar> -->
+      <!--  <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar> -->
     </el-row>
 
-    <el-table v-loading="loading" :data="grantList" @selection-change="handleSelectionChange"
+    <el-table :summary-method="(param) => getSummaries(param, totalKeys)" show-summary v-loading="loading" :data="grantList" @selection-change="handleSelectionChange"
       :header-cell-style="header_cell_style">
-      <el-table-column show-overflow-tooltip fixed="left" type="selection" min-width="50" align="center" />
+      <el-table-column show-overflow-tooltip fixed="left" type="selection" min-width="60" width="60" align="center" />
       <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" min-width="100" />
       <el-table-column show-overflow-tooltip label="授信类型" align="center" prop="creditType" min-width="100">
         <template slot-scope="scope">
@@ -218,7 +218,7 @@
               <el-form-item label="授信类型" prop="creditType">
                 <el-select filterable :disabled="!isEditable" v-model="form.creditType" placeholder="请选择授信类型">
                   <el-option v-for="dict in dict.type.sys_1765001578994991000" :key="dict.value" :label="dict.label"
-                    :value="dict.value"></el-option>
+                    :value="dict.label"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -543,7 +543,12 @@
           }]
         },
         isAutoCalculated: false, // 是否自动计算的标志
-        error1: ''
+        error1: '',
+        totalKeys: [
+          '授信金额（万元）',
+          '已用授信金额（万元）',
+          '授信余额（万元）',
+        ]
       };
     },
     watch: {
