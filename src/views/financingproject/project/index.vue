@@ -292,8 +292,8 @@
 
             <el-col :span="8">
               <el-form-item label="融资金额（万元）" prop="financingAmount">
-                <el-input-number class="w" :controls="false" :precision="2" :disabled="!isEditable"
-                  :readonly="!isEditable" type="number" v-model.trim="form.financingAmount" placeholder="请输入融资金额" />
+                <el-input-number class="w" :controls="false" :precision="2"
+                  :disabled="true" type="number" v-model.trim="form.financingAmount" placeholder="请输入融资金额" />
               </el-form-item>
             </el-col>
             <!-- <el-col :span="8">
@@ -343,8 +343,8 @@
             </el-col> -->
             <el-col :span="8">
               <el-form-item label="已还金额（万元）" prop="repaidAmount">
-                <el-input-number class="w" :controls="false" :precision="2" :disabled="!isEditable"
-                  :readonly="!isEditable" type="number" v-model.trim="form.repaidAmount" placeholder="请输入已还金额" />
+                <el-input-number class="w" :controls="false" :precision="2"
+                  :disabled="true" type="number" v-model.trim="form.repaidAmount" placeholder="请输入已还金额" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -382,17 +382,17 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="还贷账户名称" prop="hdzhanghumingcheng">
-                <el-input v-model="form.hdzhanghumingcheng" placeholder="请输入还贷账户名称" />
+                <el-input :disabled="!isEditable" v-model="form.hdzhanghumingcheng" placeholder="请输入还贷账户名称" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="还贷账号" prop="hdzhanghao">
-                <el-input v-model="form.hdzhanghao" placeholder="请输入还贷账号" />
+                <el-input :disabled="!isEditable" v-model="form.hdzhanghao" placeholder="请输入还贷账号" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="还贷开户行" prop="hdkaihuhang">
-                <el-input v-model="form.hdkaihuhang" placeholder="请输入还贷开户行" />
+                <el-input :disabled="!isEditable" v-model="form.hdkaihuhang" placeholder="请输入还贷开户行" />
               </el-form-item>
             </el-col>
 
@@ -667,6 +667,9 @@
           const creditAmount = Number(this.form.financingAmount) || 0;
           const usedCreditAmount = Number(this.form.repaidAmount) || 0;
           const residue = creditAmount - usedCreditAmount;
+          if(residue<0){
+            this.$modal.msgError("您的输入出现问题,导致融资余额为负数了");
+          }
           this.form.remainingAmount = residue;
           return residue;
         }
@@ -872,10 +875,13 @@
               this.form.changhuanbenjin = JSON.stringify(this.$refs.hkjhPanel.bjch);
               this.form.lilvbiangeng = JSON.stringify(this.$refs.hkjhPanel.lvbg);
               this.form.lixichanghuan = JSON.stringify(this.$refs.hkjhPanel.lixichanghuanArray);
+              this.form.zjywjnjl = JSON.stringify(this.$refs.hkjhPanel.zjywjnjl);
               this.form.huankuanmingxi2List = this.$refs.hkjhPanel.repaymentPlanTable
             } else {
               this.form.huankuanmingxi2List = []
             }
+
+            console.log(this.form.huankuanmingxi2List);
 
             const data = JSON.parse(JSON.stringify(this.form))
             this.form.rzsrc2List = this.rzsrc2List;
@@ -1088,7 +1094,7 @@
         } = param;
         const sums = [];
         columns.forEach((column, index) => {
-          console.log(column);
+          // console.log(column);
           if (index === 0) {
             sums[index] = '合计';
             return;
