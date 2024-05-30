@@ -408,6 +408,8 @@
             sums[index] = '本金:' + (this.zongjia.total_changhuanben).toFixed(2);
           } else if (column.label.includes('支付利息')) {
             sums[index] = '利息:' + (this.zongjia.total_zhifulixi).toFixed(2);
+          } else if (column.label.includes('手续费')) {
+            sums[index] = '手续费:' + (this.zongjia.total_shouxufei).toFixed(2);
           } else {
             sums[index] = '/';
           }
