@@ -32,6 +32,8 @@
         <div class="w flex fjb" slot="label" @click.prevent.stop="addType($event, 'bjch')">
           <span class="required">本金偿还信息输入区（元）</span>
           <div>
+            <el-button type="info" plain icon="el-icon-document-copy" size="mini"
+              @click="dialogbjchVisible = true">粘贴本金偿还信息</el-button>
             <el-button size="mini" class="reset-total-btn" id="sort-btn">排序</el-button>
             <el-button type="primary" size="mini" class="reset-total-btn" id="add-btn">新增一行</el-button>
           </div>
@@ -55,9 +57,11 @@
     </el-row>
     <el-row>
       <el-form-item>
+
         <div class="w flex fjb" slot="label" @click.prevent.stop="addType($event, 'lvbg')">
           <span class="required">年利率信息输入区（固定利率只写一个）</span>
           <div>
+
             <el-button size="mini" class="reset-total-btn" id="sort-btn">排序</el-button>
             <el-button type="primary" size="mini" class="reset-total-btn" id="add-btn"
               :disabled="form.rateType === '固定'">
@@ -108,6 +112,10 @@
       <!-- <el-button icon="el-icon-refresh" size="mini" @click="init('年利率信息输入区')">初始化</el-button> -->
     </el-row>
 
+
+    <el-alert title="如果修改上面的表格数据,必须重新导入或生成还款计划明细." type="success" center show-icon></el-alert>
+
+
     <!-- <div class="flex fje mb20"> -->
     <div style="display: flex;justify-content: space-between;margin-top: 20px;">
       <div style="display: flex;">
@@ -157,6 +165,19 @@
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitFileForm">确 定 使 用</el-button>
         <el-button @click="upload.open = false">取 消</el-button>
+      </div>
+    </el-dialog>
+
+    <!-- 粘贴本金偿还信息 -->
+    <el-dialog title="粘贴本金偿还信息(单位:元)" :visible.sync="dialogbjchVisible" :modal="false">
+      <el-alert title="直接从Excel复制日期和偿还金额数据,不需要复制表头,否则会失败." type="warning" center show-icon></el-alert>
+      <el-input type="textarea" :rows="30" placeholder="直接从Excel复制日期和偿还金额数据,例子:
+
+2026/11/30	1000.00
+2027/04/20	20000.00" v-model="textarea_bjch">
+      </el-input>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="handlePaste">确 定 使 用</el-button>
       </div>
     </el-dialog>
 
@@ -259,7 +280,9 @@
           template_excel: process.env.VUE_APP_BASE_API + '/profile/upload/2024/04/13/还款明细模板.xlsx'
         },
         temp_header: {},
-        excel_data: {}
+        excel_data: {},
+        textarea_bjch: "",
+        dialogbjchVisible: false
       }
     },
     watch: {
@@ -294,7 +317,7 @@
       "bjch": {
         handler(newVal) {
           if (newVal) {
-            console.log(newVal);
+            // console.log(newVal);
             this.form.repaidAmount = newVal.reduce((acc, item) => acc + item.amount, 0);
             // this.form.changhuanbenjin = JSON.parse(newVal);
           }
@@ -325,7 +348,7 @@
     },
     computed: {
       filteredRepaymentPlanTable() {
-        return this.repaymentPlanTable.filter(item => item.qishu !== null&&item.qishu !== undefined);
+        return this.repaymentPlanTable.filter(item => item.qishu !== null && item.qishu !== undefined);
       }
     },
     beforeMount() {
@@ -346,6 +369,26 @@
 
     },
     methods: {
+      handlePaste() {
+        // 通过换行符分割数据
+        let lines = this.textarea_bjch.split('\n');
+        // 存储分割后的数据
+        this.bjch = [];
+        // 遍历分割后的行数据
+        lines.forEach(line => {
+          // 通过制表符分割每一行数据
+          let parts = line.split('\t');
+          // 创建record对象并存入this.bjch list
+          this.bjch.push({
+            date: parts[0],
+            amount: Number(parts[1]),
+            editing: true
+          });
+        });
+
+        this.dialogbjchVisible = false
+
+      },
       init(type) {
         this.$msgbox({
           title: '重要提示',
@@ -594,8 +637,26 @@
       },
       /** 导入按钮操作 */
       handleImport() {
-        this.upload.title = "导入还款计划明细";
-        this.upload.open = true;
+
+        this.$msgbox({
+          title: '手动导入还款计划明细重要提示',
+          message: '手动导入还款计划明细前,请确保已经完成录入“手续费缴纳记录”;如果修改“手续费缴纳记录”,也必须重新导入还款计划明细',
+          showCancelButton: true,
+          cancelButtonText: '取消',
+          confirmButtonText: '确定',
+          cancelButtonClass: "btn-custom-cancel",
+          customClass: 'custom-msgbox',
+        }).then(() => {
+
+          this.upload.title = "导入还款计划明细";
+          this.upload.open = true;
+
+        }).catch((e) => {
+          // console.log(e);
+          this.$modal.msgError("已取消");
+
+        });
+
       },
 
       // 提交上传文件
@@ -699,12 +760,23 @@
 
       huankuanmingxiFromExcel(newObjectList) {
         this.repaymentPlanTable = newObjectList
+
+        //将手续费塞入还款数组
+        this.zjywjnjl.forEach((sxf) => {
+          this.repaymentPlanTable.push({
+            "riqi": sxf.date,
+            "huankuanjine": (sxf.amount).toFixed(2),
+            "shouxufei": (sxf.amount).toFixed(2)
+
+          })
+        })
+
+
         this.repaymentPlanTable.forEach((plan) => {
           //添加借款信息
           plan.borrowingUnit = this.form.borrowingUnit
           plan.financialInstitution = this.form.financialInstitution
           plan.daikuanyongtu = this.form.daikuanyongtu
-          plan.shouxufei = "123654"
         });
       },
       //导出Excel
