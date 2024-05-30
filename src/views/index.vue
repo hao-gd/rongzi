@@ -679,7 +679,6 @@
           const res = await getRepaymentPlanData(this.queryParams);
           if (res.code === 200) {
             const data = JSON.parse(JSON.stringify(res.data));
-            this.listData = data;
 
             this.option.series[0].data = this.transformAndFillData(data, this.option.xAxis.data, ['totalPrincipal',
               'totalInterest'
@@ -752,6 +751,7 @@
       transformAndFillData(backendData, xAxisData, key) {
         // 创建一个填充了 null 的数组，长度与 xAxisData 相同
         let filledData = new Array(xAxisData.length).fill(0);
+
         // 遍历后端数据
         backendData.forEach(dataItem => {
           // 找到每个数据项对应的月份在 xAxisData 中的索引
@@ -763,10 +763,15 @@
               key.forEach(k => {
                 sum += dataItem[k] || 0; // 使用 || 0 来确保未定义的值被当作 0 处理
               });
-              filledData[index] = sum;
+              if (sum !== 0) {
+                filledData[index] = sum / 10000;
+              }
             } else {
               // 如果 key 是字符串，则直接赋值
-              filledData[index] = dataItem[key];
+              let value = dataItem[key];
+              if (value !== 0) {
+                filledData[index] = value / 10000;
+              }
             }
           }
         });

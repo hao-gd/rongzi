@@ -180,7 +180,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        
+
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="担保状态" prop="danbaozhuangtai">
@@ -190,15 +190,36 @@
               </el-select>
             </el-form-item>
           </el-col>
+          <!-- <el-col :span="8">
+            <el-form-item label="融资金额（万元）" prop="financingAmount">
+              <el-input-number class="w" :controls="false" :precision="2" v-model.trim="queryParams.financingAmount" placeholder="请输入融资金额" clearable
+                @keyup.enter.native="handleQuery" />
+            </el-form-item>
+          </el-col> -->
 
+          <!-- Column 2: 担保比例 -->
+          <!-- <el-col :span="8">
+            <el-form-item label="担保比例" prop="guaranteeRatio">
+              <el-input-number class="w" :controls="false" :precision="2" v-model.trim="queryParams.guaranteeRatio" placeholder="请输入担保比例" clearable
+                @keyup.enter.native="handleQuery" />
+            </el-form-item>
+          </el-col> -->
           <el-col :span="16">
             <el-form-item class="flex" style="display: flex; justify-content: flex-end;">
               <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">查 询</el-button>
-              <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+              <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重 置</el-button>
             </el-form-item>
           </el-col>
         </el-row>
 
+        <el-row :gutter="20">
+          <!-- <el-col :span="8">
+            <el-form-item label="贷款用途" prop="purposeOfLoan">
+              <el-input v-model.trim="queryParams.purposeOfLoan" placeholder="请输入贷款用途" clearable
+                @keyup.enter.native="handleQuery" />
+            </el-form-item>
+          </el-col> -->
+        </el-row>
       </el-form>
     </search-panel>
 
@@ -224,8 +245,8 @@
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar> -->
     </el-row>
 
-    <el-table :summary-method="(param) => getSummaries(param, totalKeys)" show-summary v-loading="loading" :data="foreignList" @selection-change="handleSelectionChange"
-      :header-cell-style="header_cell_style">
+    <el-table :summary-method="(param) => getSummaries(param, totalKeys)" show-summary v-loading="loading"
+      :data="foreignList" @selection-change="handleSelectionChange" :header-cell-style="header_cell_style">
       <el-table-column show-overflow-tooltip fixed="left" type="selection" width="60" align="center" />
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
       <!-- <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" min-width="100"/> -->
@@ -256,6 +277,7 @@
           <dict-tag :options="dict.type.sys_1767155302261588000" :value="scope.row.businessType" />
         </template>
       </el-table-column>
+      <el-table-column show-overflow-tooltip label="贷款用途" align="center" prop="purposeOfLoan" min-width="120" />
       <el-table-column show-overflow-tooltip label="担保金额（万元）" align="center" prop="guaranteeAmount" min-width="160">
         <template slot-scope="scope">
           <span>{{ formatNumberAsRMB(scope.row.guaranteeAmount) }}</span>
@@ -289,7 +311,8 @@
       <el-table-column show-overflow-tooltip label="担保状态" align="center" prop="danbaozhuangtai" min-width="100">
         <template slot-scope="scope">
           <svg-icon :icon-class="scope.row.danbaozhuangtai"></svg-icon>
-          <dict-tag style="display: inline-block;" :options="dict.type.sys_1778612529468014600" :value="scope.row.danbaozhuangtai"/>
+          <dict-tag style="display: inline-block;" :options="dict.type.sys_1778612529468014600"
+            :value="scope.row.danbaozhuangtai" />
         </template>
       </el-table-column>
       <el-table-column show-overflow-tooltip label="备注" align="center" prop="comment" min-width="130" />
@@ -299,6 +322,13 @@
           <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column> -->
+      <!-- <el-table-column show-overflow-tooltip label="融资金额" align="center" prop="financingAmount" >
+        <template slot-scope="scope">
+          <span>{{ formatNumberAsRMB(scope.row.financingAmount) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column show-overflow-tooltip label="担保比例" align="center" prop="guaranteeRatio" />
+       -->
       <el-table-column show-overflow-tooltip label="操作" fixed="right" align="center" class-name="''">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="handleUpdate(scope.row)" v-hasPermi="['glforeign:foreign:edit']">查
@@ -528,10 +558,38 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="担保状态" prop="danbaozhuangtai">
-                <el-select filterable :disabled="!isEditable" v-model="form.danbaozhuangtai" placeholder="请选择担保状态" clearable>
+                <el-select filterable :disabled="!isEditable" v-model="form.danbaozhuangtai" placeholder="请选择担保状态"
+                  clearable>
                   <el-option v-for="dict in dict.type.sys_1778612529468014600" :key="dict.value" :label="dict.label"
                     :value="dict.label" />
                 </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="融资金额（万元）" prop="financingAmount">
+                <el-input-number :disabled="!isEditable" class="w" :controls="false" :precision="2"
+                  :readonly="!isEditable" type="number"  v-model.trim="form.financingAmount" placeholder="请输入融资金额" clearable
+                  @keyup.enter.native="handleQuery" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+
+          <el-row :gutter="20">
+            <!-- Column 2: 担保比例 -->
+            <el-col :span="8">
+              <el-form-item label="担保比例" prop="guaranteeRatio">
+                <el-input-number :disabled="!isEditable" class="w" :controls="false" :precision="2"
+                  :readonly="!isEditable" type="number"  v-model.trim="form.guaranteeRatio" placeholder="请输入担保比例" clearable
+                  @keyup.enter.native="handleQuery" />
+              </el-form-item>
+            </el-col>
+
+            <!-- Column 3: 贷款用途 -->
+            <el-col :span="8">
+              <el-form-item label="贷款用途" prop="purposeOfLoan">
+                <el-input :readonly="!isEditable" type="textarea" v-model.trim="form.purposeOfLoan" placeholder="请输入贷款用途"
+                  @keyup.enter.native="handleQuery" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -697,6 +755,9 @@ export default {
         createBy: null,
         uuid: null,
         danbaozhuangtai: null,
+        financingAmount: null,
+        guaranteeRatio: null,
+        purposeOfLoan: null
       },
       // 表单参数
       form: {},
@@ -888,6 +949,10 @@ export default {
         search.guaranteeBalance = Number(search.guaranteeBalance) * 10000
       }
 
+      if (![null, '', undefined].includes(search.financingAmount)) {
+        search.financingAmount = Number(search.financingAmount) * 10000
+      }
+
       listForeign(search).then(response => {
         this.foreignList = response.rows;
         this.total = response.total;
@@ -923,6 +988,9 @@ export default {
         updateBy: null,
         uuid: null,
         danbaozhuangtai: null,
+        financingAmount: null,
+        guaranteeRatio: null,
+        purposeOfLoan: null
       };
       this.rzsrc2List = [];
       this.resetForm("form");
@@ -969,6 +1037,7 @@ export default {
         // 金额需要 / 10000
         response.data.guaranteeAmount = Number(response.data.guaranteeAmount) / 10000;
         response.data.guaranteeBalance = Number(response.data.guaranteeBalance) / 10000;
+        response.data.financingAmount = Number(response.data.financingAmount) / 10000;
         this.scrUuid = response.data.scrUuid;
         this.form = response.data;
         this.form.scrUuid = response.data.rzsrc2List.map(i => i.url)
@@ -989,6 +1058,7 @@ export default {
           // 金额需要 * 10000
           data.guaranteeAmount = Number(data.guaranteeAmount) * 10000;
           data.guaranteeBalance = Number(data.guaranteeBalance) * 10000;
+          data.financingAmount = Number(data.financingAmount) * 10000;
 
           if (this.form.id != null) {
             // updateForeign(this.form).then(response => {

@@ -94,12 +94,86 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
+              <el-form-item label="是否已贴现" prop="discountedOrNot">
+                <el-select clearable filterable  v-model="queryParams.discountedOrNot"
+                  placeholder="请选择是否已贴现">
+                  <el-option v-for="dict in dict.type.sys_1796070671776743400" :key="dict.value" :label="dict.label"
+                    :value="dict.label"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="24">
             <el-form-item class="flex" style="display: flex; justify-content: flex-end;">
               <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">查 询</el-button>
               <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
             </el-form-item>
           </el-col>
         </el-row>
+
+
+        <!-- <el-row :gutter="20">
+            <el-col :span="8">
+              <el-form-item label="出票手续费" prop="ticketProcessingFee">
+                <el-input-number  class="w" :controls="false" :precision="2"
+                  v-model.trim="queryParams.ticketProcessingFee" placeholder="请输入出票手续费" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="保证金比例" prop="marginLevel">
+                <el-input-number class="w" :controls="false" :precision="2"
+                   type="number" v-model.trim="queryParams.marginLevel" placeholder="请输入保证金比例" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="保证金利率" prop="marginInterestRate">
+                <el-input v-model="queryParams.marginInterestRate" placeholder="请输入保证金利率" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <el-row :gutter="20">
+            <el-col :span="8">
+              <el-form-item label="保证金收益金额" prop="marginIncomeAmount">
+                <el-input-number class="w" :controls="false" :precision="2" 
+                  type="number" v-model.trim="queryParams.marginIncomeAmount" placeholder="请输入保证金收益金额" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="是否已贴现" prop="discountedOrNot">
+                <el-select  v-model="queryParams.discountedOrNot"
+                  placeholder="请选择是否已贴现">
+                  <el-option v-for="dict in dict.type.sys_1796070671776743400" :key="dict.value" :label="dict.label"
+                    :value="dict.label"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="贴现金融机构" prop="discountedFinancialInstitutions">
+                <el-select  v-model="queryParams.discountedFinancialInstitutions"
+                  placeholder="请选择贴现金融机构">
+                  <el-option v-for="dict in dict.type.sys_1796081713651122200" :key="dict.value" :label="dict.label"
+                    :value="dict.label"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <el-row :gutter="20">
+            <el-col :span="8">
+              <el-form-item label="贴现手续费" prop="discountedHandlingFee">
+                <el-input-number  class="w" :controls="false" :precision="2"
+                   v-model.trim="queryParams.discountedHandlingFee" placeholder="请输入贴现手续费" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="贴现费用承担情况" prop="assumptionOfDiscountFees">
+                <el-input v-model.trim="queryParams.assumptionOfDiscountFees" placeholder="请输入贴现费用承担情况" />
+              </el-form-item>
+            </el-col>
+          </el-row> -->
 
 
       </el-form>
@@ -125,8 +199,8 @@
       <!-- <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar> -->
     </el-row>
 
-    <el-table :summary-method="(param) => getSummaries(param, totalKeys)" show-summary v-loading="loading" :data="bankList" @selection-change="handleSelectionChange"
-      :header-cell-style="header_cell_style">
+    <el-table :summary-method="(param) => getSummaries(param, totalKeys)" show-summary v-loading="loading"
+      :data="bankList" @selection-change="handleSelectionChange" :header-cell-style="header_cell_style">
       <el-table-column show-overflow-tooltip fixed="left" type="selection" min-width="60" width="60" align="center" />
       <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" min-width="100" />
       <!-- <el-table-column label="数据唯一编号" align="center" prop="scrUuid" /> -->
@@ -169,10 +243,23 @@
           <!-- <dict-tag :options="reminderConfig" :value="checkDueReminderWithConfig(scope.row.draftDate, scope.row.dueDate)" /> -->
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="承兑协议编号" min-width="180" align="center" prop="acceptAgreementId" />
+      <!-- <el-table-column show-overflow-tooltip label="承兑协议编号" min-width="180" align="center" prop="acceptAgreementId" /> -->
       <el-table-column show-overflow-tooltip label="项目名称" align="center" min-width="160" prop="entryName" />
       <el-table-column show-overflow-tooltip label="备注" align="center" min-width="200" prop="comment" />
       <!-- <el-table-column label="ID" align="center" prop="id" /> -->
+
+      <!-- <el-table-column label="出票手续费" align="center" prop="ticketProcessingFee" />
+      <el-table-column label="保证金比例" align="center" prop="marginLevel" />
+      <el-table-column label="保证金利率" align="center" prop="marginInterestRate" />
+      <el-table-column label="保证金收益金额" align="center" prop="marginIncomeAmount" />-->
+      <el-table-column show-overflow-tooltip  min-width="120" label="是否已贴现" align="center" prop="discountedOrNot">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.sys_1796070671776743400" :value="scope.row.discountedOrNot"/>
+        </template>
+      </el-table-column>
+     <!-- <el-table-column label="贴现金融机构" align="center" prop="discountedFinancialInstitutions" />
+      <el-table-column label="贴现手续费" align="center" prop="discountedHandlingFee" />
+      <el-table-column label="贴现费用承担情况" align="center" prop="assumptionOfDiscountFees" /> -->
       <el-table-column fixed="right" label="操作" align="center" class-name="''">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="handleUpdate(scope.row)" v-hasPermi="['bankaccept:bank:edit']">查
@@ -256,14 +343,79 @@
                 </el-date-picker>
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <!-- <el-col :span="8">
               <el-form-item label="协议编号" prop="acceptAgreementId">
                 <el-input :readonly="!isEditable" v-model="form.acceptAgreementId" placeholder="请输入协议编号" />
               </el-form-item>
-            </el-col>
+            </el-col> -->
             <el-col :span="8">
               <el-form-item label="项目名称" prop="entryName">
                 <el-input :readonly="!isEditable" v-model="form.entryName" placeholder="请输入项目名称" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="出票手续费（万元）" prop="ticketProcessingFee">
+                <el-input-number :disabled="!isEditable" class="w" :controls="false" :precision="2"
+                  :readonly="!isEditable" v-model.trim="form.ticketProcessingFee" placeholder="请输入出票手续费" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+
+          <el-row :gutter="20">
+            
+            <el-col :span="8">
+              <el-form-item label="保证金比例" prop="marginLevel">
+                <el-input-number class="w" :controls="false" :precision="2" :disabled="!isEditable"
+                  :readonly="!isEditable" type="number" v-model.trim="form.marginLevel" placeholder="请输入保证金比例" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="保证金利率" prop="marginInterestRate">
+                <el-input :readonly="!isEditable" v-model="marginInterestRate" placeholder="请输入保证金利率" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="保证金收益金额（万元）" prop="marginIncomeAmount">
+                <el-input-number class="w" :controls="false" :precision="2" :disabled="!isEditable"
+                  :readonly="!isEditable" type="number" v-model.trim="form.marginIncomeAmount" placeholder="请输入保证金收益金额" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <el-row :gutter="20">
+            
+            <el-col :span="8">
+              <el-form-item label="是否已贴现" prop="discountedOrNot">
+                <el-select filterable clearable :disabled="!isEditable" :readonly="!isEditable" v-model="form.discountedOrNot"
+                  placeholder="请选择是否已贴现">
+                  <el-option v-for="dict in dict.type.sys_1796070671776743400" :key="dict.value" :label="dict.label"
+                    :value="dict.label"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="贴现金融机构" prop="discountedFinancialInstitutions">
+                <el-select filterable clearable :disabled="!isEditable" :readonly="!isEditable" v-model="form.discountedFinancialInstitutions"
+                  placeholder="请选择贴现金融机构">
+                  <el-option v-for="dict in dict.type.sys_1796081713651122200" :key="dict.value" :label="dict.label"
+                    :value="dict.label"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="贴现手续费（万元）" prop="discountedHandlingFee">
+                <el-input-number :disabled="!isEditable" class="w" :controls="false" :precision="2"
+                  :readonly="!isEditable" v-model.trim="form.discountedHandlingFee" placeholder="请输入贴现手续费" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <el-row :gutter="20">
+            
+            <el-col :span="8">
+              <el-form-item label="贴现费用承担情况" prop="assumptionOfDiscountFees">
+                <el-input :readonly="!isEditable" type="textarea" v-model.trim="form.assumptionOfDiscountFees" placeholder="请输入贴现费用承担情况" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -320,7 +472,7 @@ import { reminderConfig } from '@/config/expirationreminder'
 
 export default {
   name: "Bank",
-  dicts: ['sys_1754491769220759600', 'sys_drawer', 'sys_acceptor'],
+  dicts: ['sys_1754491769220759600', 'sys_drawer', 'sys_acceptor', 'sys_1796070671776743400', 'sys_1796081713651122200'],
   components: {
     CreateSuccess,
     SearchPanel
@@ -413,7 +565,16 @@ export default {
         acceptAgreementId: null,
         entryName: null,
         comment: null,
-        createTime: null
+        createTime: null,
+        uuid: null,
+        ticketProcessingFee: null,
+        marginLevel: null,
+        marginInterestRate: null,
+        marginIncomeAmount: null,
+        discountedOrNot: null,
+        discountedFinancialInstitutions: null,
+        discountedHandlingFee: null,
+        assumptionOfDiscountFees: null
       },
       /* str 需要添加的 */
       scrUuid: null,
@@ -568,7 +729,20 @@ export default {
   computed: {
     ...mapGetters([
       'name', 'avatar'
-    ])
+    ]),
+    marginInterestRate: {
+        get() {
+          if (this.form.marginInterestRate) {
+            // 当读取值时，添加百分号
+            return this.form.marginInterestRate + (this.form.marginInterestRate ? '%' : '');
+          } else {
+            return this.form.marginInterestRate;
+          }
+        },
+        set(value) {
+          this.form.marginInterestRate = value.replace(/%/g, '');
+        }
+      },
   },
   created() {
     this.getList();
@@ -638,6 +812,7 @@ export default {
     // 表单重置
     reset() {
       this.form = {
+        id: null,
         managementId: null,
         scrUuid: null,
         auditId: null,
@@ -655,7 +830,15 @@ export default {
         createBy: null,
         updateTime: null,
         updateBy: null,
-        id: null
+        uuid: null,
+        ticketProcessingFee: null,
+        marginLevel: null,
+        marginInterestRate: null,
+        marginIncomeAmount: null,
+        discountedOrNot: null,
+        discountedFinancialInstitutions: null,
+        discountedHandlingFee: null,
+        assumptionOfDiscountFees: null
       };
       this.rzsrc2List = [];
       this.resetForm("form");
@@ -708,6 +891,9 @@ export default {
         })
         // 金额需要 / 10000
         response.data.invoiceAmount = Number(response.data.invoiceAmount) / 10000;
+        response.data.ticketProcessingFee = Number(response.data.ticketProcessingFee) / 10000;
+        response.data.marginIncomeAmount = Number(response.data.marginIncomeAmount) / 10000;
+        response.data.discountedHandlingFee = Number(response.data.discountedHandlingFee) / 10000;
         this.scrUuid = response.data.scrUuid;
         this.form = response.data;
         this.form.scrUuid = response.data.rzsrc2List.map(i => i.url)
@@ -729,6 +915,10 @@ export default {
 
           // 金额需要 * 10000
           data.invoiceAmount = Number(data.invoiceAmount) * 10000;
+
+          data.ticketProcessingFee = Number(data.ticketProcessingFee) * 10000
+          data.marginIncomeAmount = Number(data.marginIncomeAmount) * 10000
+          data.discountedHandlingFee = Number(data.discountedHandlingFee) * 10000
           if (this.form.id != null) {
             data.scrUuid = Number(this.scrUuid);
             this.rzaudit_data = {

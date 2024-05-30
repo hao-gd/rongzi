@@ -59,14 +59,12 @@
               </el-row>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <!-- <el-col :span="8">
             <el-form-item label="交易合同号码" prop="contractNumber">
               <el-input v-model="queryParams.contractNumber" placeholder="请输入合同号码" clearable
                 @keyup.enter.native="handleQuery" />
             </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row :gutter="20">
+          </el-col> -->
           <el-col :span="8">
             <el-form-item label="金融机构" prop="financialInstitution">
               <el-select filterable v-model="queryParams.financialInstitution" placeholder="请选择金融机构" clearable>
@@ -75,6 +73,17 @@
               </el-select>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="8">
+              <el-form-item label="是否已贴现" prop="discountedOrNot">
+                <el-select filterable clearable  v-model="queryParams.discountedOrNot"
+                  placeholder="请选择是否已贴现">
+                  <el-option v-for="dict in dict.type.sys_1796070671776743400" :key="dict.value" :label="dict.label"
+                    :value="dict.label"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
           <el-col :span="16">
             <el-form-item style="display: flex; justify-content: flex-end;">
               <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">查 询</el-button>
@@ -82,6 +91,42 @@
             </el-form-item>
           </el-col>
         </el-row>
+
+
+          <!-- <el-row :gutter="20">
+            <el-col :span="8">
+              <el-form-item label="是否已贴现" prop="discountedOrNot">
+                <el-select  v-model="queryParams.discountedOrNot"
+                  placeholder="请选择是否已贴现">
+                  <el-option v-for="dict in dict.type.sys_1796070671776743400" :key="dict.value" :label="dict.label"
+                    :value="dict.label"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="贴现金融机构" prop="discountedFinancialInstitutions">
+                <el-select  v-model="queryParams.discountedFinancialInstitutions"
+                  placeholder="请选择贴现金融机构">
+                  <el-option v-for="dict in dict.type.sys_1796081713651122200" :key="dict.value" :label="dict.label"
+                    :value="dict.label"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="贴现手续费" prop="discountedHandlingFee">
+                <el-input-number  class="w" :controls="false" :precision="2"
+                   v-model.trim="queryParams.discountedHandlingFee" placeholder="请输入贴现手续费" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <el-row :gutter="20">
+            <el-col :span="8">
+              <el-form-item label="贴现费用承担情况" prop="assumptionOfDiscountFees">
+                <el-input v-model.trim="queryParams.assumptionOfDiscountFees" placeholder="请输入贴现费用承担情况" />
+              </el-form-item>
+            </el-col>
+          </el-row> -->
       </el-form>
     </search-panel>
 
@@ -146,7 +191,7 @@
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="交易合同号码" align="center" prop="contractNumber" min-width="160" />
+      <!-- <el-table-column show-overflow-tooltip label="交易合同号码" align="center" prop="contractNumber" min-width="160" /> -->
       <el-table-column show-overflow-tooltip label="金融机构" align="center" prop="financialInstitution" min-width="260">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_acceptor" :value="scope.row.financialInstitution" />
@@ -154,6 +199,19 @@
       </el-table-column>
       <el-table-column show-overflow-tooltip label="备注" align="center" prop="comment" min-width="200" />
       <!-- <el-table-column label="ID" align="center" prop="id" /> -->
+
+      <el-table-column show-overflow-tooltip label="是否已贴现" align="center" min-width="120" prop="discountedOrNot">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.sys_1796070671776743400" :value="scope.row.discountedOrNot"/>
+        </template>
+      </el-table-column>
+      <!-- <el-table-column label="贴现金融机构" align="center" prop="discountedFinancialInstitutions">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.sys_1796081713651122200" :value="scope.row.discountedFinancialInstitutions"/>
+        </template>
+      </el-table-column>
+      <el-table-column label="贴现手续费" align="center" prop="discountedHandlingFee" />
+      <el-table-column label="贴现费用承担情况" align="center" prop="assumptionOfDiscountFees" /> -->
       <el-table-column fixed="right" label="操作" align="center" class-name="''">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="handleUpdate(scope.row)" v-hasPermi="['business:bill:edit']">查
@@ -228,11 +286,11 @@
             </el-col>
           </el-row>
           <el-row :gutter="20">
-            <el-col :span="8">
+            <!-- <el-col :span="8">
               <el-form-item label="交易合同号码" prop="contractNumber">
                 <el-input :readonly="!isEditable" v-model="form.contractNumber" placeholder="请输入合同号码" />
               </el-form-item>
-            </el-col>
+            </el-col> -->
             <el-col :span="8">
               <el-form-item label="金融机构" prop="financialInstitution">
                 <el-select filterable :disabled="!isEditable" v-model="form.financialInstitution" placeholder="请选择金融机构">
@@ -241,7 +299,44 @@
                 </el-select>
               </el-form-item>
             </el-col>
+
+            <el-col :span="8">
+              <el-form-item label="是否已贴现" prop="discountedOrNot">
+                <el-select filterable clearable :disabled="!isEditable" :readonly="!isEditable" v-model="form.discountedOrNot"
+                  placeholder="请选择是否已贴现">
+                  <el-option v-for="dict in dict.type.sys_1796070671776743400" :key="dict.value" :label="dict.label"
+                    :value="dict.label"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="贴现金融机构" prop="discountedFinancialInstitutions">
+                <el-select filterable clearable :disabled="!isEditable" :readonly="!isEditable" v-model="form.discountedFinancialInstitutions"
+                  placeholder="请选择贴现金融机构">
+                  <el-option v-for="dict in dict.type.sys_1796081713651122200" :key="dict.value" :label="dict.label"
+                    :value="dict.label"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
           </el-row>
+
+          <el-row :gutter="20">
+            
+            <el-col :span="8">
+              <el-form-item label="贴现手续费（万元）" prop="discountedHandlingFee">
+                <el-input-number :disabled="!isEditable" class="w" :controls="false" :precision="2"
+                  :readonly="!isEditable" v-model.trim="form.discountedHandlingFee" placeholder="请输入贴现手续费" />
+              </el-form-item>
+            </el-col>
+
+            <el-col :span="8">
+              <el-form-item label="贴现费用承担情况" prop="assumptionOfDiscountFees">
+                <el-input :readonly="!isEditable" type="textarea" v-model.trim="form.assumptionOfDiscountFees" placeholder="请输入贴现费用承担情况" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+
           <!-- 备注和附件各占一行 -->
           <el-row :gutter="20">
             <el-col :span="24">
@@ -311,7 +406,8 @@ import {
 } from '@/config/expirationreminder'
 export default {
   name: "Bill",
-  dicts: ['sys_1757235323403763700', 'sys_1757235466651828200', 'sys_acceptor'],
+  dicts: ['sys_1757235323403763700', 'sys_1757235466651828200', 'sys_acceptor', "sys_1796070671776743400",
+"sys_1796081713651122200"],
   components: {
     CreateSuccess,
     SearchPanel
@@ -397,6 +493,11 @@ export default {
         contractNumber: null,
         financialInstitution: null,
         comment: null,
+        uuid: null,
+        discountedOrNot: null,
+        discountedFinancialInstitutions: null,
+        discountedHandlingFee: null,
+        assumptionOfDiscountFees: null
       },
       /* str 需要添加的 */
       scrUuid: null,
@@ -564,7 +665,20 @@ export default {
   computed: {
     ...mapGetters([
       'name', 'avatar'
-    ])
+    ]),
+    marginInterestRate: {
+        get() {
+          if (this.form.marginInterestRate) {
+            // 当读取值时，添加百分号
+            return this.form.marginInterestRate + (this.form.marginInterestRate ? '%' : '');
+          } else {
+            return this.form.marginInterestRate;
+          }
+        },
+        set(value) {
+          this.form.marginInterestRate = value.replace(/%/g, '');
+        }
+      },
   },
   created() {
     this.getList();
@@ -614,6 +728,7 @@ export default {
     // 表单重置
     reset() {
       this.form = {
+        id: null,
         managementId: null,
         scrUuid: null,
         auditId: null,
@@ -630,7 +745,11 @@ export default {
         createBy: null,
         updateTime: null,
         updateBy: null,
-        id: null
+        uuid: null,
+        discountedOrNot: null,
+        discountedFinancialInstitutions: null,
+        discountedHandlingFee: null,
+        assumptionOfDiscountFees: null
       };
       this.rzsrc2List = [];
       this.resetForm("form");
@@ -676,6 +795,7 @@ export default {
         })
         // 金额需要 / 10000
         response.data.invoiceAmount = Number(response.data.invoiceAmount) / 10000;
+        response.data.discountedHandlingFee = Number(response.data.discountedHandlingFee) / 10000;
         this.scrUuid = response.data.scrUuid;
         this.form = response.data;
         this.form.scrUuid = response.data.rzsrc2List.map(i => i.url)
@@ -698,6 +818,7 @@ export default {
 
           // 金额需要 * 10000
           data.invoiceAmount = Number(data.invoiceAmount) * 10000;
+          data.discountedHandlingFee = Number(data.discountedHandlingFee) * 10000;
 
           if (this.form.id != null) {
             data.scrUuid = Number(this.scrUuid);
