@@ -42,3 +42,11 @@ export function delMingxi(id) {
     method: 'delete'
   })
 }
+
+// 通过管理编号id 获取到融资项目的详细信息
+export function getFinancingProject(id) {
+  return request({
+    url: '/financingproject/project/managementId/' + id,
+    method: 'get'
+  })
+}

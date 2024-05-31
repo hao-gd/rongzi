@@ -492,9 +492,9 @@
           </el-row>
 
           <!-- 第二行 -->
+
+
           <el-row :gutter="20">
-
-
             <el-col :span="8">
               <el-form-item label="业务类型" prop="businessType">
                 <el-select filterable :disabled="!isEditable" v-model="form.businessType" placeholder="请选择业务类型">
@@ -503,6 +503,34 @@
                 </el-select>
               </el-form-item>
             </el-col>
+            <el-col :span="8">
+              <el-form-item label="融资金额（万元）" prop="financingAmount">
+                <el-input-number :disabled="!isEditable" class="w" :controls="false" :precision="2"
+                  :readonly="!isEditable" type="number" v-model.trim="form.financingAmount" placeholder="请输入融资金额"
+                  clearable @keyup.enter.native="handleQuery" />
+              </el-form-item>
+            </el-col>
+
+
+            <!-- Column 2: 担保比例 -->
+            <el-col :span="8">
+              <el-form-item label="担保比例" prop="guaranteeRatio">
+                <el-input-number :disabled="!isEditable" class="w" :controls="false" :precision="2"
+                  :readonly="!isEditable" type="number" v-model.trim="form.guaranteeRatio" placeholder="请输入担保比例" clearable
+                  @keyup.enter.native="handleQuery" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <!-- Column 3: 贷款用途 -->
+          <el-row :gutter="20">
+            <el-col :span="8">
+              <el-form-item label="贷款用途" prop="purposeOfLoan">
+                <el-input :readonly="!isEditable" type="textarea" v-model.trim="form.purposeOfLoan" placeholder="请输入贷款用途"
+                  @keyup.enter.native="handleQuery" />
+              </el-form-item>
+            </el-col>
+
             <el-col :span="8">
               <el-form-item label="担保金额（万元）" prop="guaranteeAmount">
                 <el-input-number :disabled="!isEditable" class="w" :controls="false" :precision="2"
@@ -518,9 +546,9 @@
           </el-row>
 
           <!-- 第三行 -->
+
+
           <el-row :gutter="20">
-
-
             <el-col :span="8">
               <el-form-item label="担保期限起始日" prop="startDate">
                 <el-date-picker format='yyyy/MM/dd' :disabled="!isEditable" :picker-options="pickerOptions1"
@@ -543,11 +571,11 @@
                 </el-select>
               </el-form-item>
             </el-col>
+
           </el-row>
-
           <!-- 第四行 -->
-          <el-row :gutter="20">
 
+          <el-row gutter="20">
             <el-col :span="8">
               <el-form-item label="是否上征信" prop="isCreditInvestigation">
                 <el-select filterable :disabled="!isEditable" v-model="form.isCreditInvestigation" placeholder="请选择是否上征信">
@@ -565,33 +593,8 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="8">
-              <el-form-item label="融资金额（万元）" prop="financingAmount">
-                <el-input-number :disabled="!isEditable" class="w" :controls="false" :precision="2"
-                  :readonly="!isEditable" type="number"  v-model.trim="form.financingAmount" placeholder="请输入融资金额" clearable
-                  @keyup.enter.native="handleQuery" />
-              </el-form-item>
-            </el-col>
           </el-row>
 
-
-          <el-row :gutter="20">
-            <!-- Column 2: 担保比例 -->
-            <el-col :span="8">
-              <el-form-item label="担保比例" prop="guaranteeRatio">
-                <el-input-number :disabled="!isEditable" class="w" :controls="false" :precision="2"
-                  :readonly="!isEditable" type="number"  v-model.trim="form.guaranteeRatio" placeholder="请输入担保比例" clearable
-                  @keyup.enter.native="handleQuery" />
-              </el-form-item>
-            </el-col>
-
-            <!-- Column 3: 贷款用途 -->
-            <el-col :span="8">
-              <el-form-item label="贷款用途" prop="purposeOfLoan">
-                <el-input :readonly="!isEditable" type="textarea" v-model.trim="form.purposeOfLoan" placeholder="请输入贷款用途"
-                  @keyup.enter.native="handleQuery" />
-              </el-form-item>
-            </el-col>
           </el-row>
 
           <el-row :gutter="20">

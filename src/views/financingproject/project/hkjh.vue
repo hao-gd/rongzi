@@ -6,7 +6,7 @@
           <span class="required">提款信息输入区（元）</span>
           <div>
             <el-button size="mini" class="reset-total-btn" id="sort-btn">排序</el-button>
-            <el-button type="primary" size="mini" class="reset-total-btn" id="add-btn">新增一行</el-button>
+            <el-button type="primary" size="mini" class="reset-total-btn" id="add-btn" v-if="isEditable">新增一行</el-button>
           </div>
         </div>
 
@@ -14,7 +14,7 @@
           <tiny-grid-column type="index" width="60" title="序号"></tiny-grid-column>
           <tiny-grid-column field="date" title="日期" :renderer="renderDate('date')"></tiny-grid-column>
           <tiny-grid-column field="amount" title="提款金额" :renderer="renderInput('amount')"></tiny-grid-column>
-          <tiny-grid-column width="100">
+          <tiny-grid-column width="100" v-if="isEditable">
             <template #default="data">
               <div class="f16 tc">
                 <!-- <el-button icon="el-icon-plus" type="text" @click="$refs.insertGrid.insertAt(record, data.row)"></el-button> -->
@@ -32,10 +32,10 @@
         <div class="w flex fjb" slot="label" @click.prevent.stop="addType($event, 'bjch')">
           <span class="required">本金偿还信息输入区（元）</span>
           <div>
-            <el-button type="info" plain icon="el-icon-document-copy" size="mini"
+            <el-button v-if="isEditable" type="info" plain icon="el-icon-document-copy" size="mini"
               @click="dialogbjchVisible = true">粘贴本金偿还信息</el-button>
             <el-button size="mini" class="reset-total-btn" id="sort-btn">排序</el-button>
-            <el-button type="primary" size="mini" class="reset-total-btn" id="add-btn">新增一行</el-button>
+            <el-button type="primary" size="mini" class="reset-total-btn" id="add-btn" v-if="isEditable">新增一行</el-button>
           </div>
         </div>
 
@@ -43,7 +43,7 @@
           <tiny-grid-column type="index" width="60" title="序号"></tiny-grid-column>
           <tiny-grid-column field="createdDate" title="日期" :renderer="renderDate('date')"></tiny-grid-column>
           <tiny-grid-column field="amount" title="偿还本金" :renderer="renderInput('amount')"></tiny-grid-column>
-          <tiny-grid-column width="100">
+          <tiny-grid-column width="100" v-if="isEditable">
             <template #default="data">
               <div class="f16 tc">
                 <!-- <el-button icon="el-icon-plus" type="text" @click="$refs.insertGrid2.insertAt(record, data.row)"></el-button> -->
@@ -64,7 +64,7 @@
 
             <el-button size="mini" class="reset-total-btn" id="sort-btn">排序</el-button>
             <el-button type="primary" size="mini" class="reset-total-btn" id="add-btn"
-              :disabled="form.rateType === '固定'">
+              :disabled="form.rateType === '固定'" v-if="isEditable">
               新增一行</el-button>
           </div>
         </div>
@@ -72,7 +72,7 @@
           <tiny-grid-column type="index" width="60" title="序号"></tiny-grid-column>
           <tiny-grid-column field="createdDate" title="日期" :renderer="renderDate('date')"></tiny-grid-column>
           <tiny-grid-column field="rate" title="利率" :renderer="renderRate('rate')"></tiny-grid-column>
-          <tiny-grid-column width="100">
+          <tiny-grid-column width="100" v-if="isEditable">
             <template #default="data">
               <div class="f16 tc">
                 <!-- <el-button icon="el-icon-plus" type="text" @click="$refs.insertGrid3.insertAt(record, data.row)"></el-button> -->
@@ -91,7 +91,7 @@
           <span class="required">手续费缴纳记录</span>
           <div>
             <el-button size="mini" class="reset-total-btn" id="sort-btn">排序</el-button>
-            <el-button type="primary" size="mini" class="reset-total-btn" id="add-btn">
+            <el-button type="primary" size="mini" class="reset-total-btn" id="add-btn" v-if="isEditable">
               新增一行</el-button>
           </div>
         </div>
@@ -99,7 +99,7 @@
           <tiny-grid-column type="index" width="60" title="序号"></tiny-grid-column>
           <tiny-grid-column field="createdDate" title="日期" :renderer="renderDate('date')"></tiny-grid-column>
           <tiny-grid-column field="amount" title="手续费" :renderer="renderInput('amount')"></tiny-grid-column>
-          <tiny-grid-column width="100">
+          <tiny-grid-column width="100" v-if="isEditable">
             <template #default="data">
               <div class="f16 tc">
                 <!-- <el-button icon="el-icon-plus" type="text" @click="$refs.insertGrid3.insertAt(record, data.row)"></el-button> -->
@@ -117,7 +117,7 @@
 
 
     <!-- <div class="flex fje mb20"> -->
-    <div style="display: flex;justify-content: space-between;margin-top: 20px;">
+    <div style="display: flex;justify-content: space-between;margin-top: 20px;" v-if="isEditable">
       <div style="display: flex;">
         <el-button style="align-self:flex-end" type="info" plain icon="el-icon-upload2" size="mini"
           @click="handleImport">
@@ -222,7 +222,8 @@
         }
       },
       isEditable: {
-        type: Boolean,
+        type: Boolean, // 是否可以编辑
+        default: true
       }
     },
     data() {
@@ -294,7 +295,8 @@
             this.repaymentPlanTable = this.huankuanmingxi2List;
           }
         },
-        deep: true
+        deep: true,
+        immediate: true
       },
       //   'form.lilvbiangeng': {
       //     handler(newVal) {

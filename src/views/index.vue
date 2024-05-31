@@ -13,8 +13,8 @@
             <el-row>
               <el-col v-for="(value, key, index) in creditData" :key="index" :span="24" style="background: #fff;"
                 class="card-panel">
-                <div class="card-content pt50 pb30 pl20" :class="'card-content-bg' + 1">
-                  <div>
+                <div class="card-content  pl20" :class="'card-content-bg' + 1">
+                  <div class="pt50">
                     <div class="card-title">{{ key }}</div>
 
                     <el-tooltip placement="top" effect="light">
@@ -30,8 +30,8 @@
 
                   </div>
 
-                  <div class="card-various-amounts">
-                    <div class="flex" v-for="(valuec, keyc, indexc) in value" :key="indexc">
+                  <div class="card-various-amounts" style="display: grid;align-items: center;">
+                    <div v-for="(valuec, keyc, indexc) in value" :key="indexc">
                       <el-tooltip v-if="keyc !== 'bgID'" content="42467000" placement="top" effect="light">
                         <div slot="content">
                           <p class="various-amounts-title mb3">{{ keyc }}</p>
@@ -39,7 +39,7 @@
                             :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay="true"
                             :useEasing="true"></count-to>
                         </div>
-                        <div class="mb15">
+                        <div>
                           <p class="various-amounts-title mb3">{{ keyc }}</p>
                           <count-to class="various-amounts-amount" :start-val='0' :end-val='valuec / 10000'
                             :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay="true"

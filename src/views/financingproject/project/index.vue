@@ -476,7 +476,7 @@
             !empty.includes(this.form.interestRepaymentMethod) &&
             !empty.includes(this.form.financingAmount)) &&
             this.form.hasRepaymentPlan === '有'">
-            <hkjh-panel ref="hkjhPanel" :form="form" :isEditable="isEditable"
+            <hkjh-panel ref="hkjhPanel" :form="form" :isEditable="true"
               :huankuanmingxi2List="EchoHuankuanmingxi2List"></hkjh-panel>
           </el-row>
         </el-form>
