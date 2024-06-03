@@ -97,7 +97,7 @@
       <!-- <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar> -->
     </el-row>
 
-    <el-table :summary-method="getSummaries" show-summary v-loading="loading" :data="projectList"
+    <el-table :summary-method="(param) => getSummaries2(param, totalKeys, zongjia)" show-summary v-loading="loading" :data="projectList"
       @selection-change="handleSelectionChange" :header-cell-style="header_cell_style">
       <el-table-column show-overflow-tooltip fixed="left" type="selection" width="60" align="center" />
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
@@ -622,11 +622,19 @@
           }
         },
         EchoHuankuanmingxi2List: [],
+        totalKeys: {
+          '融资金额（万元）': 'totalFinancingAmount',
+          '融资余额（万元）': 'totalRemainingAmount',
+          '已还金额（万元）': 'totalRepaidAmount',
+          '手续费（万元）': 'totalShouxufei',
+          '保证金（万元）': 'totalBaozhengjin'
+        },
         zongjia: {
-          total_financingAmount: 0,
-          total_baozhengjin: 0,
-          total_shouxufei: 0,
-          total_remainingAmount: 0,
+          "totalFinancingAmount": 0,
+          "totalRemainingAmount": 0,
+          "totalRepaidAmount": 0,
+          "totalShouxufei": 0,
+          "totalBaozhengjin": 0
         }
       };
     },
@@ -757,6 +765,7 @@
         listProject(search).then(response => {
           this.projectList = response.rows;
           this.total = response.total;
+          this.zongjia = response.totals;
           this.loading = false;
         });
       },
@@ -1087,31 +1096,6 @@
         });
 
       },
-      getSummaries(param) {
-        const {
-          columns,
-          data
-        } = param;
-        const sums = [];
-        columns.forEach((column, index) => {
-          // console.log(column);
-          if (index === 0) {
-            sums[index] = '合计';
-            return;
-          } else if (column.label.includes('融资金额（万元）')) {
-            sums[index] = (this.zongjia.total_financingAmount).toFixed(2);
-          } else if (column.label.includes('保证金（万元）')) {
-            sums[index] = (this.zongjia.total_baozhengjin).toFixed(2);
-          } else if (column.label.includes('手续费（万元）')) {
-            sums[index] = (this.zongjia.total_shouxufei).toFixed(2);
-          } else if (column.label.includes('融资余额（万元）')) {
-            sums[index] = (this.zongjia.total_remainingAmount).toFixed(2);
-          } else {
-            sums[index] = '/';
-          }
-        });
-        return sums;
-      }
     }
   };
 </script>

@@ -107,7 +107,7 @@
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar> -->
     </el-row>
 
-    <el-table :summary-method="(param) => getSummaries(param, totalKeys)" show-summary
+    <el-table :summary-method="(param) => getSummaries2(param, totalKeys, zongjia)" show-summary
        v-loading="loading" :data="borrowingList" @selection-change="handleSelectionChange"
       :header-cell-style="header_cell_style">
       <el-table-column show-overflow-tooltip fixed="left" type="selection" width="60" align="center" />
@@ -476,9 +476,12 @@ export default {
         ]
       },
       isAutoCalculated: false, // 是否自动计算的标志
-      totalKeys: [
-        '借款金额（万元）',
-      ]
+      totalKeys: {
+        '借款金额（万元）': "totalLoanAmount",
+      },
+      zongjia: {
+        totalLoanAmount: 0
+      }
     };
   },
   watch: {
@@ -589,6 +592,7 @@ export default {
       listBorrowing(search).then(response => {
         this.borrowingList = response.rows;
         this.total = response.total;
+        this.zongjia = response.totals;
         this.loading = false;
       });
     },

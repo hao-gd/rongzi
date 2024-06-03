@@ -87,9 +87,9 @@
     <el-row type="flex" :gutter="10" class="mb8" justify="end">
       <el-col :span="1.5">
         <el-col :span="1.5">
-        <el-button type="warning" plain icon="el-icon-download" size="mini" @click="handleExport"
-          v-hasPermi="['rzspecialloans:special:export']">导 出</el-button>
-      </el-col>
+          <el-button type="warning" plain icon="el-icon-download" size="mini" @click="handleExport"
+            v-hasPermi="['rzspecialloans:special:export']">导 出</el-button>
+        </el-col>
         <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd"
           v-hasPermi="['rzspecialloans:special:add']">新 建</el-button>
       </el-col>
@@ -105,7 +105,7 @@
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar> -->
     </el-row>
 
-    <el-table :summary-method="(param) => getSummaries(param, totalKeys)" show-summary v-loading="loading"
+    <el-table :summary-method="(param) => getSummaries2(param, totalKeys, zongjia)" show-summary v-loading="loading"
       :data="specialList" @selection-change="handleSelectionChange" :header-cell-style="header_cell_style">
       <el-table-column show-overflow-tooltip fixed="left" type="selection" width="60" align="center" />
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
@@ -364,11 +364,16 @@ export default {
   },
   data() {
     return {
-      totalKeys: [
-        '借款金额（万元）',
-        '已还金额（万元）',
-        '余额（万元）',
-      ],
+      totalKeys: {
+        '借款金额（万元）': "totalLoanAmount",
+        '已还金额（万元）': "totalRepaidAmount",
+        '余额（万元）': "totalBalance",
+      },
+      zongjia: {
+        totalLoanAmount: 0,
+        totalRepaidAmount: 0,
+        totalBalance: 0,
+      },
       isSuccess: true,
       isTitle: true,
       isMessage: true,
@@ -633,6 +638,7 @@ export default {
       listSpecial(search).then(response => {
         this.specialList = response.rows;
         this.total = response.total;
+        this.zongjia = response.totals;
         this.loading = false;
       });
     },

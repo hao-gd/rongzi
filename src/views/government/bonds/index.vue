@@ -109,8 +109,8 @@
       <!-- 
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar> -->
     </el-row>
-
-    <el-table :summary-method="(param) => getSummaries(param, totalKeys)" show-summary
+    <!-- :summary-method="(param) => getSummaries(param, totalKeys)" show-summary -->
+    <el-table 
        v-loading="loading" :data="bondsList" @selection-change="handleSelectionChange"
       :header-cell-style="header_cell_style">
       <el-table-column show-overflow-tooltip fixed="left" type="selection" width="60" min-width="60" align="center" />

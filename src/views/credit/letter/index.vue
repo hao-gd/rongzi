@@ -107,8 +107,8 @@
       <!-- 
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar> -->
     </el-row>
-
-    <el-table :summary-method="(param) => getSummaries(param, totalKeys)" show-summary v-loading="loading" :data="letterList" @selection-change="handleSelectionChange"
+    <!-- :summary-method="(param) => getSummaries(param, totalKeys)" show-summary -->
+    <el-table  v-loading="loading" :data="letterList" @selection-change="handleSelectionChange"
       :header-cell-style="header_cell_style">
       <el-table-column show-overflow-tooltip fixed="left" type="selection" min-width="60" width="60px" align="center" />
       <el-table-column show-overflow-tooltip label="管理编号" align="center" min-width="100" prop="managementId" />

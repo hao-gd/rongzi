@@ -99,7 +99,7 @@
       <!--  <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar> -->
     </el-row>
 
-    <el-table :summary-method="(param) => getSummaries(param, totalKeys)" show-summary v-loading="loading" :data="grantList" @selection-change="handleSelectionChange"
+    <el-table :summary-method="(param) => getSummaries2(param, totalKeys, zongjia)" show-summary v-loading="loading" :data="grantList" @selection-change="handleSelectionChange"
       :header-cell-style="header_cell_style">
       <el-table-column show-overflow-tooltip fixed="left" type="selection" min-width="60" width="60" align="center" />
       <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" min-width="100" />
@@ -544,11 +544,16 @@
         },
         isAutoCalculated: false, // 是否自动计算的标志
         error1: '',
-        totalKeys: [
-          '授信金额（万元）',
-          '已用授信金额（万元）',
-          '授信余额（万元）',
-        ]
+        totalKeys: {
+          '授信金额（万元）': 'totalCreditAmount',
+          '已用授信金额（万元）': 'totalRemainingCreditAmount',
+          '授信余额（万元）': 'totalUsedCreditAmount',
+        },
+        zongjia: {
+          totalCreditAmount: 0,
+totalRemainingCreditAmount: 0,
+totalUsedCreditAmount: 0,
+        }
       };
     },
     watch: {
@@ -694,6 +699,7 @@
         listGrant(queryParams).then(response => {
           this.grantList = response.rows;
           this.total = response.total;
+          this.zongjia = response.totals;
           this.loading = false;
         });
       },

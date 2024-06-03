@@ -359,3 +359,29 @@ export function getSummaries(param, specifiedLabels) {
 
   return sums;
 }
+
+// 合计2 
+export function getSummaries2(param, specifiedLabels, zongjia) {
+  const {
+    columns,
+    data
+  } = param;
+  const sums = [];
+  columns.forEach((column, index) => {
+    if (index === 0) {
+      sums[index] = '合计';
+      return;
+    } else if (specifiedLabels[column.label] !== undefined) {
+      const value = zongjia[specifiedLabels[column.label]];
+      if (value !== 0 || value !== null || value !== undefined) {
+        sums[index] = formatNumberAsRMB(value);
+      } else {
+        sums[index] = (0).toFixed(2);
+      }
+    } else {
+      sums[index] = '/';
+    }
+  });
+
+  return sums;
+}

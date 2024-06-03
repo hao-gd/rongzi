@@ -78,8 +78,8 @@
       <!-- 
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar> -->
     </el-row>
-
-    <el-table :summary-method="(param) => getSummaries(param, totalKeys)" show-summary v-loading="loading" :data="loanList" @selection-change="handleSelectionChange"
+    <!-- :summary-method="(param) => getSummaries(param, totalKeys)" show-summary -->
+    <el-table  v-loading="loading" :data="loanList" @selection-change="handleSelectionChange"
       :header-cell-style="header_cell_style">
       <el-table-column show-overflow-tooltip fixed="left" type="selection" width="60" align="center" />
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->

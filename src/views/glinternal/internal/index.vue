@@ -175,8 +175,8 @@
       <!-- 
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar> -->
     </el-row>
-
-    <el-table :summary-method="(param) => getSummaries(param, totalKeys)" show-summary v-loading="loading"
+    <!-- :summary-method="(param) => getSummaries2(param, totalKeys, zongjia)" show-summary -->
+    <el-table  v-loading="loading"
       :data="internalList" @selection-change="handleSelectionChange" :header-cell-style="header_cell_style">
       <el-table-column show-overflow-tooltip fixed="left" type="selection" width="60" align="center" />
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
@@ -333,15 +333,28 @@
               <el-form-item label="融资金额（万元）" prop="financingAmount">
                 <el-input-number :disabled="!isEditable" class="w" :controls="false" :precision="2"
                   :readonly="!isEditable" type="number"  v-model.trim="form.financingAmount" placeholder="请输入融资金额" clearable
-                  @keyup.enter.native="handleQuery" />
+                  />
               </el-form-item>
             </el-col>
             <!-- Column 2: 担保比例 -->
             <el-col :span="8">
               <el-form-item label="担保比例" prop="guaranteeRatio">
-                <el-input-number :disabled="!isEditable" class="w" :controls="false" :precision="2"
+                <!-- <el-input-number :disabled="!isEditable" class="w" :controls="false" :precision="2"
                   :readonly="!isEditable" type="number"  v-model.trim="form.guaranteeRatio" placeholder="请输入担保比例" clearable
-                  @keyup.enter.native="handleQuery" />
+                  @keyup.enter.native="handleQuery" /> -->
+                  <tiny-numeric class="w" show-left :controls="false" size="small" v-model="form.guaranteeRatio" :format="{
+                  zeroize: true, // 是否保留多余的0字符
+                  fraction: 2, // 保留小数位数
+                  rounding: 0, // 舍入点
+                  prefix: '', // 前置标识
+                  groupSize: 3, // 整数部分分组间隔，即第一个分组位数
+                  secondaryGroupSize: 2, // 整数部分第二级分组间隔，不设置或为0时 自动取groupSize
+                  groupSeparator: ',', // 整数部分分组分隔符
+                  decimalSeparator: '.', // 小数点符号
+                  fractionGroupSize: 0, // 小数部分分组间隔
+                  fractionGroupSeparator: '\xA0', // 小数分组分隔符
+                  suffix: '%' // 后置标识
+                }" placeholder="请输入担保比例"></tiny-numeric>
               </el-form-item>
             </el-col>
 
@@ -352,7 +365,7 @@
             <el-col :span="8">
               <el-form-item label="贷款用途" prop="purposeOfLoan">
                 <el-input :readonly="!isEditable" type="textarea" v-model.trim="form.purposeOfLoan" placeholder="请输入贷款用途"
-                  @keyup.enter.native="handleQuery" />
+                   />
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -705,10 +718,14 @@ export default {
         ],
       },
       error1: '',
-      totalKeys: [
-        '担保金额（万元）',
-        '担保余额（万元）',
-      ]
+      totalKeys: {
+        '担保金额（万元）': "totalGuaranteeAmount",
+        '担保余额（万元）': "totalGuaranteeBalance",
+      },
+      zongjia: {
+        totalGuaranteeAmount: 0,
+        totalGuaranteeBalance: 0,
+      }
     };
   },
   watch: {
@@ -744,6 +761,18 @@ export default {
         this.error1 = '担保到期日不能为空';
       }
     },
+    "form.guaranteeRatio"(n, o) {
+      if (n !== '' && n !== null) {
+        const strNum = (this.form.financingAmount * n).toFixed(2)
+        this.form.guaranteeAmount = Number(strNum)
+      }
+    },
+    "form.financingAmount"(n, o) {
+      if (n !== '' && n !== null) {
+        const strNum = (n * this.form.guaranteeRatio).toFixed(2)
+        this.form.guaranteeAmount = Number(strNum)
+      }
+    }
   },
   computed: {
     ...mapGetters([
@@ -837,6 +866,7 @@ export default {
       listInternal(this.queryParams).then(response => {
         this.internalList = response.rows;
         this.total = response.total;
+        this.zongjia = response.totals;
         this.loading = false;
       });
     },
