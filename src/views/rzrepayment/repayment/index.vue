@@ -37,8 +37,8 @@
 
         <el-row :gutter="20">
           <el-col :span="8">
-            <el-form-item label="借款单位" prop="borrowingUnit">
-              <el-select v-model="queryParams.borrowingUnit" placeholder="请选择借款单位" clearable filterable>
+            <el-form-item label="借款人" prop="borrowingUnit">
+              <el-select v-model="queryParams.borrowingUnit" placeholder="请选择借款人" clearable filterable>
                 <el-option v-for="dict in dict.type.sys_1759464239669444600" :key="dict.value" :label="dict.label"
                   :value="dict.value" />
               </el-select>
@@ -82,7 +82,7 @@
       <!-- <el-table-column show-overflow-tooltip label="主键id" align="center" prop="id" /> -->
       <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" />
       <!-- <el-table-column show-overflow-tooltip label="数据唯一编号" align="center" prop="scrUuid" /> -->
-      <el-table-column show-overflow-tooltip label="借款单位" align="center" prop="borrowingUnit" width="120">
+      <el-table-column show-overflow-tooltip label="借款人" align="center" prop="borrowingUnit" width="120">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1759464239669444600" :value="scope.row.borrowingUnit" />
         </template>
@@ -192,8 +192,8 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="借款单位" prop="borrowingUnit">
-                <el-select :disabled="!isEditable" v-model="form.borrowingUnit" placeholder="请选择借款单位" filterable>
+              <el-form-item label="借款人" prop="borrowingUnit">
+                <el-select :disabled="!isEditable" v-model="form.borrowingUnit" placeholder="请选择借款人" filterable>
                   <el-option v-for="dict in dict.type.sys_1759464239669444600" :key="dict.value" :label="dict.label"
                     :value="dict.value"></el-option>
                 </el-select>
@@ -416,7 +416,7 @@ export default {
           { required: false, message: "附件不能为空", trigger: "blur" }
         ],
         borrowingUnit: [
-          { required: true, message: "借款单位不能为空", trigger: "change" }
+          { required: true, message: "借款人不能为空", trigger: "change" }
         ],
         financialInstitution: [
           { required: true, message: "金融机构不能为空", trigger: "change" }

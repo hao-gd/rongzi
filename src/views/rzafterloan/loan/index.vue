@@ -19,8 +19,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="借款单位" prop="borrowingUnit">
-              <el-select filterable v-model="queryParams.borrowingUnit" placeholder="请选择借款单位" clearable>
+            <el-form-item label="借款人" prop="borrowingUnit">
+              <el-select filterable v-model="queryParams.borrowingUnit" placeholder="请选择借款人" clearable>
                 <el-option v-for="dict in dict.type.sys_1759464239669444600" :key="dict.value" :label="dict.label"
                   :value="dict.label" />
               </el-select>
@@ -95,7 +95,7 @@
           <span>{{ formatNumberAsRMB(scope.row.loanAmount) }}</span>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="借款单位" align="center" prop="borrowingUnit" min-width="130">
+      <el-table-column show-overflow-tooltip label="借款人" align="center" prop="borrowingUnit" min-width="130">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_1759464239669444600" :value="scope.row.borrowingUnit" />
         </template>
@@ -174,8 +174,8 @@
           <!-- 第二行 -->
           <el-row :gutter="20">
             <el-col :span="8">
-              <el-form-item label="借款单位" prop="borrowingUnit">
-                <el-select filterable :disabled="!isEditable" v-model="form.borrowingUnit" placeholder="请选择借款单位">
+              <el-form-item label="借款人" prop="borrowingUnit">
+                <el-select filterable :disabled="!isEditable" v-model="form.borrowingUnit" placeholder="请选择借款人">
                   <el-option v-for="dict in dict.type.sys_1759464239669444600" :key="dict.value" :label="dict.label"
                     :value="dict.label"></el-option>
                 </el-select>
@@ -395,7 +395,7 @@ export default {
           { required: true, message: "借款金额不能为空", trigger: "blur" }
         ],
         borrowingUnit: [
-          { required: true, message: "借款单位不能为空", trigger: "change" }
+          { required: true, message: "借款人不能为空", trigger: "change" }
         ],
         loanTerm: [
           { required: true, message: "借款期限不能为空", trigger: "blur" }
