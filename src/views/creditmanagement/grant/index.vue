@@ -11,14 +11,14 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="借款单位" prop="creditor">
-              <el-input v-model="queryParams.creditor" placeholder="请选择借款单位名称" clearable
+            <el-form-item label="借款人" prop="creditor">
+              <el-input v-model="queryParams.creditor" placeholder="请选择借款人名称" clearable
                 @keyup.enter.native="handleQuery" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="授信机构" prop="financialInstitution">
-              <el-select multiple filterable v-model="queryParams.financialInstitution" placeholder="请选择授信机构" clearable>
+            <el-form-item label="债权人" prop="financialInstitution">
+              <el-select multiple filterable v-model="queryParams.financialInstitution" placeholder="请选择债权人" clearable>
                 <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
                   :value="dict.label" />
               </el-select>
@@ -99,8 +99,8 @@
       <!--  <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar> -->
     </el-row>
 
-    <el-table :summary-method="(param) => getSummaries2(param, totalKeys, zongjia)" show-summary v-loading="loading" :data="grantList" @selection-change="handleSelectionChange"
-      :header-cell-style="header_cell_style">
+    <el-table :summary-method="(param) => getSummaries2(param, totalKeys, zongjia)" show-summary v-loading="loading"
+      :data="grantList" @selection-change="handleSelectionChange" :header-cell-style="header_cell_style">
       <el-table-column show-overflow-tooltip fixed="left" type="selection" min-width="60" width="60" align="center" />
       <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" min-width="100" />
       <el-table-column show-overflow-tooltip label="授信类型" align="center" prop="creditType" min-width="100">
@@ -108,12 +108,24 @@
           <dict-tag :options="dict.type.sys_1765001578994991000" :value="scope.row.creditType" />
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="借款单位" align="center" prop="creditor" min-width="120" />
-      <el-table-column show-overflow-tooltip label="授信机构" align="center" prop="financialInstitution" min-width="130">
+      <el-table-column show-overflow-tooltip label="借款人" align="center" prop="creditor" min-width="120" />
+      <el-table-column show-overflow-tooltip label="债权人" align="center" prop="financialInstitution" min-width="130">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_acceptor" :value="scope.row.financialInstitution" />
         </template>
       </el-table-column>
+      <el-table-column show-overflow-tooltip label="项目名称" align="center" prop="creditDetail" />
+
+      <el-table-column show-overflow-tooltip label="授信状态" align="center" prop="creditState" min-width="100">
+        <template slot-scope="scope">
+          <svg-icon :icon-class="scope.row.creditState"></svg-icon>
+          <dict-tag style="display: inline-block;" :options="dict.type.sys_1765002034026643500"
+            :value="scope.row.creditState" />
+        </template>
+      </el-table-column>
+
+
+
       <el-table-column show-overflow-tooltip label="授信金额（万元）" align="center" prop="creditAmount" min-width="150">
         <template slot-scope="scope">
           <span>{{ formatNumberAsRMB(scope.row.creditAmount) }}</span>
@@ -129,7 +141,6 @@
           <span>{{ formatNumberAsRMB(scope.row.remainingCreditAmount) }}</span>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="项目名称" align="center" prop="creditDetail" />
       <el-table-column show-overflow-tooltip label="起始日" align="center" prop="startDate" min-width="100">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.startDate, '{y}-{m}-{d}') }}</span>
@@ -145,13 +156,7 @@
           <span>{{ creditCycleFN(scope.row.startDate, scope.row.deadline) }}</span>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip label="授信状态" align="center" prop="creditState" min-width="100">
-        <template slot-scope="scope">
-          <svg-icon :icon-class="scope.row.creditState"></svg-icon>
-          <dict-tag style="display: inline-block;" :options="dict.type.sys_1765002034026643500"
-            :value="scope.row.creditState" />
-        </template>
-      </el-table-column>
+
       <el-table-column show-overflow-tooltip label="备注" align="center" prop="comment" min-width="130" />
       <!-- <el-table-column show-overflow-tooltip label="创建人" align="center" prop="createBy" min-width="80" />
       <el-table-column show-overflow-tooltip label="创建时间" align="center" prop="createTime" min-width="100">
@@ -197,15 +202,15 @@
             </el-col>
 
             <el-col :span="8">
-              <el-form-item label="借款单位" prop="creditor">
-                <el-input :readonly="!isEditable" v-model="form.creditor" placeholder="请输入借款单位" />
+              <el-form-item label="借款人" prop="creditor">
+                <el-input :readonly="!isEditable" v-model="form.creditor" placeholder="请输入借款人" />
               </el-form-item>
             </el-col>
 
             <el-col :span="8">
-              <el-form-item label="授信机构" prop="financialInstitution">
+              <el-form-item label="债权人" prop="financialInstitution">
                 <el-select multiple filterable :disabled="!isEditable" v-model="form.financialInstitution"
-                  placeholder="请选择授信机构">
+                  placeholder="请选择债权人">
                   <el-option v-for="dict in dict.type.sys_acceptor" :key="dict.value" :label="dict.label"
                     :value="dict.label"></el-option>
                 </el-select>
@@ -466,81 +471,81 @@
             message: "授信管理管理编号不能为空",
             trigger: "blur"
           }],
-          scrUuid: [{
-            required: false,
-            message: "附件不能为空",
-            trigger: "blur"
-          }],
-          creditor: [{
-            required: true,
-            message: "借款单位不能为空",
-            trigger: "blur"
-          }],
-          financialInstitution: [{
-            required: true,
-            message: "授信机构不能为空",
-            trigger: "change"
-          }],
-          creditType: [{
-            required: true,
-            message: "授信类型不能为空",
-            trigger: "change"
-          }],
-          creditDetail: [{
-            required: true,
-            message: "项目名称不能为空",
-            trigger: "blur"
-          }],
-          creditAmount: [{
-            required: true,
-            message: "授信金额不能为空",
-            trigger: "blur"
-          }],
-          usedCreditAmount: [{
-            required: true,
-            message: "已用授信金额不能为空",
-            trigger: "blur"
-          }],
-          remainingCreditAmount: [{
-            required: true,
-            message: "剩余授信金额不能为空",
-            trigger: "blur"
-          }],
-          startDate: [{
-            required: true,
-            message: "起始日不能为空",
-            trigger: "blur"
-          }],
-          deadline: [{
-            required: true,
-            message: "到期日不能为空",
-            trigger: "blur"
-          }],
-          creditCycle: [{
-            required: true,
-            message: "授信有效期不能为空",
-            trigger: "blur"
-          }],
-          creditState: [{
-            required: true,
-            message: "授信状态不能为空",
-            trigger: "change"
-          }],
-          createTime: [{
-            required: true,
-            message: "创建时间不能为空",
-            trigger: "blur"
-          }],
-          createBy: [{
-            required: true,
-            message: "创建人不能为空",
-            trigger: "blur"
-          }],
-          uuid: [{
-            required: true,
-            message: "uuid不能为空",
-            trigger: "blur"
-          }]
+          // scrUuid: [{
+          //   required: false,
+          //   message: "附件不能为空",
+          //   trigger: "blur"
+          // }],
+          // creditor: [{
+          //   required: true,
+          //   message: "借款人不能为空",
+          //   trigger: "blur"
+          // }],
+          // financialInstitution: [{
+          //   required: true,
+          //   message: "债权人不能为空",
+          //   trigger: "change"
+          // }],
+          // creditType: [{
+          //   required: true,
+          //   message: "授信类型不能为空",
+          //   trigger: "change"
+          // }],
+          // creditDetail: [{
+          //   required: true,
+          //   message: "项目名称不能为空",
+          //   trigger: "blur"
+          // }],
+          // creditAmount: [{
+          //   required: true,
+          //   message: "授信金额不能为空",
+          //   trigger: "blur"
+          // }],
+          // usedCreditAmount: [{
+          //   required: true,
+          //   message: "已用授信金额不能为空",
+          //   trigger: "blur"
+          // }],
+          // remainingCreditAmount: [{
+          //   required: true,
+          //   message: "剩余授信金额不能为空",
+          //   trigger: "blur"
+          // }],
+          // startDate: [{
+          //   required: true,
+          //   message: "起始日不能为空",
+          //   trigger: "blur"
+          // }],
+          // deadline: [{
+          //   required: true,
+          //   message: "到期日不能为空",
+          //   trigger: "blur"
+          // }],
+          // creditCycle: [{
+          //   required: true,
+          //   message: "授信有效期不能为空",
+          //   trigger: "blur"
+          // }],
+          // creditState: [{
+          //   required: true,
+          //   message: "授信状态不能为空",
+          //   trigger: "change"
+          // }],
+          // createTime: [{
+          //   required: true,
+          //   message: "创建时间不能为空",
+          //   trigger: "blur"
+          // }],
+          // createBy: [{
+          //   required: true,
+          //   message: "创建人不能为空",
+          //   trigger: "blur"
+          // }],
+          // uuid: [{
+          //   required: true,
+          //   message: "uuid不能为空",
+          //   trigger: "blur"
+          // }]
         },
         isAutoCalculated: false, // 是否自动计算的标志
         error1: '',
@@ -551,8 +556,8 @@
         },
         zongjia: {
           totalCreditAmount: 0,
-totalRemainingCreditAmount: 0,
-totalUsedCreditAmount: 0,
+          totalRemainingCreditAmount: 0,
+          totalUsedCreditAmount: 0,
         }
       };
     },

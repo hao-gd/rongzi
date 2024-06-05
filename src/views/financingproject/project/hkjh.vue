@@ -320,7 +320,7 @@
         handler(newVal) {
           if (newVal) {
             // console.log(newVal);
-            this.form.repaidAmount = newVal.reduce((acc, item) => acc + item.amount, 0);
+            this.form.repaidAmount = newVal.reduce((acc, item) => acc + item.amount, 0)/10000;
             // this.form.changhuanbenjin = JSON.parse(newVal);
           }
         },
@@ -330,7 +330,7 @@
       'zjbj': {
         handler(newVal) {
           if (newVal) {
-            this.form.financingAmount = newVal.reduce((acc, item) => acc + item.amount, 0);
+            this.form.financingAmount = newVal.reduce((acc, item) => acc + item.amount, 0)/10000;
             // this.form.tiqubenjin = JSON.parse(newVal);
           }
         },

@@ -640,7 +640,7 @@
             // });
             // this.dbData = this.filterGuarantees(orderedData);
 
-            this.dbData["对外已担保金额"] = data["已担保金额"]["对外担保"]
+            this.dbData["对外担保金额"] = data["已担保金额"]["对外担保"]
             this.dbData["对外担保余额"] = data["担保余额"]["对外担保"]
             console.log(this.dbData);
           }
