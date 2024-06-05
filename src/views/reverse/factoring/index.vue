@@ -173,7 +173,7 @@
         <el-button type="danger" plain icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete"
           v-hasPermi="['reverse:factoring:remove']">删 除</el-button>
       </el-col>
-      <!-- 
+      <!--
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar> -->
     </el-row>
     <!-- :summary-method="(param) => getSummaries(param, totalKeys)" show-summary -->
@@ -319,13 +319,13 @@
 
           <el-row :gutter="20">
             <el-col :span="8">
-              <el-form-item label="账号" prop="account">
-                <el-input :readonly="!isEditable" v-model="form.account" placeholder="请输入账号" />
+              <el-form-item label="回款账号" prop="account">
+                <el-input :readonly="!isEditable" v-model="form.account" placeholder="请输入回款账号" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="开户行" prop="bank">
-                <el-input :readonly="!isEditable" v-model="form.bank" placeholder="请输入开户行" />
+              <el-form-item label="回款开户行" prop="bank">
+                <el-input :readonly="!isEditable" v-model="form.bank" placeholder="请输入回款开户行" />
               </el-form-item>
             </el-col>
           </el-row>

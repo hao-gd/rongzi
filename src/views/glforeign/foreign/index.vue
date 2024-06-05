@@ -241,7 +241,7 @@
         <el-button type="danger" plain icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete"
           v-hasPermi="['glforeign:foreign:remove']">删 除</el-button>
       </el-col>
-      <!-- 
+      <!--
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar> -->
     </el-row>
 
@@ -522,7 +522,7 @@
                 <tiny-numeric class="w" show-left :controls="false" size="small" v-model="form.guaranteeRatio" :format="{
                   zeroize: true, // 是否保留多余的0字符
                   fraction: 2, // 保留小数位数
-                  rounding: 0, // 舍入点
+                  rounding: 2, // 舍入点
                   prefix: '', // 前置标识
                   groupSize: 3, // 整数部分分组间隔，即第一个分组位数
                   secondaryGroupSize: 2, // 整数部分第二级分组间隔，不设置或为0时 自动取groupSize
@@ -592,7 +592,8 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="是否上征信" prop="isCreditInvestigation">
-                <el-select filterable :disabled="!isEditable" v-model="form.isCreditInvestigation" placeholder="请选择是否上征信">
+                <el-select filterable :disabled="!isEditable" v-model="form.isCreditInvestigation"
+                  placeholder="请选择是否上征信">
                   <el-option v-for="dict in dict.type.sys_1767156259322069000" :key="dict.value" :label="dict.label"
                     :value="dict.label"></el-option>
                 </el-select>
@@ -640,8 +641,9 @@
       </div>
 
       <div v-else class="flex">
-        <CreateSuccess @close-dialog="closeDialog" @create-again="create_again" :isSuccess="isSuccess" :isTitle="isTitle"
-          :isMessage="isMessage" :title="ctitle" :isEdit="isEdit" @confirm="handleaddList" @cancel="cancel">
+        <CreateSuccess @close-dialog="closeDialog" @create-again="create_again" :isSuccess="isSuccess"
+          :isTitle="isTitle" :isMessage="isMessage" :title="ctitle" :isEdit="isEdit" @confirm="handleaddList"
+          @cancel="cancel">
         </CreateSuccess>
       </div>
     </el-dialog>
@@ -649,631 +651,697 @@
 </template>
 
 <script>
-import { listForeign, getForeign, delForeign, addForeign, updateForeign } from "@/api/glforeign/foreign";
-import { SnowflakeIdGenerator } from '@/utils/index'
-import { listList, getList, delList, addList, updateList } from "@/api/rzauditlist/list";
-import { mapGetters } from 'vuex';
-import moment from 'moment'
-import CreateSuccess from '@/components/createSuccess/index.vue'
-import SearchPanel from '@/components/SearchPanel/index.vue'
-import { checkDueReminderWithConfig } from '@/utils/expirationreminder';
-import { reminderConfig } from '@/config/expirationreminder'
-export default {
-  name: "Foreign",
-  dicts: ["sys_1778612529468014600", 'sys_1767156259322069000', 'sys_1767154968256577500', 'sys_1767155091485229000', 'sys_1757271666666242000', 'sys_1767155302261588000', 'sys_1767155825266131000'],
-  components: {
-    CreateSuccess,
-    SearchPanel
-  },
-  data() {
-    return {
-      pickerOptions1: {
-        // 禁用开始日期中，所有大于结束日期的日期
-        disabledDate: (date) => {
-          if (this.form.deadline) {
-            return date.getTime() > new Date(this.form.deadline).getTime();
+  import {
+    listForeign,
+    getForeign,
+    delForeign,
+    addForeign,
+    updateForeign
+  } from "@/api/glforeign/foreign";
+  import {
+    SnowflakeIdGenerator
+  } from '@/utils/index'
+  import {
+    listList,
+    getList,
+    delList,
+    addList,
+    updateList
+  } from "@/api/rzauditlist/list";
+  import {
+    mapGetters
+  } from 'vuex';
+  import moment from 'moment'
+  import CreateSuccess from '@/components/createSuccess/index.vue'
+  import SearchPanel from '@/components/SearchPanel/index.vue'
+  import {
+    checkDueReminderWithConfig
+  } from '@/utils/expirationreminder';
+  import {
+    reminderConfig
+  } from '@/config/expirationreminder'
+  export default {
+    name: "Foreign",
+    dicts: ["sys_1778612529468014600", 'sys_1767156259322069000', 'sys_1767154968256577500', 'sys_1767155091485229000',
+      'sys_1757271666666242000', 'sys_1767155302261588000', 'sys_1767155825266131000'
+    ],
+    components: {
+      CreateSuccess,
+      SearchPanel
+    },
+    data() {
+      return {
+        pickerOptions1: {
+          // 禁用开始日期中，所有大于结束日期的日期
+          disabledDate: (date) => {
+            if (this.form.deadline) {
+              return date.getTime() > new Date(this.form.deadline).getTime();
+            }
           }
-        }
-      },
-      pickerOptions2: {
-        // 禁用结束日期中，所有小于开始日期的日期
-        disabledDate: (date) => {
-          if (this.form.startDate) {
-            // 一天的毫秒数
-            var oneDayInMilliseconds = 24 * 60 * 60 * 1000;
-            return date.getTime() < new Date(this.form.startDate).getTime() - oneDayInMilliseconds;
+        },
+        pickerOptions2: {
+          // 禁用结束日期中，所有小于开始日期的日期
+          disabledDate: (date) => {
+            if (this.form.startDate) {
+              // 一天的毫秒数
+              var oneDayInMilliseconds = 24 * 60 * 60 * 1000;
+              return date.getTime() < new Date(this.form.startDate).getTime() - oneDayInMilliseconds;
+            }
           }
-        }
-      },
-      pickerOptions3: {
-        // 禁用开始日期中，所有大于结束日期的日期
-        disabledDate: (date) => {
-          if (this.daterangeStartDate2) {
-            return date.getTime() > new Date(this.daterangeStartDate2).getTime();
+        },
+        pickerOptions3: {
+          // 禁用开始日期中，所有大于结束日期的日期
+          disabledDate: (date) => {
+            if (this.daterangeStartDate2) {
+              return date.getTime() > new Date(this.daterangeStartDate2).getTime();
+            }
           }
-        }
-      },
-      pickerOptions4: {
-        // 禁用结束日期中，所有小于开始日期的日期
-        disabledDate: (date) => {
-          if (this.daterangeStartDate1) {
-            // 一天的毫秒数
-            var oneDayInMilliseconds = 24 * 60 * 60 * 1000;
-            return date.getTime() < new Date(this.daterangeStartDate1).getTime() - oneDayInMilliseconds;
+        },
+        pickerOptions4: {
+          // 禁用结束日期中，所有小于开始日期的日期
+          disabledDate: (date) => {
+            if (this.daterangeStartDate1) {
+              // 一天的毫秒数
+              var oneDayInMilliseconds = 24 * 60 * 60 * 1000;
+              return date.getTime() < new Date(this.daterangeStartDate1).getTime() - oneDayInMilliseconds;
+            }
           }
-        }
-      },
-      isSuccess: true,
-      isTitle: true,
-      isMessage: true,
-      ctitle: '',
-      isEdit: false,
-      rzaudit_data: null,
+        },
+        isSuccess: true,
+        isTitle: true,
+        isMessage: true,
+        ctitle: '',
+        isEdit: false,
+        rzaudit_data: null,
 
-      reminderConfig: reminderConfig.slice(1),
-      checkDueReminderWithConfig: checkDueReminderWithConfig,
-      created_successfully: false,
-      isEditable: false,
-      header_cell_style: {
-        backgroundColor: '#f2f4f5',
-        color: '#000000',
-        fontSize: '14px',
-        fontWeight: 'bold',
-      },
-      // 遮罩层
-      loading: true,
-      // 选中数组
-      ids: [],
-      // 子表选中数据
-      checkedrzsrc2: [],
-      // 非单个禁用
-      single: true,
-      // 非多个禁用
-      multiple: true,
-      // 显示搜索条件
-      showSearch: true,
-      // 总条数
-      total: 0,
-      // 对外担保台账表格数据
-      foreignList: [],
-      // 附件表表格数据
-      rzsrc2List: [],
-      // 弹出层标题
-      title: "",
-      // 是否显示弹出层
-      open: false,
-      // 创建人时间范围
-      daterangeStartDate: [],
-      // 创建人时间范围
-      daterangeDeadline: [],
-      // 创建人时间范围
-      daterangeCreateTime: [],
-      daterangeStartDate1: '',
-      daterangeStartDate2: '',
-      // 查询参数
-      queryParams: {
-        pageNum: 1,
-        pageSize: 100,
-        managementId: null,
-        contractId: null,
+        reminderConfig: reminderConfig.slice(1),
+        checkDueReminderWithConfig: checkDueReminderWithConfig,
+        created_successfully: false,
+        isEditable: false,
+        header_cell_style: {
+          backgroundColor: '#f2f4f5',
+          color: '#000000',
+          fontSize: '14px',
+          fontWeight: 'bold',
+        },
+        // 遮罩层
+        loading: true,
+        // 选中数组
+        ids: [],
+        // 子表选中数据
+        checkedrzsrc2: [],
+        // 非单个禁用
+        single: true,
+        // 非多个禁用
+        multiple: true,
+        // 显示搜索条件
+        showSearch: true,
+        // 总条数
+        total: 0,
+        // 对外担保台账表格数据
+        foreignList: [],
+        // 附件表表格数据
+        rzsrc2List: [],
+        // 弹出层标题
+        title: "",
+        // 是否显示弹出层
+        open: false,
+        // 创建人时间范围
+        daterangeStartDate: [],
+        // 创建人时间范围
+        daterangeDeadline: [],
+        // 创建人时间范围
+        daterangeCreateTime: [],
+        daterangeStartDate1: '',
+        daterangeStartDate2: '',
+        // 查询参数
+        queryParams: {
+          pageNum: 1,
+          pageSize: 100,
+          managementId: null,
+          contractId: null,
+          scrUuid: null,
+          creditor: null,
+          guarantor: null,
+          financialInstitution: null,
+          businessType: null,
+          guaranteeAmount: null,
+          guaranteeBalance: null,
+          startDate: null,
+          deadline: null,
+          guaranteeMethod: null,
+          isCreditInvestigation: null,
+          comment: null,
+          createTime: null,
+          createBy: null,
+          uuid: null,
+          danbaozhuangtai: null,
+          financingAmount: null,
+          guaranteeRatio: null,
+          purposeOfLoan: null
+        },
+        // 表单参数
+        form: {},
+
+        /* str 需要添加的 */
         scrUuid: null,
-        creditor: null,
-        guarantor: null,
-        financialInstitution: null,
-        businessType: null,
-        guaranteeAmount: null,
-        guaranteeBalance: null,
-        startDate: null,
-        deadline: null,
-        guaranteeMethod: null,
-        isCreditInvestigation: null,
-        comment: null,
-        createTime: null,
-        createBy: null,
-        uuid: null,
-        danbaozhuangtai: null,
-        financingAmount: null,
-        guaranteeRatio: null,
-        purposeOfLoan: null
-      },
-      // 表单参数
-      form: {},
+        /* end */
 
-      /* str 需要添加的 */
-      scrUuid: null,
-      /* end */
-
-      // 表单校验
-      rules: {
-        managementId: [
-          { required: true, message: "对外担保管理编号不能为空", trigger: "blur" }
-        ],
-        contractId: [
-          { required: true, message: "担保合同编号不能为空", trigger: "blur" }
-        ],
-        scrUuid: [
-          { required: false, message: "附件不能为空", trigger: "blur" }
-        ],
-        creditor: [
-          { required: true, message: "被担保人不能为空", trigger: "change" }
-        ],
-        guarantor: [
-          { required: true, message: "担保人不能为空", trigger: "change" }
-        ],
-        financialInstitution: [
-          { required: true, message: "债权人不能为空", trigger: "change" }
-        ],
-        businessType: [
-          { required: true, message: "业务类型不能为空", trigger: "change" }
-        ],
-        guaranteeAmount: [
-          { required: true, message: "担保金额不能为空", trigger: "blur" }
-        ],
-        guaranteeBalance: [
-          { required: true, message: "担保余额不能为空", trigger: "blur" }
-        ],
-        startDate: [
-          { required: true, message: "担保期限起始日不能为空", trigger: "blur" }
-        ],
-        deadline: [
-          { required: true, message: "担保期限到期日不能为空", trigger: "blur" }
-        ],
-        guaranteeMethod: [
-          { required: true, message: "保证方式不能为空", trigger: "change" }
-        ],
-        isCreditInvestigation: [
-          { required: true, message: "是否上征信不能为空", trigger: "change" }
-        ],
-        createTime: [
-          { required: true, message: "创建时间不能为空", trigger: "blur" }
-        ],
-        createBy: [
-          { required: true, message: "创建人不能为空", trigger: "blur" }
-        ],
-        uuid: [
-          { required: true, message: "uuid不能为空", trigger: "blur" }
-        ],
-        danbaozhuangtai: [
-          { required: true, message: "担保状态不能为空", trigger: "change" }
-        ],
-      },
-      error1: '',
-      totalKeys: {
-        '担保金额（万元）': "totalGuaranteeAmount",
-        '担保余额（万元）': "totalGuaranteeBalance",
-      },
-      zongjia: {
-        totalGuaranteeAmount: 0,
-        totalGuaranteeBalance: 0,
-      }
-    };
-  },
-  watch: {
-    open(n, o) {
-      if (n == false) {
-        this.created_successfully = false;
-        this.isEditable = true;
-      }
-    },
-    daterangeStartDate1(n, o) {
-      if (n !== '' && n !== null) {
-        if (this.daterangeStartDate2 === '' || this.daterangeStartDate2 === null) {
-          this.error1 = '担保到期日不能为空';
-        } else {
-          this.error1 = ''; // 清空错误信息
+        // 表单校验
+        rules: {
+          managementId: [{
+            required: true,
+            message: "对外担保管理编号不能为空",
+            trigger: "blur"
+          }],
+          contractId: [{
+            required: true,
+            message: "担保合同编号不能为空",
+            trigger: "blur"
+          }],
+          scrUuid: [{
+            required: false,
+            message: "附件不能为空",
+            trigger: "blur"
+          }],
+          creditor: [{
+            required: true,
+            message: "被担保人不能为空",
+            trigger: "change"
+          }],
+          guarantor: [{
+            required: true,
+            message: "担保人不能为空",
+            trigger: "change"
+          }],
+          financialInstitution: [{
+            required: true,
+            message: "债权人不能为空",
+            trigger: "change"
+          }],
+          businessType: [{
+            required: true,
+            message: "业务类型不能为空",
+            trigger: "change"
+          }],
+          guaranteeAmount: [{
+            required: true,
+            message: "担保金额不能为空",
+            trigger: "blur"
+          }],
+          guaranteeBalance: [{
+            required: true,
+            message: "担保余额不能为空",
+            trigger: "blur"
+          }],
+          startDate: [{
+            required: true,
+            message: "担保期限起始日不能为空",
+            trigger: "blur"
+          }],
+          deadline: [{
+            required: true,
+            message: "担保期限到期日不能为空",
+            trigger: "blur"
+          }],
+          guaranteeMethod: [{
+            required: true,
+            message: "保证方式不能为空",
+            trigger: "change"
+          }],
+          isCreditInvestigation: [{
+            required: true,
+            message: "是否上征信不能为空",
+            trigger: "change"
+          }],
+          createTime: [{
+            required: true,
+            message: "创建时间不能为空",
+            trigger: "blur"
+          }],
+          createBy: [{
+            required: true,
+            message: "创建人不能为空",
+            trigger: "blur"
+          }],
+          uuid: [{
+            required: true,
+            message: "uuid不能为空",
+            trigger: "blur"
+          }],
+          danbaozhuangtai: [{
+            required: true,
+            message: "担保状态不能为空",
+            trigger: "change"
+          }],
+        },
+        error1: '',
+        totalKeys: {
+          '担保金额（万元）': "totalGuaranteeAmount",
+          '担保余额（万元）': "totalGuaranteeBalance",
+        },
+        zongjia: {
+          totalGuaranteeAmount: 0,
+          totalGuaranteeBalance: 0,
         }
-      } else if (this.daterangeStartDate2 === '' || this.daterangeStartDate2 === null) {
-        this.error1 = ''; // 两个日期都为空时，清空错误信息
-      } else {
-        this.error1 = '担保起始日不能为空';
-      }
-    },
-    daterangeStartDate2(n, o) {
-      if (n !== '' && n !== null) {
-        if (this.daterangeStartDate1 === '' || this.daterangeStartDate1 === null) {
-          this.error1 = '担保起始日不能为空';
-        } else {
-          this.error1 = ''; // 清空错误信息
-        }
-      } else if (this.daterangeStartDate1 === '' || this.daterangeStartDate1 === null) {
-        this.error1 = ''; // 两个日期都为空时，清空错误信息
-      } else {
-        this.error1 = '担保到期日不能为空';
-      }
-    },
-    "form.guaranteeRatio"(n, o) {
-      if (n !== '' && n !== null) {
-        const strNum = (this.form.financingAmount * n).toFixed(2)
-        this.form.guaranteeAmount = Number(strNum)
-      }
-    },
-    "form.financingAmount"(n, o) {
-      if (n !== '' && n !== null) {
-        const strNum = (n * this.form.guaranteeRatio).toFixed(2)
-        this.form.guaranteeAmount = Number(strNum)
-      }
-    }
-  },
-  computed: {
-    ...mapGetters([
-      'name', 'avatar'
-    ]),
-  },
-  created() {
-    this.getList();
-    this.created_successfully = false;
-    this.isEditable = true;
-  },
-  methods: {
-    /* 担保期限选择事件 */
-    handleLimitChange(val) {
-      if (val === '' || val.length == 0 || val == undefined || val == null) {
-        this.form.startDate = '';
-        this.form.deadline = '';
-      }
-      this.form.startDate = val[0];
-      this.form.deadline = val[1];
-    },
-    /* 到期提醒选择 */
-    handleSelect(val) {
-      // this.queryParams.remark = null;
-      if (val) {
-        let start = moment().format("YYYY-MM-DD");
-        let end = moment().add(val, 'days').format("YYYY-MM-DD");
-        this.daterangeDueDate = [start, end]
-      } else {
-        this.daterangeDueDate = []
-      }
-    },
-    /* 创建成功关闭弹窗 */
-    closeDialog() {
-      this.open = false;
-      this.created_successfully = false;
-    },
-    /* 再次创建 */
-    create_again() {
-      this.reset();
-      this.created_successfully = false;
-    },
-    toggleEdit() {
-      this.isEditable = !this.isEditable;
-    },
-    /** 查询对外担保台账列表 */
-    getList() {
-      this.loading = true;
-      this.queryParams.params = {};
-      // if (null != this.daterangeStartDate && '' != this.daterangeStartDate) {
-      //   this.queryParams.params["beginStartDate"] = this.daterangeStartDate[0];
-      //   this.queryParams.params["endStartDate"] = this.daterangeStartDate[1];
-      // }
-      // if (null != this.daterangeDeadline && '' != this.daterangeDeadline) {
-      //   this.queryParams.params["beginDeadline"] = this.daterangeDeadline[0];
-      //   this.queryParams.params["endDeadline"] = this.daterangeDeadline[1];
-      // }
-      // if (null != this.daterangeStartDate && '' != this.daterangeStartDate) {
-      //   // 直接合并 开始时间和结束时间
-      //   this.queryParams.params["beginStartDate"] = this.daterangeStartDate[0];
-      //   this.queryParams.params["endStartDate"] = this.daterangeStartDate[1];
-
-      //   this.queryParams.params["beginDeadline"] = this.daterangeStartDate[0];
-      //   this.queryParams.params["endDeadline"] = this.daterangeStartDate[1];
-
-      // }
-
-      if (![null, '', undefined].includes(this.daterangeStartDate1) && ![null, '', undefined].includes(this.daterangeStartDate2)) {
-        this.queryParams.params["beginStartDate"] = this.daterangeStartDate1;
-        this.queryParams.params["endStartDate"] = this.daterangeStartDate2;
-
-        this.queryParams.params["beginDeadline"] = this.daterangeStartDate1;
-        this.queryParams.params["endDeadline"] = this.daterangeStartDate2;
-      }
-
-      if (null != this.daterangeCreateTime && '' != this.daterangeCreateTime) {
-        this.queryParams.params["beginCreateTime"] = this.daterangeCreateTime[0];
-        this.queryParams.params["endCreateTime"] = this.daterangeCreateTime[1];
-      }
-      this.queryParams['orderByColumn'] = 'id';
-
-      let search = JSON.parse(JSON.stringify(this.queryParams));
-      if (![null, '', undefined].includes(search.guaranteeAmount)) {
-        search.guaranteeAmount = Number(search.guaranteeAmount) * 10000
-      }
-      if (![null, '', undefined].includes(search.guaranteeBalance)) {
-        search.guaranteeBalance = Number(search.guaranteeBalance) * 10000
-      }
-
-      if (![null, '', undefined].includes(search.financingAmount)) {
-        search.financingAmount = Number(search.financingAmount) * 10000
-      }
-
-      listForeign(search).then(response => {
-        this.foreignList = response.rows;
-        this.total = response.total;
-        this.zongjia = response.totals;
-        this.loading = false;
-      });
-    },
-    // 取消按钮
-    cancel() {
-      this.open = false;
-      this.reset();
-    },
-    // 表单重置
-    reset() {
-      this.form = {
-        id: null,
-        managementId: null,
-        contractId: null,
-        scrUuid: null,
-        creditor: null,
-        guarantor: null,
-        financialInstitution: null,
-        businessType: null,
-        guaranteeAmount: null,
-        guaranteeBalance: null,
-        startDate: null,
-        deadline: null,
-        guaranteeMethod: null,
-        isCreditInvestigation: null,
-        comment: null,
-        createTime: null,
-        createBy: null,
-        updateTime: null,
-        updateBy: null,
-        uuid: null,
-        danbaozhuangtai: null,
-        financingAmount: null,
-        guaranteeRatio: null,
-        purposeOfLoan: null
       };
-      this.rzsrc2List = [];
-      this.resetForm("form");
     },
-    /** 搜索按钮操作 */
-    handleQuery() {
-      this.queryParams.pageNum = 1;
+    watch: {
+      open(n, o) {
+        if (n == false) {
+          this.created_successfully = false;
+          this.isEditable = true;
+        }
+      },
+      daterangeStartDate1(n, o) {
+        if (n !== '' && n !== null) {
+          if (this.daterangeStartDate2 === '' || this.daterangeStartDate2 === null) {
+            this.error1 = '担保到期日不能为空';
+          } else {
+            this.error1 = ''; // 清空错误信息
+          }
+        } else if (this.daterangeStartDate2 === '' || this.daterangeStartDate2 === null) {
+          this.error1 = ''; // 两个日期都为空时，清空错误信息
+        } else {
+          this.error1 = '担保起始日不能为空';
+        }
+      },
+      daterangeStartDate2(n, o) {
+        if (n !== '' && n !== null) {
+          if (this.daterangeStartDate1 === '' || this.daterangeStartDate1 === null) {
+            this.error1 = '担保起始日不能为空';
+          } else {
+            this.error1 = ''; // 清空错误信息
+          }
+        } else if (this.daterangeStartDate1 === '' || this.daterangeStartDate1 === null) {
+          this.error1 = ''; // 两个日期都为空时，清空错误信息
+        } else {
+          this.error1 = '担保到期日不能为空';
+        }
+      },
+      "form.guaranteeRatio"(n, o) {
+        // 利率改变或者融资金额改变的时候,都要改变担保额
+        if (n !== '' && n !== null) {
+          //%要除以100 才是 6%
+          const strNum = (this.form.financingAmount * n / 100).toFixed(2)
+          this.form.guaranteeAmount = Number(strNum)
+        }
+      },
+      "form.financingAmount"(n, o) {
+        // 利率改变或者融资金额改变的时候,都要改变担保额
+        if (n !== '' && n !== null) {
+          //%要除以100 才是 6%
+          const strNum = (n * this.form.guaranteeRatio / 100).toFixed(2)
+          this.form.guaranteeAmount = Number(strNum)
+        }
+      }
+    },
+    computed: {
+      ...mapGetters([
+        'name', 'avatar'
+      ]),
+    },
+    created() {
       this.getList();
-    },
-    /** 重置按钮操作 */
-    resetQuery() {
-      this.daterangeStartDate = [];
-      this.daterangeDeadline = [];
-      this.daterangeCreateTime = [];
-      this.resetForm("queryForm");
-      this.handleQuery();
-    },
-    // 多选框选中数据
-    handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.id)
-      this.single = selection.length !== 1
-      this.multiple = !selection.length
-    },
-    /** 新增按钮操作 */
-    handleAdd() {
-      this.reset();
-      this.form.managementId = new Date().getTime();
       this.created_successfully = false;
       this.isEditable = true;
-      this.open = true;
-      this.title = "添加对外担保台账";
     },
-    /** 修改按钮操作 */
-    handleUpdate(row) {
-      this.isEditable = false;
-
-      this.reset();
-      const id = row.id || this.ids
-      getForeign(id).then(response => {
-        /* str 需要赋值粘贴到的 */
-        response.data.rzsrc2List.forEach(i => {
-          i.id = null;
-        })
-        // 金额需要 / 10000
-        response.data.guaranteeAmount = Number(response.data.guaranteeAmount) / 10000;
-        response.data.guaranteeBalance = Number(response.data.guaranteeBalance) / 10000;
-        response.data.financingAmount = Number(response.data.financingAmount) / 10000;
-        this.scrUuid = response.data.scrUuid;
-        this.form = response.data;
-        this.form.scrUuid = response.data.rzsrc2List.map(i => i.url)
-        /* end */
-        this.rzsrc2List = response.data.rzsrc2List;
-        this.open = true;
-        this.title = "修改对外担保台账";
-      });
-    },
-    /** 提交按钮 */
-    submitForm() {
-      this.$refs["form"].validate(valid => {
-        if (valid) {
-          const data = JSON.parse(JSON.stringify(this.form))
-          this.form.rzsrc2List = this.rzsrc2List;
-          this.rzaudit_data = null;
-
-          // 金额需要 * 10000
-          data.guaranteeAmount = Number(data.guaranteeAmount) * 10000;
-          data.guaranteeBalance = Number(data.guaranteeBalance) * 10000;
-          data.financingAmount = Number(data.financingAmount) * 10000;
-
-          if (this.form.id != null) {
-            // updateForeign(this.form).then(response => {
-            //   this.$modal.msgSuccess("修改成功");
-            //   this.open = false;
-            //   this.getList();
-            // });
-            data.scrUuid = Number(this.scrUuid);
-            this.rzaudit_data = {
-              "auditId": data.id,
-              "scrUuid": data.scrUuid,
-              "createBy": this.name,
-              "createTime": null,
-              "dataJson": JSON.stringify(data),
-              "tableName": "rz_gl_foreign",
-              "auditState": "1759514891045044200",
-              "uuid": data.uuid
-            }
-            if (this.title === '修改对外担保台账' && this.created_successfully === false && this.isEditable === true) {
-              this.created_successfully = true;
-              this.isSuccess = false;
-              this.isTitle = true;
-              this.isMessage = false;
-              this.ctitle = '确定修改对外担保台账信息吗？';
-              this.isEdit = true;
-              return;
-            }
-          } else {
-            // addForeign(this.form).then(response => {
-            //   this.$modal.msgSuccess("新增成功");
-            //   this.open = false;
-            //   this.getList();
-            // });
-            // 生成一个 uuid
-            const generator = new SnowflakeIdGenerator();
-
-            // start
-            const uuid = String(generator.nextId())
-            data.uuid = uuid;
-            // end
-            data.scrUuid = generator.nextId();
-            data.rzsrc2List = this.rzsrc2List;
-            data.createBy = this.name;
-            this.rzaudit_data = {
-              "id": null,
-              "auditId": null,
-              "scrUuid": data.scrUuid,
-              "createBy": this.name,
-              "createTime": null,
-              "dataJson": JSON.stringify(data),
-              "tableName": "rz_gl_foreign",
-              "auditState": "1759514891045044200",
-              "uuid": uuid,
-              "managementId": data.managementId
-            }
-          }
-          this.handleaddList();
-
+    methods: {
+      /* 担保期限选择事件 */
+      handleLimitChange(val) {
+        if (val === '' || val.length == 0 || val == undefined || val == null) {
+          this.form.startDate = '';
+          this.form.deadline = '';
         }
-      });
-    },
-    async handleaddList() {
-      // 检验上一个数据步骤有没有审批通过
-      await this.inspectionPendingReview(this.rzaudit_data)
-
-      addList(this.rzaudit_data).then(res => {
-        this.created_successfully = true;
-        if (this.title === '修改对外担保台账' && this.isEditable) {
-          this.isSuccess = true;
-          this.isTitle = true;
-          this.isMessage = true;
-          this.ctitle = this.isEdit ? '修改提交成功' : '提交成功';
-          this.isEdit = false;
+        this.form.startDate = val[0];
+        this.form.deadline = val[1];
+      },
+      /* 到期提醒选择 */
+      handleSelect(val) {
+        // this.queryParams.remark = null;
+        if (val) {
+          let start = moment().format("YYYY-MM-DD");
+          let end = moment().add(val, 'days').format("YYYY-MM-DD");
+          this.daterangeDueDate = [start, end]
         } else {
-          this.ctitle = '提交成功';
-          this.isMessage = true;
-          this.isEdit = false;
+          this.daterangeDueDate = []
         }
-      })
-    },
-    /** 删除按钮操作 */
-    handleDelete(row) {
-      const ids = row.id || this.ids;
-      // this.$modal.confirm('是否确认删除对外担保台账编号为"' + ids + '"的数据项？').then(function () {
-      //   return delForeign(ids);
-      // }).then(() => {
-      //   this.getList();
-      //   this.$modal.msgSuccess("删除成功");
-      // }).catch(() => { });
-      const h = this.$createElement;
-      this.$msgbox({
-        title: '提示',
-        message: h('div', null, [
-          h('el-divider', {
-            class: {
-              "no_mt": true,
-              "mb20": true
-            },
-            attrs: { "data-role": 'el-divider' }
-          }, ''),
-          h('p', {
-            class: 'tc w mb20',
-            style: {
-              'font-size': '24px',
-              'color': '#000000',
-              'font-weight': 'bold'
-            }
-          }, '确定删除选中的对外担保台账吗？'),
-        ]),
-        showCancelButton: true,
-        cancelButtonText: '取消',
-        confirmButtonText: '确定',
-        cancelButtonClass: "btn-custom-cancel",
-        customClass: 'custom-msgbox',
-        beforeClose: (action, instance, done) => {
-          if (action === 'confirm') {
-            delForeign(ids).then(res => {
-              done();
-            });
-          } else {
-            done();
-          }
+      },
+      /* 创建成功关闭弹窗 */
+      closeDialog() {
+        this.open = false;
+        this.created_successfully = false;
+      },
+      /* 再次创建 */
+      create_again() {
+        this.reset();
+        this.created_successfully = false;
+      },
+      toggleEdit() {
+        this.isEditable = !this.isEditable;
+      },
+      /** 查询对外担保台账列表 */
+      getList() {
+        this.loading = true;
+        this.queryParams.params = {};
+        // if (null != this.daterangeStartDate && '' != this.daterangeStartDate) {
+        //   this.queryParams.params["beginStartDate"] = this.daterangeStartDate[0];
+        //   this.queryParams.params["endStartDate"] = this.daterangeStartDate[1];
+        // }
+        // if (null != this.daterangeDeadline && '' != this.daterangeDeadline) {
+        //   this.queryParams.params["beginDeadline"] = this.daterangeDeadline[0];
+        //   this.queryParams.params["endDeadline"] = this.daterangeDeadline[1];
+        // }
+        // if (null != this.daterangeStartDate && '' != this.daterangeStartDate) {
+        //   // 直接合并 开始时间和结束时间
+        //   this.queryParams.params["beginStartDate"] = this.daterangeStartDate[0];
+        //   this.queryParams.params["endStartDate"] = this.daterangeStartDate[1];
+
+        //   this.queryParams.params["beginDeadline"] = this.daterangeStartDate[0];
+        //   this.queryParams.params["endDeadline"] = this.daterangeStartDate[1];
+
+        // }
+
+        if (![null, '', undefined].includes(this.daterangeStartDate1) && ![null, '', undefined].includes(this
+            .daterangeStartDate2)) {
+          this.queryParams.params["beginStartDate"] = this.daterangeStartDate1;
+          this.queryParams.params["endStartDate"] = this.daterangeStartDate2;
+
+          this.queryParams.params["beginDeadline"] = this.daterangeStartDate1;
+          this.queryParams.params["endDeadline"] = this.daterangeStartDate2;
         }
-      }).then(action => {
-        this.cancel();
+
+        if (null != this.daterangeCreateTime && '' != this.daterangeCreateTime) {
+          this.queryParams.params["beginCreateTime"] = this.daterangeCreateTime[0];
+          this.queryParams.params["endCreateTime"] = this.daterangeCreateTime[1];
+        }
+        this.queryParams['orderByColumn'] = 'id';
+
+        let search = JSON.parse(JSON.stringify(this.queryParams));
+        if (![null, '', undefined].includes(search.guaranteeAmount)) {
+          search.guaranteeAmount = Number(search.guaranteeAmount) * 10000
+        }
+        if (![null, '', undefined].includes(search.guaranteeBalance)) {
+          search.guaranteeBalance = Number(search.guaranteeBalance) * 10000
+        }
+
+        if (![null, '', undefined].includes(search.financingAmount)) {
+          search.financingAmount = Number(search.financingAmount) * 10000
+        }
+
+        listForeign(search).then(response => {
+          this.foreignList = response.rows;
+          this.total = response.total;
+          this.zongjia = response.totals;
+          this.loading = false;
+        });
+      },
+      // 取消按钮
+      cancel() {
+        this.open = false;
+        this.reset();
+      },
+      // 表单重置
+      reset() {
+        this.form = {
+          id: null,
+          managementId: null,
+          contractId: null,
+          scrUuid: null,
+          creditor: null,
+          guarantor: null,
+          financialInstitution: null,
+          businessType: null,
+          guaranteeAmount: null,
+          guaranteeBalance: null,
+          startDate: null,
+          deadline: null,
+          guaranteeMethod: null,
+          isCreditInvestigation: null,
+          comment: null,
+          createTime: null,
+          createBy: null,
+          updateTime: null,
+          updateBy: null,
+          uuid: null,
+          danbaozhuangtai: null,
+          financingAmount: null,
+          guaranteeRatio: null,
+          purposeOfLoan: null
+        };
+        this.rzsrc2List = [];
+        this.resetForm("form");
+      },
+      /** 搜索按钮操作 */
+      handleQuery() {
+        this.queryParams.pageNum = 1;
         this.getList();
-        this.$modal.msgSuccess("删除成功");
-      });
-    },
-    /** 附件表序号 */
-    rowrzsrc2Index({ row, rowIndex }) {
-      row.index = rowIndex + 1;
-    },
-    /** 附件表添加按钮操作 */
-    handleAddrzsrc2() {
-      let obj = {};
-      obj.url = "";
-      obj.projectManagementId = "";
-      obj.type = "rz_gl_foreign";
-      this.rzsrc2List.push(obj);
-    },
-    /** 附件表删除按钮操作 */
-    handleDeleterzsrc2() {
-      if (this.checkedrzsrc2.length == 0) {
-        this.$modal.msgError("请先选择要删除的附件表数据");
-      } else {
-        const rzsrc2List = this.rzsrc2List;
-        const checkedrzsrc2 = this.checkedrzsrc2;
-        this.rzsrc2List = rzsrc2List.filter(function (item) {
-          return checkedrzsrc2.indexOf(item.index) == -1
+      },
+      /** 重置按钮操作 */
+      resetQuery() {
+        this.daterangeStartDate = [];
+        this.daterangeDeadline = [];
+        this.daterangeCreateTime = [];
+        this.resetForm("queryForm");
+        this.handleQuery();
+      },
+      // 多选框选中数据
+      handleSelectionChange(selection) {
+        this.ids = selection.map(item => item.id)
+        this.single = selection.length !== 1
+        this.multiple = !selection.length
+      },
+      /** 新增按钮操作 */
+      handleAdd() {
+        this.reset();
+        this.form.managementId = new Date().getTime();
+        this.created_successfully = false;
+        this.isEditable = true;
+        this.open = true;
+        this.title = "添加对外担保台账";
+      },
+      /** 修改按钮操作 */
+      handleUpdate(row) {
+        this.isEditable = false;
+
+        this.reset();
+        const id = row.id || this.ids
+        getForeign(id).then(response => {
+          /* str 需要赋值粘贴到的 */
+          response.data.rzsrc2List.forEach(i => {
+            i.id = null;
+          })
+          // 金额需要 / 10000
+          response.data.guaranteeAmount = Number(response.data.guaranteeAmount) / 10000;
+          response.data.guaranteeBalance = Number(response.data.guaranteeBalance) / 10000;
+          response.data.financingAmount = Number(response.data.financingAmount) / 10000;
+          this.scrUuid = response.data.scrUuid;
+          this.form = response.data;
+          this.form.scrUuid = response.data.rzsrc2List.map(i => i.url)
+          /* end */
+          this.rzsrc2List = response.data.rzsrc2List;
+          this.open = true;
+          this.title = "修改对外担保台账";
+        });
+      },
+      /** 提交按钮 */
+      submitForm() {
+        this.$refs["form"].validate(valid => {
+          if (valid) {
+            const data = JSON.parse(JSON.stringify(this.form))
+            this.form.rzsrc2List = this.rzsrc2List;
+            this.rzaudit_data = null;
+
+            // 金额需要 * 10000
+            data.guaranteeAmount = Number(data.guaranteeAmount) * 10000;
+            data.guaranteeBalance = Number(data.guaranteeBalance) * 10000;
+            data.financingAmount = Number(data.financingAmount) * 10000;
+
+            if (this.form.id != null) {
+              // updateForeign(this.form).then(response => {
+              //   this.$modal.msgSuccess("修改成功");
+              //   this.open = false;
+              //   this.getList();
+              // });
+              data.scrUuid = Number(this.scrUuid);
+              this.rzaudit_data = {
+                "auditId": data.id,
+                "scrUuid": data.scrUuid,
+                "createBy": this.name,
+                "createTime": null,
+                "dataJson": JSON.stringify(data),
+                "tableName": "rz_gl_foreign",
+                "auditState": "1759514891045044200",
+                "uuid": data.uuid
+              }
+              if (this.title === '修改对外担保台账' && this.created_successfully === false && this.isEditable === true) {
+                this.created_successfully = true;
+                this.isSuccess = false;
+                this.isTitle = true;
+                this.isMessage = false;
+                this.ctitle = '确定修改对外担保台账信息吗？';
+                this.isEdit = true;
+                return;
+              }
+            } else {
+              // addForeign(this.form).then(response => {
+              //   this.$modal.msgSuccess("新增成功");
+              //   this.open = false;
+              //   this.getList();
+              // });
+              // 生成一个 uuid
+              const generator = new SnowflakeIdGenerator();
+
+              // start
+              const uuid = String(generator.nextId())
+              data.uuid = uuid;
+              // end
+              data.scrUuid = generator.nextId();
+              data.rzsrc2List = this.rzsrc2List;
+              data.createBy = this.name;
+              this.rzaudit_data = {
+                "id": null,
+                "auditId": null,
+                "scrUuid": data.scrUuid,
+                "createBy": this.name,
+                "createTime": null,
+                "dataJson": JSON.stringify(data),
+                "tableName": "rz_gl_foreign",
+                "auditState": "1759514891045044200",
+                "uuid": uuid,
+                "managementId": data.managementId
+              }
+            }
+            this.handleaddList();
+
+          }
+        });
+      },
+      async handleaddList() {
+        // 检验上一个数据步骤有没有审批通过
+        await this.inspectionPendingReview(this.rzaudit_data)
+
+        addList(this.rzaudit_data).then(res => {
+          this.created_successfully = true;
+          if (this.title === '修改对外担保台账' && this.isEditable) {
+            this.isSuccess = true;
+            this.isTitle = true;
+            this.isMessage = true;
+            this.ctitle = this.isEdit ? '修改提交成功' : '提交成功';
+            this.isEdit = false;
+          } else {
+            this.ctitle = '提交成功';
+            this.isMessage = true;
+            this.isEdit = false;
+          }
+        })
+      },
+      /** 删除按钮操作 */
+      handleDelete(row) {
+        const ids = row.id || this.ids;
+        // this.$modal.confirm('是否确认删除对外担保台账编号为"' + ids + '"的数据项？').then(function () {
+        //   return delForeign(ids);
+        // }).then(() => {
+        //   this.getList();
+        //   this.$modal.msgSuccess("删除成功");
+        // }).catch(() => { });
+        const h = this.$createElement;
+        this.$msgbox({
+          title: '提示',
+          message: h('div', null, [
+            h('el-divider', {
+              class: {
+                "no_mt": true,
+                "mb20": true
+              },
+              attrs: {
+                "data-role": 'el-divider'
+              }
+            }, ''),
+            h('p', {
+              class: 'tc w mb20',
+              style: {
+                'font-size': '24px',
+                'color': '#000000',
+                'font-weight': 'bold'
+              }
+            }, '确定删除选中的对外担保台账吗？'),
+          ]),
+          showCancelButton: true,
+          cancelButtonText: '取消',
+          confirmButtonText: '确定',
+          cancelButtonClass: "btn-custom-cancel",
+          customClass: 'custom-msgbox',
+          beforeClose: (action, instance, done) => {
+            if (action === 'confirm') {
+              delForeign(ids).then(res => {
+                done();
+              });
+            } else {
+              done();
+            }
+          }
+        }).then(action => {
+          this.cancel();
+          this.getList();
+          this.$modal.msgSuccess("删除成功");
+        });
+      },
+      /** 附件表序号 */
+      rowrzsrc2Index({
+        row,
+        rowIndex
+      }) {
+        row.index = rowIndex + 1;
+      },
+      /** 附件表添加按钮操作 */
+      handleAddrzsrc2() {
+        let obj = {};
+        obj.url = "";
+        obj.projectManagementId = "";
+        obj.type = "rz_gl_foreign";
+        this.rzsrc2List.push(obj);
+      },
+      /** 附件表删除按钮操作 */
+      handleDeleterzsrc2() {
+        if (this.checkedrzsrc2.length == 0) {
+          this.$modal.msgError("请先选择要删除的附件表数据");
+        } else {
+          const rzsrc2List = this.rzsrc2List;
+          const checkedrzsrc2 = this.checkedrzsrc2;
+          this.rzsrc2List = rzsrc2List.filter(function(item) {
+            return checkedrzsrc2.indexOf(item.index) == -1
+          });
+        }
+      },
+      /** 复选框选中数据 */
+      handlerzsrc2SelectionChange(selection) {
+        this.checkedrzsrc2 = selection.map(item => item.index)
+      },
+      /** 导出按钮操作 */
+      handleExport() {
+        this.download('glforeign/foreign/export', {
+          ...this.queryParams
+        }, `foreign_${new Date().getTime()}.xlsx`)
+      },
+      /* 上传完成的回调 */
+      upload_completed(url_string) {
+        const url_list = url_string.split(',')
+        url_list.forEach(url_i => {
+          let obj = {
+            url: url_i,
+            projectManagementId: this.form.managementId,
+            type: "rz_gl_foreign",
+            createBy: this.name,
+            createTime: moment().format("YYYY-MM-DD HH:mm:ss"),
+          };
+
+          // 检查this.rzsrc2List中是否已经存在具有相同url的对象
+          if (!this.rzsrc2List.some(item => item.url === obj.url)) {
+            this.rzsrc2List.push(obj);
+          }
         });
       }
-    },
-    /** 复选框选中数据 */
-    handlerzsrc2SelectionChange(selection) {
-      this.checkedrzsrc2 = selection.map(item => item.index)
-    },
-    /** 导出按钮操作 */
-    handleExport() {
-      this.download('glforeign/foreign/export', {
-        ...this.queryParams
-      }, `foreign_${new Date().getTime()}.xlsx`)
-    },
-    /* 上传完成的回调 */
-    upload_completed(url_string) {
-      const url_list = url_string.split(',')
-      url_list.forEach(url_i => {
-        let obj = {
-          url: url_i,
-          projectManagementId: this.form.managementId,
-          type: "rz_gl_foreign",
-          createBy: this.name,
-          createTime: moment().format("YYYY-MM-DD HH:mm:ss"),
-        };
-
-        // 检查this.rzsrc2List中是否已经存在具有相同url的对象
-        if (!this.rzsrc2List.some(item => item.url === obj.url)) {
-          this.rzsrc2List.push(obj);
-        }
-      });
     }
-  }
-};
+  };
 </script>

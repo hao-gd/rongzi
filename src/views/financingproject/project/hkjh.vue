@@ -6,7 +6,8 @@
           <span class="required">提款信息输入区（元）</span>
           <div>
             <el-button size="mini" class="reset-total-btn" id="sort-btn">排序</el-button>
-            <el-button type="primary" size="mini" class="reset-total-btn" id="add-btn" v-if="isEditable">新增一行</el-button>
+            <el-button type="primary" size="mini" class="reset-total-btn" id="add-btn"
+              v-if="isEditable">新增一行</el-button>
           </div>
         </div>
 
@@ -35,7 +36,8 @@
             <el-button v-if="isEditable" type="info" plain icon="el-icon-document-copy" size="mini"
               @click="dialogbjchVisible = true">粘贴本金偿还信息</el-button>
             <el-button size="mini" class="reset-total-btn" id="sort-btn">排序</el-button>
-            <el-button type="primary" size="mini" class="reset-total-btn" id="add-btn" v-if="isEditable">新增一行</el-button>
+            <el-button type="primary" size="mini" class="reset-total-btn" id="add-btn"
+              v-if="isEditable">新增一行</el-button>
           </div>
         </div>
 
@@ -64,7 +66,7 @@
 
             <el-button size="mini" class="reset-total-btn" id="sort-btn">排序</el-button>
             <el-button type="primary" size="mini" class="reset-total-btn" id="add-btn"
-              :disabled="form.rateType === '固定'" v-if="isEditable">
+              :disabled="form.rateType === '固定'&&lvbg.length>0" v-if="isEditable">
               新增一行</el-button>
           </div>
         </div>
@@ -169,8 +171,8 @@
     </el-dialog>
 
     <!-- 粘贴本金偿还信息 -->
-    <el-dialog title="粘贴本金偿还信息(单位:元)" :visible.sync="dialogbjchVisible" :modal="false">
-      <el-alert title="直接从Excel复制日期和偿还金额数据,不需要复制表头,否则会失败." type="warning" center show-icon></el-alert>
+    <el-dialog title="粘贴本金偿还信息(单位:万元)" :visible.sync="dialogbjchVisible" :modal="false">
+      <el-alert title="直接从Excel复制日期和偿还金额(单位:万元)数据,不需要复制表头,否则会失败." type="warning" center show-icon></el-alert>
       <el-input type="textarea" :rows="30" placeholder="直接从Excel复制日期和偿还金额数据,例子:
 
 2026/11/30	1000.00
@@ -383,7 +385,7 @@
           // 创建record对象并存入this.bjch list
           this.bjch.push({
             date: parts[0],
-            amount: Number(parts[1]),
+            amount: Number(parts[1] * 10000),
             editing: true
           });
         });

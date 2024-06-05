@@ -137,7 +137,7 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="保证金收益金额" prop="marginIncomeAmount">
-                <el-input-number class="w" :controls="false" :precision="2" 
+                <el-input-number class="w" :controls="false" :precision="2"
                   type="number" v-model.trim="queryParams.marginIncomeAmount" placeholder="请输入保证金收益金额" />
               </el-form-item>
             </el-col>
@@ -363,16 +363,50 @@
 
 
           <el-row :gutter="20">
-            
+
             <el-col :span="8">
               <el-form-item label="保证金比例" prop="marginLevel">
-                <el-input-number class="w" :controls="false" :precision="2" :disabled="!isEditable"
-                  :readonly="!isEditable" type="number" v-model.trim="form.marginLevel" placeholder="请输入保证金比例" />
+ <!--               <el-input-number class="w" :controls="false" :precision="2" :disabled="!isEditable"
+                  :readonly="!isEditable" type="number" v-model.trim="form.marginLevel" placeholder="请输入保证金比例" /> -->
+
+                 <tiny-numeric :disabled="!isEditable"
+                  :readonly="!isEditable" class="w" show-left :controls="false" size="small" v-model="form.marginLevel" :format="{
+                   zeroize: true, // 是否保留多余的0字符
+                   fraction: 2, // 保留小数位数
+                   rounding: 2, // 舍入点
+                   prefix: '', // 前置标识
+                   groupSize: 3, // 整数部分分组间隔，即第一个分组位数
+                   secondaryGroupSize: 2, // 整数部分第二级分组间隔，不设置或为0时 自动取groupSize
+                   groupSeparator: ',', // 整数部分分组分隔符
+                   decimalSeparator: '.', // 小数点符号
+                   fractionGroupSize: 0, // 小数部分分组间隔
+                   fractionGroupSeparator: '\xA0', // 小数分组分隔符
+                   suffix: '%' // 后置标识
+                 }" placeholder="请输入保证金比例"></tiny-numeric>
+
+
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="保证金利率" prop="marginInterestRate">
-                <el-input :readonly="!isEditable" v-model="marginInterestRate" placeholder="请输入保证金利率" />
+                <!-- <el-input :readonly="!isEditable" v-model="marginInterestRate" placeholder="请输入保证金利率" /> -->
+
+                <tiny-numeric :disabled="!isEditable"
+                 :readonly="!isEditable" class="w" show-left :controls="false" size="small" v-model="form.marginInterestRate" :format="{
+                  zeroize: true, // 是否保留多余的0字符
+                  fraction: 2, // 保留小数位数
+                  rounding: 2, // 舍入点
+                  prefix: '', // 前置标识
+                  groupSize: 3, // 整数部分分组间隔，即第一个分组位数
+                  secondaryGroupSize: 2, // 整数部分第二级分组间隔，不设置或为0时 自动取groupSize
+                  groupSeparator: ',', // 整数部分分组分隔符
+                  decimalSeparator: '.', // 小数点符号
+                  fractionGroupSize: 0, // 小数部分分组间隔
+                  fractionGroupSeparator: '\xA0', // 小数分组分隔符
+                  suffix: '%' // 后置标识
+                }" placeholder="请输入保证金利率"></tiny-numeric>
+
+
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -384,7 +418,7 @@
           </el-row>
 
           <el-row :gutter="20">
-            
+
             <el-col :span="8">
               <el-form-item label="是否已贴现" prop="discountedOrNot">
                 <el-select filterable clearable :disabled="!isEditable" :readonly="!isEditable" v-model="form.discountedOrNot"
@@ -412,7 +446,7 @@
           </el-row>
 
           <el-row :gutter="20">
-            
+
             <el-col :span="8">
               <el-form-item label="贴现费用承担情况" prop="assumptionOfDiscountFees">
                 <el-input :readonly="!isEditable" type="textarea" v-model.trim="form.assumptionOfDiscountFees" placeholder="请输入贴现费用承担情况" />
@@ -730,19 +764,19 @@ export default {
     ...mapGetters([
       'name', 'avatar'
     ]),
-    marginInterestRate: {
-        get() {
-          if (this.form.marginInterestRate) {
-            // 当读取值时，添加百分号
-            return this.form.marginInterestRate + (this.form.marginInterestRate ? '%' : '');
-          } else {
-            return this.form.marginInterestRate;
-          }
-        },
-        set(value) {
-          this.form.marginInterestRate = value.replace(/%/g, '');
-        }
-      },
+    // marginInterestRate: {
+    //     get() {
+    //       if (this.form.marginInterestRate) {
+    //         // 当读取值时，添加百分号
+    //         return this.form.marginInterestRate + (this.form.marginInterestRate ? '%' : '');
+    //       } else {
+    //         return this.form.marginInterestRate;
+    //       }
+    //     },
+    //     set(value) {
+    //       this.form.marginInterestRate = value.replace(/%/g, '');
+    //     }
+    //   },
   },
   created() {
     this.getList();
