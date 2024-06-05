@@ -333,7 +333,22 @@
 
             <el-col :span="8">
               <el-form-item label="年利率" prop="rate">
-                <el-input :readonly="!isEditable" v-model="rate" placeholder="请输入年利率" />
+                <!-- <el-input :readonly="!isEditable" v-model="rate" placeholder="请输入年利率" /> -->
+
+                <tiny-numeric class="w" show-left :controls="false" size="small" v-model="form.rate" :format="{
+                  zeroize: true, // 是否保留多余的0字符
+                  fraction: 2, // 保留小数位数
+                  rounding: 2, // 舍入点
+                  prefix: '', // 前置标识
+                  groupSize: 3, // 整数部分分组间隔，即第一个分组位数
+                  secondaryGroupSize: 2, // 整数部分第二级分组间隔，不设置或为0时 自动取groupSize
+                  groupSeparator: ',', // 整数部分分组分隔符
+                  decimalSeparator: '.', // 小数点符号
+                  fractionGroupSize: 0, // 小数部分分组间隔
+                  fractionGroupSeparator: '\xA0', // 小数分组分隔符
+                  suffix: '%' // 后置标识
+                }" placeholder="请输入年利率"></tiny-numeric>
+
               </el-form-item>
             </el-col>
             <!-- <el-col :span="8">
@@ -701,19 +716,19 @@
           }
         }
       },
-      rate: {
-        get() {
-          if (this.form.rate) {
-            // 当读取值时，添加百分号
-            return this.form.rate + (this.form.rate ? '%' : '');
-          } else {
-            return this.form.rate;
-          }
-        },
-        set(value) {
-          this.form.rate = value.replace(/%/g, '');
-        }
-      },
+      // rate: {
+      //   get() {
+      //     if (this.form.rate) {
+      //       // 当读取值时，添加百分号
+      //       return this.form.rate + (this.form.rate ? '%' : '');
+      //     } else {
+      //       return this.form.rate;
+      //     }
+      //   },
+      //   set(value) {
+      //     this.form.rate = value.replace(/%/g, '');
+      //   }
+      // },
     },
     created() {
       this.getList();

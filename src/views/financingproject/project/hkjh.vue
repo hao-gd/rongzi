@@ -65,9 +65,14 @@
           <div>
 
             <el-button size="mini" class="reset-total-btn" id="sort-btn">排序</el-button>
-            <el-button type="primary" size="mini" class="reset-total-btn" id="add-btn"
-              :disabled="form.rateType === '固定'&&lvbg.length>0" v-if="isEditable">
+            <el-button type="primary" size="mini" class="reset-total-btn" @click="init('年利率信息输入区')"
+              :disabled="lvbg.length>0" v-if="form.rateType === '固定'">
               新增一行</el-button>
+
+
+            <el-button type="primary" size="mini" class="reset-total-btn" id="add-btn" v-else>
+              新增一行</el-button>
+
           </div>
         </div>
         <tiny-grid align="center" ref="lvbg" :data="lvbg" max-height="300" :optimization="optimizationData">
@@ -322,7 +327,7 @@
         handler(newVal) {
           if (newVal) {
             // console.log(newVal);
-            this.form.repaidAmount = newVal.reduce((acc, item) => acc + item.amount, 0)/10000;
+            this.form.repaidAmount = newVal.reduce((acc, item) => acc + item.amount, 0) / 10000;
             // this.form.changhuanbenjin = JSON.parse(newVal);
           }
         },
@@ -332,7 +337,7 @@
       'zjbj': {
         handler(newVal) {
           if (newVal) {
-            this.form.financingAmount = newVal.reduce((acc, item) => acc + item.amount, 0)/10000;
+            this.form.financingAmount = newVal.reduce((acc, item) => acc + item.amount, 0) / 10000;
             // this.form.tiqubenjin = JSON.parse(newVal);
           }
         },
