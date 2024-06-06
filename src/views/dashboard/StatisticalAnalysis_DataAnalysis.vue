@@ -65,7 +65,7 @@
           <el-col :span="6" class="flex pl20">
             <div class="small-panel-left-icon" :class="'left-icon' + 1"></div>
             <div class="small-panel-right-text-content">
-              <p class="right-text">担保总额（元）</p>
+              <p class="right-text">担保总额（万元）</p>
               <p class="right-amount">
                 <count-to :start-val='0' :end-val="last_data(listData,'totalGuaranteeAmount')" :duration='1000'
                   :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay=true :useEasing="true"></count-to>
@@ -75,7 +75,7 @@
           <el-col :span="6" class="flex pl20">
             <div class="small-panel-left-icon" :class="'left-icon' + 2"></div>
             <div class="small-panel-right-text-content">
-              <p class="right-text">总担保余额（元）</p>
+              <p class="right-text">总担保余额（万元）</p>
               <p class="right-amount">
                 <count-to :start-val='0' :end-val="last_data(listData,'totalGuaranteeBalance')" :duration='1000'
                   :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay=true :useEasing="true"></count-to>
@@ -85,7 +85,7 @@
           <el-col :span="6" class="flex pl20">
             <div class="small-panel-left-icon" :class="'left-icon' + 3"></div>
             <div class="small-panel-right-text-content">
-              <p class="right-text">对内担保余额（元）</p>
+              <p class="right-text">对内担保余额（万元）</p>
               <p class="right-amount">
                 <count-to :start-val='0' :end-val="last_data(listData,'internalGuaranteeBalance')" :duration='1000'
                   :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay=true :useEasing="true"></count-to>
@@ -95,7 +95,7 @@
           <el-col :span="6" class="flex pl20">
             <div class="small-panel-left-icon" :class="'left-icon' + 4"></div>
             <div class="small-panel-right-text-content">
-              <p class="right-text">对外担保余额（元）</p>
+              <p class="right-text">对外担保余额（万元）</p>
               <p class="right-amount">
                 <count-to :start-val='0' :end-val="last_data(listData,'externalGuaranteeBalance')" :duration='1000'
                   :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay=true :useEasing="true"></count-to>
