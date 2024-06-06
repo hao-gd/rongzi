@@ -167,6 +167,7 @@
           <el-link :href="`${upload.template_excel}`" type="primary" :underline="false" target="_blank"
             style="font-size:12px;vertical-align: baseline;">下载模板</el-link>
 
+
         </div>
       </el-upload>
       <div slot="footer" class="dialog-footer">
@@ -176,8 +177,11 @@
     </el-dialog>
 
     <!-- 粘贴本金偿还信息 -->
-    <el-dialog title="粘贴本金偿还信息(单位:万元)" :visible.sync="dialogbjchVisible" :modal="false">
-      <el-alert title="直接从Excel复制日期和偿还金额(单位:万元)数据,不需要复制表头,否则会失败." type="warning" center show-icon></el-alert>
+    <el-dialog title="粘贴本金偿还信息" :visible.sync="dialogbjchVisible" :modal="false">
+      <el-alert title="直接从Excel复制日期和偿还金额数据,不需要复制表头,否则会失败." type="warning" center show-icon></el-alert>
+      <el-switch v-model="drJinEDanWei" active-text="当前金额单位:万元" active-value="10000" inactive-text="当前金额单位:元"
+        inactive-value="1">
+      </el-switch>
       <el-input type="textarea" :rows="30" placeholder="直接从Excel复制日期和偿还金额数据,例子:
 
 2026/11/30	1000.00
@@ -290,7 +294,8 @@
         temp_header: {},
         excel_data: {},
         textarea_bjch: "",
-        dialogbjchVisible: false
+        dialogbjchVisible: false,
+        drJinEDanWei: "10000"
       }
     },
     watch: {
@@ -390,7 +395,7 @@
           // 创建record对象并存入this.bjch list
           this.bjch.push({
             date: parts[0],
-            amount: Number(parts[1] * 10000),
+            amount: Number(parts[1] * Number(this.drJinEDanWei)),
             editing: true
           });
         });

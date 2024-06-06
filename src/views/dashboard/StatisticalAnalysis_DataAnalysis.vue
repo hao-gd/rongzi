@@ -1,43 +1,46 @@
 <template>
-    <div class="content">
-        <div class="app-container">
-            <search-panel title="统计分析" HeaderIcon="lsrzye">
-                <el-form label-position="left" label-width="130px" :inline="false" :model="queryParams" size="small">
-                    <el-row :gutter="20">
-                        <el-col :span="8">
-                            <el-form-item label="担保人" prop="guarantor">
-                                <el-select filterable v-model="queryParams.guarantor" placeholder="请选择担保人" clearable @change="getListData">
-                                    <el-option v-for="dict in dict.type.sys_1767155091485229000" :key="dict.value"
-                                        :label="dict.label" :value="dict.value"></el-option>
-                                </el-select>
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="8">
-                            <el-form-item label="被担保人" prop="creditor">
-                                <el-select filterable v-model="queryParams.creditor" placeholder="请选择被担保人" clearable @change="getListData">
-                                    <el-option v-for="dict in dict.type.sys_1767154968256577500" :key="dict.value"
-                                        :label="dict.label" :value="dict.value"></el-option>
-                                </el-select>
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="8">
-                            <el-form-item label="债权人" prop="financialInstitution">
-                                <el-select filterable v-model="queryParams.financialInstitution" placeholder="请选择债权人" @change="getListData"
-                                    clearable>
-                                    <el-option v-for="dict in dict.type.sys_1757271666666242000" :key="dict.value"
-                                        :label="dict.label" :value="dict.value"></el-option>
-                                </el-select>
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="8">
-                            <el-form-item label="业务类型" prop="businessType">
-                                <el-select filterable v-model="queryParams.businessType" placeholder="请选择业务类型" clearable @change="getListData">
-                                    <el-option v-for="dict in dict.type.sys_1767155302261588000" :key="dict.value"
-                                        :label="dict.label" :value="dict.value"></el-option>
-                                </el-select>
-                            </el-form-item>
-                        </el-col>
-                        <!-- <el-col :span="8">
+  <div class="content">
+    <div class="app-container">
+      <search-panel title="统计分析" HeaderIcon="lsrzye">
+        <el-form label-position="left" label-width="130px" :inline="false" :model="queryParams" size="small">
+          <el-row :gutter="20">
+            <el-col :span="8">
+              <el-form-item label="担保人" prop="guarantor">
+                <el-select filterable v-model="queryParams.guarantor" placeholder="请选择担保人" clearable
+                  @change="getListData">
+                  <el-option v-for="dict in dict.type.sys_1767155091485229000" :key="dict.value" :label="dict.label"
+                    :value="dict.value"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="被担保人" prop="creditor">
+                <el-select filterable v-model="queryParams.creditor" placeholder="请选择被担保人" clearable
+                  @change="getListData">
+                  <el-option v-for="dict in dict.type.sys_1767154968256577500" :key="dict.value" :label="dict.label"
+                    :value="dict.value"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="债权人" prop="financialInstitution">
+                <el-select filterable v-model="queryParams.financialInstitution" placeholder="请选择债权人"
+                  @change="getListData" clearable>
+                  <el-option v-for="dict in dict.type.sys_1757271666666242000" :key="dict.value" :label="dict.label"
+                    :value="dict.value"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="业务类型" prop="businessType">
+                <el-select filterable v-model="queryParams.businessType" placeholder="请选择业务类型" clearable
+                  @change="getListData">
+                  <el-option v-for="dict in dict.type.sys_1767155302261588000" :key="dict.value" :label="dict.label"
+                    :value="dict.value"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <!-- <el-col :span="8">
                             <el-form-item label="时间选择" class="no_mb">
                                 <el-date-picker @change="changeRang" v-model="daterangeLogCreateTime" style="width: 240px"
                                     value-format="yyyy-MM" type="monthrange" range-separator="-" start-placeholder="开始月份"
@@ -234,7 +237,7 @@
                   },
                 ])
               },
-			  z: 1
+              z: 1
             },
             {
               name: '总担保余额',
@@ -259,7 +262,7 @@
                   },
                 ])
               },
-			  z: 2 
+              z: 2
             },
             {
               name: '对内担保余额',
@@ -284,7 +287,7 @@
                   },
                 ])
               },
-			  z: 3
+              z: 3
             },
             {
               name: '对外担保余额',
@@ -309,7 +312,7 @@
                   },
                 ])
               },
-			  z: 4
+              z: 4
             },
             {
               name: '对内担保总额',
@@ -334,7 +337,7 @@
                   },
                 ])
               },
-			  z: 5
+              z: 5
             },
             {
               name: '对外担保总额',
@@ -359,12 +362,13 @@
                   }
                 ])
               },
-			  z: 6
+              z: 6
             },
           ]
         },
         myChart: null,
         listData: [],
+        danweiWY: 10000
       }
     },
     created() {
@@ -466,7 +470,7 @@
           total = listData[listData.length - 1][key]
         }
 
-        return total
+        return total / this.danweiWY
       },
 
       calculateTotalByKey(dataList, key) {
@@ -490,7 +494,10 @@
           const index = xAxisData.indexOf(dataItem.month);
           if (index !== -1) {
             // 根据索引位置填充相应的数据
-            filledData[index] = dataItem[key];
+            let value = dataItem[key];
+            if (value !== 0) {
+              filledData[index] = value / this.danweiWY;
+            }
           }
         });
         return filledData;

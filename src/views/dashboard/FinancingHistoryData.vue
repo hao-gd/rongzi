@@ -67,7 +67,7 @@
           <el-col :span="8" class="flex pl20">
             <div class="small-panel-left-icon" :class="'left-icon' + 1"></div>
             <div class="small-panel-right-text-content">
-              <p class="right-text">融资总额（元）</p>
+              <p class="right-text">融资总额（万元）</p>
               <p class="right-amount">
                 <count-to :start-val='0' :end-val="last_data(listData, 'totalFinancingAmount')" :duration='1000'
                   :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay=true :useEasing="true"></count-to>
@@ -77,7 +77,7 @@
           <el-col :span="8" class="flex pl20">
             <div class="small-panel-left-icon" :class="'left-icon' + 2"></div>
             <div class="small-panel-right-text-content">
-              <p class="right-text">月偿还金额（元）</p>
+              <p class="right-text">月偿还金额（万元）</p>
               <p class="right-amount">
                 <count-to :start-val='0' :end-val="last_data_add(listData1, 'totalPrincipal', 'totalInterest')"
                   :duration='1000' :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay=true
@@ -88,7 +88,7 @@
           <el-col :span="8" class="flex pl20">
             <div class="small-panel-left-icon" :class="'left-icon' + 3"></div>
             <div class="small-panel-right-text-content">
-              <p class="right-text">融资余额（元）</p>
+              <p class="right-text">融资余额（万元）</p>
               <p class="right-amount">
                 <count-to :start-val='0' :end-val="last_data(listData, 'totalRemainingAmount')" :duration='1000'
                   :decimals='2' :separator="','" :prefix="''" :suffix="''" :autoplay=true :useEasing="true"></count-to>
@@ -107,454 +107,463 @@
   </div>
 </template>
 <script>
-import SearchPanel from '@/components/SearchPanel/index.vue'
-import * as echarts from 'echarts';
-import {
-  rzloghistoryFinancing,
-  getRepaymentPlanData,
-  getNextRepaymentPlan
-} from '@/api/dashboard/index'
-import moment from 'moment'
-const color = {
-  totalFinancingAmount: '#F77234',
-  totalRepaidAmount: '#33D1C9',
-  totalRemainingAmount: '#F77234'
-}
-const legend = {
-  totalFinancingAmount: '总融资金额',
-  totalRepaidAmount: '月偿还金额',
-  totalRemainingAmount: '融资余额'
-}
-export default {
-  components: {
-    SearchPanel
-  },
-  dicts: ['sys_1767154968256577500', 'sys_1757271666666242000', 'sys_1759508335389835300', 'sys_1759509599150407700'],
-  data() {
-    return {
-      queryParams: {
-        managementId: null,
-        scrUuid: null,
-        borrowingUnit: null,
-        financialInstitution: null,
-        financingAmount: null,
-        financingType: null,
-        contractId: null,
-        contractSigningDate: null,
-        loanDate: null,
-        dueDate: null,
-        rate: null,
-        loanTerm: null,
-        creditEnhancementMeasures: null,
-        repaidAmount: null,
-        remainingAmount: null,
-        loanState: null,
-        comment: null,
-        uuid: null,
-        logCreateTime: null,
-        logCreateDate: null
-      },
-      // 记录创建的年月时间范围
-      daterangeLogCreateDate: [
-        moment().subtract(1, 'years').format('YYYY-MM'),
-        moment().format('YYYY-MM')
-      ],
-      daterangeLogCreateDate1: moment().subtract(1, 'years').format('YYYY-MM'),
-      daterangeLogCreateDate2: moment().format('YYYY-MM'),
-      option: {
-        color: ['#165DFF', '#33D1C9', '#F77234'],
-        title: {
-          text: 'Stacked Line',
-          show: false,
+  import SearchPanel from '@/components/SearchPanel/index.vue'
+  import * as echarts from 'echarts';
+  import {
+    rzloghistoryFinancing,
+    getRepaymentPlanData,
+    getNextRepaymentPlan
+  } from '@/api/dashboard/index'
+  import moment from 'moment'
+  const color = {
+    totalFinancingAmount: '#F77234',
+    totalRepaidAmount: '#33D1C9',
+    totalRemainingAmount: '#F77234'
+  }
+  const legend = {
+    totalFinancingAmount: '总融资金额',
+    totalRepaidAmount: '月偿还金额',
+    totalRemainingAmount: '融资余额'
+  }
+  export default {
+    components: {
+      SearchPanel
+    },
+    dicts: ['sys_1767154968256577500', 'sys_1757271666666242000', 'sys_1759508335389835300', 'sys_1759509599150407700'],
+    data() {
+      return {
+        queryParams: {
+          managementId: null,
+          scrUuid: null,
+          borrowingUnit: null,
+          financialInstitution: null,
+          financingAmount: null,
+          financingType: null,
+          contractId: null,
+          contractSigningDate: null,
+          loanDate: null,
+          dueDate: null,
+          rate: null,
+          loanTerm: null,
+          creditEnhancementMeasures: null,
+          repaidAmount: null,
+          remainingAmount: null,
+          loanState: null,
+          comment: null,
+          uuid: null,
+          logCreateTime: null,
+          logCreateDate: null
         },
-        tooltip: {
-          trigger: 'axis',
-          formatter(datas) {
-            var result = datas[0].axisValue + '<br/>'; // 显示横坐标值
-            datas.forEach(function (item) {
-              // item 是一个包含数据的对象
-              // item.value 是数据值，toFixed(2) 方法用于保留两位小数
-              result += item.marker + ' ' + item.seriesName + ' : ' + (item.value).toFixed(2) + '<br/>';
-            });
-            return result;
-          }
-        },
-        grid: {
-          left: '3%',
-          right: '4%',
-          bottom: '3%',
-          containLabel: true
-        },
-        toolbox: {
-          feature: {
-            saveAsImage: {}
+        // 记录创建的年月时间范围
+        daterangeLogCreateDate: [
+          moment().subtract(1, 'years').format('YYYY-MM'),
+          moment().format('YYYY-MM')
+        ],
+        daterangeLogCreateDate1: moment().subtract(1, 'years').format('YYYY-MM'),
+        daterangeLogCreateDate2: moment().format('YYYY-MM'),
+        option: {
+          color: ['#165DFF', '#33D1C9', '#F77234'],
+          title: {
+            text: 'Stacked Line',
+            show: false,
           },
-          show: false
-        },
-        xAxis: {
-          type: 'category',
-          boundaryGap: false,
-          data: [],
-          axisPointer: {
-            lineStyle: {
-              color: '#4080FF',
-              width: 2
+          tooltip: {
+            trigger: 'axis',
+            formatter(datas) {
+              var result = datas[0].axisValue + '<br/>'; // 显示横坐标值
+              datas.forEach(function(item) {
+                // item 是一个包含数据的对象
+                // item.value 是数据值，toFixed(2) 方法用于保留两位小数
+                result += item.marker + ' ' + item.seriesName + ' : ' + (item.value).toFixed(2) + '<br/>';
+              });
+              return result;
+            }
+          },
+          grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+          },
+          toolbox: {
+            feature: {
+              saveAsImage: {}
             },
-          }
-        },
-        yAxis: {
-          type: 'value'
-        },
-        series: [{
-          name: '总融资金额',
-          key: 'totalFinancingAmount',
-          type: 'line',
-          // stack: 'Total',
-          data: [],
-          smooth: true,
-          showSymbol: false,
-          lineStyle: {
-            width: 5 // 调整线条的粗细
+            show: false
           },
-          areaStyle: {
-            opacity: 0.8,
-            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-              offset: 0,
-              color: 'rgba(22, 93, 255, .3)'
+          xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: [],
+            axisPointer: {
+              lineStyle: {
+                color: '#4080FF',
+                width: 2
+              },
+            }
+          },
+          yAxis: {
+            type: 'value'
+          },
+          series: [{
+              name: '总融资金额',
+              key: 'totalFinancingAmount',
+              type: 'line',
+              // stack: 'Total',
+              data: [],
+              smooth: true,
+              showSymbol: false,
+              lineStyle: {
+                width: 5 // 调整线条的粗细
+              },
+              areaStyle: {
+                opacity: 0.8,
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                    offset: 0,
+                    color: 'rgba(22, 93, 255, .3)'
+                  },
+                  {
+                    offset: 1,
+                    color: 'rgba(22, 93, 255, 0)'
+                  }
+                ])
+              },
+              z: 1
             },
             {
-              offset: 1,
-              color: 'rgba(22, 93, 255, 0)'
-            }
-            ])
-          },
-          z: 1
-        },
-        {
-          name: '月偿还金额',
-          key: 'totalRepaidAmount',
-          type: 'line',
-          // stack: 'Total',
-          data: [],
-          smooth: true,
-          showSymbol: false,
-          lineStyle: {
-            width: 5 // 调整线条的粗细
-          },
-          areaStyle: {
-            opacity: 0.8,
-            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-              offset: 0,
-              color: 'rgba(51, 209, 201, .3)'
+              name: '月偿还金额',
+              key: 'totalRepaidAmount',
+              type: 'line',
+              // stack: 'Total',
+              data: [],
+              smooth: true,
+              showSymbol: false,
+              lineStyle: {
+                width: 5 // 调整线条的粗细
+              },
+              areaStyle: {
+                opacity: 0.8,
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                    offset: 0,
+                    color: 'rgba(51, 209, 201, .3)'
+                  },
+                  {
+                    offset: 1,
+                    color: 'rgba(51, 209, 201, 0)'
+                  }
+                ])
+              },
+              z: 2
             },
             {
-              offset: 1,
-              color: 'rgba(51, 209, 201, 0)'
-            }
-            ])
-          },
-          z: 2
-        },
-        {
-          name: '融资余额',
-          key: 'totalRemainingAmount',
-          type: 'line',
-          // stack: 'Total',
-          data: [],
-          smooth: true,
-          showSymbol: false,
-          lineStyle: {
-            width: 5 // 调整线条的粗细
-          },
-          areaStyle: {
-            opacity: 0.8,
-            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-              offset: 0,
-              color: 'rgba(247, 114, 52, .3)'
+              name: '融资余额',
+              key: 'totalRemainingAmount',
+              type: 'line',
+              // stack: 'Total',
+              data: [],
+              smooth: true,
+              showSymbol: false,
+              lineStyle: {
+                width: 5 // 调整线条的粗细
+              },
+              areaStyle: {
+                opacity: 0.8,
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                    offset: 0,
+                    color: 'rgba(247, 114, 52, .3)'
+                  },
+                  {
+                    offset: 1,
+                    color: 'rgba(247, 114, 52, 0)'
+                  }
+                ])
+              },
+              z: 3
             },
-            {
-              offset: 1,
-              color: 'rgba(247, 114, 52, 0)'
-            }
-            ])
-          },
-          z: 3
+          ]
         },
-        ]
-      },
-      listData: [],
-      listData1: [],
-      pickerOptions1: {
-        disabledDate: (time) => {
-          if (this.daterangeLogCreateDate2) {
-            const endMonthDate = new Date(this.daterangeLogCreateDate2);
-            endMonthDate.setMonth(endMonthDate.getMonth() + 1);
-            return time.getTime() >= endMonthDate.getTime();
+        listData: [],
+        listData1: [],
+        pickerOptions1: {
+          disabledDate: (time) => {
+            if (this.daterangeLogCreateDate2) {
+              const endMonthDate = new Date(this.daterangeLogCreateDate2);
+              endMonthDate.setMonth(endMonthDate.getMonth() + 1);
+              return time.getTime() >= endMonthDate.getTime();
+            }
           }
-        }
-      },
-      pickerOptions2: {
-        disabledDate: (time) => {
-          if (this.daterangeLogCreateDate1) {
-            const startMonthDate = new Date(this.daterangeLogCreateDate1);
-            // startMonthDate.setMonth(startMonthDate.getMonth() + 1);
-            return time.getTime() <= startMonthDate.getTime();
+        },
+        pickerOptions2: {
+          disabledDate: (time) => {
+            if (this.daterangeLogCreateDate1) {
+              const startMonthDate = new Date(this.daterangeLogCreateDate1);
+              // startMonthDate.setMonth(startMonthDate.getMonth() + 1);
+              return time.getTime() <= startMonthDate.getTime();
+            }
           }
-        }
-      },
-      error1: ''
-    }
-  },
-  watch: {
-    daterangeLogCreateDate1(n, o) {
-      if (n !== '' && n !== null) {
-        if (this.daterangeLogCreateDate2 === '' || this.daterangeLogCreateDate2 === null) {
-          this.error1 = '结束月不能为空';
-        } else {
-          this.error1 = ''; // 清空错误信息
-        }
-      } else if (this.daterangeLogCreateDate2 === '' || this.daterangeLogCreateDate2 === null) {
-        this.error1 = ''; // 两个日期都为空时，清空错误信息
-      } else {
-        this.error1 = '起始月不能为空';
+        },
+        error1: '',
+        danweiWY: 10000
       }
     },
-    daterangeLogCreateDate2(n, o) {
-      if (n !== '' && n !== null) {
-        if (this.daterangeLogCreateDate1 === '' || this.daterangeLogCreateDate1 === null) {
+    watch: {
+      daterangeLogCreateDate1(n, o) {
+        if (n !== '' && n !== null) {
+          if (this.daterangeLogCreateDate2 === '' || this.daterangeLogCreateDate2 === null) {
+            this.error1 = '结束月不能为空';
+          } else {
+            this.error1 = ''; // 清空错误信息
+          }
+        } else if (this.daterangeLogCreateDate2 === '' || this.daterangeLogCreateDate2 === null) {
+          this.error1 = ''; // 两个日期都为空时，清空错误信息
+        } else {
           this.error1 = '起始月不能为空';
-        } else {
-          this.error1 = ''; // 清空错误信息
         }
-      } else if (this.daterangeLogCreateDate1 === '' || this.daterangeLogCreateDate1 === null) {
-        this.error1 = ''; // 两个日期都为空时，清空错误信息
-      } else {
-        this.error1 = '结束月不能为空';
-      }
-    },
-  },
-  created() {
-    this.option.xAxis.data = this.generateMonthsMap();
-  },
-  mounted() {
-    this.getrzloghistoryFinancing();
-  },
-  methods: {
-
-    async resetQuery() {
-      this.queryParams = {
-        managementId: null,
-        scrUuid: null,
-        borrowingUnit: null,
-        financialInstitution: null,
-        financingAmount: null,
-        financingType: null,
-        contractId: null,
-        contractSigningDate: null,
-        loanDate: null,
-        dueDate: null,
-        rate: null,
-        loanTerm: null,
-        creditEnhancementMeasures: null,
-        repaidAmount: null,
-        remainingAmount: null,
-        loanState: null,
-        comment: null,
-        uuid: null,
-        logCreateTime: null,
-        logCreateDate: null
-      }
-      this.daterangeLogCreateDate = [
-        moment().subtract(1, 'years').format('YYYY-MM'),
-        moment().format('YYYY-MM')
-      ]
-      this.daterangeLogCreateDate1 = moment().subtract(1, 'years').format('YYYY-MM');
-      this.daterangeLogCreateDate2 = moment().format('YYYY-MM');
-      this.changeRang()
-      await this.getrzloghistoryFinancing()
-    },
-    init() {
-      var chartDom = document.getElementById('main-echart');
-      var myChart = echarts.init(chartDom);
-      myChart.setOption(this.option);
-    },
-
-    async getrzloghistoryFinancing() {
-      try {
-        this.queryParams.params = {};
-        if (![null, '', undefined].includes(this.daterangeLogCreateDate1) && ![null, '', undefined].includes(this.daterangeLogCreateDate2)) {
-          this.queryParams.params["beginLogCreateDate"] = this.daterangeLogCreateDate1;
-          this.queryParams.params["endLogCreateDate"] = this.daterangeLogCreateDate2;
-        }
-        const res = await rzloghistoryFinancing(this.queryParams);
-        if (res.code === 200) {
-          const data = JSON.parse(JSON.stringify(res.rows));
-          this.listData = data;
-          this.option.series[0].data = this.transformAndFillData(data, this.option.xAxis.data,
-            'totalFinancingAmount');
-
-          this.option.series[2].data = this.transformAndFillData(data, this.option.xAxis.data,
-            'totalRemainingAmount');
-
-          this.queryParams["startDate"] = this.daterangeLogCreateDate1;
-          this.queryParams["endDate"] = this.daterangeLogCreateDate2;
-
-          const res1 = await getRepaymentPlanData(this.queryParams);
-          if (res1.code === 200) {
-            const data1 = JSON.parse(JSON.stringify(res1.data));
-            this.listData1 = data1;
-            this.option.series[1].data = this.transformAndFillData(data1, this.option.xAxis.data, ['totalPrincipal',
-              'totalInterest'
-            ]);
-
-            //都成功再初始化
-            this.init();
+      },
+      daterangeLogCreateDate2(n, o) {
+        if (n !== '' && n !== null) {
+          if (this.daterangeLogCreateDate1 === '' || this.daterangeLogCreateDate1 === null) {
+            this.error1 = '起始月不能为空';
+          } else {
+            this.error1 = ''; // 清空错误信息
           }
-
+        } else if (this.daterangeLogCreateDate1 === '' || this.daterangeLogCreateDate1 === null) {
+          this.error1 = ''; // 两个日期都为空时，清空错误信息
+        } else {
+          this.error1 = '结束月不能为空';
         }
-
-      } catch (error) {
-        console.log(error);
-        this.$modal.msgError('数据获取失败，请重新尝试。');
-      }
-
-
+      },
     },
-    getDatas(data, key) {
-      return data.map(item => Number(item[key]));
+    created() {
+      this.option.xAxis.data = this.generateMonthsMap();
     },
-    changeRang() {
-      if (![null, '', undefined].includes(this.daterangeLogCreateDate1) && ![null, '', undefined].includes(this.daterangeLogCreateDate2)) {
-        this.option.xAxis.data = this.generateMonthsMap();
-      }
+    mounted() {
       this.getrzloghistoryFinancing();
     },
-    generateMonthsMap() {
-      let currentMonth = moment(this.daterangeLogCreateDate1, 'YYYY-MM');
-      const end = moment(this.daterangeLogCreateDate2, 'YYYY-MM');
-      const monthsArray = [];
+    methods: {
 
-      while (currentMonth.isSameOrBefore(end)) {
-        // 将每个月份添加到数组中
-        monthsArray.push(currentMonth.format('YYYY-MM'));
-        // 移动到下一个月
-        currentMonth.add(1, 'months');
-      }
-
-      return monthsArray;
-    },
-    last_data(listData, key) {
-      let total = 0
-      if (listData != undefined && listData.length > 0) {
-        total = listData[listData.length - 1][key]
-      }
-
-      return total
-    },
-
-    last_data_add(listData, k1, k2) {
-      let total = 0
-      if (listData != undefined && listData.length > 0) {
-        total = listData[listData.length - 1][k1] + listData[listData.length - 1][k2]
-      }
-
-      return total
-    },
-    calculateTotalByKey(dataList, key) {
-      const total = dataList.reduce((total, item) => {
-        // 检查当前项是否有指定的key，并且该key对应的值是数字类型
-        console.log("total", key, total, item[key], item);
-        if (item.hasOwnProperty(key) && typeof item[key] === 'number') {
-          return total + item[key];
+      async resetQuery() {
+        this.queryParams = {
+          managementId: null,
+          scrUuid: null,
+          borrowingUnit: null,
+          financialInstitution: null,
+          financingAmount: null,
+          financingType: null,
+          contractId: null,
+          contractSigningDate: null,
+          loanDate: null,
+          dueDate: null,
+          rate: null,
+          loanTerm: null,
+          creditEnhancementMeasures: null,
+          repaidAmount: null,
+          remainingAmount: null,
+          loanState: null,
+          comment: null,
+          uuid: null,
+          logCreateTime: null,
+          logCreateDate: null
         }
+        this.daterangeLogCreateDate = [
+          moment().subtract(1, 'years').format('YYYY-MM'),
+          moment().format('YYYY-MM')
+        ]
+        this.daterangeLogCreateDate1 = moment().subtract(1, 'years').format('YYYY-MM');
+        this.daterangeLogCreateDate2 = moment().format('YYYY-MM');
+        this.changeRang()
+        await this.getrzloghistoryFinancing()
+      },
+      init() {
+        var chartDom = document.getElementById('main-echart');
+        var myChart = echarts.init(chartDom);
+        myChart.setOption(this.option);
+      },
+
+      async getrzloghistoryFinancing() {
+        try {
+          this.queryParams.params = {};
+          if (![null, '', undefined].includes(this.daterangeLogCreateDate1) && ![null, '', undefined].includes(this
+              .daterangeLogCreateDate2)) {
+            this.queryParams.params["beginLogCreateDate"] = this.daterangeLogCreateDate1;
+            this.queryParams.params["endLogCreateDate"] = this.daterangeLogCreateDate2;
+          }
+          const res = await rzloghistoryFinancing(this.queryParams);
+          if (res.code === 200) {
+            const data = JSON.parse(JSON.stringify(res.rows));
+            this.listData = data;
+            this.option.series[0].data = this.transformAndFillData(data, this.option.xAxis.data,
+              'totalFinancingAmount');
+
+            this.option.series[2].data = this.transformAndFillData(data, this.option.xAxis.data,
+              'totalRemainingAmount');
+
+            this.queryParams["startDate"] = this.daterangeLogCreateDate1;
+            this.queryParams["endDate"] = this.daterangeLogCreateDate2;
+
+            const res1 = await getRepaymentPlanData(this.queryParams);
+            if (res1.code === 200) {
+              const data1 = JSON.parse(JSON.stringify(res1.data));
+              this.listData1 = data1;
+              this.option.series[1].data = this.transformAndFillData(data1, this.option.xAxis.data, ['totalPrincipal',
+                'totalInterest'
+              ]);
+
+              //都成功再初始化
+              this.init();
+            }
+
+          }
+
+        } catch (error) {
+          console.log(error);
+          this.$modal.msgError('数据获取失败，请重新尝试。');
+        }
+
+
+      },
+      getDatas(data, key) {
+        return data.map(item => Number(item[key]));
+      },
+      changeRang() {
+        if (![null, '', undefined].includes(this.daterangeLogCreateDate1) && ![null, '', undefined].includes(this
+            .daterangeLogCreateDate2)) {
+          this.option.xAxis.data = this.generateMonthsMap();
+        }
+        this.getrzloghistoryFinancing();
+      },
+      generateMonthsMap() {
+        let currentMonth = moment(this.daterangeLogCreateDate1, 'YYYY-MM');
+        const end = moment(this.daterangeLogCreateDate2, 'YYYY-MM');
+        const monthsArray = [];
+
+        while (currentMonth.isSameOrBefore(end)) {
+          // 将每个月份添加到数组中
+          monthsArray.push(currentMonth.format('YYYY-MM'));
+          // 移动到下一个月
+          currentMonth.add(1, 'months');
+        }
+
+        return monthsArray;
+      },
+      last_data(listData, key) {
+        let total = 0
+        if (listData != undefined && listData.length > 0) {
+          total = listData[listData.length - 1][key]
+        }
+
+        return total / this.danweiWY
+      },
+
+      last_data_add(listData, k1, k2) {
+        let total = 0
+        if (listData != undefined && listData.length > 0) {
+          total = listData[listData.length - 1][k1] + listData[listData.length - 1][k2]
+        }
+
+        return total / this.danweiWY
+      },
+      calculateTotalByKey(dataList, key) {
+        const total = dataList.reduce((total, item) => {
+          // 检查当前项是否有指定的key，并且该key对应的值是数字类型
+          console.log("total", key, total, item[key], item);
+          if (item.hasOwnProperty(key) && typeof item[key] === 'number') {
+            return total + item[key];
+          }
+          return total;
+        }, 0);
+        console.log("total", key, total);
+        // 将总和除以10000，得到以“万”为单位的数值
         return total;
-      }, 0);
-      console.log("total", key, total);
-      // 将总和除以10000，得到以“万”为单位的数值
-      return total;
-    },
-    transformAndFillData(backendData, xAxisData, key) {
-      // 创建一个填充了 null 的数组，长度与 xAxisData 相同
-      let filledData = new Array(xAxisData.length).fill(0);
-      // 遍历后端数据
-      backendData.forEach(dataItem => {
-        // 找到每个数据项对应的月份在 xAxisData 中的索引
-        const index = xAxisData.indexOf(dataItem.month);
-        if (index !== -1) {
-          // 如果 key 是字符串数组，则累加各项的值
-          if (Array.isArray(key)) {
-            let sum = 0;
-            key.forEach(k => {
-              sum += dataItem[k] || 0; // 使用 || 0 来确保未定义的值被当作 0 处理
-            });
-            filledData[index] = sum;
-          } else {
-            // 如果 key 是字符串，则直接赋值
-            filledData[index] = dataItem[key];
+      },
+      transformAndFillData(backendData, xAxisData, key) {
+        // 创建一个填充了 null 的数组，长度与 xAxisData 相同
+        let filledData = new Array(xAxisData.length).fill(0);
+        // 遍历后端数据
+        backendData.forEach(dataItem => {
+          // 找到每个数据项对应的月份在 xAxisData 中的索引
+          const index = xAxisData.indexOf(dataItem.month);
+          if (index !== -1) {
+            // 如果 key 是字符串数组，则累加各项的值
+            if (Array.isArray(key)) {
+              let sum = 0;
+              key.forEach(k => {
+                sum += dataItem[k] || 0; // 使用 || 0 来确保未定义的值被当作 0 处理
+              });
+              if (sum !== 0) {
+                filledData[index] = sum / this.danweiWY;
+              }
+            } else {
+              // 如果 key 是字符串，则直接赋值
+              let value = dataItem[key];
+              if (value !== 0) {
+                filledData[index] = value / this.danweiWY;
+              }
+            }
+          }
+        });
+        return filledData;
+      },
+      calculateTotal(obj) {
+        let total = 0;
+        for (let key in obj) {
+          if (key !== 'bgID' || key !== 'month') {
+            total += obj[key];
           }
         }
-      });
-      return filledData;
-    },
-    calculateTotal(obj) {
-      let total = 0;
-      for (let key in obj) {
-        if (key !== 'bgID' || key !== 'month') {
-          total += obj[key];
-        }
-      }
-      return total;
-    },
+        return total;
+      },
+    }
   }
-}
 </script>
 <style lang="scss" scoped>
-.small-panel-content {
-  width: 100%;
-  height: 140px;
-}
-
-.small-panel-left-icon {
-  width: 55px;
-  height: 55px;
-  margin-right: 10px;
-  border-radius: 50%;
-}
-
-@for $i from 1 through 3 {
-  .left-icon#{$i} {
-    background-image: url('../../assets/images/lsrzye#{$i}.png');
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
+  .small-panel-content {
+    width: 100%;
+    height: 140px;
   }
-}
 
-.small-panel-right-text-content {
-  width: 100%;
+  .small-panel-left-icon {
+    width: 55px;
+    height: 55px;
+    margin-right: 10px;
+    border-radius: 50%;
+  }
 
-}
+  @for $i from 1 through 3 {
+    .left-icon#{$i} {
+      background-image: url('../../assets/images/lsrzye#{$i}.png');
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
+    }
+  }
 
-.right-text {
-  width: 200px;
-  font-size: 12px;
-  color: #1D2129;
-  line-height: 20px;
-  height: 20px;
-  font-weight: 600;
-  margin-bottom: 10px;
-  white-space: nowrap;
-  /* 确保文本在一行内显示 */
-  overflow: hidden;
-  /* 隐藏溢出的文本 */
-  text-overflow: ellipsis;
-  /* 文本溢出时显示省略号 */
-}
+  .small-panel-right-text-content {
+    width: 100%;
 
-.right-amount {
-  font-size: 22px;
-  color: #1D2129;
-  line-height: 22px;
-  height: 22px;
-  font-weight: bold;
-}</style>
+  }
+
+  .right-text {
+    width: 200px;
+    font-size: 12px;
+    color: #1D2129;
+    line-height: 20px;
+    height: 20px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    white-space: nowrap;
+    /* 确保文本在一行内显示 */
+    overflow: hidden;
+    /* 隐藏溢出的文本 */
+    text-overflow: ellipsis;
+    /* 文本溢出时显示省略号 */
+  }
+
+  .right-amount {
+    font-size: 22px;
+    color: #1D2129;
+    line-height: 22px;
+    height: 22px;
+    font-weight: bold;
+  }
+</style>
