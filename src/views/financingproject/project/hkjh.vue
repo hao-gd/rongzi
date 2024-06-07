@@ -5,9 +5,11 @@
         <div class="w flex fjb" slot="label" @click.prevent.stop="addType($event, 'zjbj')">
           <span class="required">提款信息输入区（元）</span>
           <div>
+            <el-button v-if="isEditable" type="info" plain icon="el-icon-document-copy" size="mini"
+              @click="dialogzjbjVisible = true">粘贴提取本金信息</el-button>
             <el-button size="mini" class="reset-total-btn" id="sort-btn">排序</el-button>
-            <el-button type="primary" size="mini" class="reset-total-btn" id="add-btn"
-              v-if="isEditable">新增一行</el-button>
+            <el-button type="primary" size="mini" class="reset-total-btn" id="add-btn" v-if="isEditable">新增一行
+            </el-button>
           </div>
         </div>
 
@@ -24,6 +26,7 @@
             </template>
           </tiny-grid-column>
         </tiny-grid>
+        <span>合计：{{tikuanxinxizongji*10000}}  元</span>
       </el-form-item>
       <!-- <el-button icon="el-icon-refresh" size="mini" @click="init('提款信息输入区')">初始化</el-button> -->
     </el-row>
@@ -36,8 +39,8 @@
             <el-button v-if="isEditable" type="info" plain icon="el-icon-document-copy" size="mini"
               @click="dialogbjchVisible = true">粘贴本金偿还信息</el-button>
             <el-button size="mini" class="reset-total-btn" id="sort-btn">排序</el-button>
-            <el-button type="primary" size="mini" class="reset-total-btn" id="add-btn"
-              v-if="isEditable">新增一行</el-button>
+            <el-button type="primary" size="mini" class="reset-total-btn" id="add-btn" v-if="isEditable">新增一行
+            </el-button>
           </div>
         </div>
 
@@ -54,6 +57,7 @@
             </template>
           </tiny-grid-column>
         </tiny-grid>
+        <span>合计：{{huankuanxinxizongji*10000}}  元</span>
       </el-form-item>
       <!-- <el-button icon="el-icon-refresh" size="mini" @click="init('本金偿还信息输入区')">初始化</el-button> -->
     </el-row>
@@ -190,6 +194,23 @@
       </div>
     </el-dialog>
 
+
+    <!-- 粘贴提取本金信息 -->
+    <el-dialog title="粘贴提取本金信息" :visible.sync="dialogzjbjVisible" :modal="false">
+      <el-alert title="直接从Excel复制日期和提取金额数据,不需要复制表头,否则会失败." type="warning" center show-icon></el-alert>
+      <el-switch v-model="drJinEDanWei" active-text="当前金额单位:万元" active-value="10000" inactive-text="当前金额单位:元"
+        inactive-value="1">
+      </el-switch>
+      <el-input type="textarea" :rows="30" placeholder="直接从Excel复制日期和提取金额数据,例子:
+
+2026/11/30	2000.00
+2027/04/20	30000.00" v-model="textarea_zjbj">
+      </el-input>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="handleZJBJPaste">确 定 使 用</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 <script>
@@ -292,8 +313,12 @@
         temp_header: {},
         excel_data: {},
         textarea_bjch: "",
+        textarea_zjbj: "",
         dialogbjchVisible: false,
-        drJinEDanWei: "10000"
+        dialogzjbjVisible: false,
+        drJinEDanWei: "10000",
+        tikuanxinxizongji: 0,
+        huankuanxinxizongji: 0
       }
     },
     watch: {
@@ -330,7 +355,8 @@
         handler(newVal) {
           if (newVal) {
             // console.log(newVal);
-            this.form.repaidAmount = newVal.reduce((acc, item) => acc + item.amount, 0) / 10000;
+            this.huankuanxinxizongji = this.form.repaidAmount = newVal.reduce((acc, item) => acc + item.amount, 0) /
+              10000;
             // this.form.changhuanbenjin = JSON.parse(newVal);
           }
         },
@@ -340,7 +366,8 @@
       'zjbj': {
         handler(newVal) {
           if (newVal) {
-            this.form.financingAmount = newVal.reduce((acc, item) => acc + item.amount, 0) / 10000;
+            this.tikuanxinxizongji = this.form.financingAmount = newVal.reduce((acc, item) => acc + item.amount, 0) /
+              10000;
             // this.form.tiqubenjin = JSON.parse(newVal);
           }
         },
@@ -401,6 +428,26 @@
         this.dialogbjchVisible = false
 
       },
+      handleZJBJPaste() {
+        // 通过换行符分割数据
+        let lines = this.textarea_zjbj.split('\n');
+        // 存储分割后的数据
+        this.zjbj = [];
+        // 遍历分割后的行数据
+        lines.forEach(line => {
+          // 通过制表符分割每一行数据
+          let parts = line.split('\t');
+          // 创建record对象并存入this.zjbj list
+          this.zjbj.push({
+            date: parts[0],
+            amount: Number(parts[1] * Number(this.drJinEDanWei)),
+            editing: true
+          });
+        });
+
+        this.dialogzjbjVisible = false
+
+      },
       init(type) {
         this.$msgbox({
           title: '重要提示',
@@ -439,7 +486,7 @@
         //console.log("生成lx数据", this.form.firstRepaymentDate, this.form.dueDate, this.lxKeyMap[this.form.interestRepaymentMethod]);
         this.lixichanghuanArray = getDatesBasedOnStartDate(this.form.firstRepaymentDate, this.form.dueDate, this
           .lxKeyMap[this.form.interestRepaymentMethod]);
-          // console.log(this.lixichanghuanArray);
+        // console.log(this.lixichanghuanArray);
       },
 
       // 初始生成lv数据

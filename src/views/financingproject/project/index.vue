@@ -284,7 +284,7 @@
             </el-col>
 
             <el-col :span="8">
-              <el-form-item label="授信金额" prop="shouxinjine">
+              <el-form-item label="授信金额（万元）" prop="shouxinjine">
                 <el-input-number class="w" :controls="false" :precision="2" :disabled="!isEditable"
                   :readonly="!isEditable" type="number" v-model.trim="form.shouxinjine" placeholder="请输入授信金额" />
               </el-form-item>
@@ -872,6 +872,7 @@
           response.data.remainingAmount = Number(response.data.remainingAmount) / 10000;
           response.data.baozhengjin = Number(response.data.baozhengjin) / 10000;
           response.data.shouxufei = Number(response.data.shouxufei) / 10000;
+          response.data.shouxinjine = Number(response.data.shouxinjine) / 10000;
 
           this.scrUuid = response.data.scrUuid;
           this.form = response.data;
@@ -917,6 +918,7 @@
             data.remainingAmount = data.remainingAmount * 10000;
             data.baozhengjin = data.baozhengjin * 10000;
             data.shouxufei = data.shouxufei * 10000;
+            data.shouxinjine = data.shouxinjine * 10000;
 
             //取消下列自动计算，因为本金偿还可能都是提前输入好的，所以当前剩余的本金是跟时间有关系的，除非能根据当前时间实时刷新这个数据
             // 取利率列表最后一个作为当前利率
