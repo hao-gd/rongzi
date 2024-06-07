@@ -134,6 +134,8 @@ export function generateRepaymentPlan(timeline, huanbenjintongshihuanlixi) {
         break;
       case '利息偿还':
         let last_data = zuizhongjihua[zuizhongjihua.length - 1]
+        // console.log(last_data)
+        // 上次记录的时间，是不是和这次还利息时间相同
         if (currentDate.format("YYYY-MM-DD") == last_data.riqi) {
 
           last_data["huankuanjine"] = (interestAccrued + Number(last_data["huankuanjine"])).toFixed(2)

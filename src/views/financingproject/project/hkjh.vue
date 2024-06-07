@@ -66,10 +66,8 @@
 
             <el-button size="mini" class="reset-total-btn" id="sort-btn">排序</el-button>
             <el-button type="primary" size="mini" class="reset-total-btn" @click="init('年利率信息输入区')"
-              :disabled="lvbg.length>0" v-if="form.rateType === '固定'">
-              新增一行</el-button>
-
-
+              :disabled="lvbg.length>0" v-if="form.rateType == '固定'">
+              设置固定利率</el-button>
             <el-button type="primary" size="mini" class="reset-total-btn" id="add-btn" v-else>
               新增一行</el-button>
 
@@ -441,6 +439,7 @@
         //console.log("生成lx数据", this.form.firstRepaymentDate, this.form.dueDate, this.lxKeyMap[this.form.interestRepaymentMethod]);
         this.lixichanghuanArray = getDatesBasedOnStartDate(this.form.firstRepaymentDate, this.form.dueDate, this
           .lxKeyMap[this.form.interestRepaymentMethod]);
+          // console.log(this.lixichanghuanArray);
       },
 
       // 初始生成lv数据
@@ -455,6 +454,7 @@
         }
 
         this.$set(this, "lvbg", JSON.parse(JSON.stringify([data])))
+        // console.log(this.lvbg);
       },
 
       // 初始生成增加bj数据
