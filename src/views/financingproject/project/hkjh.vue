@@ -398,16 +398,28 @@
     },
     mounted() {
 
-      this.zjbj = JSON.parse(this.form.tiqubenjin);
-      this.bjch = JSON.parse(this.form.changhuanbenjin);
-      this.lixichanghuanArray = JSON.parse(this.form.lixichanghuan);
-      this.lvbg = JSON.parse(this.form.lilvbiangeng);
+
+      this.zjbj = this.safeParse(this.form.tiqubenjin);
+      this.bjch = this.safeParse(this.form.changhuanbenjin);
+      this.lixichanghuanArray = this.safeParse(this.form.lixichanghuan);
+      this.lvbg = this.safeParse(this.form.lilvbiangeng);
+
+      console.log(this.lvbg);
 
       this.zjywjnjl = JSON.parse(this.form.zjywjnjl);
       // this.repaymentPlanTable = this.huankuanmingxi2List;
 
     },
     methods: {
+
+      safeParse(jsonString) {
+        try {
+          const result = JSON.parse(jsonString);
+          return Array.isArray(result) ? result : [];
+        } catch (e) {
+          return [];
+        }
+      },
       handlePaste() {
         // 通过换行符分割数据
         let lines = this.textarea_bjch.split('\n');

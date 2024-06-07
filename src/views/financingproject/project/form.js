@@ -15,7 +15,7 @@ export const resetForm = {
   contractSigningDate: null,
   loanDate: null,
   dueDate: null,
-  rate: null,
+  rate: 0,
   loanTerm: null,
   creditEnhancementMeasures: null,
   repaidAmount: null,
@@ -125,7 +125,7 @@ export const rules = {
     trigger: "blur"
   }],
   rate: [{
-    required: false,
+    required: true,
     message: "年利率不能为空",
     trigger: "blur"
   }],

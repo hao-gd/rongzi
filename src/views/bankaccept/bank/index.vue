@@ -369,7 +369,7 @@
  <!--               <el-input-number class="w" :controls="false" :precision="2" :disabled="!isEditable"
                   :readonly="!isEditable" type="number" v-model.trim="form.marginLevel" placeholder="请输入保证金比例" /> -->
 
-                 <tiny-numeric :disabled="!isEditable"
+                 <tiny-numeric :disabled="!isEditable"  :empty-value="0"
                   :readonly="!isEditable" class="w" show-left :controls="false" size="small" v-model="form.marginLevel" :format="{
                    zeroize: true, // 是否保留多余的0字符
                    fraction: 2, // 保留小数位数
@@ -391,7 +391,7 @@
               <el-form-item label="保证金利率" prop="marginInterestRate">
                 <!-- <el-input :readonly="!isEditable" v-model="marginInterestRate" placeholder="请输入保证金利率" /> -->
 
-                <tiny-numeric :disabled="!isEditable"
+                <tiny-numeric :disabled="!isEditable"  :empty-value="0"
                  :readonly="!isEditable" class="w" show-left :controls="false" size="small" v-model="form.marginInterestRate" :format="{
                   zeroize: true, // 是否保留多余的0字符
                   fraction: 2, // 保留小数位数

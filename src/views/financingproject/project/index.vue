@@ -97,8 +97,8 @@
       <!-- <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar> -->
     </el-row>
 
-    <el-table :summary-method="(param) => getSummaries2(param, totalKeys, zongjia)" show-summary v-loading="loading" :data="projectList"
-      @selection-change="handleSelectionChange" :header-cell-style="header_cell_style">
+    <el-table :summary-method="(param) => getSummaries2(param, totalKeys, zongjia)" show-summary v-loading="loading"
+      :data="projectList" @selection-change="handleSelectionChange" :header-cell-style="header_cell_style">
       <el-table-column show-overflow-tooltip fixed="left" type="selection" width="60" align="center" />
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
       <el-table-column show-overflow-tooltip label="管理编号" align="center" prop="managementId" min-width="100" />
@@ -121,7 +121,7 @@
 
       <el-table-column label="贷款用途" align="center" prop="daikuanyongtu" />
       <!-- <el-table-column label="担保措施" align="center" prop="danbaocuoshi" /> -->
-  <!--    <el-table-column label="授信金额" align="center" prop="shouxinjine" width="140">
+      <!--    <el-table-column label="授信金额" align="center" prop="shouxinjine" width="140">
         <template slot-scope="scope">
           <span>{{ formatNumberAsRMB(scope.row.shouxinjine) }}</span>
         </template>
@@ -263,23 +263,15 @@
 
             <el-col :span="8">
               <el-form-item label="贷款用途" prop="daikuanyongtu">
-                <el-input
-                 :readonly="!isEditable"
-                 type="textarea"
-                 maxlength="10"
-                 show-word-limit
-                 v-model="form.daikuanyongtu" placeholder="请输入贷款用途" />
+                <el-input :readonly="!isEditable" type="textarea" maxlength="10" show-word-limit
+                  v-model="form.daikuanyongtu" placeholder="请输入贷款用途" />
               </el-form-item>
             </el-col>
 
             <el-col :span="8">
               <el-form-item label="担保措施" prop="danbaocuoshi">
-                <el-input
-                 :readonly="!isEditable"
-                   type="textarea"
-                   maxlength="30"
-                   show-word-limit
-                 v-model="form.danbaocuoshi" placeholder="请输入担保措施" />
+                <el-input :readonly="!isEditable" type="textarea" maxlength="30" show-word-limit
+                  v-model="form.danbaocuoshi" placeholder="请输入担保措施" />
               </el-form-item>
             </el-col>
 
@@ -292,8 +284,8 @@
 
             <el-col :span="8">
               <el-form-item label="融资金额（万元）" prop="financingAmount">
-                <el-input-number class="w" :controls="false" :precision="2"
-                  :disabled="true" type="number" v-model.trim="form.financingAmount" placeholder="请输入融资金额" />
+                <el-input-number class="w" :controls="false" :precision="2" :disabled="true" type="number"
+                  v-model.trim="form.financingAmount" placeholder="请输入融资金额" />
               </el-form-item>
             </el-col>
             <!-- <el-col :span="8">
@@ -335,7 +327,7 @@
               <el-form-item label="年利率" prop="rate">
                 <!-- <el-input :readonly="!isEditable" v-model="rate" placeholder="请输入年利率" /> -->
 
-                <tiny-numeric class="w" show-left :controls="false" size="small" v-model="form.rate" :format="{
+                <tiny-numeric class="w" show-left :controls="false" size="small" v-model="form.rate" :empty-value="0"  :format="{
                   zeroize: true, // 是否保留多余的0字符
                   fraction: 2, // 保留小数位数
                   rounding: 2, // 舍入点
@@ -358,8 +350,8 @@
             </el-col> -->
             <el-col :span="8">
               <el-form-item label="已还金额（万元）" prop="repaidAmount">
-                <el-input-number class="w" :controls="false" :precision="2"
-                  :disabled="true" type="number" v-model.trim="form.repaidAmount" placeholder="请输入已还金额" />
+                <el-input-number class="w" :controls="false" :precision="2" :disabled="true" type="number"
+                  v-model.trim="form.repaidAmount" placeholder="请输入已还金额" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -484,13 +476,7 @@
           </el-row>
 
           <el-divider></el-divider>
-          <el-row v-if="(!empty.includes(this.form.loanDate) &&
-            !empty.includes(this.form.dueDate) &&
-            !empty.includes(this.form.firstRepaymentDate) &&
-            !empty.includes(this.form.rateType) &&
-            !empty.includes(this.form.interestRepaymentMethod) &&
-            !empty.includes(this.form.financingAmount)) &&
-            this.form.hasRepaymentPlan === '有'">
+          <el-row v-if="this.form.hasRepaymentPlan === '有'">
             <hkjh-panel ref="hkjhPanel" :form="form" :isEditable="true"
               :huankuanmingxi2List="EchoHuankuanmingxi2List"></hkjh-panel>
           </el-row>
@@ -604,7 +590,8 @@
         // 表单参数
         form: {
           loanDate: null,
-          dueDate: null
+          dueDate: null,
+          rate: 0
         },
         // 表单校验
         rules: rules,
@@ -690,7 +677,7 @@
           const creditAmount = Number(this.form.financingAmount) || 0;
           const usedCreditAmount = Number(this.form.repaidAmount) || 0;
           const residue = creditAmount - usedCreditAmount;
-          if(residue<0){
+          if (residue < 0) {
             this.$modal.msgError("您的输入出现问题,导致融资余额为负数了");
           }
           this.form.remainingAmount = residue;

@@ -519,7 +519,7 @@
                   :readonly="!isEditable" type="number" v-model.trim="form.guaranteeRatio" placeholder="请输入担保比例" clearable
                    /> -->
                 <!-- <el-input :readonly="!isEditable" v-model.number="guaranteeRatio" placeholder="请输入担保比例" /> -->
-                <tiny-numeric class="w" show-left :controls="false" size="small" v-model="form.guaranteeRatio" :format="{
+                <tiny-numeric class="w" show-left :controls="false" size="small" v-model="form.guaranteeRatio"  :empty-value="0" :format="{
                   zeroize: true, // 是否保留多余的0字符
                   fraction: 2, // 保留小数位数
                   rounding: 2, // 舍入点
